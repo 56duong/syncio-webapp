@@ -1,0 +1,89 @@
+
+.main {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  min-height: 100vh;
+  width: 100%;
+  border-right-width: 1px;
+  border-right-style: solid;
+  border-color: var(--gray-300);
+  background-color: var(--gray-0);
+  z-index: 9999;
+
+  @media screen and (min-width: 992px) {
+    min-width: 250px;
+  }
+
+  // Move to bottom on mobile
+  @media (max-width: 767px) {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    height: auto;
+    min-height: auto;
+    border-right-width: 0;
+    border-right-style: none;
+    border-color: unset;
+
+    nav {
+      padding: 0.5rem 1rem !important;
+      border-top-width: 1px;
+      border-top-style: solid;
+      border-color: var(--gray-300);
+        
+      ul,
+      ul .menu {
+        flex-direction: row !important;
+      }
+
+      .menu {
+        justify-content: space-around;
+        li {
+          width: auto !important;
+        }
+      }
+    }
+  }
+}
+
+// Menu active
+::ng-deep .menu-active {
+  .p-button-label,
+  .p-button-icon {
+    font-weight: bold;
+  }
+}
+
+::ng-deep .p-button {
+  text-align: left;
+  padding: 1rem;
+}
+
+// Logo
+::ng-deep .p-button.p-button-link:not(:disabled)  {
+  :hover .p-button-label {
+    text-decoration: none;
+    font-weight: 900;
+  }
+
+  .p-button-label {
+    text-decoration: none;
+    font-weight: 900;
+  }
+}
+
+// Label menu
+@media screen and (max-width: 992px) {
+  ::ng-deep .p-button.p-button-text:not(:disabled) {
+    .p-button-label {
+      display: none;
+    }
+
+    .p-button-icon {
+      margin: 0;
+    }
+  }
+}
