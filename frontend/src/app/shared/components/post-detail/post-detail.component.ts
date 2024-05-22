@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-create-post',
-  templateUrl: './create-post.component.html',
-  styleUrls: ['./create-post.component.scss']
+  selector: 'app-post-detail',
+  templateUrl: './post-detail.component.html',
+  styleUrls: ['./post-detail.component.scss']
 })
 
-export class CreatePostComponent {
+export class PostDetailComponent {
+  
   @Input() visible: boolean = false;
   @Output() visibleChange = new EventEmitter<boolean>();
   

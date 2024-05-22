@@ -1,4 +1,4 @@
-<div class="main w-full">
+<div #targetEl class="main w-full">
   <nav class="h-full p-4 md:px-2">
     <ul class="flex flex-column align-items-center lg:align-items-start xl:align-items-start gap-6 h-full pl-0 m-0 list-none">
       <div class="mobile-hidden">
@@ -11,9 +11,9 @@
         <li *ngFor="let menu of menus" class="p-fluid w-full">
           <p-button class="text-left" routerLinkActive="menu-active" [routerLink]="menu.routerLink" [routerLinkActiveOptions]= "{exact: true}" [label]="menu.label" [icon]="menu.icon" [text]="true" [plain]="true"/>
         </li>
-      <div class="p-fluid mt-auto">
-        <p-button class="text-left" label="Create" icon="pi pi-pencil" [text]="true" [plain]="true"/>
-      </div>
+        <li class="p-fluid w-full mt-auto">
+          <p-button (click)="showCreatePostDialog()" class="text-left" label="Create" icon="pi pi-pencil" [text]="true" [plain]="true"/>
+        </li>
       </div>
       <div class="p-fluid w-full sm:mt-auto mt-0 mobile-hidden">
         <p-button class="text-left" label="Setting" icon="pi pi-cog" [text]="true" [plain]="true"/>
@@ -21,3 +21,7 @@
     </ul>
   </nav>
 </div>
+
+<app-create-post 
+  [visible]="visible"
+  (visibleChange)="visible = false"></app-create-post>

@@ -12,6 +12,7 @@ export class LikeComponent {
   @Input() postId!: string;
   likeCount: number = 0;
   commentCount: number = 0;
+  visible: boolean = false;
 
   constructor(
     private likeService: LikeService,
@@ -22,6 +23,10 @@ export class LikeComponent {
     this.countLikes();
     this.countComments();
   }
+
+  showPostDetail() {
+    this.visible = true;
+  } 
 
   countLikes() {
     this.likeService.countLikes(this.postId).subscribe({

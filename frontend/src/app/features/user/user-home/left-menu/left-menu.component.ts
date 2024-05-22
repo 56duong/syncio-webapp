@@ -7,11 +7,18 @@ import { Component } from '@angular/core';
 })
 
 export class LeftMenuComponent {
+  visible: boolean = false;
+
   menus: any[] = [
     {
       label: 'Home',
       icon: 'pi pi-home',
       routerLink: '/'
+    },
+    {
+      label: 'Search',
+      icon: 'pi pi-search',
+      routerLink: '/search'
     },
     {
       label: 'Messages',
@@ -24,4 +31,9 @@ export class LeftMenuComponent {
       routerLink: 'profile'
     }
   ];
+
+  showCreatePostDialog() {
+    this.visible = true;
+  }
+
 }

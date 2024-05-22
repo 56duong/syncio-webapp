@@ -12,6 +12,7 @@ import { CoreModule } from 'src/app/core/core.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ProfileComponent } from './profile/profile.component';
 import { MessagesComponent } from './messages/messages.component';
+import { SearchComponent } from './search/search.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { MessagesComponent } from './messages/messages.component';
     LeftMenuComponent,
     TopMenuComponent,
     ProfileComponent,
-    MessagesComponent
+    MessagesComponent,
+    SearchComponent,
   ],
   imports: [
     CommonModule,

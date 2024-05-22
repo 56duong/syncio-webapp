@@ -6,4 +6,8 @@
 .container {
   width: 100%;
   flex: auto;
+  padding: 1.5rem;
+  @media (max-width: 767px) {
+    padding: 1rem;
+  }
 }

@@ -10,7 +10,7 @@
   border-right-width: 1px;
   border-right-style: solid;
   border-color: var(--gray-300);
-  background-color: var(--gray-0);
+  background-color: var(--surface-0);
   z-index: 9999;
 
   @media screen and (min-width: 992px) {
@@ -62,6 +62,14 @@
   padding: 1rem;
 }
 
+::ng-deep .menu .p-button.p-button-text:not(:disabled) { 
+  .p-button-label,
+  .p-button-icon {
+    font-weight: 500;
+    color: var(--surface-800);
+  }
+}
+
 // Logo
 ::ng-deep .p-button.p-button-link:not(:disabled)  {
   :hover .p-button-label {
@@ -86,4 +94,9 @@
       margin: 0;
     }
   }
+}
+
+::ng-deep p-dialog {
+  z-index: 999999;
+  position: relative;
 }
