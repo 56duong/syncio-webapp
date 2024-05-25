@@ -2,26 +2,34 @@ package online.syncio.backend.user;
 
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import online.syncio.backend.comment.Comment;
 import online.syncio.backend.like.Like;
 import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messageroommember.MessageRoomMember;
 import online.syncio.backend.post.Post;
 import online.syncio.backend.report.Report;
+import online.syncio.backend.role.RoleEntity;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "`user`")
 @EntityListeners(AuditingEntityListener.class)
 @Data
-public class User {
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class User implements UserDetails {
 
     @Id
     @Column(nullable = false, updatable = false)
@@ -51,9 +59,9 @@ public class User {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private RoleEnum role;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private RoleEntity role;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -95,4 +103,31 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<MessageContent> messageContents;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
+        authorityList.add(new SimpleGrantedAuthority("ROLE_"+getRole().getName().toUpperCase()));
+
+        return authorityList;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
