@@ -21,4 +21,8 @@ public class CommentDTO {
     @NotNull
     @Size(max = 500)
     private String text;
+
+    private UUID parentCommentId;
+
+    private Long repliesCount;
 }

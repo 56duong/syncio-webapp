@@ -23,15 +23,30 @@ public class CommentController {
         return ResponseEntity.ok(commentService.findAll());
     }
 
+    @GetMapping("/{postId}")
+    public ResponseEntity<List<CommentDTO>> getCommentsByPostId(@PathVariable final UUID postId) {
+        return ResponseEntity.ok(commentService.findByPostId(postId));
+    }
+
+    @GetMapping("/{postId}/{parentCommentId}")
+    public ResponseEntity<List<CommentDTO>> getReplies(@PathVariable final UUID postId, @PathVariable final UUID parentCommentId) {
+        return ResponseEntity.ok(commentService.getReplies(postId, parentCommentId));
+    }
+
+    @GetMapping("/{postId}/parentCommentIsNull")
+    public ResponseEntity<List<CommentDTO>> getParentComments(@PathVariable final UUID postId) {
+        return ResponseEntity.ok(commentService.findByPostIdAndParentCommentIsNull(postId));
+    }
+
     @GetMapping("/count/{postId}")
     public ResponseEntity<Long> getCountComment(@PathVariable final UUID postId) {
         return ResponseEntity.ok(commentService.countByPostId(postId));
     }
 
     @PostMapping
-    public ResponseEntity<Void> createComment(@RequestBody @Valid final CommentDTO commentDTO) {
-        commentService.create(commentDTO);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<UUID> createComment(@RequestBody @Valid final CommentDTO commentDTO) {
+        final UUID createdId = commentService.create(commentDTO);
+        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
