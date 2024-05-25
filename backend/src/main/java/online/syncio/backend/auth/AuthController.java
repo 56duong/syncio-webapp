@@ -84,7 +84,7 @@ public class AuthController {
             }
         }
         User user = authService.createUser(registerDTO);
-        rabbitMQService.sendMessage("New user registered: " + user.getEmail());
+//        rabbitMQService.sendMessage("New user registered: " + user.getEmail());
         return ResponseEntity.ok(ResponseObject.builder()
                 .status(HttpStatus.CREATED)
                 .data(RegisterResponse.fromUser(user))
