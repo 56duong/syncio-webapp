@@ -1,8 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Comment } from '../interfaces/comment';
+import { CompatClient, IMessage, Stomp } from '@stomp/stompjs';
+import * as SockJS from 'sockjs-client';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +14,79 @@ export class CommentService {
   
   private apiURL = environment.apiUrl + 'api/v1/comments';
 
+  private webSocketURL = environment.apiUrl + 'live'; // WebSocket URL with 'live' is the endpoint for the WebSocket configuration in the backend. In WebSocketConfig.java, the endpoint is '/live'.
+  private stompClient: CompatClient = {} as CompatClient;
+  private commentSubject: BehaviorSubject<Comment> = new BehaviorSubject<Comment>({}); // BehaviorSubject of Comment type. You can know when a new comment is received.
+
   constructor(private http: HttpClient) { }
 
+
+
+  /* ---------------------------- REALTIME SECTION ---------------------------- */
+
+
+  /**
+   * Connect to the WebSocket. Subscribe to the topic '/topic/comment/{postId}', 
+   * that URL is the endpoint for the WebSocket configuration in the backend with @SendTo annotation.
+   * @param postId - The id of the post.
+   */
+  connectWebSocket(postId: string) {
+    const socket = new SockJS(this.webSocketURL);
+    this.stompClient = Stomp.over(socket);
+
+    this.stompClient.connect({}, () => {
+      this.stompClient.subscribe(`/topic/comment/${postId}`, (comment: IMessage) => {
+        this.commentSubject.next(JSON.parse(comment.body));
+      });
+    });
+  }
+
+  /**
+   * Get the comments observable.
+   * @returns the comment observable.
+   * @example
+   * this.commentService.getCommentsObservable().subscribe({
+   *  next: (comment) => {
+   *   console.log(comment);
+   *   this.comments.unshift({ ...comment, createdDate: 'now' });
+   *  },
+   *  error: (error) => {
+   *   console.log(error);
+   *  }
+   * });
+   */
+  getCommentsObservable(): Observable<Comment> {
+    return this.commentSubject.asObservable();
+  }
+
+  /**
+   * Disconnect from the WebSocket.
+   * @param postId - The id of the post.
+   */
+  disconnect(postId: string) {
+    this.stompClient.unsubscribe(`/topic/comment/${this.stompClient}`);
+    this.stompClient.deactivate();
+    this.stompClient.disconnect();
+  }
+
+  /**
+   * Send a comment to the WebSocket. /app is config in setApplicationDestinationPrefixes method in WebSocketConfig.java 
+   * and '/app/comment/{postId}' is the endpoint for the WebSocket configuration in the backend with @MessageMapping annotation.
+   * @param comment - The comment object.
+   */
+  sendComment(comment: Comment) {
+    if(comment.parentCommentId) return;
+    this.stompClient.publish({ 
+        destination: `/app/comment/${comment.postId}`, 
+        body: JSON.stringify(comment) 
+      });
+  }
+
+
+
+  /* ---------------------------- CRUD SECTION ---------------------------- */
+
+  
   /**
    * Count the number of comments for a post.
    * @param postId - The id of the post.
