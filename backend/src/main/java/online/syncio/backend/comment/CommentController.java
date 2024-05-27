@@ -3,6 +3,9 @@ package online.syncio.backend.comment;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,6 +50,25 @@ public class CommentController {
     public ResponseEntity<UUID> createComment(@RequestBody @Valid final CommentDTO commentDTO) {
         final UUID createdId = commentService.create(commentDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+    }
+
+    /**
+     * This method is used to send a comment to a specific post.
+     * The @MessageMapping("/comment/{postId}") annotation means that this method
+     * will be invoked when a message is sent to the "/comment/{postId}" destination.
+     * The @SendTo("/topic/comment/{postId}") annotation means that the return value of this method
+     * will be sent to the "/topic/comment/{postId}" destination.
+     * @param postId the post id
+     * @param commentDTO the comment
+     * @return the comment
+     */
+    @MessageMapping("/comment/{postId}")
+    @SendTo("/topic/comment/{postId}")
+    public CommentDTO addComment(@DestinationVariable final UUID postId,
+                                   final CommentDTO commentDTO) {
+        final UUID createdId = commentService.create(commentDTO);
+        commentDTO.setId(createdId);
+        return commentDTO;
     }
 
     @DeleteMapping("/{id}")

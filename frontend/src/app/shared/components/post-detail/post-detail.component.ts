@@ -12,7 +12,7 @@ import { CommentService } from 'src/app/core/services/comment.service';
 export class PostDetailComponent {
   @Input() post: Post = {};
   @Input() visible: boolean = false;
-  @Output() visibleChange: EventEmitter<any> = new EventEmitter();
+  @Output() visibleChange: EventEmitter<any> = new EventEmitter(); // Event emitter to close the dialog.
   isEmojiPickerVisible: boolean = false;
   comments: Comment[] = [];
   comment: Comment = {};
@@ -22,13 +22,18 @@ export class PostDetailComponent {
       visible: boolean, 
       data: Comment[] 
     } 
-  } = {};
+  } = {}; // The replies for a comment (key is the comment id)
 
   constructor(
-    private commentService: CommentService
+    private commentService: CommentService,
   ) { }
 
   ngOnInit() {
+    if(this.post.id) {
+      this.commentService.connectWebSocket(this.post.id);
+      this.getCommentsObservable();
+    }
+
     this.getComments();
 
     setTimeout(() => {
@@ -40,6 +45,24 @@ export class PostDetailComponent {
       ];
     }, 0)
   
+  }
+
+  ngOnDestroy() {
+    if(this.post.id) this.commentService.disconnect(this.post.id);
+  }
+
+  /**
+   * Subscribe to the comments observable to get the Comment object in real-time.
+   */
+  getCommentsObservable() {
+    this.commentService.getCommentsObservable().subscribe({
+      next: (comment) => {
+        this.comments.unshift({ ...comment, createdDate: 'now' });
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
 
   /**
@@ -64,6 +87,8 @@ export class PostDetailComponent {
   
   addEmoji(event: any) {
     this.comment.text = `${this.comment.text || ''}${event.emoji.native}`;
+    // Update the plain comment with the emoji.
+    this.plainComment = event.emoji.native;
   }
 
   onReply(commentId: string) {
@@ -126,43 +151,48 @@ export class PostDetailComponent {
       userId: '6a48f7d0-090b-4637-a7e0-ac370208b3d2'
     };
 
-    this.commentService.postComment(this.comment).subscribe({
-      next: (id) => {
-        this.comment = {
-          ...this.comment,
-          id: id,
-          createdDate: 'now'
-        };
-
-        if(!this.comment.parentCommentId) {
-          // Add the comment to array.
-          this.comments.unshift(this.comment);
-        }
-        else {
-          // Add the comment to the showReplies.data array.
-          if(!this.showReplies[this.comment.parentCommentId]) {
-            // Initialize the replies object
-            this.showReplies[this.comment.parentCommentId] = {
-              visible: true,
-              data: []
-            };
+    // If the comment is a parent comment, send the comment (realtime).
+    if(!this.comment.parentCommentId) {
+      this.commentService.sendComment(this.comment);
+      this.comment = {};
+    }
+    // If the comment is a reply, send the reply (not realtime).
+    else {
+      this.commentService.postComment(this.comment).subscribe({
+        next: (id) => {
+          this.comment = {
+            ...this.comment,
+            id: id,
+            createdDate: 'now'
+          };
+  
+          if(this.comment.parentCommentId) {
+            // Add the comment to the showReplies.data array.
+            if(!this.showReplies[this.comment.parentCommentId]) {
+              // Initialize the replies object
+              this.showReplies[this.comment.parentCommentId] = {
+                visible: true,
+                data: []
+              };
+            }
+            
+            // +1 the replies count for the parent comment.
+            const parentComment = this.comments.find((comment) => comment.id === this.comment.parentCommentId);
+            if(parentComment) {
+              parentComment.repliesCount = (this.comment.repliesCount ?? 0) + 1;
+            }
+  
+            this.showReplies[this.comment.parentCommentId].data.unshift(this.comment);
+    
+            this.comment = {};
           }
           
-          // +1 the replies count for the parent comment.
-          const parentComment = this.comments.find((comment) => comment.id === this.comment.parentCommentId);
-          if(parentComment) {
-            parentComment.repliesCount = (this.comment.repliesCount ?? 0) + 1;
-          }
-
-          this.showReplies[this.comment.parentCommentId].data.unshift(this.comment);
+        },
+        error: (error: any) => {
+          console.log(error);
         }
-        
-        this.comment = {};
-      },
-      error: (error: any) => {
-        console.log(error);
-      }
-    });
+      });
+    }
   }
 
 }
