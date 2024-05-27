@@ -7,15 +7,16 @@ import online.syncio.backend.auth.request.RefreshTokenDTO;
 import online.syncio.backend.auth.request.UserLoginDTO;
 import online.syncio.backend.auth.responses.LoginResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
+import online.syncio.backend.auth.responses.UserResponse;
 import online.syncio.backend.config.LocalizationUtils;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserService;
 import online.syncio.backend.auth.request.RegisterDTO;
 import online.syncio.backend.auth.responses.RegisterResponse;
 import online.syncio.backend.utils.MessageKeys;
-import online.syncio.backend.utils.RabbitMQUtils;
+//import online.syncio.backend.utils.RabbitMQUtils;
 import online.syncio.backend.utils.ValidationUtils;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,8 +35,8 @@ public class AuthController {
     private final LocalizationUtils localizationUtils;
     private final AuthService authService;
     private final TokenService tokenService;
-    private final RabbitTemplate rabbitTemplate;
-    private final RabbitMQUtils rabbitMQService;
+//    private final RabbitTemplate rabbitTemplate;
+//    private final RabbitMQUtils rabbitMQService;
     /**
      * Register a new user
      * @param registerDTO
@@ -150,6 +151,19 @@ public class AuthController {
         return userAgent.toLowerCase().contains("mobile");
     }
 
+    @PostMapping("/details")
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<UserResponse> getUserDetails(
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        try {
+            String extractedToken = authorizationHeader.substring(7);
+            User user = authService.getUserDetailsFromToken(extractedToken);
+            return ResponseEntity.ok(UserResponse.fromUser(user));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
 //    @PutMapping("/reset-password/{userId}")
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -176,18 +190,5 @@ public class AuthController {
 //                    .build());
 //        }
 //    }
-//    @PutMapping("/block/{userId}/{active}")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    public ResponseEntity<ResponseObject> blockOrEnable(
-//            @Valid @PathVariable long userId,
-//            @Valid @PathVariable int active
-//    ) throws Exception {
-//        userService.blockOrEnable(userId, active > 0);
-//        String message = active > 0 ? "Successfully enabled the user." : "Successfully blocked the user.";
-//        return ResponseEntity.ok().body(ResponseObject.builder()
-//                .message(message)
-//                .status(HttpStatus.OK)
-//                .data(null)
-//                .build());
-//    }
+
 }

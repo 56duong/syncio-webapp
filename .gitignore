@@ -1,2 +1,4 @@
 **/.vscode/
 .idea
+application-local.properties
+package-lock.json
