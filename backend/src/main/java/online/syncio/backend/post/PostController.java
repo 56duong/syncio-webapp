@@ -31,8 +31,8 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<UUID> createPost(@RequestBody @Valid final PostDTO postDTO) {
-        final UUID createdId = postService.create(postDTO);
+    public ResponseEntity<UUID> createPost(@RequestBody @Valid PostDTO postDTO) {
+        UUID createdId = postService.create(postDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
