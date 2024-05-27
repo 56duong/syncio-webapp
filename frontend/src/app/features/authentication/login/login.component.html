@@ -1,1 +1,82 @@
-<p>login works!</p>
+<div class="container" id="container" [ngClass]="{ active: isActive }">
+  <div class="form-container sign-up">
+    <form>
+      <h1>Create Account</h1>
+      <div class="social-icons">
+        <a href="#" class="icon"><i class="fa-brands fa-google"></i></a>
+        <a href="#" class="icon"><i class="fa-brands fa-facebook"></i></a>
+        <a href="#" class="icon"><i class="fa-brands fa-github-alt"></i></a>
+        <a href="#" class="icon"><i class="fa-brands fa-linkedin"></i></a>
+      </div>
+      <span>or use your email for registeration</span>
+      <input
+        type="text"
+        [(ngModel)]="username"
+        name="username"
+        placeholder="Name"
+      />
+      <input
+        type="email"
+        placeholder="Email"
+        [(ngModel)]="email"
+        name="email"
+      />
+      <input
+        type="password"
+        [(ngModel)]="password"
+        name="password"
+        placeholder="Password"
+      />
+      <input
+        type="password"
+        [(ngModel)]="retypePassword"
+        name="retypePassword"
+        id="retype-password"
+        placeholder="Retype Password"
+      />
+
+      <button (click)="register()">Sign Up</button>
+    </form>
+  </div>
+  <div class="form-container sign-in">
+    <form>
+      <h1>Sign In</h1>
+      <div class="social-icons">
+        <a href="#" class="icon"><i class="fa-brands fa-google"></i></a>
+        <a href="#" class="icon"><i class="fa-brands fa-facebook"></i></a>
+        <a href="#" class="icon"><i class="fa-brands fa-github-alt"></i></a>
+        <a href="#" class="icon"><i class="fa-brands fa-linkedin"></i></a>
+      </div>
+      <span>or use your email password</span>
+      <input
+        type="email"
+        [(ngModel)]="email"
+        (input)="onEmailChange()"
+        name="phone"
+        placeholder="Email"
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        [(ngModel)]="password"
+        name="password"
+      />
+      <a href="#">Forget Your Password?</a>
+      <button (click)="login()">Sign In</button>
+    </form>
+  </div>
+  <div class="toggle-container">
+    <div class="toggle">
+      <div class="toggle-panel toggle-left">
+        <h1>Welcome Back!</h1>
+        <p>Enter your personal details to use all of site features</p>
+        <button (click)="deactivate()" class="test" id="login">Sign In</button>
+      </div>
+      <div class="toggle-panel toggle-right">
+        <h1>Hello, Friend!</h1>
+        <p>Register with your personal details to use all of site features</p>
+        <button (click)="activate()" class="test" id="register">Sign Up</button>
+      </div>
+    </div>
+  </div>
+</div>

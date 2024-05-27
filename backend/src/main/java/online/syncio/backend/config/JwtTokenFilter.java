@@ -49,10 +49,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 return;
             }
             final String token = authHeader.substring(7);
-            final String phoneNumber = jwtTokenUtil.extractEmail(token);
-            if (phoneNumber != null
+            final String email = jwtTokenUtil.extractEmail(token);
+            if (email != null
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
-                User userDetails = (User) userDetailsService.loadUserByUsername(phoneNumber);
+                User userDetails = (User) userDetailsService.loadUserByUsername(email);
                 if(jwtTokenUtil.validateToken(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(
@@ -79,9 +79,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/actuator/**", apiPrefix), "GET"),
 
                 Pair.of(String.format("%s/roles**", apiPrefix), "GET"),
-                Pair.of(String.format("%s/coupons**", apiPrefix), "GET"),
-                Pair.of(String.format("%s/products**", apiPrefix), "GET"),
-                Pair.of(String.format("%s/categories**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/register", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/refreshToken", apiPrefix), "POST"),

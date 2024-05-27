@@ -1,17 +1,88 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../interfaces/user';
+import { RegisterDTO } from 'src/app/features/authentication/register/register.dto';
+import { HttpUtilService } from './http.util.service';
+import { LoginDTO } from 'src/app/features/authentication/login/login.dto';
+import { UserResponse } from 'src/app/features/authentication/login/user.response';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   private apiURL = environment.apiUrl + 'api/v1/users';
+  private apiRegister = environment.apiUrl + 'api/v1/users/register';
+  private apiLogin = environment.apiUrl + 'api/v1/users/login';
+  private apiUserDetail = environment.apiUrl + 'api/v1/users/details';
+  private apiConfig = {
+    headers: this.httpUtilService.createHeaders(),
+  };
+  constructor(
+    private http: HttpClient,
+    private httpUtilService: HttpUtilService
+  ) {}
+  register(registerDTO: RegisterDTO): Observable<any> {
+    return this.http.post(this.apiRegister, registerDTO, this.apiConfig);
+  }
 
-  constructor(private http: HttpClient) {}
+  login(loginDTO: LoginDTO): Observable<any> {
+    return this.http.post(this.apiLogin, loginDTO, this.apiConfig);
+  }
+  getUserDetail(token: string) {
+    console.log('responseToken:', token);
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
 
+    return this.http.post(this.apiUserDetail, {}, { headers: headers });
+  }
+
+  saveUserResponseToLocalStorage(userResponse?: UserResponse) {
+    try {
+      if (userResponse == null || !userResponse) {
+        return;
+      }
+      // Convert the userResponse object to a JSON string
+      const userResponseJSON = JSON.stringify(userResponse);
+      // Save the JSON string to local storage with a key (e.g., "userResponse")
+      localStorage.setItem('user', userResponseJSON);
+      console.log('User response saved to local storage.');
+    } catch (error) {
+      console.error('Error saving user response to local storage:', error);
+    }
+  }
+  getUserResponseFromLocalStorage(): UserResponse | null {
+    try {
+      // Retrieve the JSON string from local storage using the key
+      const userResponseJSON = localStorage.getItem('user');
+      if (userResponseJSON == null || userResponseJSON == undefined) {
+        return null;
+      }
+      // Parse the JSON string back to an object
+      const userResponse = JSON.parse(userResponseJSON!);
+      console.log('User response retrieved from local storage.');
+      return userResponse;
+    } catch (error) {
+      console.error(
+        'Error retrieving user response from local storage:',
+        error
+      );
+      return null; // Return null or handle the error as needed
+    }
+  }
+  removeUserFromLocalStorage(): void {
+    try {
+      // Remove the user data from local storage using the key
+      localStorage.removeItem('user');
+      console.log('User data removed from local storage.');
+    } catch (error) {
+      console.error('Error removing user data from local storage:', error);
+      // Handle the error as needed
+    }
+  }
   /**
    * Get all users.
    * @returns array of users.
