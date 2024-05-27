@@ -22,7 +22,9 @@
     <small>{{post.caption}}</small>
   </div>
 
-  <app-like *ngIf="post.id" [postId]="post.id"></app-like>
+  <app-like *ngIf="post.id"
+    [postId]="post.id"
+    (visibleChange)="showPostDetail($event)"></app-like>
 
   <!-- caption (with photo) -->
   <div *ngIf="post.photos?.length">
@@ -30,3 +32,11 @@
   </div>
 
 </div>
+
+
+
+<app-post-detail *ngIf="visible"
+  [post]="post"
+  [visible]="visible"
+  (visibleChange)="showPostDetail($event)"
+  cl></app-post-detail>
