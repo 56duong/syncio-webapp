@@ -144,8 +144,8 @@
                     style="width: 100%; resize: none;" class="flex-1 text-sm border-0 py-1 outline-none shadow-none"></textarea> -->
 
                 <!-- Post button -->
-                <p-button [disabled]="!plainComment.trim()" (click)="postComment()" label="Post" size="small"
-                    [text]="true"></p-button>
+                <p-button [disabled]="plainComment.trim().length <= 0" (click)="postComment()"
+                    label="Post" size="small" [text]="true"></p-button>    
             </div>
         </div>
     </div>

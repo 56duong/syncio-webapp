@@ -4,14 +4,12 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class LikeService {
-  
   private apiURL = environment.apiUrl + 'api/v1/likes';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   /**
    * Count the number of likes for a post.
@@ -31,5 +29,4 @@ export class LikeService {
     const url = `${this.apiURL}/count/${postId}`;
     return this.http.get<number>(url);
   }
-  
 }

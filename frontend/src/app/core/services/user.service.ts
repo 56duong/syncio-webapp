@@ -5,13 +5,12 @@ import { environment } from 'src/environments/environment';
 import { User } from '../interfaces/user';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-  
   private apiURL = environment.apiUrl + 'api/v1/users';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   /**
    * Get all users.
@@ -45,8 +44,7 @@ export class UserService {
    * })
    */
   getUser(userId: string): Observable<User> {
-    const url = `${this.apiURL}/${userId}`; 
+    const url = `${this.apiURL}/${userId}`;
     return this.http.get<User>(url);
   }
-
 }
