@@ -6,10 +6,14 @@ import { DividerModule } from 'primeng/divider';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { EditorModule } from 'primeng/editor';
 import { CarouselModule } from 'primeng/carousel';
+import { AvatarModule } from 'primeng/avatar';
+import { FormsModule } from '@angular/forms';
+import { FileUploadModule } from 'primeng/fileupload';
 
 @NgModule({
   declarations: [],
   exports: [
+    FormsModule,
     CarouselModule,
     EditorModule,
     InputTextareaModule,
@@ -17,7 +21,9 @@ import { CarouselModule } from 'primeng/carousel';
     InputTextModule,
     DialogModule,
     ButtonModule,
-  ]
+    AvatarModule,
+    InputTextModule,
+    FileUploadModule,
+  ],
 })
-
-export class PrimengModule { }
+export class PrimengModule {}

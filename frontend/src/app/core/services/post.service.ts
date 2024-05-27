@@ -5,14 +5,12 @@ import { Post } from '../interfaces/post';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class PostService {
-  
   private apiURL = environment.apiUrl + 'api/v1/posts';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   /**
    * Get all posts.
@@ -31,4 +29,7 @@ export class PostService {
     return this.http.get<Post[]>(this.apiURL);
   }
 
+  createPost(post: Post): Observable<Post> {
+    return this.http.post<Post>(this.apiURL, post);
+  }
 }

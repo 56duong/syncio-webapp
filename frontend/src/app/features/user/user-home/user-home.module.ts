@@ -13,7 +13,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { ProfileComponent } from './profile/profile.component';
 import { MessagesComponent } from './messages/messages.component';
 import { SearchComponent } from './search/search.component';
-
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 
 @NgModule({
   declarations: [
@@ -31,7 +31,8 @@ import { SearchComponent } from './search/search.component';
     UserHomeRoutingModule,
     PrimengModule,
     CoreModule,
-    SharedModule
-  ]
+    SharedModule,
+    PickerComponent,
+  ],
 })
-export class UserHomeModule { }
+export class UserHomeModule {}
