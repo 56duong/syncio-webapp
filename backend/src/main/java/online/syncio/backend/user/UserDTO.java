@@ -4,6 +4,7 @@ package online.syncio.backend.user;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import online.syncio.backend.role.RoleEntity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -36,7 +37,7 @@ public class UserDTO {
     private LocalDateTime createdDate;
 
     @NotNull
-    private RoleEnum role;
+    private RoleEntity role;
 
     @NotNull
     private StatusEnum status;
