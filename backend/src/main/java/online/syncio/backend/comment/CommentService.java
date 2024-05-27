@@ -46,6 +46,24 @@ public class CommentService {
                 .toList();
     }
 
+    public List<CommentDTO> getReplies(final UUID postId, final UUID parentCommentId) {
+        return commentRepository.findByPostIdAndParentCommentId(postId, parentCommentId)
+                .stream()
+                .map(comment -> mapToDTO(comment, new CommentDTO()))
+                .toList();
+    }
+
+    public List<CommentDTO> findByPostIdAndParentCommentIsNull(final UUID postId) {
+        return commentRepository.findByPostIdAndParentCommentIsNull(postId)
+                .stream()
+                .map(comment -> mapToDTO(comment, new CommentDTO()))
+                .toList();
+    }
+
+    public Long countReplies(final UUID postId, final UUID parentCommentId) {
+        return commentRepository.countByPostIdAndParentCommentId(postId, parentCommentId);
+    }
+
     public UUID create(final CommentDTO commentDTO) {
         final Comment comment = new Comment();
         mapToEntity(commentDTO, comment);
@@ -78,6 +96,8 @@ public class CommentService {
         commentDTO.setUserId(comment.getUser().getId());
         commentDTO.setCreatedDate(comment.getCreatedDate());
         commentDTO.setText(comment.getText());
+        commentDTO.setParentCommentId(comment.getParentComment() == null ? null : comment.getParentComment().getId());
+        commentDTO.setRepliesCount(commentRepository.countByPostIdAndParentCommentId(comment.getPost().getId(), comment.getId()));
         return commentDTO;
     }
 
@@ -90,6 +110,9 @@ public class CommentService {
         comment.setUser(user);
         comment.setCreatedDate(commentDTO.getCreatedDate());
         comment.setText(commentDTO.getText());
+        final Comment parentComment = commentDTO.getParentCommentId() == null ? null : commentRepository.findById(commentDTO.getParentCommentId())
+                .orElseThrow(() -> new NotFoundException(Comment.class, "id", commentDTO.getParentCommentId().toString()));
+        comment.setParentComment(parentComment);
         return comment;
     }
 }

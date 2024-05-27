@@ -4,4 +4,7 @@ export interface Comment {
   userId?: string;
   createdDate?: string;
   text?: string;
+  parentCommentId?: string;
+  replies?: Comment[];
+  repliesCount?: number;
 }

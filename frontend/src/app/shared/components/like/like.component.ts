@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommentService } from 'src/app/core/services/comment.service';
 import { LikeService } from 'src/app/core/services/like.service';
 
@@ -10,9 +10,10 @@ import { LikeService } from 'src/app/core/services/like.service';
 
 export class LikeComponent {
   @Input() postId!: string;
+  @Output() visibleChange = new EventEmitter<boolean>();
+  @Input() isOnPostDetails: boolean = false;
   likeCount: number = 0;
   commentCount: number = 0;
-  visible: boolean = false;
 
   constructor(
     private likeService: LikeService,
@@ -24,8 +25,8 @@ export class LikeComponent {
     this.countComments();
   }
 
-  showPostDetail() {
-    this.visible = true;
+  openDialog() {
+    this.visibleChange.emit(true);
   } 
 
   countLikes() {
