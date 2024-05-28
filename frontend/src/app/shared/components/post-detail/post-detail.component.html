@@ -1,6 +1,15 @@
-<p-dialog header="" [closeOnEscape]="true" [(visible)]="visible" [modal]="true" [dismissableMask]="true"
-    [autoZIndex]="true" (onHide)="closeDialog()" [showHeader]="false" [breakpoints]="{ '1180px': '90vw' }"
-    class="post-detail-dialog" [style]="{ width: '80vw', height: '100%', zIndex: '999999' }" [draggable]="false"
+<p-dialog 
+    header="" 
+    [closeOnEscape]="true" 
+    [(visible)]="visible" 
+    [modal]="true" 
+    [dismissableMask]="true"
+    [autoZIndex]="true" 
+    (onHide)="closeDialog()" 
+    [showHeader]="false" 
+    [breakpoints]="{ '1180px': '90vw' }"
+    class="post-detail-dialog" [style]="{ width: '80vw', height: '100%', zIndex: '999999' }" 
+    [draggable]="false"
     [resizable]="false">
 
     <div class="flex h-full lg:flex-row xl:flex-row flex-column">
@@ -30,14 +39,16 @@
                     </div>
                     <div>
                         <!-- username -->
-                        <h3 *ngIf="post.createdBy" class="inline-flex text-sm my-0 mr-1">{{post.createdBy | userIdToName
-                            | async}}</h3>
+                        <h3 *ngIf="post.createdBy" class="inline-flex text-sm my-0 mr-1">
+                            {{post.createdBy | userIdToName | async}}
+                        </h3>
                         <!-- comment text -->
                         <div class="comment-text inline text-sm" [innerHTML]="post.caption"></div>
                         <!-- footer -->
                         <div class="flex align-items-center gap-3 mt-2">
-                            <small class="text-gray-500 text-xs">{{post.createdDate | date:'HH:mm:ss
-                                dd/MM/yyyy'}}</small>
+                            <small class="text-gray-500 text-xs">
+                                {{post.createdDate | date:'HH:mm:ss dd/MM/yyyy'}}
+                            </small>
                         </div>
                     </div>
                     <br>
@@ -52,8 +63,7 @@
                 [style]="{ width: '100%', overflow: 'auto', flex: '1' }">
                 <div *ngFor="let c of comments" class="flex align-items-start gap-2">
                     <div class="avt">
-                        <img class="w-full object-cover" src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
-                            alt="">
+                        <img class="w-full object-cover" src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png" alt="">
                     </div>
                     <div>
                         <!-- username -->
@@ -63,8 +73,9 @@
                         <div class="comment-text inline" [innerHTML]="c.text"></div>
                         <!-- footer -->
                         <div class="flex align-items-center gap-3 mt-2">
-                            <small class="text-gray-500 text-xs">{{c.createdDate?.toLowerCase() == 'now' ? 'Now' :
-                                c.createdDate | date:'HH:mm:ss dd/MM/yyyy'}}</small>
+                            <small class="text-gray-500 text-xs">
+                                {{c.createdDate?.toLowerCase() == 'now' ? 'Now' : c.createdDate | date:'HH:mm:ss dd/MM/yyyy'}}
+                            </small>
                             <!-- Reply -->
                             <small (click)="onReply(c.id || '')"
                                 [ngClass]="{'text-blue-500 font-bold' : c.id === comment.parentCommentId}"
@@ -73,11 +84,11 @@
                             <span (click)="closeDialog()" class="pi pi-ellipsis-h cursor-pointer"></span>
                         </div>
                         <!-- View replies -->
-                        <ng-container *ngIf="c.id && c.repliesCount && c.repliesCount > 0">
+                        <ng-container *ngIf="c.id && showReplies[c.id] && c.repliesCount && c.repliesCount > 0">
                             <div class="my-2">
                                 <!-- Show/Hide replies -->
                                 <small (click)="viewReplies(c.id)" class="cursor-pointer text-xs my-3 block">
-                                    ___{{showReplies[c.id]?.visible ? 'Hide' : 'View'}} replies ({{c.repliesCount}})
+                                    ___{{showReplies[c.id].visible ? 'Hide' : 'View'}} replies ({{c.repliesCount}})
                                 </small>
                                 <!-- Reply List -->
                                 <div *ngIf="showReplies[c.id] && showReplies[c.id].visible"
@@ -92,14 +103,15 @@
                                         <div>
                                             <!-- username -->
                                             <h3 *ngIf="reply.userId" class="inline-flex text-sm my-0 mr-1">
-                                                {{reply.userId | userIdToName | async}}</h3>
+                                                {{reply.userId | userIdToName | async}}
+                                            </h3>
                                             <!-- comment text -->
                                             <div class="comment-text inline" [innerHTML]="reply.text"></div>
                                             <!-- footer -->
                                             <div class="flex align-items-center gap-3 mt-2">
-                                                <small class="text-gray-500 text-xs">{{reply.createdDate?.toLowerCase()
-                                                    == 'now' ? 'Now' : c.createdDate | date:'HH:mm:ss
-                                                    dd/MM/yyyy'}}</small>
+                                                <small class="text-gray-500 text-xs">
+                                                    {{reply.createdDate?.toLowerCase() == 'now' ? 'Now' : c.createdDate | date:'HH:mm:ss dd/MM/yyyy'}}
+                                                </small>
                                                 <!-- Reply of reply -->
                                                 <small
                                                     (click)="onReply(reply.parentCommentId ? reply.parentCommentId : '')"
@@ -130,7 +142,9 @@
                 <div class="relative">
                     <i (click)="isEmojiPickerVisible = !isEmojiPickerVisible"
                         class="cursor-pointer fa-regular fa-face-smile text-xl"></i>
-                    <emoji-mart *ngIf="isEmojiPickerVisible" [showPreview]="false" (emojiSelect)="addEmoji($event)"
+                    <emoji-mart *ngIf="isEmojiPickerVisible" 
+                        [showPreview]="false" 
+                        (emojiSelect)="addEmoji($event)"
                         [style]="{ position: 'absolute', bottom: '30px', right: '20 px' }"></emoji-mart>
                 </div>
 

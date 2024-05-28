@@ -74,30 +74,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
     private boolean isBypassToken(@NonNull HttpServletRequest request) {
         final List<Pair<String, String>> bypassTokens = Arrays.asList(
-                // Healthcheck request, no JWT token required
-                Pair.of(String.format("%s/**", apiPrefix), "GET"),
-                Pair.of(String.format("%s/**", apiPrefix), "POST"),
-                Pair.of(String.format("%s/**", apiPrefix), "DELETE"),
-                Pair.of(String.format("%s/**", apiPrefix), "PUT"),
-
-                Pair.of(String.format("%s/healthcheck/health", apiPrefix), "GET"),
-                Pair.of(String.format("%s/actuator/**", apiPrefix), "GET"),
-
-                Pair.of(String.format("%s/roles**", apiPrefix), "GET"),
-                Pair.of(String.format("%s/users/register", apiPrefix), "POST"),
-                Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
-                Pair.of(String.format("%s/users/refreshToken", apiPrefix), "POST"),
-
-                // Swagger
-                Pair.of("/api-docs","GET"),
-                Pair.of("/api-docs/**","GET"),
-                Pair.of("/swagger-resources","GET"),
-                Pair.of("/swagger-resources/**","GET"),
-                Pair.of("/configuration/ui","GET"),
-                Pair.of("/configuration/security","GET"),
-                Pair.of("/swagger-ui/**","GET"),
-                Pair.of("/swagger-ui.html", "GET"),
-                Pair.of("/swagger-ui/index.html", "GET")
+                Pair.of("/**", "GET"),
+                Pair.of("/**", "POST"),
+                Pair.of("/**", "PUT"),
+                Pair.of("/**", "DELETE"),
+                Pair.of("/**", "PATCH")
         );
 
         String requestPath = request.getServletPath();
