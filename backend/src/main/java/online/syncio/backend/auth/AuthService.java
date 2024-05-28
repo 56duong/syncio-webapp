@@ -84,7 +84,7 @@ public class AuthService {
 
 
         if(!passwordEncoder.matches(password, existingUser.getPassword())) {
-            throw new BadCredentialsException(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_PHONE_PASSWORD));
+            throw new BadCredentialsException(localizationUtils.getLocalizedMessage(MessageKeys.PASSWORD_NOT_MATCH));
 
         }
 
