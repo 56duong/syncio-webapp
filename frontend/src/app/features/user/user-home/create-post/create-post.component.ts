@@ -11,6 +11,7 @@ export class CreatePostComponent {
   display!: boolean;
   title: string = '' as string;
   post: Post = {};
+
   selectedPhotos: string[] = [];
 
   isEmojiPickerVisible: boolean = false;

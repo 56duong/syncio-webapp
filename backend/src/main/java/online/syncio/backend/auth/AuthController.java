@@ -29,8 +29,6 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.prefix}/users")
 @RequiredArgsConstructor
-
-
 public class AuthController {
     private final LocalizationUtils localizationUtils;
     private final AuthService authService;
@@ -49,14 +47,11 @@ public class AuthController {
             BindingResult result
     ) throws Exception {
 
-
         if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)
                     .toList();
-
-
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
@@ -72,8 +67,6 @@ public class AuthController {
         }
 
         if (!registerDTO.getPassword().equals(registerDTO.getRetypePassword())) {
-
-
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
@@ -190,5 +183,7 @@ public class AuthController {
 //                    .build());
 //        }
 //    }
+
+
 
 }
