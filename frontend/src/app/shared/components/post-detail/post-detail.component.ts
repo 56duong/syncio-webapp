@@ -7,9 +7,8 @@ import { UserService } from 'src/app/core/services/user.service';
 @Component({
   selector: 'app-post-detail',
   templateUrl: './post-detail.component.html',
-  styleUrls: ['./post-detail.component.scss']
+  styleUrls: ['./post-detail.component.scss'],
 })
-
 export class PostDetailComponent {
   @Input() post: Post = {};
   @Input() visible: boolean = false;
@@ -18,39 +17,35 @@ export class PostDetailComponent {
   comments: Comment[] = [];
   comment: Comment = {};
   plainComment: string = ''; // Plain text comment
-  showReplies: { 
-    [id: string]: { 
-      visible: boolean, 
-      data: Comment[] 
-    } 
+  showReplies: {
+    [id: string]: {
+      visible: boolean;
+      data: Comment[];
+    };
   } = {}; // The replies for a comment (key is the comment id)
+
 
   constructor(
     private commentService: CommentService,
     private userService: UserService
   ) { }
 
+
   ngOnInit() {
-    if(this.post.id) {
+    if (this.post.id) {
       this.commentService.connectWebSocket(this.post.id);
       this.getCommentsObservable();
     }
 
     this.getComments();
-
+    console.log(this.post.photos);
     setTimeout(() => {
-      this.post.photos = [
-        'https://cdn.sanity.io/images/7ovaqeih/production/cc2337de05cde4468a48336987c35b4e2657007c-2043x3079.jpg?w=1920&fit=max&auto=format',
-        'https://cdn.sanity.io/images/7ovaqeih/production/9364ed40f8c3e3214bbd15a37548b572e35cc015-4320x6480.jpg?w=1920&fit=max&auto=format',
-        'https://cdn.sanity.io/images/7ovaqeih/production/8360f7adb890c871162ff93c9f672915a4e4a456-3138x4628.jpg?w=1920&fit=max&auto=format',
-        'https://cdn.sanity.io/images/7ovaqeih/production/c925336b6bb10c6b1773295d225749d0cb4c0566-6391x4261.jpg?w=1920&fit=max&auto=format'
-      ];
-    }, 0)
-  
+      this.post.photos = this.post.photos;
+    }, 0);
   }
 
   ngOnDestroy() {
-    if(this.post.id) this.commentService.disconnect(this.post.id);
+    if (this.post.id) this.commentService.disconnect(this.post.id);
   }
 
   /**
@@ -63,7 +58,7 @@ export class PostDetailComponent {
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -71,7 +66,7 @@ export class PostDetailComponent {
    * Get comments for the post. The comment is a parent comment if the parentCommentId is null.
    */
   getComments() {
-    if(!this.post.id) return;
+    if (!this.post.id) return;
 
     this.commentService.getParentComments(this.post.id).subscribe({
       next: (comments) => {
@@ -79,14 +74,14 @@ export class PostDetailComponent {
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
-  
+
   closeDialog() {
     this.visibleChange.emit(false);
   }
-  
+
   addEmoji(event: any) {
     this.comment.text = `${this.comment.text || ''}${event.emoji.native}`;
     // Update the plain comment with the emoji.
@@ -103,18 +98,18 @@ export class PostDetailComponent {
    * @param commentId - The comment id.
    */
   viewReplies(commentId: string) {
-    if(this.showReplies[commentId]) {
+    if (this.showReplies[commentId]) {
       // Toggle visibility of replies
-      this.showReplies[commentId].visible = !this.showReplies[commentId].visible;
-    }
-    else {
+      this.showReplies[commentId].visible =
+        !this.showReplies[commentId].visible;
+    } else {
       // Initialize the replies object
       this.showReplies[commentId] = {
         visible: true,
-        data: []
+        data: [],
       };
 
-      if(!this.post.id) return;
+      if (!this.post.id) return;
 
       // If replies have not been fetched yet, fetch them
       this.commentService.getReplies(this.post.id, commentId).subscribe({
@@ -123,14 +118,14 @@ export class PostDetailComponent {
         },
         error: (error) => {
           console.log(error);
-        }
+        },
       });
     }
   }
 
   /**
    * Get the plain text comment to prevent empty comments and check if the comment is a reply.
-   * 
+   *
    * @param event - The event object.
    */
   textChange(event: any) {
@@ -138,23 +133,29 @@ export class PostDetailComponent {
     this.plainComment = event.textValue;
 
     // Check if the comment is a reply.
-    this.comment.parentCommentId = this.comment.text?.includes('@Reply&nbsp;') ? this.comment.parentCommentId : undefined;
+    this.comment.parentCommentId = this.comment.text?.includes('@Reply&nbsp;')
+      ? this.comment.parentCommentId
+      : undefined;
   }
 
   postComment() {
-    if(!this.plainComment.trim()) return;
+    if (!this.plainComment.trim()) return;
 
-    if(!this.post.id) return;
-    
+    if (!this.post.id) return;
+
     this.comment = {
       ...this.comment,
-      text: this.comment.text?.replaceAll('<p><br></p>', '').replace('@Reply&nbsp;', ''),
+      text: this.comment.text
+        ?.replaceAll('<p><br></p>', '')
+        .replace('@Reply&nbsp;', ''),
       postId: this.post.id,
+
       userId: this.userService.getUserResponseFromLocalStorage()?.id
+
     };
 
     // If the comment is a parent comment, send the comment (realtime).
-    if(!this.comment.parentCommentId) {
+    if (!this.comment.parentCommentId) {
       this.commentService.sendComment(this.comment);
       this.comment = {};
     }
@@ -165,36 +166,38 @@ export class PostDetailComponent {
           this.comment = {
             ...this.comment,
             id: id,
-            createdDate: 'now'
+            createdDate: 'now',
           };
-  
-          if(this.comment.parentCommentId) {
+
+          if (this.comment.parentCommentId) {
             // Add the comment to the showReplies.data array.
-            if(!this.showReplies[this.comment.parentCommentId]) {
+            if (!this.showReplies[this.comment.parentCommentId]) {
               // Initialize the replies object
               this.showReplies[this.comment.parentCommentId] = {
                 visible: true,
-                data: []
+                data: [],
               };
             }
-            
+
             // +1 the replies count for the parent comment.
-            const parentComment = this.comments.find((comment) => comment.id === this.comment.parentCommentId);
-            if(parentComment) {
+            const parentComment = this.comments.find(
+              (comment) => comment.id === this.comment.parentCommentId
+            );
+            if (parentComment) {
               parentComment.repliesCount = (this.comment.repliesCount ?? 0) + 1;
             }
-  
-            this.showReplies[this.comment.parentCommentId].data.unshift(this.comment);
-    
+
+            this.showReplies[this.comment.parentCommentId].data.unshift(
+              this.comment
+            );
+
             this.comment = {};
           }
-          
         },
         error: (error: any) => {
           console.log(error);
-        }
+        },
       });
     }
   }
-
 }

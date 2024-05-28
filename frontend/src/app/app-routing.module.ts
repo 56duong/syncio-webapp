@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './features/authentication/login/login.component';
-import { SignupComponent } from './features/authentication/signup/signup.component';
+import { ForgotpasswordComponent } from './features/authentication/forgotpassword/forgotpassword.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { ToastModule } from 'primeng/toast';
+import { DialogModule } from 'primeng/dialog';
+import { ChangePasswordComponent } from './features/authentication/changepassword/changepassword.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +16,7 @@ import { ToastModule } from 'primeng/toast';
   imports: [
     // other modules
     ToastModule,
+    DialogModule,
   ],
   // providers, bootstrap, etc.
 })
@@ -37,15 +40,22 @@ const routes: Routes = [
     component: LoginComponent,
   },
   {
-    path: 'signup',
-    title: 'Signup',
-    component: SignupComponent,
+    path: 'forgot_password',
+    title: 'forgot',
+    component: ForgotpasswordComponent,
+  },
+  {
+    path: 'reset_password',
+    title: 'reset_password',
+    component: ChangePasswordComponent,
   },
 ];
 
 @NgModule({
   declarations: [
-    LoginComponent, // the component where you're using [(ngModel)]
+    LoginComponent,
+    ForgotpasswordComponent,
+    ChangePasswordComponent,
   ],
   imports: [
     FormsModule,
@@ -53,6 +63,7 @@ const routes: Routes = [
     BrowserModule,
     RouterModule.forRoot(routes),
     ToastModule,
+    DialogModule,
   ],
   exports: [RouterModule],
 })
