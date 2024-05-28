@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Post } from '../interfaces/post';
 import { environment } from 'src/environments/environment';
 
@@ -9,6 +9,8 @@ import { environment } from 'src/environments/environment';
 })
 export class PostService {
   private apiURL = environment.apiUrl + 'api/v1/posts';
+
+  private newPostCreated = new BehaviorSubject<any>(null); // Observable to notify the FeedComponent to add the new post to the top of the feed.
 
   constructor(private http: HttpClient) {}
 
@@ -29,7 +31,39 @@ export class PostService {
     return this.http.get<Post[]>(this.apiURL);
   }
 
-  createPost(post: Post): Observable<Post> {
-    return this.http.post<Post>(this.apiURL, post);
+  /**
+   * Create a new post.
+   * @param post 
+   * @returns id of the created post.
+   */
+  createPost(post: Post): Observable<string> {
+    return this.http.post<string>(this.apiURL, post);
   }
+
+
+
+  /**
+   * Set the new post created to notify the FeedComponent to add the new post to the top of the feed.
+   * @param post - The post object.
+   */
+  setNewPostCreated(post: any) {
+    this.newPostCreated.next(post);
+  }
+
+  /**
+   * Get the new post created observable.
+   * @returns the new post created observable.
+   * @example
+   * this.postService.getNewPostCreated().subscribe({
+   *   next: (post) => {
+   *    if (post) {
+   *     this.posts.unshift(post);
+   *    }
+   *   }
+   * })
+   */
+  getNewPostCreated(): Observable<any> {
+    return this.newPostCreated.asObservable();
+  }
+
 }
