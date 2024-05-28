@@ -1,6 +1,7 @@
 package online.syncio.backend.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import online.syncio.backend.auth.responses.ResponseObject;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -28,8 +31,28 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 @Slf4j
+@RestControllerAdvice
+
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ResponseObject> handleGeneralException(Exception exception) {
+        return ResponseEntity.internalServerError().body(
+                ResponseObject.builder()
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .message(exception.getMessage())
+                        .build()
+        );
+    }
+    @ExceptionHandler(DataNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<?> handleResourceNotFoundException(DataNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseObject.builder()
+                .status(HttpStatus.NOT_FOUND)
+                .message(exception.getMessage())
+                .build());
+    }
     /**
      * Handle AppException. Custom exception for application.
      * @param ex

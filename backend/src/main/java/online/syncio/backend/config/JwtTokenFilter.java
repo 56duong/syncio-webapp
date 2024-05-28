@@ -80,6 +80,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/**", apiPrefix), "DELETE"),
                 Pair.of(String.format("%s/**", apiPrefix), "PUT"),
 
+
+                Pair.of("/**", "GET"),
+
                 Pair.of(String.format("%s/healthcheck/health", apiPrefix), "GET"),
                 Pair.of(String.format("%s/actuator/**", apiPrefix), "GET"),
 
