@@ -1,12 +1,14 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { Post } from 'src/app/core/interfaces/post';
 import { PostService } from 'src/app/core/services/post.service';
+import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-create-post',
   templateUrl: './create-post.component.html',
   styleUrls: ['./create-post.component.scss'],
 })
+
 export class CreatePostComponent {
   display!: boolean;
   title: string = '' as string;
@@ -15,7 +17,11 @@ export class CreatePostComponent {
 
   isEmojiPickerVisible: boolean = false;
 
-  constructor(private postService: PostService) {}
+  constructor(
+    private postService: PostService,
+    private userService: UserService
+  ) { }
+
   showDialog() {
     this.display = true;
   }
@@ -31,18 +37,19 @@ export class CreatePostComponent {
       photos: this.selectedPhotos,
       createdDate: new Date().toISOString(),
       flag: true,
-      createdBy: '05bbc9bb-d13f-42c9-a97d-480bf8698307', // sau có login thì lấy thừ localStorage
+      createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
     };
 
-    // call the post service to create a post
-    this.postService.createPost(post).subscribe(
-      (response) => {
-        console.log('Post created successfully', response);
+    this.postService.createPost(post).subscribe({
+      next: (id) => {
+        post.id = id;
+         // set the new post created in the PostService to notify the FeedComponent to add the new post to the top of the feed.
+        this.postService.setNewPostCreated(post);
       },
-      (error) => {
-        console.error('Error creating post', error);
+      error: (error) => {
+        console.log(error);
       }
-    );
+    })
     this.display = false;
   }
 
@@ -64,4 +71,5 @@ export class CreatePostComponent {
     this.post.caption += event.emoji.native;
     this.isEmojiPickerVisible = false;
   }
+  
 }
