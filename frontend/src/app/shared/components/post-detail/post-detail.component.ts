@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Comment } from 'src/app/core/interfaces/comment';
 import { Post } from 'src/app/core/interfaces/post';
 import { CommentService } from 'src/app/core/services/comment.service';
+import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-post-detail',
@@ -26,6 +27,7 @@ export class PostDetailComponent {
 
   constructor(
     private commentService: CommentService,
+    private userService: UserService
   ) { }
 
   ngOnInit() {
@@ -148,7 +150,7 @@ export class PostDetailComponent {
       ...this.comment,
       text: this.comment.text?.replaceAll('<p><br></p>', '').replace('@Reply&nbsp;', ''),
       postId: this.post.id,
-      userId: '6a48f7d0-090b-4637-a7e0-ac370208b3d2'
+      userId: this.userService.getUserResponseFromLocalStorage()?.id
     };
 
     // If the comment is a parent comment, send the comment (realtime).
