@@ -24,10 +24,8 @@ import java.util.List;
 import static org.springframework.http.HttpMethod.*;
 
 @Configuration
-//@EnableMethodSecurity
 @EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@EnableWebMvc
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     private final JwtTokenFilter jwtTokenFilter;
@@ -40,34 +38,7 @@ public class WebSecurityConfig {
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> {
                     requests
-//                            .requestMatchers(
-//                                    String.format("%s/users/register", apiPrefix),
-//                                    String.format("%s/users/login", apiPrefix),
-//                                    //healthcheck
-//                                    String.format("%s/healthcheck/**", apiPrefix),
-//
-//                                    //swagger
-//                                    //"/v3/api-docs",
-//                                    //"/v3/api-docs/**",
-//                                    "/api-docs",
-//                                    "/api-docs/**",
-//                                    "/swagger-resources",
-//                                    "/swagger-resources/**",
-//                                    "/configuration/ui",
-//                                    "/configuration/security",
-//                                    "/swagger-ui/**",
-//                                    "/swagger-ui.html",
-//                                    "/webjars/swagger-ui/**",
-//                                    "/swagger-ui/index.html"
-//
-//                            )
-//                            .permitAll()
-//                            .requestMatchers(GET,
-//                                    String.format("%s/roles**", apiPrefix)).permitAll()
-//
-//                            .anyRequest()
-//                            .authenticated();
-                    .anyRequest().permitAll();
+                        .anyRequest().permitAll();
                 })
                 .csrf(AbstractHttpConfigurer::disable);
         http.securityMatcher(String.valueOf(EndpointRequest.toAnyEndpoint()));
