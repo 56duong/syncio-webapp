@@ -49,7 +49,11 @@ public class PostService {
     }
 
     public UUID create(final PostDTO postDTO) {
-        final Post post = new Post();
+            User user = userRepository.findById(postDTO.getCreatedBy())
+                .orElseThrow(() -> new NotFoundException(User.class, "id", postDTO.getCreatedBy().toString()));
+
+        Post post = new Post();
+        post.setCreatedBy(user);
         mapToEntity(postDTO, post);
         return postRepository.save(post).getId();
     }
