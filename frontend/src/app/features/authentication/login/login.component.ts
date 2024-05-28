@@ -9,10 +9,12 @@ import { RoleService } from '../role/role.service';
 import { LoginDTO } from './login.dto';
 import { LoginResponse } from './login.response';
 import { RegisterDTO } from '../register/register.dto';
+import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  providers: [MessageService],
 })
 export class LoginComponent implements OnInit {
   @ViewChild('loginForm') loginForm!: NgForm;
@@ -20,10 +22,14 @@ export class LoginComponent implements OnInit {
 
   activate() {
     this.isActive = true;
+    this.email = '';
+    this.password = '';
   }
 
   deactivate() {
     this.isActive = false;
+    this.email = '';
+    this.password = ''; 
   }
   username: string = '';
   email: string = '';
@@ -36,17 +42,18 @@ export class LoginComponent implements OnInit {
   userResponse?: UserResponse;
 
   onEmailChange() {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (this.email.length < 6 || !emailRegex.test(this.email)) {
-      alert('Invalid email');
-    }
+    // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    // if (this.email.length < 6 || !emailRegex.test(this.email)) {
+    //   this.showError('Invalid email');
+    // }
   }
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
     private tokenService: TokenService,
-    private roleService: RoleService
+    private roleService: RoleService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {}
@@ -54,7 +61,29 @@ export class LoginComponent implements OnInit {
     // Chuyển hướng người dùng đến trang đăng ký (hoặc trang tạo tài khoản)
     this.router.navigate(['/register']);
   }
+  showError(message: string) {
+    this.messageService.add({
+      severity: 'error',
+      detail: message,
+    });
+  }
+  showSuccess(message: string) {
+    this.messageService.add({
+      severity: 'Success',
+      summary: 'Authentication Failed',
+      detail: 'API Key or URL is invalid.',
+    });
+  }
   login() {
+    if (this.email == null || this.email == '') {
+      this.showError('Email is required');
+      return;
+    }
+    if (this.password == null || this.password == '') {
+      console.log(' Password is required');
+      this.showError(' Password is required');
+      return;
+    }
     const loginDTO: LoginDTO = {
       email: this.email,
       password: this.password,
@@ -82,13 +111,14 @@ export class LoginComponent implements OnInit {
           },
           complete: () => {},
           error: (error: any) => {
-            alert(error.error.message);
+            this.showError(error.error.message);
           },
         });
       },
       complete: () => {},
       error: (error: any) => {
-        alert(error.error.message);
+        console.log('error2:', error.error);
+        this.showError(error.error.message);
       },
     });
   }
@@ -119,7 +149,7 @@ export class LoginComponent implements OnInit {
       },
       complete: () => {},
       error: (error: any) => {
-        alert(error?.error?.message ?? '');
+        this.showError(error?.error?.message ?? '');
       },
     });
   }

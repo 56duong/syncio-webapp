@@ -5,6 +5,19 @@ import { SignupComponent } from './features/authentication/signup/signup.compone
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
+import { ToastModule } from 'primeng/toast';
+
+@NgModule({
+  declarations: [
+    // your components
+  ],
+  imports: [
+    // other modules
+    ToastModule,
+  ],
+  // providers, bootstrap, etc.
+})
+export class YourModule {}
 const routes: Routes = [
   {
     path: '',
@@ -39,6 +52,7 @@ const routes: Routes = [
     CommonModule,
     BrowserModule,
     RouterModule.forRoot(routes),
+    ToastModule,
   ],
   exports: [RouterModule],
 })
