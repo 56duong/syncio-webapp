@@ -33,10 +33,13 @@ public class ReportService {
                 .toList();
     }
 
-    public void create(final ReportDTO reportDTO) {
-        final Report report = new Report();
-        mapToEntity(reportDTO, report);
-        reportRepository.save(report);
+    public ReportDTO create(ReportDTO reportDTO) {
+        Report report = mapToEntity(reportDTO, new Report());
+        report.setCreatedDate(reportDTO.getCreatedDate());
+
+        Report savedReport = reportRepository.save(report);
+
+        return mapToDTO(savedReport, new ReportDTO());
     }
 
     public void update(final UUID postId, final UUID userId, final ReportDTO reportDTO) {
@@ -63,7 +66,7 @@ public class ReportService {
         return reportDTO;
     }
 
-    private Report mapToEntity(final ReportDTO reportDTO, final Report report) {
+    private Report mapToEntity(ReportDTO reportDTO, Report report) {
         final Post post = reportDTO.getPostId() == null ? null : postRepository.findById(reportDTO.getPostId())
                 .orElseThrow(() -> new NotFoundException(Post.class, "id", reportDTO.getPostId().toString()));
         report.setPost(post);

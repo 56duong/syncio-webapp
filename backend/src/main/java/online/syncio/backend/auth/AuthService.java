@@ -13,7 +13,10 @@ import online.syncio.backend.user.UserRepository;
 import online.syncio.backend.auth.request.RegisterDTO;
 import online.syncio.backend.utils.JwtTokenUtils;
 import online.syncio.backend.utils.MessageKeys;
+import org.apache.catalina.LifecycleState;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -61,9 +64,9 @@ public class AuthService {
         String encodedPassword = passwordEncoder.encode(password);
         newUser.setPassword(encodedPassword);
 
-
         return userRepository.save(newUser);
     }
+
     public String login(
             String email,
             String password,
@@ -120,4 +123,7 @@ public class AuthService {
         Token existingToken = tokenRepository.findByRefreshToken(refreshToken);
         return getUserDetailsFromToken(existingToken.getToken());
     }
+
+
+
 }
