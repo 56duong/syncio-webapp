@@ -10,6 +10,7 @@ import { LoginDTO } from './login.dto';
 import { LoginResponse } from './login.response';
 import { RegisterDTO } from '../register/register.dto';
 import { MessageService } from 'primeng/api';
+import { DialogModule } from 'primeng/dialog';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -19,6 +20,13 @@ import { MessageService } from 'primeng/api';
 export class LoginComponent implements OnInit {
   @ViewChild('loginForm') loginForm!: NgForm;
   isActive = false;
+  display: boolean = false;
+
+  // other methods
+
+  hideDialog() {
+    this.display = false;
+  }
 
   activate() {
     this.isActive = true;
@@ -29,13 +37,13 @@ export class LoginComponent implements OnInit {
   deactivate() {
     this.isActive = false;
     this.email = '';
-    this.password = ''; 
+    this.password = '';
   }
   username: string = '';
   email: string = '';
   password: string = '';
-  showPassword: boolean = false;
   retypePassword: string = '';
+  showPassword: boolean = false;
   roles: Role[] = []; // Mảng roles
   rememberMe: boolean = true;
   selectedRole: Role | undefined; // Biến để lưu giá trị được chọn từ dropdown
@@ -58,8 +66,10 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {}
   createAccount() {
-    // Chuyển hướng người dùng đến trang đăng ký (hoặc trang tạo tài khoản)
     this.router.navigate(['/register']);
+  }
+  navigateToForgotPassword() {
+    this.router.navigate(['/forgot_password']);
   }
   showError(message: string) {
     this.messageService.add({
@@ -117,7 +127,7 @@ export class LoginComponent implements OnInit {
       },
       complete: () => {},
       error: (error: any) => {
-        console.log('error2:', error.error);
+        console.log('error2:', error);
         this.showError(error.error.message);
       },
     });
@@ -127,6 +137,12 @@ export class LoginComponent implements OnInit {
   }
 
   register() {
+    const usernameRegex = /^[a-zA-Z0-9]{3,}$/;
+
+    if (!usernameRegex.test(this.username)) {
+      this.showError('It should contain at least 3 characters.');
+      return;
+    }
     const registerDTO: RegisterDTO = {
       username: this.username,
       email: this.email,
@@ -141,7 +157,7 @@ export class LoginComponent implements OnInit {
     this.userService.register(registerDTO).subscribe({
       next: (response: any) => {
         const confirmation = window.confirm(
-          'Đăng ký thành công, mời bạn đăng nhập'
+          'Register successfully. Do you want to login now?'
         );
         if (confirmation) {
           this.router.navigate(['/login']);

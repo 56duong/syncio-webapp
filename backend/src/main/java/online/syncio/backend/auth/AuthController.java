@@ -3,20 +3,24 @@ package online.syncio.backend.auth;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import online.syncio.backend.auth.request.RefreshTokenDTO;
-import online.syncio.backend.auth.request.UserLoginDTO;
+import online.syncio.backend.auth.request.*;
 import online.syncio.backend.auth.responses.LoginResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
 import online.syncio.backend.auth.responses.UserResponse;
 import online.syncio.backend.config.LocalizationUtils;
+import online.syncio.backend.exception.DataNotFoundException;
+import online.syncio.backend.exception.InvalidParamException;
+import online.syncio.backend.setting.SettingService;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserService;
-import online.syncio.backend.auth.request.RegisterDTO;
 import online.syncio.backend.auth.responses.RegisterResponse;
+import online.syncio.backend.utils.CustomerForgetPasswordUtil;
 import online.syncio.backend.utils.MessageKeys;
 //import online.syncio.backend.utils.RabbitMQUtils;
 import online.syncio.backend.utils.ValidationUtils;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,16 +29,19 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("${api.prefix}/users")
 @RequiredArgsConstructor
-
-
 public class AuthController {
     private final LocalizationUtils localizationUtils;
     private final AuthService authService;
     private final TokenService tokenService;
+    @Autowired
+    SettingService settingService;
+    @Value("${apiPrefix.client}")
+    private String apiPrefix;
 //    private final RabbitTemplate rabbitTemplate;
 //    private final RabbitMQUtils rabbitMQService;
     /**
@@ -146,8 +153,6 @@ public class AuthController {
 
     }
     private boolean isMobileDevice(String userAgent) {
-        // Kiểm tra User-Agent header để xác định thiết bị di động
-        // Ví dụ đơn giản:
         return userAgent.toLowerCase().contains("mobile");
     }
 
@@ -165,30 +170,72 @@ public class AuthController {
         }
     }
 
-//    @PutMapping("/reset-password/{userId}")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    public ResponseEntity<ResponseObject> resetPassword(@Valid @PathVariable long userId){
-//        try {
-//            String newPassword = UUID.randomUUID().toString().substring(0, 5); // Tạo mật khẩu mới
-//            userService.resetPassword(userId, newPassword);
-//            return ResponseEntity.ok(ResponseObject.builder()
-//                    .message("Reset password successfully")
-//                    .data(newPassword)
-//                    .status(HttpStatus.OK)
-//                    .build());
-//        } catch (InvalidPasswordException e) {
-//            return ResponseEntity.ok(ResponseObject.builder()
-//                    .message("Invalid password")
-//                    .data("")
-//                    .status(HttpStatus.BAD_REQUEST)
-//                    .build());
-//        } catch (DataNotFoundException e) {
-//            return ResponseEntity.ok(ResponseObject.builder()
-//                    .message("User not found")
-//                    .data(""
-//                    .status(HttpStatus.BAD_REQUEST)
-//                    .build());
-//        }
-//    }
+    @PutMapping("/reset-password/{userId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<ResponseObject> resetPassword(@Valid @PathVariable UUID userId){
+        try {
+            String newPassword = UUID.randomUUID().toString().substring(0, 5); // Tạo mật khẩu mới
+            authService.resetPassword(userId, newPassword);
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .message("Reset password successfully")
+                    .data(newPassword)
+                    .status(HttpStatus.OK)
+                    .build());
+        } catch (InvalidParamException e) {
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .message("Invalid password")
+                    .data("")
+                    .status(HttpStatus.BAD_REQUEST)
+                    .build());
+        } catch (DataNotFoundException e) {
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .message("User not found")
+                    .data("")
+                    .status(HttpStatus.BAD_REQUEST)
+                    .build());
+        }
+    }
 
+    @RequestMapping(value = "api/users/logoutDummy")
+    @PreAuthorize("permitAll()")
+    @ResponseStatus(HttpStatus.OK)
+    public void logout() {
+
+    }
+
+
+    @PostMapping(value = "/forgot_password")
+    public ResponseEntity<?> forgotPassword(HttpServletRequest request,@Valid @RequestBody ForgotPasswordForm forgotPasswordForm) throws Exception {
+
+
+        if (!authService.existsByEmail(forgotPasswordForm.getEmail())) {
+            return new ResponseEntity<>(new DataNotFoundException("User not exist"), HttpStatus.BAD_REQUEST);
+        }
+        String token = authService.updateResetPasswordToken(forgotPasswordForm.getEmail());
+        String link = "http://localhost:4200/reset_password?token=" + token;
+
+        CustomerForgetPasswordUtil.sendEmail(link, forgotPasswordForm.getEmail(), settingService);
+
+
+        return  ResponseEntity.ok(ResponseObject.builder()
+                .message("Reset password link has been sent to your email")
+                .data("")
+                .status(HttpStatus.OK)
+                .build());
+    }
+
+    @PostMapping(value = "/reset_password")
+    public ResponseEntity<?> processResetPassword(@RequestParam(value = "token", required = true) String token,
+                                                  @RequestParam(value = "password", required = true) String password) throws Exception {
+
+        authService.updatePassword(token, password);
+
+        return  ResponseEntity.ok(
+                ResponseObject.builder()
+                        .message("Password updated successfully")
+                        .data("")
+                        .status(HttpStatus.OK)
+                        .build()
+        );
+    }
 }

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -7,6 +7,7 @@ import { RegisterDTO } from 'src/app/features/authentication/register/register.d
 import { HttpUtilService } from './http.util.service';
 import { LoginDTO } from 'src/app/features/authentication/login/login.dto';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
+import { FogotPasswordDTO } from 'src/app/features/authentication/forgotpassword/forgotpassword.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,9 @@ import { UserResponse } from 'src/app/features/authentication/login/user.respons
 export class UserService {
   private apiURL = environment.apiUrl + 'api/v1/users';
   private apiRegister = environment.apiUrl + 'api/v1/users/register';
+  private apiResetPassword = environment.apiUrl + 'api/v1/users/reset_password';
+  private apiSendMailToPassword =
+    environment.apiUrl + 'api/v1/users/forgot_password';
   private apiLogin = environment.apiUrl + 'api/v1/users/login';
   private apiUserDetail = environment.apiUrl + 'api/v1/users/details';
   private apiConfig = {
@@ -23,10 +27,27 @@ export class UserService {
     private http: HttpClient,
     private httpUtilService: HttpUtilService
   ) {}
+
+  resetPassword(token: any, password: any): Observable<any> {
+    const params = new HttpParams()
+      .set('token', token)
+      .set('password', password);
+
+    return this.http.post(this.apiResetPassword, {}, { params });
+  }
   register(registerDTO: RegisterDTO): Observable<any> {
     return this.http.post(this.apiRegister, registerDTO, this.apiConfig);
   }
 
+  sendPasswordToMailSerive(
+    fogotPasswordDTO: FogotPasswordDTO
+  ): Observable<any> {
+    return this.http.post(
+      this.apiSendMailToPassword,
+      fogotPasswordDTO,
+      this.apiConfig
+    );
+  }
   login(loginDTO: LoginDTO): Observable<any> {
     return this.http.post(this.apiLogin, loginDTO, this.apiConfig);
   }

@@ -6,16 +6,13 @@ import { PostService } from 'src/app/core/services/post.service';
 @Component({
   selector: 'app-feed',
   templateUrl: './feed.component.html',
-  styleUrls: ['./feed.component.scss']
+  styleUrls: ['./feed.component.scss'],
 })
-
 export class FeedComponent {
   posts: Post[] = [];
   private newPostCreatedSubscription!: Subscription;
 
-  constructor(
-    private postService: PostService
-  ) { }
+  constructor(private postService: PostService) {}
 
   ngOnInit() {
     this.getPosts();
@@ -39,7 +36,7 @@ export class FeedComponent {
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 }

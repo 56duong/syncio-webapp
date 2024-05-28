@@ -11,6 +11,7 @@ import online.syncio.backend.post.Post;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.role.RoleEntity;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -67,6 +68,11 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private StatusEnum status;
 
+    @Column(name = "reset_password_token", length = 30)
+    private String resetPasswordToken;
+
+//    @CreatedBy
+//    private String createdBy;
 //    Post
     @OneToMany(mappedBy = "createdBy")
     private Set<Post> posts;
