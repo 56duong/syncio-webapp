@@ -13,7 +13,7 @@
         type="text"
         [(ngModel)]="username"
         name="username"
-        placeholder="Name"
+        placeholder="User Name"
       />
       <input
         type="email"
@@ -61,7 +61,7 @@
         [(ngModel)]="password"
         name="password"
       />
-      <a href="#">Forget Your Password?</a>
+      <a (click)="navigateToForgotPassword()">Forget Your Password?</a>
       <button (click)="login()">Sign In</button>
     </form>
   </div>

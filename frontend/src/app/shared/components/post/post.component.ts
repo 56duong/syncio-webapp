@@ -9,9 +9,12 @@ import { Post } from 'src/app/core/interfaces/post';
 
 export class PostComponent {
   @Input() post: Post = {};
+  
   visible: boolean = false;
+
 
   showPostDetail(event: any) {
     this.visible = event;
+
   }
 }

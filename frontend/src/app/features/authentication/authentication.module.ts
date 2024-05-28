@@ -3,12 +3,17 @@ import { CommonModule } from '@angular/common';
 
 import { AuthenticationRoutingModule } from './authentication-routing.module';
 import { AuthenticationComponent } from './authentication.component';
-import { LoginComponent } from './login/login.component';
-import { SignupComponent } from './signup/signup.component';
+
 import { FormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
 
 @NgModule({
-  declarations: [AuthenticationComponent, SignupComponent],
-  imports: [CommonModule, FormsModule, AuthenticationRoutingModule],
+  declarations: [AuthenticationComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    AuthenticationRoutingModule,
+    DialogModule,
+  ],
 })
 export class AuthenticationModule {}
