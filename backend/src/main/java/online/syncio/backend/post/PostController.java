@@ -3,10 +3,15 @@ package online.syncio.backend.post;
 import jakarta.validation.Valid;
 import online.syncio.backend.exception.ReferencedException;
 import online.syncio.backend.exception.ReferencedWarning;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,9 +35,11 @@ public class PostController {
         return ResponseEntity.ok(postService.get(id));
     }
 
-    @PostMapping
-    public ResponseEntity<UUID> createPost(@RequestBody @Valid PostDTO postDTO) {
-        UUID createdId = postService.create(postDTO);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createPost(@RequestPart("post") @Valid CreatePostDTO postDTO,
+                                        @RequestPart("images") List<MultipartFile> images) throws IOException {
+        postDTO.setPhotos(images);
+        ResponseEntity<?> createdId = postService.create(postDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
@@ -52,5 +59,29 @@ public class PostController {
         postService.delete(id);
         return ResponseEntity.noContent().build();
     }
+    @PostMapping("/{id}/{userId}/like")
+    public ResponseEntity<?> likePost(@PathVariable(name = "id") final UUID id,
+                                           @PathVariable(name = "userId") final UUID userId) {
+        return postService.toggleLike(id, userId);
 
+    }
+    @GetMapping("/images/{imageName}")
+    public ResponseEntity<?> viewImage(@PathVariable String imageName) {
+        try {
+            java.nio.file.Path imagePath = Paths.get("uploads/"+imageName);
+            UrlResource resource = new UrlResource(imagePath.toUri());
+
+            if (resource.exists()) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(resource);
+            } else {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(new UrlResource(Paths.get("uploads/notfound.jpeg").toUri()));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

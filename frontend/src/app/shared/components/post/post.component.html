@@ -1,42 +1,53 @@
-<div class="post flex flex-column m-auto gap-3 border-bottom-1 border-gray-300 pb-4 mt-4">
+<div
+  class="post flex flex-column m-auto gap-3 border-bottom-1 border-gray-300 pb-4 mt-4"
+>
   <!-- header -->
   <div class="flex justify-content-between align-items-center">
     <div class="flex align-items-center gap-2">
       <div class="avt">
-        <img class="w-full object-cover" src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png" alt="">
+        <img
+          class="w-full object-cover"
+          src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
+          alt=""
+        />
       </div>
       <div class="flex align-items-center gap-1">
-        <small *ngIf="post.createdBy" class="font-bold">{{post.createdBy | userIdToName | async}}</small>
+        <small *ngIf="post.createdBy" class="font-bold">{{
+          post.createdBy | userIdToName | async
+        }}</small>
         <small class="text-gray-500">•</small>
-        <small class="text-gray-500">{{post.createdDate | date:'HH:mm:ss dd/MM/yyyy'}}</small>
+        <small class="text-gray-500">{{
+          post.createdDate | date : "HH:mm:ss dd/MM/yyyy"
+        }}</small>
       </div>
     </div>
     <span class="pi pi-ellipsis-h cursor-pointer"></span>
   </div>
-  
+
   <!-- photo -->
   <div *ngIf="post.photos?.length"></div>
 
   <!-- caption (no photo) -->
   <div *ngIf="!post.photos?.length">
-    <small>{{post.caption}}</small>
+    <small>{{ post.caption }}</small>
   </div>
 
-  <app-like *ngIf="post.id"
+  <app-like
+    *ngIf="post.id"
     [postId]="post.id"
-    (visibleChange)="showPostDetail($event)"></app-like>
-
-  <!-- caption (with photo) -->
+    (visibleChange)="showPostDetail($event)"
+  ></app-like>
   <div *ngIf="post.photos?.length">
-    <small>Introducing a new silhouette like you’ve never seen, available now</small>
+    <small
+      >Introducing a new silhouette like you’ve never seen, available now</small
+    >
   </div>
-
 </div>
 
-
-
-<app-post-detail *ngIf="visible"
+<app-post-detail
+  *ngIf="visible"
   [post]="post"
   [visible]="visible"
   (visibleChange)="showPostDetail($event)"
-  cl></app-post-detail>
+  cl
+></app-post-detail>
