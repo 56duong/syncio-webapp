@@ -8,6 +8,7 @@ import online.syncio.backend.user.UserRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ public class ReportService {
 
     public ReportDTO create(ReportDTO reportDTO) {
         Report report = mapToEntity(reportDTO, new Report());
-        report.setCreatedDate(reportDTO.getCreatedDate());
+        report.setCreatedDate(LocalDateTime.now());
 
         Report savedReport = reportRepository.save(report);
 

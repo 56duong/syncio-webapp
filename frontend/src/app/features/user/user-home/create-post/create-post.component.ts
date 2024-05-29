@@ -13,6 +13,7 @@ export class CreatePostComponent {
   post: Post = {};
 
   selectedPhotos: string[] = [];
+  selectedPhotoFile: File[] = [];
 
   isEmojiPickerVisible: boolean = false;
 
@@ -35,15 +36,20 @@ export class CreatePostComponent {
       createdBy: '05bbc9bb-d13f-42c9-a97d-480bf8698307', // sau có login thì lấy thừ localStorage
     };
 
+    console.log('Post: ', post);
+
     // call the post service to create a post
-    this.postService.createPost(post).subscribe(
-      (response) => {
-        console.log('Post created successfully', response);
+    this.postService.createPost(post).subscribe({
+      next: (id) => {
+        console.log('ID: ', id);
+
+        // notify the FeedComponent to add the new post to the top of the feed
+        this.postService.setNewPostCreated(post);
       },
-      (error) => {
-        console.error('Error creating post', error);
-      }
-    );
+      error: (error) => {
+        console.log(error);
+      },
+    });
     this.display = false;
   }
 

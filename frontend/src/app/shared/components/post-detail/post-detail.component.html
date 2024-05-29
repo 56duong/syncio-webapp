@@ -1,15 +1,6 @@
-<p-dialog 
-    header="" 
-    [closeOnEscape]="true" 
-    [(visible)]="visible" 
-    [modal]="true" 
-    [dismissableMask]="true"
-    [autoZIndex]="true" 
-    (onHide)="closeDialog()" 
-    [showHeader]="false" 
-    [breakpoints]="{ '1180px': '90vw' }"
-    class="post-detail-dialog" [style]="{ width: '80vw', height: '100%', zIndex: '999999' }" 
-    [draggable]="false"
+<p-dialog header="" [closeOnEscape]="true" [(visible)]="visible" [modal]="true" [dismissableMask]="true"
+    [autoZIndex]="true" (onHide)="closeDialog()" [showHeader]="false" [breakpoints]="{ '1180px': '90vw' }"
+    class="post-detail-dialog" [style]="{ width: '80vw', height: '100%', zIndex: '999999' }" [draggable]="false"
     [resizable]="false">
 
     <div class="flex h-full lg:flex-row xl:flex-row flex-column">
@@ -63,7 +54,8 @@
                 [style]="{ width: '100%', overflow: 'auto', flex: '1' }">
                 <div *ngFor="let c of comments" class="flex align-items-start gap-2">
                     <div class="avt">
-                        <img class="w-full object-cover" src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png" alt="">
+                        <img class="w-full object-cover" src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
+                            alt="">
                     </div>
                     <div>
                         <!-- username -->
@@ -74,7 +66,8 @@
                         <!-- footer -->
                         <div class="flex align-items-center gap-3 mt-2">
                             <small class="text-gray-500 text-xs">
-                                {{c.createdDate?.toLowerCase() == 'now' ? 'Now' : c.createdDate | date:'HH:mm:ss dd/MM/yyyy'}}
+                                {{c.createdDate?.toLowerCase() == 'now' ? 'Now' : c.createdDate | date:'HH:mm:ss
+                                dd/MM/yyyy'}}
                             </small>
                             <!-- Reply -->
                             <small (click)="onReply(c.id || '')"
@@ -110,7 +103,8 @@
                                             <!-- footer -->
                                             <div class="flex align-items-center gap-3 mt-2">
                                                 <small class="text-gray-500 text-xs">
-                                                    {{reply.createdDate?.toLowerCase() == 'now' ? 'Now' : c.createdDate | date:'HH:mm:ss dd/MM/yyyy'}}
+                                                    {{reply.createdDate?.toLowerCase() == 'now' ? 'Now' : c.createdDate
+                                                    | date:'HH:mm:ss dd/MM/yyyy'}}
                                                 </small>
                                                 <!-- Reply of reply -->
                                                 <small
@@ -142,9 +136,7 @@
                 <div class="relative">
                     <i (click)="isEmojiPickerVisible = !isEmojiPickerVisible"
                         class="cursor-pointer fa-regular fa-face-smile text-xl"></i>
-                    <emoji-mart *ngIf="isEmojiPickerVisible" 
-                        [showPreview]="false" 
-                        (emojiSelect)="addEmoji($event)"
+                    <emoji-mart *ngIf="isEmojiPickerVisible" [showPreview]="false" (emojiSelect)="addEmoji($event)"
                         [style]="{ position: 'absolute', bottom: '30px', right: '20 px' }"></emoji-mart>
                 </div>
 
@@ -158,8 +150,8 @@
                     style="width: 100%; resize: none;" class="flex-1 text-sm border-0 py-1 outline-none shadow-none"></textarea> -->
 
                 <!-- Post button -->
-                <p-button [disabled]="plainComment.trim().length <= 0" (click)="postComment()"
-                    label="Post" size="small" [text]="true"></p-button>    
+                <p-button [disabled]="plainComment.trim().length <= 0" (click)="postComment()" label="Post" size="small"
+                    [text]="true"></p-button>
             </div>
         </div>
     </div>
