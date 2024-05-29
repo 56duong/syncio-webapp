@@ -33,14 +33,12 @@ export class PostService {
 
   /**
    * Create a new post.
-   * @param post 
+   * @param post
    * @returns id of the created post.
    */
-  createPost(post: Post): Observable<string> {
-    return this.http.post<string>(this.apiURL, post);
+  createPost(formData: FormData): Observable<string> {
+    return this.http.post<string>(this.apiURL, formData);
   }
-
-
 
   /**
    * Set the new post created to notify the FeedComponent to add the new post to the top of the feed.
@@ -65,5 +63,4 @@ export class PostService {
   getNewPostCreated(): Observable<any> {
     return this.newPostCreated.asObservable();
   }
-
 }

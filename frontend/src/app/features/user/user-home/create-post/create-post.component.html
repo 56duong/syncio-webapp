@@ -1,28 +1,68 @@
-<p-dialog [(visible)]="display" [modal]="true" [closable]="false" [responsive]="true" [style]="{width: '70vw'}"
-  [baseZIndex]="10000" header="Header">
+<p-dialog
+  [(visible)]="display"
+  [modal]="true"
+  [closable]="false"
+  [responsive]="true"
+  [style]="{ width: '70vw' }"
+  [baseZIndex]="10000"
+  header="Header"
+>
   <ng-template pTemplate="header">
-    <div class="modal-header"
-      style="display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+    <div
+      class="modal-header"
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 10px;
+      "
+    >
       <div>
-        <button pButton type="button" icon="pi pi-arrow-left" (click)="onCancel()" class="p-button-text"></button>
+        <button
+          pButton
+          type="button"
+          icon="pi pi-arrow-left"
+          (click)="onCancel()"
+          class="p-button-text"
+        ></button>
       </div>
       <div>
-        <h3 style="margin: 0;">Create New Post</h3>
+        <h3 style="margin: 0">Create New Post</h3>
       </div>
       <div>
-        <button pButton type="button" label="Share" (click)="createPost()" class="p-button-text"></button>
+        <button
+          pButton
+          type="button"
+          label="Create Post"
+          (click)="createPost()"
+          class="p-button-text"
+        ></button>
       </div>
     </div>
-  </ng-template>
+  </ng-template> 
   <div class="grid">
     <div class="col">
       <div class="p-fluid">
-        <div class="field" style="height: 400px;">
-          <p-fileUpload name="photo[]" mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload" url="./upload"
-            (onSelect)="onPhotoSelected($event)" [multiple]="true" accept="image/*">
+        <div class="field" style="height: 400px">
+          <p-fileUpload #fileUploader
+            name="photo[]"
+            mode="basic"
+            chooseLabel="Choose"
+            chooseIcon="pi pi-upload"
+            url="./upload"
+            (onSelect)="onPhotoSelected($event)"
+            [multiple]="true"
+            accept="image/*"
+          >
           </p-fileUpload>
           <div *ngFor="let photo of selectedPhotos">
-            <img [src]="photo" alt="Selected photo" style="width: 100%; margin-top: 10px;">
+            <img
+              [src]="photo"
+              alt="Selected photo"
+              style="width: 100%; margin-top: 10px"
+            />
           </div>
         </div>
       </div>
@@ -31,27 +71,41 @@
     <div class="col">
       <div class="p-fluid">
         <div class="field">
-          <div class="inline-flex align-items-center justify-content-center gap-2">
-            <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" />
-            <span class="font-bold white-space-nowrap">
-              Amy Elsner
-            </span>
+          <div
+            class="inline-flex align-items-center justify-content-center gap-2"
+          >
+            <p-avatar
+              image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+              shape="circle"
+            />
+            <span class="font-bold white-space-nowrap"> Amy Elsner </span>
           </div>
         </div>
         <div class="field">
-          <textarea id="content" rows="12" pInputTextarea [(ngModel)]="post.caption" [autoResize]="true"
-            placeholder="Add a content..."></textarea>
+          <textarea
+            id="content"
+            rows="12"
+            pInputTextarea
+            [(ngModel)]="post.caption"
+            [autoResize]="true"
+            placeholder="Add a content..."
+          ></textarea>
         </div>
         <div class="field">
           <div class="relative">
-            <i (click)="isEmojiPickerVisible = !isEmojiPickerVisible"
-              class="cursor-pointer fa-regular fa-face-smile text-xl"></i>
-            <emoji-mart *ngIf="isEmojiPickerVisible" [showPreview]="false" (emojiSelect)="addEmoji($event)"
-              [style]="{ position: 'absolute', bottom: '30px', left :'-50px' }"></emoji-mart>
+            <i
+              (click)="isEmojiPickerVisible = !isEmojiPickerVisible"
+              class="cursor-pointer fa-regular fa-face-smile text-xl"
+            ></i>
+            <emoji-mart
+              *ngIf="isEmojiPickerVisible"
+              [showPreview]="false"
+              (emojiSelect)="addEmoji($event)"
+              [style]="{ position: 'absolute', bottom: '30px', left: '-50px' }"
+            ></emoji-mart>
           </div>
         </div>
       </div>
     </div>
   </div>
-
 </p-dialog>
