@@ -44,7 +44,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable(name = "id") final UUID id) {
+    public ResponseEntity<Void> deletePost(@PathVariable(name = "id") UUID id) {
         final ReferencedWarning referencedWarning = postService.getReferencedWarning(id);
         if (referencedWarning != null) {
             throw new ReferencedException(referencedWarning);
