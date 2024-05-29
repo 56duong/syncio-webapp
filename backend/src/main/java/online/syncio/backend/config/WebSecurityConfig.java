@@ -26,6 +26,7 @@ import static org.springframework.http.HttpMethod.*;
 @Configuration
 @EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableWebMvc
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     private final JwtTokenFilter jwtTokenFilter;
@@ -38,8 +39,10 @@ public class WebSecurityConfig {
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> {
                     requests
-                        .anyRequest().permitAll();
-                })
+                    .anyRequest().permitAll()
+                    ;
+                }).logout(logout -> logout.permitAll())
+
                 .csrf(AbstractHttpConfigurer::disable);
         http.securityMatcher(String.valueOf(EndpointRequest.toAnyEndpoint()));
         return http.build();

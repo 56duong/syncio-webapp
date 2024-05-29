@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 })
 export class LikeService {
   private apiURL = environment.apiUrl + 'api/v1/likes';
-
+  private apiURLPost = environment.apiUrl + 'api/v1/posts';
   constructor(private http: HttpClient) {}
 
   /**
@@ -25,6 +25,10 @@ export class LikeService {
    *  }
    * })
    */
+  toggleLikes(postId: any, userId: any): Observable<void> {
+    const url = `${this.apiURLPost}/${postId}/${userId}/like`;
+    return this.http.post<void>(url, {});
+  }
   countLikes(postId: string): Observable<number> {
     const url = `${this.apiURL}/count/${postId}`;
     return this.http.get<number>(url);
