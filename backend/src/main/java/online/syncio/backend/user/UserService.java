@@ -52,6 +52,13 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
     }
 
+    public List<UserDTO> findTop20ByUsernameContainingOrEmailContaining(final String username, final String email) {
+        final List<User> users = userRepository.findTop20ByUsernameContainingOrEmailContaining(username, email);
+        return users.stream()
+                .map(user -> mapToDTO(user, new UserDTO()))
+                .toList();
+    }
+
     public UUID create(final UserDTO userDTO) {
         final User user = new User();
         mapToEntity(userDTO, user);

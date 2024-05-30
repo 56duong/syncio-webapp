@@ -139,4 +139,15 @@ export class UserService {
     const url = `${this.apiURL}/${userId}`;
     return this.http.get<User>(url);
   }
+
+  /**
+   * Search users by username or email.
+   * @param username - The username to search if exists. 
+   * @param email - The email to search if exists.
+   * @returns array of users. 
+   */
+  searchUsers(username: string, email: string): Observable<User[]> {
+    const url = `${this.apiURL}/search?username=${username}&email=${email}`;
+    return this.http.get<User[]>(url);
+  }
 }

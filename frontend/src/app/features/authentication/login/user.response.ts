@@ -1,6 +1,7 @@
 import { Role } from './role';
 export interface UserResponse {
   id: string;
+  username: string;
   fullname: string;
   address: string;
   is_active: boolean;

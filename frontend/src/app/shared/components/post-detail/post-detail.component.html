@@ -12,29 +12,23 @@
   class="post-detail-dialog"
   [style]="{ width: '80vw', height: '100%', zIndex: '999999' }"
   [draggable]="false"
-  [resizable]="false"
->
+  [resizable]="false">
   <div class="flex h-full lg:flex-row xl:flex-row flex-column">
     <!-- Left side (Photos) -->
     <div class="left col-12 lg:col-8 xl:col-8 lg:h-full xl:h-full h-5/6 p-0">
-      <p-carousel
-        *ngIf="post.photos && post.photos?.length"
+      <p-carousel *ngIf="post.photos && post.photos?.length"
         [value]="post.photos"
         [numVisible]="1"
         [numScroll]="1"
         [circular]="false"
-        [style]="{ height: '100%', position: 'relative' }"
-      >
+        [style]="{ height: '100%', position: 'relative' }">
         <ng-template let-photo pTemplate="item">
-          <img
-            src="{{ photo }}"
+          <img src="{{ photo }}"
             class="w-full h-full"
-            style="object-fit: contain"
-          />
+            style="object-fit: contain" />
         </ng-template>
       </p-carousel>
     </div>
-
 
     <!-- Vertical on large screen -->
     <p-divider class="hidden lg:block xl:block" layout="vertical"></p-divider>
@@ -46,11 +40,9 @@
       <div class="p-3 flex justify-content-between align-items-center">
         <div class="flex align-items-start gap-2">
           <div class="avt">
-            <img
-              class="w-full object-cover"
+            <img class="w-full object-cover"
               src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
-              alt=""
-            />
+              alt="" />
           </div>
           <div>
             <!-- username -->
@@ -58,43 +50,31 @@
               {{ post.createdBy | userIdToName | async }}
             </h3>
             <!-- comment text -->
-            <div
-              class="comment-text inline text-sm"
-              [innerHTML]="post.caption"
-            ></div>
+            <div class="comment-text inline text-sm"
+              [innerHTML]="post.caption">
+            </div>
             <!-- footer -->
             <div class="flex align-items-center gap-3 mt-2">
-              <small class="text-gray-500 text-xs">{{
-                post.createdDate
-                  | date
-                    : "HH:mm:ss
-                                dd/MM/yyyy"
-              }}</small>
-
+              <small class="text-gray-500 text-xs">{{post.createdDate | date: "HH:mm:ss dd/MM/yyyy"}}</small>
             </div>
           </div>
           <br />
         </div>
-        <span
-          (click)="closeDialog()"
-          class="pi pi-ellipsis-h cursor-pointer"
-        ></span>
+        <span (click)="closeDialog()"
+          class="pi pi-ellipsis-h cursor-pointer">
+        </span>
       </div>
 
       <p-divider></p-divider>
 
       <!-- List of Comment -->
-      <div
-        class="hide-scrollbar p-3 flex flex-column gap-4"
-        [style]="{ width: '100%', overflow: 'auto', flex: '1' }"
-      >
+      <div class="hide-scrollbar p-3 flex flex-column gap-4"
+        [style]="{ width: '100%', overflow: 'auto', flex: '1' }">
         <div *ngFor="let c of comments" class="flex align-items-start gap-2">
           <div class="avt">
-            <img
-              class="w-full object-cover"
+            <img class="w-full object-cover"
               src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
-              alt=""
-            />
+              alt="" />
           </div>
           <div>
             <!-- username -->
@@ -105,23 +85,16 @@
             <div class="comment-text inline" [innerHTML]="c.text"></div>
             <!-- footer -->
             <div class="flex align-items-center gap-3 mt-2">
-              <small class="text-gray-500 text-xs">{{
-                c.createdDate?.toLowerCase() == "now"
-                  ? "Now"
-                  : (c.createdDate | date : "HH:mm:ss dd/MM/yyyy")
-              }}</small>
+              <small class="text-gray-500 text-xs">
+                {{c.createdDate?.toLowerCase() == "now" ? "Now" : (c.createdDate | date : "HH:mm:ss dd/MM/yyyy")}}
+              </small>
               <!-- Reply -->
-              <small
-                (click)="onReply(c.id || '')"
-                [ngClass]="{
-                  'text-blue-500 font-bold': c.id === comment.parentCommentId
-                }"
+              <small (click)="onReply(c.id || '')"
+                [ngClass]="{ 'text-blue-500 font-bold': c.id === comment.parentCommentId }"
                 class="cursor-pointer text-xs"
-                >Reply</small
-              >
+              >Reply</small>
               <!-- 3 dots -->
-              <span
-                (click)="closeDialog()"
+              <span (click)="closeDialog()"
                 class="pi pi-ellipsis-h cursor-pointer"
               ></span>
             </div>
@@ -129,71 +102,45 @@
             <ng-container *ngIf="c.id && c.repliesCount && c.repliesCount > 0">
               <div class="my-2">
                 <!-- Show/Hide replies -->
-                <small
-                  (click)="viewReplies(c.id)"
-                  class="cursor-pointer text-xs my-3 block"
-                >
-                  ___{{ showReplies[c.id]?.visible ? "Hide" : "View" }} replies
-                  ({{ c.repliesCount }})
+                <small (click)="viewReplies(c.id)"
+                  class="cursor-pointer text-xs my-3 block">
+                  ___{{ showReplies[c.id]?.visible ? "Hide" : "View" }} replies ({{ c.repliesCount }})
                 </small>
                 <!-- Reply List -->
-                <div
-                  *ngIf="showReplies[c.id] && showReplies[c.id].visible"
-                  class="flex flex-column gap-4"
-                >
-                  <div
-                    *ngFor="let reply of showReplies[c.id].data"
-                    class="flex align-items-start gap-2"
-                  >
+                <div *ngIf="showReplies[c.id] && showReplies[c.id].visible"
+                  class="flex flex-column gap-4">
+                  <div *ngFor="let reply of showReplies[c.id].data"
+                    class="flex align-items-start gap-2">
                     <!-- avt -->
                     <div class="avt">
-
-                      <img
-                        class="w-full object-cover"
+                      <img class="w-full object-cover"
                         src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
-                        alt=""
-                      />
+                        alt="" />
                     </div>
                     <div>
                       <!-- username -->
-                      <h3
-                        *ngIf="reply.userId"
-                        class="inline-flex text-sm my-0 mr-1"
-                      >
+                      <h3 *ngIf="reply.userId"
+                        class="inline-flex text-sm my-0 mr-1">
                         {{ reply.userId | userIdToName | async }}
                       </h3>
                       <!-- comment text -->
-                      <div
-                        class="comment-text inline"
-                        [innerHTML]="reply.text"
-                      ></div>
+                      <div class="comment-text inline"
+                        [innerHTML]="reply.text">
+                      </div>
                       <!-- footer -->
                       <div class="flex align-items-center gap-3 mt-2">
-                        <small class="text-gray-500 text-xs">{{
-                          reply.createdDate?.toLowerCase() == "now"
-                            ? "Now"
-                            : (c.createdDate
-                              | date
-                                : "HH:mm:ss
-                                                    dd/MM/yyyy")
-                        }}</small>
+                        <small class="text-gray-500 text-xs">
+                          {{reply.createdDate?.toLowerCase() == "now" ? "Now" : (c.createdDate | date: "HH:mm:ss dd/MM/yyyy")}}
+                        </small>
                         <!-- Reply of reply -->
-                        <small
-                          (click)="
-                            onReply(
-                              reply.parentCommentId ? reply.parentCommentId : ''
-                            )
-                          "
+                        <small (click)="onReply(reply.parentCommentId ? reply.parentCommentId : '')"
                           class="cursor-pointer text-xs"
-                          >Reply</small
-                        >
+                        >Reply</small>
                         <!-- 3 dots -->
-                        <span
-                          (click)="closeDialog()"
+                        <span (click)="closeDialog()"
                           class="pi pi-ellipsis-h cursor-pointer"
                         ></span>
                       </div>
-
                     </div>
                   </div>
                 </div>
@@ -206,26 +153,21 @@
       <p-divider></p-divider>
 
       <!-- Likes section -->
-      <app-like
-        class="p-3"
-        *ngIf="post.id"
+      <app-like *ngIf="post.id"
         [isOnPostDetails]="true"
         [postId]="post.id"
+        class="p-3"
       ></app-like>
 
       <p-divider></p-divider>
-
 
       <!-- Add a comment -->
       <div class="p-3 py-2 flex gap-1 align-items-center">
         <!-- Emojis -->
         <div class="relative">
-          <i
-            (click)="isEmojiPickerVisible = !isEmojiPickerVisible"
-            class="cursor-pointer fa-regular fa-face-smile text-xl"
-          ></i>
-          <emoji-mart
-            *ngIf="isEmojiPickerVisible"
+          <i (click)="isEmojiPickerVisible = !isEmojiPickerVisible"
+            class="cursor-pointer fa-regular fa-face-smile text-xl"></i>
+          <emoji-mart *ngIf="isEmojiPickerVisible"
             [showPreview]="false"
             (emojiSelect)="addEmoji($event)"
             [style]="{ position: 'absolute', bottom: '30px', right: '20 px' }"
@@ -234,13 +176,11 @@
 
 
         <!-- Comment input -->
-        <p-editor
-          (onTextChange)="textChange($event)"
+        <p-editor (onTextChange)="textChange($event)"
           [(ngModel)]="comment.text"
           [formats]="['bold']"
           placeholder="Add a comment..."
-          [style]="{ maxHeight: '40px' }"
-        >
+          [style]="{ maxHeight: '40px' }">
           <ng-template pTemplate="header" hidden></ng-template>
         </p-editor>
 
@@ -248,8 +188,7 @@
                     style="width: 100%; resize: none;" class="flex-1 text-sm border-0 py-1 outline-none shadow-none"></textarea> -->
 
         <!-- Post button -->
-        <p-button
-          [disabled]="plainComment.trim().length <= 0"
+        <p-button [disabled]="plainComment.trim().length <= 0"
           (click)="postComment()"
           label="Post"
           size="small"
