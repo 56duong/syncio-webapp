@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
+
 export class PostService {
   private apiURL = environment.apiUrl + 'api/v1/posts';
 

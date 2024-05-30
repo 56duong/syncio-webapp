@@ -21,7 +21,7 @@ public class MessageRoomController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MessageRoomDTO>> getAllMessageRooms() {
+    public ResponseEntity<List<MessageRoomDTO>> findAll() {
         return ResponseEntity.ok(messageRoomService.findAll());
     }
 
@@ -30,10 +30,41 @@ public class MessageRoomController {
         return ResponseEntity.ok(messageRoomService.get(id));
     }
 
+    /**
+     * Find all rooms with at least one message content and user id
+     * @param userId User id to search
+     * @return List of MessageRoomDTO
+     */
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<MessageRoomDTO>> findAllRoomsWithContentAndUser(@PathVariable(name = "userId") final UUID userId) {
+        return ResponseEntity.ok(messageRoomService.findAllRoomsWithContentAndUser(userId));
+    }
+
+    /**
+     * Find exact room with members
+     * @param userIds List of user ids
+     * @return MessageRoomDTO
+     */
+    @GetMapping("/exists")
+    public ResponseEntity<MessageRoomDTO> findExactRoomWithMembers(@RequestParam(name = "userIds") final List<UUID> userIds) {
+        return ResponseEntity.ok(messageRoomService.findExactRoomWithMembers(userIds));
+    }
+
     @PostMapping
     public ResponseEntity<UUID> createMessageRoom(@RequestBody @Valid final MessageRoomDTO messageRoomDTO) {
         final UUID createdId = messageRoomService.create(messageRoomDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+    }
+
+    /**
+     * Create message room with users also check if the room already exists with the same users and return it
+     * @param userIds List of user ids
+     * @return MessageRoomDTO
+     */
+    @PostMapping("/create")
+    public ResponseEntity<MessageRoomDTO> createMessageRoomWithUsers(@RequestBody @Valid final List<UUID> userIds) {
+        final MessageRoomDTO messageRoomDTO = messageRoomService.createMessageRoomWithUsers(userIds);
+        return new ResponseEntity<>(messageRoomDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Comment } from 'src/app/core/interfaces/comment';
 import { Post } from 'src/app/core/interfaces/post';
 import { CommentService } from 'src/app/core/services/comment.service';
@@ -23,6 +24,7 @@ export class PostDetailComponent {
       data: Comment[];
     };
   } = {}; // The replies for a comment (key is the comment id)
+  subscriptionComments: Subscription = new Subscription(); // Subscription to the comments observable
 
 
   constructor(
@@ -45,14 +47,15 @@ export class PostDetailComponent {
   }
 
   ngOnDestroy() {
-    if (this.post.id) this.commentService.disconnect(this.post.id);
+    if(this.post.id) this.commentService.disconnect(this.post.id);
+    this.subscriptionComments.unsubscribe();
   }
 
   /**
    * Subscribe to the comments observable to get the Comment object in real-time.
    */
   getCommentsObservable() {
-    this.commentService.getCommentsObservable().subscribe({
+    this.subscriptionComments = this.commentService.getCommentsObservable().subscribe({
       next: (comment) => {
         this.comments.unshift({ ...comment, createdDate: 'now' });
       },
