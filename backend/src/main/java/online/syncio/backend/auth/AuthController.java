@@ -4,9 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.auth.request.*;
+import online.syncio.backend.auth.responses.AuthResponse;
 import online.syncio.backend.auth.responses.LoginResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
-import online.syncio.backend.auth.responses.UserResponse;
+
 import online.syncio.backend.config.LocalizationUtils;
 import online.syncio.backend.exception.DataNotFoundException;
 import online.syncio.backend.exception.InvalidParamException;
@@ -42,6 +43,10 @@ public class AuthController {
     SettingService settingService;
     @Value("${apiPrefix.client}")
     private String apiPrefix;
+
+
+    @Value("${url.frontend}")
+    private String urlFE;
 //    private final RabbitTemplate rabbitTemplate;
 //    private final RabbitMQUtils rabbitMQService;
     /**
@@ -158,43 +163,19 @@ public class AuthController {
 
     @PostMapping("/details")
 //    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<UserResponse> getUserDetails(
+    public ResponseEntity<AuthResponse> getUserDetails(
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         try {
             String extractedToken = authorizationHeader.substring(7);
             User user = authService.getUserDetailsFromToken(extractedToken);
-            return ResponseEntity.ok(UserResponse.fromUser(user));
+            return ResponseEntity.ok(AuthResponse.fromUser(user));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @PutMapping("/reset-password/{userId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ResponseObject> resetPassword(@Valid @PathVariable UUID userId){
-        try {
-            String newPassword = UUID.randomUUID().toString().substring(0, 5); // Tạo mật khẩu mới
-            authService.resetPassword(userId, newPassword);
-            return ResponseEntity.ok(ResponseObject.builder()
-                    .message("Reset password successfully")
-                    .data(newPassword)
-                    .status(HttpStatus.OK)
-                    .build());
-        } catch (InvalidParamException e) {
-            return ResponseEntity.ok(ResponseObject.builder()
-                    .message("Invalid password")
-                    .data("")
-                    .status(HttpStatus.BAD_REQUEST)
-                    .build());
-        } catch (DataNotFoundException e) {
-            return ResponseEntity.ok(ResponseObject.builder()
-                    .message("User not found")
-                    .data("")
-                    .status(HttpStatus.BAD_REQUEST)
-                    .build());
-        }
-    }
+
 
     @RequestMapping(value = "api/users/logoutDummy")
     @PreAuthorize("permitAll()")
@@ -212,7 +193,7 @@ public class AuthController {
             return new ResponseEntity<>(new DataNotFoundException("User not exist"), HttpStatus.BAD_REQUEST);
         }
         String token = authService.updateResetPasswordToken(forgotPasswordForm.getEmail());
-        String link = "http://localhost:4200/reset_password?token=" + token;
+        String link = urlFE + "/reset_password?token=" + token;
 
         CustomerForgetPasswordUtil.sendEmail(link, forgotPasswordForm.getEmail(), settingService);
 
