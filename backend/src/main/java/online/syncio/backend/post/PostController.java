@@ -37,8 +37,11 @@ public class PostController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createPost(@RequestPart("post") @Valid CreatePostDTO postDTO,
-                                        @RequestPart("images") List<MultipartFile> images) throws IOException {
-        postDTO.setPhotos(images);
+                                        @RequestPart(name = "images", required = false) List<MultipartFile> images) throws IOException {
+
+        if (images != null && !images.isEmpty()) {
+            postDTO.setPhotos(images);
+        }
         ResponseEntity<?> createdId = postService.create(postDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }

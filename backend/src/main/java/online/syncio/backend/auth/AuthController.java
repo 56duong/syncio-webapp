@@ -4,9 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.auth.request.*;
+import online.syncio.backend.auth.responses.AuthResponse;
 import online.syncio.backend.auth.responses.LoginResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
-import online.syncio.backend.auth.responses.UserResponse;
+
 import online.syncio.backend.config.LocalizationUtils;
 import online.syncio.backend.exception.DataNotFoundException;
 import online.syncio.backend.exception.InvalidParamException;
@@ -158,13 +159,13 @@ public class AuthController {
 
     @PostMapping("/details")
 //    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<UserResponse> getUserDetails(
+    public ResponseEntity<AuthResponse> getUserDetails(
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         try {
             String extractedToken = authorizationHeader.substring(7);
             User user = authService.getUserDetailsFromToken(extractedToken);
-            return ResponseEntity.ok(UserResponse.fromUser(user));
+            return ResponseEntity.ok(AuthResponse.fromUser(user));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
