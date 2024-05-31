@@ -52,7 +52,6 @@ export class UserService {
     return this.http.post(this.apiLogin, loginDTO, this.apiConfig);
   }
   getUserDetail(token: string) {
-    console.log('responseToken:', token);
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -70,7 +69,6 @@ export class UserService {
       const userResponseJSON = JSON.stringify(userResponse);
       // Save the JSON string to local storage with a key (e.g., "userResponse")
       localStorage.setItem('user', userResponseJSON);
-      console.log('User response saved to local storage.');
     } catch (error) {
       console.error('Error saving user response to local storage:', error);
     }
@@ -84,7 +82,7 @@ export class UserService {
       }
       // Parse the JSON string back to an object
       const userResponse = JSON.parse(userResponseJSON!);
-      console.log('User response retrieved from local storage.');
+
       return userResponse;
     } catch (error) {
       console.error(
@@ -98,7 +96,6 @@ export class UserService {
     try {
       // Remove the user data from local storage using the key
       localStorage.removeItem('user');
-      console.log('User data removed from local storage.');
     } catch (error) {
       console.error('Error removing user data from local storage:', error);
       // Handle the error as needed
@@ -113,7 +110,7 @@ export class UserService {
    *      this.users = users;
    *    },
    *    error: (error) => {
-   *      console.log(error);
+
    *    }
    *  })
    */
@@ -131,7 +128,7 @@ export class UserService {
    *    this.user = user;
    *  },
    *  error: (error) => {
-   *    console.log(error);
+
    *  }
    * })
    */

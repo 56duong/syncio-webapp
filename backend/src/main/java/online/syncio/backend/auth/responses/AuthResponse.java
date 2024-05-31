@@ -12,7 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponse {
+public class AuthResponse {
     @JsonProperty("id")
     private UUID id;
 
@@ -33,8 +33,8 @@ public class UserResponse {
 
     @JsonProperty("role")
     private RoleEntity role;
-    public static UserResponse fromUser(User user) {
-        return UserResponse.builder()
+    public static AuthResponse fromUser(User user) {
+        return AuthResponse.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
