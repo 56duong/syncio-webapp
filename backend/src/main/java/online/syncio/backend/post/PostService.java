@@ -13,8 +13,7 @@ import online.syncio.backend.report.Report;
 import online.syncio.backend.report.ReportRepository;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
-import online.syncio.backend.utils.MessageKeys;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -51,6 +51,21 @@ public class PostService {
         return posts.stream()
                 .map(post -> mapToDTO(post, new PostDTO()))
                 .toList();
+    }
+
+    // load post theo page
+    public Page<PostDTO> getPosts(Pageable pageable) {
+        // sort theo createdDate giảm dần
+        Pageable sortedByCreatedDateDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdDate").descending());
+        Page<Post> posts = postRepository.findAll(sortedByCreatedDateDesc);
+
+        // map từ entity sang DTO -> trả về List<PostDTO>
+        List<PostDTO> postsDTO = posts.stream()
+                .map(post -> mapToDTO(post, new PostDTO()))
+                .collect(Collectors.toList());
+
+        // trả về Page<PostDTO>
+        return new PageImpl<>(postsDTO, pageable, posts.getTotalElements());
     }
 
     public PostDTO get(final UUID id) {
@@ -264,6 +279,7 @@ public class PostService {
                     .build());
         }
     }
+
 
 
 }
