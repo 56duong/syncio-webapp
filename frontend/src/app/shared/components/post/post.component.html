@@ -27,6 +27,26 @@
   <!-- photo -->
   <div *ngIf="post.photos?.length"></div>
 
+  <!-- <div class="left col-12 lg:col-8 xl:col-8 lg:h-full xl:h-full h-5/6 p-0"> -->
+  <ng-container *ngIf="post.photos?.length">
+    <p-carousel
+      *ngIf="post.photos && post.photos?.length"
+      [value]="post.photos"
+      [numVisible]="1"
+      [numScroll]="1"
+      [circular]="false"
+      [style]="{ height: '100%', position: 'relative' }"
+    >
+      <ng-template let-photo pTemplate="item">
+        <img
+          src="{{ photo }}"
+          class="w-full h-full"
+          style="object-fit: contain"
+        />
+      </ng-template>
+    </p-carousel>
+  </ng-container>
+  <!-- </div> -->
   <!-- caption (no photo) -->
   <div *ngIf="!post.photos?.length">
     <small>{{ post.caption }}</small>
