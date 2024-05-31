@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Post } from '../interfaces/post';
 import { environment } from 'src/environments/environment';
+import {map} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root',
@@ -28,8 +29,21 @@ export class PostService {
    *    }
    *  })
    */
-  getPosts(): Observable<Post[]> {
-    return this.http.get<Post[]>(this.apiURL);
+  // old
+  // getPosts(): Observable<Post[]> {
+  //   return this.http.get<Post[]>(this.apiURL);
+  // }
+  // old
+
+  // new - load 10 posts at a time
+getPosts(pageNumber: number, pageSize: number): Observable<Post[]> {
+    const param = {
+      pageNumber: pageNumber.toString(),
+      pageSize: pageSize.toString(),
+    };
+    // gọi api lấy danh sách các bài post từ csdl theo số trang và số bài post trên 1 trang
+    // dùng pipe.map để lấy mảng các bài post từ mục content của Page
+    return this.http.get<any>(this.apiURL, { params: param }).pipe(map(response => response.content));
   }
 
   /**
@@ -64,4 +78,5 @@ export class PostService {
   getNewPostCreated(): Observable<any> {
     return this.newPostCreated.asObservable();
   }
+
 }
