@@ -66,34 +66,39 @@ public class PostService {
 
         //Upload image
         List<MultipartFile> files = postDTO.getPhotos();
-        if(files.size() > 6) {
-            return ResponseEntity.badRequest().body("You can upload maximum 6 images");
-        }
         List<String> filenames = new ArrayList<>();
-        for(MultipartFile file : files) {
-            if(file.getSize() == 0) {
-                continue;
+
+        if (files != null && !files.isEmpty()) {
+            if (files.size() > 6) {
+                return ResponseEntity.badRequest().body("You can upload a maximum of 6 images");
             }
-            if(file.getSize() > 10 * 1024 * 1024) { // Kích thước > 10MB
-                return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-                        .body("File size is too large");
+
+            for (MultipartFile file : files) {
+                if (file.getSize() == 0) {
+                    continue;
+                }
+                if (file.getSize() > 10 * 1024 * 1024) {
+                    return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                            .body("File size is too large");
+                }
+                String contentType = file.getContentType();
+                if (contentType == null || !contentType.startsWith("image/")) {
+                    return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                            .body("File must be an image");
+                }
+
+                String filename = storeFile(file);
+                filenames.add(filename);
             }
-            String contentType = file.getContentType();
-            if(contentType == null || !contentType.startsWith("image/")) {
-                return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                        .body("File must be an image");
-            }
-            // Lưu file và cập nhật thumbnail trong DTO
-            String filename = storeFile(file);
-            filenames.add(filename);
         }
+
         post.setCaption(postDTO.getCaption());
         post.setFlag(postDTO.getFlag());
         post.setPhotos(filenames);
         post.setCreatedBy(user);
 
-        postRepository.save(post);
-        return ResponseEntity.ok("Post created successfully");
+        Post savedPost = postRepository.save(post);
+        return ResponseEntity.ok(savedPost.getId());
     }
     private boolean isImageFile(MultipartFile file) {
         String contentType = file.getContentType();

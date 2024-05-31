@@ -1,10 +1,7 @@
 package online.syncio.backend.auth.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Data
@@ -22,6 +19,7 @@ public class RegisterDTO {
     private String username;
     @NotBlank(message = "Password cannot be blank")
     @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters")
+    @Pattern(regexp = "^[^\\s]+$", message = "Password must not contain spaces")
     private String password;
 
     @JsonProperty("retype_password")

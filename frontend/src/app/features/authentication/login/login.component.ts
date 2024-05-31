@@ -90,7 +90,6 @@ export class LoginComponent implements OnInit {
       return;
     }
     if (this.password == null || this.password == '') {
-      console.log(' Password is required');
       this.showError(' Password is required');
       return;
     }
@@ -111,7 +110,6 @@ export class LoginComponent implements OnInit {
               ...response,
             };
 
-            console.log('userResponse:', this.userResponse?.role.name);
             this.userService.saveUserResponseToLocalStorage(this.userResponse);
             if (this.userResponse?.role.name == 'ADMIN') {
               this.router.navigate(['/admin']);
@@ -127,7 +125,6 @@ export class LoginComponent implements OnInit {
       },
       complete: () => {},
       error: (error: any) => {
-        console.log('error2:', error);
         this.showError(error.error.message);
       },
     });
@@ -156,11 +153,8 @@ export class LoginComponent implements OnInit {
     };
     this.userService.register(registerDTO).subscribe({
       next: (response: any) => {
-        const confirmation = window.confirm(
-          'Register successfully. Do you want to login now?'
-        );
-        if (confirmation) {
-          this.router.navigate(['/login']);
+        if (response.status === 'CREATED') {
+          this.deactivate();
         }
       },
       complete: () => {},
