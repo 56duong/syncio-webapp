@@ -43,7 +43,8 @@ export class CreatePostComponent {
             caption: this.post.caption,
             createdDate: new Date().toISOString(),
             flag: true,
-            createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
+            // createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
+            createdBy: "28cee30a-c3d7-4c78-b77a-6d7c4eafbba7",
           }),
         ],
         {
@@ -64,8 +65,15 @@ export class CreatePostComponent {
     };
     this.postService.createPost(formData).subscribe({
       next: (response: any) => {
-        post.id = response.body;
-
+        const post: Post = {
+          id: response,
+          caption: this.post.caption,
+          photos: this.selectedPhotos,
+          createdDate: new Date().toISOString(),
+          flag: true,
+          // createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
+          createdBy: "28cee30a-c3d7-4c78-b77a-6d7c4eafbba7",
+        };
         this.postService.setNewPostCreated(post);
       },
       error: (error) => {
