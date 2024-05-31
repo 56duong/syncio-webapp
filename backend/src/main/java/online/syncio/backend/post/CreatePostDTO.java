@@ -16,7 +16,7 @@ public class CreatePostDTO {
     private String caption;
 
     private List<MultipartFile> photos;
-
+    private List<String> photoFilenames;
     private LocalDateTime createdDate;
 
     @NotNull
