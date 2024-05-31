@@ -1,6 +1,8 @@
 <!-- like -->
 <div class="flex align-items-center gap-2">
-  <span (click)="likePost()" [class]="isLiked ? 'pi pi-heart cursor-pointer liked' : 'pi pi-heart cursor-pointer'" style="font-size: 1.5rem"></span>
+  <span (click)="likePost()" class="cursor-pointer"
+    [ngClass]="isLiked ? 'pi pi-heart-fill text-red-500' : 'pi pi-heart'"
+    style="font-size: 1.5rem"></span>
   <span (click)="openDialog()" class="pi pi-comment cursor-pointer" style="font-size: 1.5rem"></span>
 </div>
 

@@ -8,11 +8,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/billing")
-public class BillingConntroller {
+public class BillingController {
 
     public final BillingService billingService;
 
-    public BillingConntroller(BillingService billingService) {
+    public BillingController(BillingService billingService) {
         this.billingService = billingService;
     }
 

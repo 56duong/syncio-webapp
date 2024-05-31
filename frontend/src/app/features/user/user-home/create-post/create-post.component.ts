@@ -35,17 +35,18 @@ export class CreatePostComponent {
   createPost() {
     const formData = new FormData();
 
+    const post: Post = {
+      caption: this.post.caption,
+      createdDate: new Date().toISOString(),
+      flag: true,
+      createdBy: this.userService.getUserResponseFromLocalStorage()?.id
+    };
+
     formData.append(
       'post',
       new Blob(
         [
-          JSON.stringify({
-            caption: this.post.caption,
-            createdDate: new Date().toISOString(),
-            flag: true,
-            // createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
-            createdBy: "28cee30a-c3d7-4c78-b77a-6d7c4eafbba7",
-          }),
+          JSON.stringify(post),
         ],
         {
           type: 'application/json',
@@ -56,24 +57,12 @@ export class CreatePostComponent {
     this.selectedPhotoFile.forEach((photo: File, index) => {
       formData.append(`images`, photo);
     });
-    const post: Post = {
-      caption: this.post.caption,
-      photos: this.selectedPhotos,
-      createdDate: new Date().toISOString(),
-      flag: true,
-      createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
-    };
+
+    post.photos = this.selectedPhotos;
+    
     this.postService.createPost(formData).subscribe({
       next: (response: any) => {
-        const post: Post = {
-          id: response,
-          caption: this.post.caption,
-          photos: this.selectedPhotos,
-          createdDate: new Date().toISOString(),
-          flag: true,
-          // createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
-          createdBy: "28cee30a-c3d7-4c78-b77a-6d7c4eafbba7",
-        };
+        post.id = response.body;
         this.postService.setNewPostCreated(post);
       },
       error: (error) => {

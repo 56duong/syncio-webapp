@@ -1,6 +1,39 @@
 
 .post {
-  width: min(470px, 100vw);
+  width: min(470px, calc(100vw - 1rem));
+
+  ::ng-deep {
+    // Photos
+    .p-carousel-content,
+    .p-carousel-container,
+    .p-carousel-items-container {
+      height: 100%;
+    }
+
+    .p-carousel-indicators {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    // Next/Prev buttons
+    .p-carousel .p-carousel-content .p-carousel-prev, 
+    .p-carousel .p-carousel-content .p-carousel-next {
+      position: absolute;
+      z-index: 9;
+    }
+    
+    .p-carousel .p-carousel-content .p-carousel-next {
+      right: 0;
+    }
+
+    // Indicator
+    .p-carousel .p-carousel-indicators .p-carousel-indicator button {
+      width: 0.5rem;
+      border-radius: 50%;
+    }
+  }
 }
 
 .avt {
