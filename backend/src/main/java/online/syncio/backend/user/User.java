@@ -9,9 +9,7 @@ import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messageroommember.MessageRoomMember;
 import online.syncio.backend.post.Post;
 import online.syncio.backend.report.Report;
-import online.syncio.backend.role.RoleEntity;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -60,9 +58,9 @@ public class User implements UserDetails {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private RoleEntity role;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -112,7 +110,7 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
-        authorityList.add(new SimpleGrantedAuthority("ROLE_"+getRole().getName().toUpperCase()));
+        authorityList.add(new SimpleGrantedAuthority("ROLE_" + this.role.name().toUpperCase()));
 
         return authorityList;
     }

@@ -1,6 +1,7 @@
 package online.syncio.backend.post;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import online.syncio.backend.auth.responses.RegisterResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
 import online.syncio.backend.comment.Comment;
@@ -28,6 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -35,17 +37,9 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final ReportRepository reportRepository;
     private static String UPLOADS_FOLDER = "uploads";
-    public PostService(PostRepository postRepository, UserRepository userRepository, LikeRepository likeRepository, CommentRepository commentRepository, ReportRepository reportRepository) {
-        this.postRepository = postRepository;
-        this.userRepository = userRepository;
-        this.likeRepository = likeRepository;
-        this.commentRepository = commentRepository;
-        this.reportRepository = reportRepository;
-    }
 
-    
 
-//    CRUD
+    //    CRUD
     public List<PostDTO> findAll() {
         final List<Post> posts = postRepository.findAll(Sort.by("createdDate").descending());
         return posts.stream()
@@ -67,6 +61,7 @@ public class PostService {
         // trả về Page<PostDTO>
         return new PageImpl<>(postsDTO, pageable, posts.getTotalElements());
     }
+
 
     public PostDTO get(final UUID id) {
         return postRepository.findById(id)
@@ -119,6 +114,7 @@ public class PostService {
         String contentType = file.getContentType();
         return contentType != null && contentType.startsWith("image/");
     }
+
     public String storeFile(MultipartFile file) throws IOException {
         if (!isImageFile(file) || file.getOriginalFilename() == null) {
             throw new IOException("Invalid image format");
@@ -138,6 +134,7 @@ public class PostService {
         Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
         return uniqueFilename;
     }
+
     public void update(final UUID id, final PostDTO postDTO) {
         final Post post = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Post.class, "id", id.toString()));
@@ -151,6 +148,9 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    public long countPostByUser_Id (final UUID id) {
+        return postRepository.countByCreatedBy_Id(id);
+    }
 
 //    MAPPER
     private PostDTO mapToDTO(final Post post, final PostDTO postDTO) {
