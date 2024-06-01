@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Role } from './role';
 import { UserResponse } from './user.response';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/core/services/user.service';
@@ -44,9 +43,9 @@ export class LoginComponent implements OnInit {
   password: string = '';
   retypePassword: string = '';
   showPassword: boolean = false;
-  roles: Role[] = []; // Mảng roles
+  roles: string[] = []; // Mảng roles
   rememberMe: boolean = true;
-  selectedRole: Role | undefined; // Biến để lưu giá trị được chọn từ dropdown
+  selectedRole: string | undefined; // Biến để lưu giá trị được chọn từ dropdown
   userResponse?: UserResponse;
 
   onEmailChange() {
@@ -96,7 +95,7 @@ export class LoginComponent implements OnInit {
     const loginDTO: LoginDTO = {
       email: this.email,
       password: this.password,
-      role_id: this.selectedRole?.id ?? 2,
+      role_name: "USER",
     };
     this.userService.login(loginDTO).subscribe({
       next: (response: LoginResponse) => {
@@ -111,9 +110,9 @@ export class LoginComponent implements OnInit {
             };
 
             this.userService.saveUserResponseToLocalStorage(this.userResponse);
-            if (this.userResponse?.role.name == 'ADMIN') {
+            if (this.userResponse?.role_name == 'ADMIN') {
               this.router.navigate(['/admin']);
-            } else if (this.userResponse?.role.name == 'USER') {
+            } else if (this.userResponse?.role_name == 'USER') {
               this.router.navigate(['/']);
             }
           },
@@ -149,7 +148,7 @@ export class LoginComponent implements OnInit {
 
       // facebook_account_id: 0,
       // google_account_id: 0,
-      role_id: 2,
+      role_name: 'USER',
     };
     this.userService.register(registerDTO).subscribe({
       next: (response: any) => {
