@@ -3,34 +3,32 @@ package online.syncio.backend.auth;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import online.syncio.backend.auth.request.*;
+import online.syncio.backend.auth.request.ForgotPasswordForm;
+import online.syncio.backend.auth.request.RefreshTokenDTO;
+import online.syncio.backend.auth.request.RegisterDTO;
+import online.syncio.backend.auth.request.UserLoginDTO;
 import online.syncio.backend.auth.responses.AuthResponse;
 import online.syncio.backend.auth.responses.LoginResponse;
+import online.syncio.backend.auth.responses.RegisterResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
-
 import online.syncio.backend.config.LocalizationUtils;
 import online.syncio.backend.exception.DataNotFoundException;
-import online.syncio.backend.exception.InvalidParamException;
 import online.syncio.backend.setting.SettingService;
 import online.syncio.backend.user.User;
-import online.syncio.backend.user.UserService;
-import online.syncio.backend.auth.responses.RegisterResponse;
 import online.syncio.backend.utils.CustomerForgetPasswordUtil;
 import online.syncio.backend.utils.MessageKeys;
-//import online.syncio.backend.utils.RabbitMQUtils;
 import online.syncio.backend.utils.ValidationUtils;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("${api.prefix}/users")
@@ -113,20 +111,21 @@ public class AuthController {
         // Kiểm tra thông tin đăng nhập và sinh token
         String token = authService.login(
                 userLoginDTO.getEmail(),
-                userLoginDTO.getPassword(),
-                userLoginDTO.getRoleId() == null ? 1 : userLoginDTO.getRoleId()
+                userLoginDTO.getPassword()
         );
+
         String userAgent = request.getHeader("User-Agent");
         User userDetail = authService.getUserDetailsFromToken(token);
         Token jwtToken = tokenService.addToken(userDetail, token, isMobileDevice(userAgent));
 
-        LoginResponse loginResponse = LoginResponse.builder()
+        LoginResponse loginResponse = LoginResponse
+                .builder()
                 .message("Login successfully")
                 .token(jwtToken.getToken())
                 .tokenType(jwtToken.getTokenType())
                 .refreshToken(jwtToken.getRefreshToken())
                 .username(userDetail.getUsername())
-                .roles(userDetail.getAuthorities().stream().map(item -> item.getAuthority()).toList())
+                .roles(userDetail.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                 .id(userDetail.getId())
                 .build();
         return ResponseEntity.ok().body(ResponseObject.builder()
@@ -135,6 +134,7 @@ public class AuthController {
                 .status(HttpStatus.OK)
                 .build());
     }
+    
     @PostMapping("/refreshToken")
     public ResponseEntity<ResponseObject> refreshToken(
             @Valid @RequestBody RefreshTokenDTO refreshTokenDTO
