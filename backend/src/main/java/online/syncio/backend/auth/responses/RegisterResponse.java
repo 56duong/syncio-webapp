@@ -1,12 +1,8 @@
 package online.syncio.backend.auth.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
-import online.syncio.backend.role.RoleEntity;
+import online.syncio.backend.user.RoleEnum;
 import online.syncio.backend.user.StatusEnum;
 import online.syncio.backend.user.User;
 
@@ -33,7 +29,7 @@ public class RegisterResponse {
 
 
     @JsonProperty("role")
-    private RoleEntity role;
+    private RoleEnum role;
 
     public static RegisterResponse fromUser(User user) {
         return RegisterResponse.builder()

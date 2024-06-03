@@ -30,6 +30,12 @@ public class UserController {
         return ResponseEntity.ok(userService.get(id));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<UserDTO>> searchUsers(@RequestParam(name = "username", required = false) final String username,
+                                                     @RequestParam(name = "email", required = false) final String email) {
+        return ResponseEntity.ok(userService.findTop20ByUsernameContainingOrEmailContaining(username, email));
+    }
+
     @PostMapping
     public ResponseEntity<UUID> createUser(@RequestBody @Valid final UserDTO userDTO) {
         final UUID createdId = userService.create(userDTO);
@@ -54,5 +60,8 @@ public class UserController {
     }
 
 
-
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<UserProfile> getUserProfile (@PathVariable(name = "id") final UUID id) {
+        return ResponseEntity.ok(userService.getUserProfile(id));
+    }
 }

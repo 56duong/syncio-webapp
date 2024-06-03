@@ -14,6 +14,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { MessagesComponent } from './messages/messages.component';
 import { SearchComponent } from './search/search.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { MessageContentComponent } from './messages/message-content/message-content.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { PickerComponent } from '@ctrl/ngx-emoji-mart';
     ProfileComponent,
     MessagesComponent,
     SearchComponent,
+    MessageContentComponent,
   ],
   imports: [
     CommonModule,

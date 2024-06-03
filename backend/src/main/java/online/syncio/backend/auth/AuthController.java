@@ -3,23 +3,43 @@ package online.syncio.backend.auth;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+<<<<<<< HEAD
 import online.syncio.backend.auth.request.RefreshTokenDTO;
 import online.syncio.backend.auth.request.UserLoginDTO;
+=======
+import online.syncio.backend.auth.request.ForgotPasswordForm;
+import online.syncio.backend.auth.request.RefreshTokenDTO;
+import online.syncio.backend.auth.request.RegisterDTO;
+import online.syncio.backend.auth.request.UserLoginDTO;
+import online.syncio.backend.auth.responses.AuthResponse;
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
 import online.syncio.backend.auth.responses.LoginResponse;
+import online.syncio.backend.auth.responses.RegisterResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
-import online.syncio.backend.auth.responses.UserResponse;
 import online.syncio.backend.config.LocalizationUtils;
+<<<<<<< HEAD
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserService;
 import online.syncio.backend.auth.request.RegisterDTO;
 import online.syncio.backend.auth.responses.RegisterResponse;
+=======
+import online.syncio.backend.exception.DataNotFoundException;
+import online.syncio.backend.setting.SettingService;
+import online.syncio.backend.user.User;
+import online.syncio.backend.utils.CustomerForgetPasswordUtil;
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
 import online.syncio.backend.utils.MessageKeys;
-//import online.syncio.backend.utils.RabbitMQUtils;
 import online.syncio.backend.utils.ValidationUtils;
+<<<<<<< HEAD
 
+=======
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +55,17 @@ public class AuthController {
     private final LocalizationUtils localizationUtils;
     private final AuthService authService;
     private final TokenService tokenService;
+<<<<<<< HEAD
+=======
+    @Autowired
+    SettingService settingService;
+    @Value("${apiPrefix.client}")
+    private String apiPrefix;
+
+
+    @Value("${url.frontend}")
+    private String urlFE;
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
 //    private final RabbitTemplate rabbitTemplate;
 //    private final RabbitMQUtils rabbitMQService;
     /**
@@ -99,20 +130,21 @@ public class AuthController {
         // Kiểm tra thông tin đăng nhập và sinh token
         String token = authService.login(
                 userLoginDTO.getEmail(),
-                userLoginDTO.getPassword(),
-                userLoginDTO.getRoleId() == null ? 1 : userLoginDTO.getRoleId()
+                userLoginDTO.getPassword()
         );
+
         String userAgent = request.getHeader("User-Agent");
         User userDetail = authService.getUserDetailsFromToken(token);
         Token jwtToken = tokenService.addToken(userDetail, token, isMobileDevice(userAgent));
 
-        LoginResponse loginResponse = LoginResponse.builder()
+        LoginResponse loginResponse = LoginResponse
+                .builder()
                 .message("Login successfully")
                 .token(jwtToken.getToken())
                 .tokenType(jwtToken.getTokenType())
                 .refreshToken(jwtToken.getRefreshToken())
                 .username(userDetail.getUsername())
-                .roles(userDetail.getAuthorities().stream().map(item -> item.getAuthority()).toList())
+                .roles(userDetail.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                 .id(userDetail.getId())
                 .build();
         return ResponseEntity.ok().body(ResponseObject.builder()
@@ -121,6 +153,7 @@ public class AuthController {
                 .status(HttpStatus.OK)
                 .build());
     }
+    
     @PostMapping("/refreshToken")
     public ResponseEntity<ResponseObject> refreshToken(
             @Valid @RequestBody RefreshTokenDTO refreshTokenDTO
@@ -151,18 +184,19 @@ public class AuthController {
 
     @PostMapping("/details")
 //    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<UserResponse> getUserDetails(
+    public ResponseEntity<AuthResponse> getUserDetails(
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         try {
             String extractedToken = authorizationHeader.substring(7);
             User user = authService.getUserDetailsFromToken(extractedToken);
-            return ResponseEntity.ok(UserResponse.fromUser(user));
+            return ResponseEntity.ok(AuthResponse.fromUser(user));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
+<<<<<<< HEAD
 //    @PutMapping("/reset-password/{userId}")
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
 //    public ResponseEntity<ResponseObject> resetPassword(@Valid @PathVariable long userId){
@@ -189,4 +223,50 @@ public class AuthController {
 //        }
 //    }
 
+=======
+
+
+    @RequestMapping(value = "api/users/logoutDummy")
+    @PreAuthorize("permitAll()")
+    @ResponseStatus(HttpStatus.OK)
+    public void logout() {
+
+    }
+
+
+    @PostMapping(value = "/forgot_password")
+    public ResponseEntity<?> forgotPassword(HttpServletRequest request,@Valid @RequestBody ForgotPasswordForm forgotPasswordForm) throws Exception {
+
+
+        if (!authService.existsByEmail(forgotPasswordForm.getEmail())) {
+            return new ResponseEntity<>(new DataNotFoundException("User not exist"), HttpStatus.BAD_REQUEST);
+        }
+        String token = authService.updateResetPasswordToken(forgotPasswordForm.getEmail());
+        String link = urlFE + "/reset_password?token=" + token;
+
+        CustomerForgetPasswordUtil.sendEmail(link, forgotPasswordForm.getEmail(), settingService);
+
+
+        return  ResponseEntity.ok(ResponseObject.builder()
+                .message("Reset password link has been sent to your email")
+                .data("")
+                .status(HttpStatus.OK)
+                .build());
+    }
+
+    @PostMapping(value = "/reset_password")
+    public ResponseEntity<?> processResetPassword(@RequestParam(value = "token", required = true) String token,
+                                                  @RequestParam(value = "password", required = true) String password) throws Exception {
+
+        authService.updatePassword(token, password);
+
+        return  ResponseEntity.ok(
+                ResponseObject.builder()
+                        .message("Password updated successfully")
+                        .data("")
+                        .status(HttpStatus.OK)
+                        .build()
+        );
+    }
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
 }

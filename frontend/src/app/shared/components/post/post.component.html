@@ -3,6 +3,7 @@
   <div class="flex justify-content-between align-items-center">
     <div class="flex align-items-center gap-2">
       <div class="avt">
+<<<<<<< HEAD
         <img class="w-full object-cover" src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png" alt="" />
       </div>
       <div class="flex align-items-center gap-1">
@@ -13,15 +14,41 @@
         <small class="text-gray-500">{{
           post.createdDate | date : "HH:mm:ss dd/MM/yyyy"
           }}</small>
+=======
+        <img class="w-full object-cover"
+          src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
+          alt="" />
+      </div>
+      <div class="flex align-items-center gap-1">
+        <small *ngIf="post.createdBy" class="font-bold">
+          {{ post.createdBy | userIdToName | async }}
+        </small>
+        <small class="text-gray-500">•</small>
+        <small class="text-gray-500">
+          {{ post.createdDate | date : "HH:mm:ss dd/MM/yyyy" }}</small>
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
       </div>
     </div>
     <span *ngIf="post.id" class="pi pi-ellipsis-h cursor-pointer" (click)="showReportModal()"></span>
   </div>
 
   <!-- photo -->
-  <div *ngIf="post.photos?.length"></div>
+  <div *ngIf="post.photos && post.photos.length > 0">
+    <p-carousel [value]="post.photos"
+      [numVisible]="1"
+      [numScroll]="1"
+      [circular]="false"
+      [style]="{ height: '100%', position: 'relative' }">
+      <ng-template let-photo pTemplate="item">
+        <img src="{{ photo }}"
+          class="w-full h-full"
+          style="object-fit: contain" />
+      </ng-template>
+    </p-carousel>
+  </div>
 
   <!-- caption (no photo) -->
+<<<<<<< HEAD
   <div *ngIf="post.photos?.length">
     <small>{{ post.caption }}</small>
   </div>
@@ -36,3 +63,25 @@
 <app-post-detail *ngIf="visible" [post]="post" [visible]="visible" (visibleChange)="showPostDetail($event)"
   cl></app-post-detail>
 <app-report [post]="post" [display]="reportVisible" (visibleChange)="handleReportModalVisibility($event)"></app-report>
+=======
+  <div>
+    <small *ngIf="post.createdBy && post.photos && post.photos.length > 0" class="font-bold">
+      {{ post.createdBy | userIdToName | async }}
+    </small>
+    <small>{{ post.caption }}</small>
+  </div>
+
+  <!-- Like -->
+  <app-like *ngIf="post.id"
+    [postId]="post.id"
+    (visibleChange)="showPostDetail($event)">
+  </app-like>
+</div>
+
+<app-post-detail
+  *ngIf="visible"
+  [post]="post"
+  [visible]="visible"
+  (visibleChange)="showPostDetail($event)">
+</app-post-detail>
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63

@@ -47,7 +47,10 @@ export class ChangePasswordComponent implements OnInit {
         this.showError('Passwords do not match');
       } else {
         this.userService.resetPassword(this.token, this.password).subscribe({
-          next: () => this.showSuccess('Password changed successfully'),
+          next: () => {
+            this.showSuccess('Password changed successfully');
+            this.router.navigate(['/login']);
+          },
           error: (error: any) => this.showError("Couldn't change password"),
         });
       }
@@ -61,7 +64,7 @@ export class ChangePasswordComponent implements OnInit {
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
+    const hasSpace = /\s/.test(password);
     if (password.length < minLength) {
       return `Password must be at least ${minLength} characters long.`;
     }
@@ -76,6 +79,9 @@ export class ChangePasswordComponent implements OnInit {
     }
     if (!hasSpecialChar) {
       return 'Password must contain at least one special character.';
+    }
+    if (hasSpace) {
+      return 'Password must not contain spaces.';
     }
     return null;
   }

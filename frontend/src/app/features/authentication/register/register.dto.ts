@@ -19,7 +19,8 @@ export class RegisterDTO {
 
   // facebook_account_id: number = 0;
   // google_account_id: number = 0;
-  role_id: number = 2;
+  @IsString()
+  role_name: string = 'USER';
   constructor(data: any) {
     this.username = data.username;
     this.email = data.email;
@@ -29,6 +30,6 @@ export class RegisterDTO {
 
     // this.facebook_account_id = data.facebook_account_id || 0;
     // this.google_account_id = data.google_account_id || 0;
-    this.role_id = data.role_id || 2;
+    this.role_name = data.role_name || 'USER';
   }
 }

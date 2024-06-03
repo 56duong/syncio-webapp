@@ -1,6 +1,7 @@
 package online.syncio.backend.post;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import online.syncio.backend.auth.responses.RegisterResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
 import online.syncio.backend.comment.Comment;
@@ -13,8 +14,7 @@ import online.syncio.backend.report.Report;
 import online.syncio.backend.report.ReportRepository;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
-import online.syncio.backend.utils.MessageKeys;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,8 +26,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -35,17 +37,9 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final ReportRepository reportRepository;
     private static String UPLOADS_FOLDER = "uploads";
-    public PostService(PostRepository postRepository, UserRepository userRepository, LikeRepository likeRepository, CommentRepository commentRepository, ReportRepository reportRepository) {
-        this.postRepository = postRepository;
-        this.userRepository = userRepository;
-        this.likeRepository = likeRepository;
-        this.commentRepository = commentRepository;
-        this.reportRepository = reportRepository;
-    }
 
-    
 
-//    CRUD
+    //    CRUD
     public List<PostDTO> findAll() {
         // find all posts with flag = true and sort by createdDate in descending order
         final List<Post> posts = postRepository.findAll(Sort.by("createdDate").descending());
@@ -53,6 +47,22 @@ public class PostService {
                 .map(post -> mapToDTO(post, new PostDTO()))
                 .toList();
     }
+
+    // load post theo page
+    public Page<PostDTO> getPosts(Pageable pageable) {
+        // sort theo createdDate giảm dần
+        Pageable sortedByCreatedDateDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdDate").descending());
+        Page<Post> posts = postRepository.findAll(sortedByCreatedDateDesc);
+
+        // map từ entity sang DTO -> trả về List<PostDTO>
+        List<PostDTO> postsDTO = posts.stream()
+                .map(post -> mapToDTO(post, new PostDTO()))
+                .collect(Collectors.toList());
+
+        // trả về Page<PostDTO>
+        return new PageImpl<>(postsDTO, pageable, posts.getTotalElements());
+    }
+
 
     public PostDTO get(final UUID id) {
         return postRepository.findById(id)
@@ -67,39 +77,50 @@ public class PostService {
 
         //Upload image
         List<MultipartFile> files = postDTO.getPhotos();
-        if(files.size() > 6) {
-            return ResponseEntity.badRequest().body("You can upload maximum 6 images");
-        }
         List<String> filenames = new ArrayList<>();
-        for(MultipartFile file : files) {
-            if(file.getSize() == 0) {
-                continue;
+
+        if (files != null && !files.isEmpty()) {
+            if (files.size() > 6) {
+                return ResponseEntity.badRequest().body("You can upload a maximum of 6 images");
             }
-            if(file.getSize() > 10 * 1024 * 1024) { // Kích thước > 10MB
-                return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-                        .body("File size is too large");
+
+            for (MultipartFile file : files) {
+                if (file.getSize() == 0) {
+                    continue;
+                }
+                if (file.getSize() > 10 * 1024 * 1024) {
+                    return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                            .body("File size is too large");
+                }
+                String contentType = file.getContentType();
+                if (contentType == null || !contentType.startsWith("image/")) {
+                    return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                            .body("File must be an image");
+                }
+
+                String filename = storeFile(file);
+                filenames.add(filename);
             }
-            String contentType = file.getContentType();
-            if(contentType == null || !contentType.startsWith("image/")) {
-                return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                        .body("File must be an image");
-            }
-            // Lưu file và cập nhật thumbnail trong DTO
-            String filename = storeFile(file);
-            filenames.add(filename);
         }
+
         post.setCaption(postDTO.getCaption());
         post.setFlag(postDTO.getFlag());
         post.setPhotos(filenames);
         post.setCreatedBy(user);
 
+<<<<<<< HEAD
         postRepository.save(post);
         return ResponseEntity.ok(post.getId()) ;
+=======
+        Post savedPost = postRepository.save(post);
+        return ResponseEntity.ok(savedPost.getId());
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
     }
     private boolean isImageFile(MultipartFile file) {
         String contentType = file.getContentType();
         return contentType != null && contentType.startsWith("image/");
     }
+
     public String storeFile(MultipartFile file) throws IOException {
         if (!isImageFile(file) || file.getOriginalFilename() == null) {
             throw new IOException("Invalid image format");
@@ -119,6 +140,7 @@ public class PostService {
         Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
         return uniqueFilename;
     }
+
     public void update(final UUID id, final PostDTO postDTO) {
         final Post post = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Post.class, "id", id.toString()));
@@ -132,6 +154,9 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    public long countPostByUser_Id (final UUID id) {
+        return postRepository.countByCreatedBy_Id(id);
+    }
 
 //    MAPPER
     private PostDTO mapToDTO(final Post post, final PostDTO postDTO) {
@@ -260,6 +285,7 @@ public class PostService {
                     .build());
         }
     }
+
 
 
 }
