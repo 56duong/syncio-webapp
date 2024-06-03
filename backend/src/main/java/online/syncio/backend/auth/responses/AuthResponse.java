@@ -25,6 +25,8 @@ public class AuthResponse {
     @JsonProperty("status")
     private String status;
 
+
+
 //    @JsonProperty("facebook_account_id")
 //    private int facebookAccountId;
 //

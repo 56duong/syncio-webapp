@@ -6,9 +6,12 @@ import online.syncio.backend.post.PostRepository;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -73,5 +76,14 @@ public class LikeService {
                 .orElseThrow(() -> new NotFoundException(Post.class, "id", likeDTO.getPostId().toString()));
         like.setUser(user);
         return like;
+    }
+
+    public boolean hasLiked(UUID postId, UUID userId) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        User curUser = userRepository.findByUsername(currentPrincipalName).orElse(null);
+        Optional<Like> likeOptional = likeRepository.findByPostIdAndUserId(postId, curUser.getId());
+        return likeOptional.isPresent();
     }
 }

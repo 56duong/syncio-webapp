@@ -1,7 +1,6 @@
 package online.syncio.backend.auth;
 
 import lombok.RequiredArgsConstructor;
-import online.syncio.backend.config.LocalizationUtils;
 import online.syncio.backend.exception.DataNotFoundException;
 import online.syncio.backend.exception.ExpiredTokenException;
 import online.syncio.backend.exception.InvalidParamException;
@@ -12,9 +11,10 @@ import online.syncio.backend.user.StatusEnum;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
 import online.syncio.backend.auth.request.RegisterDTO;
+import online.syncio.backend.utils.ConstantsMessage;
 import online.syncio.backend.utils.CustomerRegisterUtil;
 import online.syncio.backend.utils.JwtTokenUtils;
-import online.syncio.backend.utils.MessageKeys;
+
 import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,7 +33,7 @@ import java.util.UUID;
 public class AuthService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final LocalizationUtils localizationUtils;
+
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtil;
@@ -53,8 +53,7 @@ public class AuthService {
             throw new DataIntegrityViolationException("Email đã tồn tại");
         }
         RoleEntity role =roleRepository.findById(userDTO.getRoleId())
-                .orElseThrow(() -> new DataNotFoundException(
-                        localizationUtils.getLocalizedMessage(MessageKeys.ROLE_DOES_NOT_EXISTS)));
+                .orElseThrow(() -> new DataNotFoundException(ConstantsMessage.ROLE_NOT_FOUND));
         if(role.getName().toUpperCase().equals(RoleEntity.ADMIN)) {
             throw new PermissionDenyException("Không được phép đăng ký tài khoản Admin");
         }
@@ -88,19 +87,19 @@ public class AuthService {
         }
 
         if(optionalUser.isEmpty()) {
-            throw new DataNotFoundException(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_PHONE_PASSWORD));
+            throw new DataNotFoundException(ConstantsMessage.WRONG_EMAIL_OR_PASSWORD);
         }
 
         User existingUser = optionalUser.get();
 
 
         if(!passwordEncoder.matches(password, existingUser.getPassword())) {
-            throw new BadCredentialsException(localizationUtils.getLocalizedMessage(MessageKeys.PASSWORD_NOT_MATCH));
+            throw new BadCredentialsException(ConstantsMessage.PASSWORD_NOT_MATCH);
 
         }
 
         if(!optionalUser.get().getStatus().equals(StatusEnum.ACTIVE)) {
-            throw new DataNotFoundException(localizationUtils.getLocalizedMessage(MessageKeys.USER_IS_LOCKED));
+            throw new DataNotFoundException(ConstantsMessage.USER_IS_LOCKED);
         }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 subject, password,

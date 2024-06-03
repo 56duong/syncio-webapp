@@ -3,10 +3,13 @@ package online.syncio.backend.post;
 import jakarta.validation.Valid;
 import online.syncio.backend.exception.ReferencedException;
 import online.syncio.backend.exception.ReferencedWarning;
+import online.syncio.backend.user.User;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +30,9 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<List<PostDTO>> getAllPosts() {
+
+
+
         return ResponseEntity.ok(postService.findAll());
     }
 
@@ -68,6 +74,7 @@ public class PostController {
         return postService.toggleLike(id, userId);
 
     }
+
     @GetMapping("/images/{imageName}")
     public ResponseEntity<?> viewImage(@PathVariable String imageName) {
         try {
