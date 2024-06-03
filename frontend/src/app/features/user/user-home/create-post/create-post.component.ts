@@ -24,6 +24,9 @@ export class CreatePostComponent {
 
   showDialog() {
     this.display = true;
+    this.post = {}; // Reset the post object
+    this.selectedPhotos = []; // Clear selected photos display
+    this.selectedPhotoFile = [];
   }
 
   onCancel() {
@@ -37,7 +40,6 @@ export class CreatePostComponent {
       return;
     }
     const formData = new FormData();
-
     formData.append(
       'post',
       new Blob(
@@ -46,7 +48,7 @@ export class CreatePostComponent {
             caption: this.post.caption,
             createdDate: new Date().toISOString(),
             flag: true,
-            createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
+            createdBy: '5f8dfe06-774f-484b-90cf-ceed1f705b70',
           }),
         ],
         {
@@ -60,15 +62,17 @@ export class CreatePostComponent {
     });
 
     this.postService.createPost(formData).subscribe({
-      next: (response: any) => {
+      next: (id: string) => {
         const post: Post = {
-          id: response.id,
+          id: id,
           caption: this.post.caption,
           photos: this.selectedPhotos,
           createdDate: new Date().toISOString(),
           flag: true,
-          createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
+          createdBy: '5f8dfe06-774f-484b-90cf-ceed1f705b70',
+          // createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
         };
+
         this.postService.setNewPostCreated(post);
       },
       error: (error) => {
@@ -76,9 +80,6 @@ export class CreatePostComponent {
       },
     });
 
-    this.post = {}; // Reset the post object
-    this.selectedPhotos = []; // Clear selected photos display
-    this.selectedPhotos = [];
     this.display = false;
   }
 

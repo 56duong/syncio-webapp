@@ -47,6 +47,7 @@ public class PostService {
 
 //    CRUD
     public List<PostDTO> findAll() {
+        // find all posts with flag = true and sort by createdDate in descending order
         final List<Post> posts = postRepository.findAll(Sort.by("createdDate").descending());
         return posts.stream()
                 .map(post -> mapToDTO(post, new PostDTO()))
@@ -93,7 +94,7 @@ public class PostService {
         post.setCreatedBy(user);
 
         postRepository.save(post);
-        return ResponseEntity.ok("Post created successfully");
+        return ResponseEntity.ok(post.getId()) ;
     }
     private boolean isImageFile(MultipartFile file) {
         String contentType = file.getContentType();

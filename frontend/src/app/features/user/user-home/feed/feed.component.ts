@@ -18,15 +18,20 @@ export class FeedComponent {
     this.getPosts();
 
     // Subscribe to the new post created event to add the new post to the top of the feed.
-    this.newPostCreatedSubscription = this.postService.getNewPostCreated().subscribe((post) => {
-      if (post) {
-        this.posts.unshift(post);
-      }
+    this.postService.getNewPostCreated().subscribe({
+      next: (post) => {
+        if (post) {
+          // Add the new post to the top of the feed
+          this.posts.unshift(post);
+        }
+      },
     });
   }
 
   ngOnDestroy() {
-    this.newPostCreatedSubscription.unsubscribe();
+    if (this.newPostCreatedSubscription) {
+      this.newPostCreatedSubscription.unsubscribe();
+    }
   }
 
   getPosts() {

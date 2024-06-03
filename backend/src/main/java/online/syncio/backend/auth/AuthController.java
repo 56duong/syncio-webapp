@@ -48,8 +48,6 @@ public class AuthController {
             @Valid @RequestBody RegisterDTO registerDTO,
             BindingResult result
     ) throws Exception {
-
-
         if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()

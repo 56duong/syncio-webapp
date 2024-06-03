@@ -7,9 +7,15 @@ import { PostDetailComponent } from './components/post-detail/post-detail.compon
 import { PrimengModule } from '../primeng/primeng.module';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { FormsModule } from '@angular/forms';
+import { ReportComponent } from './components/report/report.component';
 
 @NgModule({
-  declarations: [PostComponent, LikeComponent, PostDetailComponent],
+  declarations: [
+    PostComponent,
+    LikeComponent,
+    PostDetailComponent,
+    ReportComponent,
+  ],
   imports: [
     PickerComponent,
     CommonModule,

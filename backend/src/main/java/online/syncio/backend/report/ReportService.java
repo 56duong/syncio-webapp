@@ -24,8 +24,6 @@ public class ReportService {
         this.userRepository = userRepository;
     }
 
-
-
 //    CRUD
     public List<ReportDTO> findAll() {
         final List<Report> reports = reportRepository.findAll(Sort.by("createdDate"));
@@ -37,6 +35,11 @@ public class ReportService {
     public ReportDTO create(ReportDTO reportDTO) {
         Report report = mapToEntity(reportDTO, new Report());
         report.setCreatedDate(LocalDateTime.now());
+
+        // set flag of post to false
+        Post post = report.getPost();
+        post.setFlag(false);
+        postRepository.save(post);
 
         Report savedReport = reportRepository.save(report);
 
@@ -64,6 +67,7 @@ public class ReportService {
         reportDTO.setUserId(report.getUser().getId());
         reportDTO.setCreatedDate(report.getCreatedDate());
         reportDTO.setReason(report.getReason());
+        reportDTO.setDescription(report.getDescription());
         return reportDTO;
     }
 
@@ -76,6 +80,7 @@ public class ReportService {
         report.setUser(user);
         report.setCreatedDate(reportDTO.getCreatedDate());
         report.setReason(reportDTO.getReason());
+        report.setDescription(reportDTO.getDescription());
         return report;
     }
 }
