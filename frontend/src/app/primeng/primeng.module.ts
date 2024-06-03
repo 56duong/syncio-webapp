@@ -7,8 +7,10 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { EditorModule } from 'primeng/editor';
 import { CarouselModule } from 'primeng/carousel';
 import { AvatarModule } from 'primeng/avatar';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FileUploadModule } from 'primeng/fileupload';
+import { DropdownModule } from 'primeng/dropdown';
+import { ListboxModule } from 'primeng/listbox';
 
 @NgModule({
   declarations: [],
@@ -24,6 +26,9 @@ import { FileUploadModule } from 'primeng/fileupload';
     AvatarModule,
     InputTextModule,
     FileUploadModule,
+    DropdownModule,
+    ListboxModule,
+    ReactiveFormsModule,
   ],
 })
 export class PrimengModule {}

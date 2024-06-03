@@ -24,12 +24,10 @@ export class PostDetailComponent {
     };
   } = {}; // The replies for a comment (key is the comment id)
 
-
   constructor(
     private commentService: CommentService,
     private userService: UserService
-  ) { }
-
+  ) {}
 
   ngOnInit() {
     if (this.post.id) {
@@ -150,8 +148,7 @@ export class PostDetailComponent {
         .replace('@Reply&nbsp;', ''),
       postId: this.post.id,
 
-      userId: this.userService.getUserResponseFromLocalStorage()?.id
-
+      userId: this.userService.getUserResponseFromLocalStorage()?.id,
     };
 
     // If the comment is a parent comment, send the comment (realtime).

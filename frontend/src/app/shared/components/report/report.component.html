@@ -1,0 +1,37 @@
+<p-dialog header="Report" [modal]="true" [(visible)]="display" [closable]="false" [style]="{ width: '30rem' }">
+    <ng-template pTemplate="header">
+        <div class="grid w-full py-0">
+            <div class="col-10">
+                <h4 class="p-1 my-0">Report</h4>
+            </div>
+            <div class="col-2 py-0">
+                <span class="p-0" pButton type="button" icon="pi pi-times" (click)="closeModal()"
+                    class="p-button-text"></span>
+            </div>
+        </div>
+    </ng-template>
+
+    <form *ngIf="reportForm" [formGroup]="reportForm" (ngSubmit)="onSubmit()">
+        <div class="p-fluid">
+            <div class="field">
+                <label for="reason">Reason</label>
+                <p-dropdown id="reason" [options]="reasons" formControlName="reason" optionLabel="label"
+                    placeholder="Select a reason"></p-dropdown>
+            </div>
+
+            <div class="field">
+                <label for="description">Description</label>
+                <textarea id="description" pInputTextarea formControlName="description" rows="4" cols="30"></textarea>
+            </div>
+
+            <div class="grid">
+                <div class="col">
+                    <button type="submit" pButton label="Submit" [disabled]="!reportForm.valid"></button>
+                </div>
+                <div class="col">
+                    <button type="button" pButton label="Cancel" (click)="closeModal()"></button>
+                </div>
+            </div>
+        </div>
+    </form>
+</p-dialog>

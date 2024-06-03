@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
@@ -23,6 +23,7 @@ import { ToastModule } from 'primeng/toast';
     MessagesModule,
     MessageModule,
     ToastModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -30,6 +30,8 @@ public class PostController {
         return ResponseEntity.ok(postService.findAll());
     }
 
+
+
     @GetMapping("/{id}")
     public ResponseEntity<PostDTO> getPost(@PathVariable(name = "id") final UUID id) {
         return ResponseEntity.ok(postService.get(id));
@@ -40,7 +42,7 @@ public class PostController {
                                         @RequestPart("images") List<MultipartFile> images) throws IOException {
         postDTO.setPhotos(images);
         ResponseEntity<?> createdId = postService.create(postDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+        return ResponseEntity.ok(createdId);
     }
 
     @PutMapping("/{id}")
