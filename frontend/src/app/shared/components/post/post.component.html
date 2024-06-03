@@ -1,73 +1,57 @@
-<div
-  class="post flex flex-column m-auto gap-3 border-bottom-1 border-gray-300 pb-4 mt-4"
->
+<div class="post flex flex-column m-auto gap-3 border-bottom-1 border-gray-300 pb-4 mt-4">
   <!-- header -->
   <div class="flex justify-content-between align-items-center">
     <div class="flex align-items-center gap-2">
       <div class="avt">
-        <img
-          class="w-full object-cover"
+        <img class="w-full object-cover"
           src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
-          alt=""
-        />
+          alt="" />
       </div>
       <div class="flex align-items-center gap-1">
-        <small *ngIf="post.createdBy" class="font-bold">{{
-          post.createdBy | userIdToName | async
-        }}</small>
+        <small *ngIf="post.createdBy" class="font-bold">
+          {{ post.createdBy | userIdToName | async }}
+        </small>
         <small class="text-gray-500">•</small>
-        <small class="text-gray-500">{{
-          post.createdDate | date : "HH:mm:ss dd/MM/yyyy"
-        }}</small>
+        <small class="text-gray-500">
+          {{ post.createdDate | date : "HH:mm:ss dd/MM/yyyy" }}</small>
       </div>
     </div>
     <span class="pi pi-ellipsis-h cursor-pointer"></span>
   </div>
 
   <!-- photo -->
-  <div *ngIf="post.photos?.length"></div>
-
-  <!-- <div class="left col-12 lg:col-8 xl:col-8 lg:h-full xl:h-full h-5/6 p-0"> -->
-  <ng-container *ngIf="post.photos?.length">
-    <p-carousel
-      *ngIf="post.photos && post.photos?.length"
-      [value]="post.photos"
+  <div *ngIf="post.photos && post.photos.length > 0">
+    <p-carousel [value]="post.photos"
       [numVisible]="1"
       [numScroll]="1"
       [circular]="false"
-      [style]="{ height: '100%', position: 'relative' }"
-    >
+      [style]="{ height: '100%', position: 'relative' }">
       <ng-template let-photo pTemplate="item">
-        <img
-          src="{{ photo }}"
+        <img src="{{ photo }}"
           class="w-full h-full"
-          style="object-fit: contain"
-        />
+          style="object-fit: contain" />
       </ng-template>
     </p-carousel>
-  </ng-container>
-  <!-- </div> -->
+  </div>
+
   <!-- caption (no photo) -->
-  <div *ngIf="!post.photos?.length">
+  <div>
+    <small *ngIf="post.createdBy && post.photos && post.photos.length > 0" class="font-bold">
+      {{ post.createdBy | userIdToName | async }}
+    </small>
     <small>{{ post.caption }}</small>
   </div>
 
-  <app-like
-    *ngIf="post.id"
+  <!-- Like -->
+  <app-like *ngIf="post.id"
     [postId]="post.id"
-    (visibleChange)="showPostDetail($event)"
-  ></app-like>
-  <div *ngIf="post.photos?.length">
-    <small
-      >Introducing a new silhouette like you’ve never seen, available now</small
-    >
-  </div>
+    (visibleChange)="showPostDetail($event)">
+  </app-like>
 </div>
 
 <app-post-detail
   *ngIf="visible"
   [post]="post"
   [visible]="visible"
-  (visibleChange)="showPostDetail($event)"
-  cl
-></app-post-detail>
+  (visibleChange)="showPostDetail($event)">
+</app-post-detail>

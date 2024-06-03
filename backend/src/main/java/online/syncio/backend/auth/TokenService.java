@@ -6,8 +6,11 @@ import lombok.RequiredArgsConstructor;
 import online.syncio.backend.exception.DataNotFoundException;
 import online.syncio.backend.exception.ExpiredTokenException;
 import online.syncio.backend.user.User;
+import online.syncio.backend.user.UserRepository;
+import online.syncio.backend.user.UserService;
 import online.syncio.backend.utils.JwtTokenUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,7 +26,7 @@ public class TokenService {
 
     @Value("${jwt.expiration-refresh-token}")
     private int expirationRefreshToken;
-
+    private final UserService userService;
     private final TokenRepository tokenRepository;
     private final JwtTokenUtils jwtTokenUtil;
 
@@ -47,26 +50,13 @@ public class TokenService {
         return existingToken;
     }
     @Transactional
-
     public Token addToken(User user, String token, boolean isMobileDevice) {
         List<Token> userTokens = tokenRepository.findByUser(user);
         int tokenCount = userTokens.size();
         // Số lượng token vượt quá giới hạn, xóa một token cũ
         if (tokenCount >= MAX_TOKENS) {
-            //kiểm tra xem trong danh sách userTokens có tồn tại ít nhất
-            //một token không phải là thiết bị di động (non-mobile)
-            boolean hasNonMobileToken = !userTokens.stream().allMatch(Token::isMobile);
             Token tokenToDelete;
-            if (hasNonMobileToken) {
-                tokenToDelete = userTokens.stream()
-                        .filter(userToken -> !userToken.isMobile())
-                        .findFirst()
-                        .orElse(userTokens.get(0));
-            } else {
-                //tất cả các token đều là thiết bị di động,
-                //chúng ta sẽ xóa token đầu tiên trong danh sách
-                tokenToDelete = userTokens.get(0);
-            }
+            tokenToDelete = userTokens.get(0);
             tokenRepository.delete(tokenToDelete);
         }
         long expirationInSeconds = expiration;
@@ -79,12 +69,34 @@ public class TokenService {
                 .expired(false)
                 .tokenType("Bearer")
                 .expirationDate(expirationDateTime)
-                .isMobile(isMobileDevice)
+
                 .build();
 
         newToken.setRefreshToken(UUID.randomUUID().toString());
         newToken.setRefreshExpirationDate(LocalDateTime.now().plusSeconds(expirationRefreshToken));
         tokenRepository.save(newToken);
         return newToken;
+    }
+
+
+    @Transactional
+    public ResponseEntity<?> confirmToken(String token) {
+        Token confirmationToken = tokenRepository.findByToken(token);
+        if(confirmationToken == null) {
+            throw new IllegalStateException("Token not found");
+        }
+        if (confirmationToken.isRevoked()) {
+            throw new IllegalStateException("Token already used");
+        }
+
+        LocalDateTime expiredAt = confirmationToken.getExpirationDate();
+        if (expiredAt.isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("token expired");
+        }
+
+        confirmationToken.setRevoked(true);
+        tokenRepository.save(confirmationToken);
+        userService.enableUser(confirmationToken.getUser().getId());
+        return ResponseEntity.ok("Confirmed");
     }
 }

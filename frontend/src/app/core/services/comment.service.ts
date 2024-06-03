@@ -28,7 +28,14 @@ export class CommentService {
   /**
    * Connect to the WebSocket. Subscribe to the topic '/topic/comment/{postId}', 
    * that URL is the endpoint for the WebSocket configuration in the backend with @SendTo annotation.
+   * Remember to disconnect from the WebSocket when the component is destroyed.
    * @param postId - The id of the post.
+   * @example
+   * this.commentService.connectWebSocket(postId);
+   * 
+   * ngOnDestroy() {
+   *  if (this.post.id) this.commentService.disconnect(this.post.id);
+   * }
    */
   connectWebSocket(postId: string) {
     const socket = new SockJS(this.webSocketURL);
@@ -43,9 +50,12 @@ export class CommentService {
 
   /**
    * Get the comments observable.
+   * Remember to unsubscribe from the observable when the component is destroyed.
    * @returns the comment observable.
    * @example
-   * this.commentService.getCommentsObservable().subscribe({
+   * subscriptionComments: Subscription = new Subscription();
+   * 
+   * this.subscriptionComments = this.commentService.getCommentsObservable().subscribe({
    *  next: (comment) => {
    *   console.log(comment);
    *   this.comments.unshift({ ...comment, createdDate: 'now' });
@@ -54,6 +64,10 @@ export class CommentService {
    *   console.log(error);
    *  }
    * });
+   * 
+   * ngOnDestroy() {
+   *  this.subscriptionComments.unsubscribe();
+   * }
    */
   getCommentsObservable(): Observable<Comment> {
     return this.commentSubject.asObservable();
@@ -64,7 +78,7 @@ export class CommentService {
    * @param postId - The id of the post.
    */
   disconnect(postId: string) {
-    this.stompClient.unsubscribe(`/topic/comment/${this.stompClient}`);
+    this.stompClient.unsubscribe(`/topic/comment/${postId}`);
     this.stompClient.deactivate();
     this.stompClient.disconnect();
   }

@@ -14,9 +14,11 @@ public class RegisterDTO {
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email cannot be blank")
     private String email;
+
     @NotBlank(message = "Username cannot be blank")
     @Size(max = 50)
     private String username;
+
     @NotBlank(message = "Password cannot be blank")
     @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters")
     @Pattern(regexp = "^[^\\s]+$", message = "Password must not contain spaces")
@@ -24,9 +26,5 @@ public class RegisterDTO {
 
     @JsonProperty("retype_password")
     private String retypePassword;
-
-    @NotNull(message = "Role ID is required")
-    @JsonProperty("role_id")
-    private Long roleId;
 
 }

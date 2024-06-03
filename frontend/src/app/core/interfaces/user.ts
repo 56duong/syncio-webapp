@@ -16,7 +16,7 @@ export interface User {
 
   createdDate?: string;
 
-  role: RoleEnum;
+  role?: RoleEnum;
 
   status?: StatusEnum;
 }

@@ -1,21 +1,24 @@
 package online.syncio.backend.auth;
 
 import lombok.RequiredArgsConstructor;
+
 import online.syncio.backend.exception.DataNotFoundException;
 import online.syncio.backend.exception.ExpiredTokenException;
 import online.syncio.backend.exception.InvalidParamException;
-import online.syncio.backend.exception.PermissionDenyException;
-import online.syncio.backend.role.RoleEntity;
-import online.syncio.backend.role.RoleRepository;
+
+import online.syncio.backend.setting.SettingService;
+import online.syncio.backend.user.RoleEnum;
 import online.syncio.backend.user.StatusEnum;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
 import online.syncio.backend.auth.request.RegisterDTO;
 import online.syncio.backend.utils.ConstantsMessage;
+import online.syncio.backend.utils.CustomerForgetPasswordUtil;
 import online.syncio.backend.utils.CustomerRegisterUtil;
 import online.syncio.backend.utils.JwtTokenUtils;
 
 import org.modelmapper.internal.bytebuddy.utility.RandomString;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -24,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,13 +36,15 @@ import java.util.UUID;
 @Service
 public class AuthService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
 
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
-
+    private final  TokenService tokenService;
+    private final SettingService settingService;
+    @Value("${url.frontend}")
+    private String urlFE;
     public Boolean existsByEmail(String email) {
         // TODO Auto-generated method stub
         return userRepository.existsByEmail(email);
@@ -46,38 +52,43 @@ public class AuthService {
 
     @Transactional
     public User createUser(RegisterDTO userDTO) throws Exception {
-        //register user
+        // Check if the email already exists
         String email = userDTO.getEmail();
-
         if(!email.isBlank() && userRepository.existsByEmail(email)) {
             throw new DataIntegrityViolationException("Email đã tồn tại");
         }
-        RoleEntity role =roleRepository.findById(userDTO.getRoleId())
-                .orElseThrow(() -> new DataNotFoundException(ConstantsMessage.ROLE_NOT_FOUND));
-        if(role.getName().toUpperCase().equals(RoleEntity.ADMIN)) {
-            throw new PermissionDenyException("Không được phép đăng ký tài khoản Admin");
-        }
-        //convert from userDTO => user
+
+
+        String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
         User newUser = User.builder()
                 .email(userDTO.getEmail())
-                    .password(userDTO.getPassword())
+                .password(encodedPassword)
                 .username(userDTO.getUsername())
-                .status(StatusEnum.ACTIVE)
+                .status(StatusEnum.DISABLED)
+                .role(RoleEnum.USER)
                 .build();
 
-        newUser.setRole(role);
+        newUser = userRepository.save(newUser);
 
-        String password = userDTO.getPassword();
-        String encodedPassword = passwordEncoder.encode(password);
-        newUser.setPassword(encodedPassword);
+        String token = UUID.randomUUID().toString();
+        Token confirmationToken = Token.builder()
+                .token(token)
+                .user(newUser)
+                .expirationDate(LocalDateTime.now().plusMinutes(30)) //30 minutes
+                .revoked(false)
+                .build();
 
-
-        return userRepository.save(newUser);
+        tokenRepository.save(confirmationToken);
+        String link = urlFE + "/confirm-user-register?token=" + token;
+        CustomerForgetPasswordUtil.sendEmailTokenRegister(link, email, settingService);
+        return newUser;
     }
+
+
+
     public String login(
             String email,
-            String password,
-            Long roleId
+            String password
     ) throws Exception {
         Optional<User> optionalUser = Optional.empty();
         String subject = null;
@@ -87,7 +98,7 @@ public class AuthService {
         }
 
         if(optionalUser.isEmpty()) {
-            throw new DataNotFoundException(ConstantsMessage.WRONG_EMAIL_OR_PASSWORD);
+            throw new DataNotFoundException(ConstantsMessage.USER_NOT_FOUND);
         }
 
         User existingUser = optionalUser.get();
@@ -163,6 +174,7 @@ public class AuthService {
 
         customer.setPassword(newPassword);
         customer.setResetPasswordToken(null);
+        customer.setStatus(StatusEnum.ACTIVE);
         CustomerRegisterUtil.encodePassword(customer, passwordEncoder);
 
         userRepository.save(customer);

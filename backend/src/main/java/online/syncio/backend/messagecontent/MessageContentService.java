@@ -4,6 +4,7 @@ import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.messageroom.MessageRoom;
 import online.syncio.backend.messageroom.MessageRoomRepository;
 import online.syncio.backend.user.User;
+import online.syncio.backend.user.UserDTO;
 import online.syncio.backend.user.UserRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class MessageContentService {
     }
 
     public List<MessageContentDTO> findByMessageRoomId(final UUID messageRoomId) {
-        return messageContentRepository.findByMessageRoomId(messageRoomId)
+        return messageContentRepository.findByMessageRoomIdOrderByDateSentAsc(messageRoomId)
                 .stream()
                 .map(messageContent -> mapToDTO(messageContent, new MessageContentDTO()))
                 .toList();
@@ -71,7 +72,11 @@ public class MessageContentService {
     private MessageContentDTO mapToDTO(final MessageContent messageContent, final MessageContentDTO messageContentDTO) {
         messageContentDTO.setId(messageContent.getId());
         messageContentDTO.setMessageRoomId(messageContent.getMessageRoom().getId());
-        messageContentDTO.setUserId(messageContent.getUser().getId());
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(messageContent.getUser().getId());
+        userDTO.setUsername(messageContent.getUser().getUsername());
+        userDTO.setAvtURL(messageContent.getUser().getAvtURL());
+        messageContentDTO.setUser(userDTO);
         messageContentDTO.setMessage(messageContent.getMessage());
         messageContentDTO.setDateSent(messageContent.getDateSent());
         return messageContentDTO;
@@ -81,8 +86,8 @@ public class MessageContentService {
         final MessageRoom messageRoom = messageContentDTO.getMessageRoomId() == null ? null : messageRoomRepository.findById(messageContentDTO.getMessageRoomId())
                 .orElseThrow(() -> new NotFoundException(MessageRoom.class, "id", messageContentDTO.getMessageRoomId().toString()));
         messageContent.setMessageRoom(messageRoom);
-        final User user = messageContentDTO.getMessageRoomId() == null ? null : userRepository.findById(messageContentDTO.getUserId())
-                .orElseThrow(() -> new NotFoundException(User.class, "id", messageContentDTO.getUserId().toString()));
+        final User user = messageContentDTO.getMessageRoomId() == null ? null : userRepository.findById(messageContentDTO.getUser().getId())
+                .orElseThrow(() -> new NotFoundException(User.class, "id", messageContentDTO.getUser().getId().toString()));
         messageContent.setUser(user);
         messageContent.setMessage(messageContentDTO.getMessage());
         messageContent.setDateSent(messageContentDTO.getDateSent());

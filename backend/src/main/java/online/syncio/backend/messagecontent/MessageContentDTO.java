@@ -3,6 +3,7 @@ package online.syncio.backend.messagecontent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import online.syncio.backend.user.UserDTO;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,7 +15,7 @@ public class MessageContentDTO {
 
     private UUID messageRoomId;
 
-    private UUID userId;
+    private UserDTO user;
 
     @NotNull
     @Size(max = 1000)

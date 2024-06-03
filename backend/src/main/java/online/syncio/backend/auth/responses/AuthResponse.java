@@ -2,7 +2,7 @@ package online.syncio.backend.auth.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import online.syncio.backend.role.RoleEntity;
+import online.syncio.backend.user.RoleEnum;
 import online.syncio.backend.user.User;
 
 import java.util.UUID;
@@ -26,23 +26,15 @@ public class AuthResponse {
     private String status;
 
 
-
-//    @JsonProperty("facebook_account_id")
-//    private int facebookAccountId;
-//
-//    @JsonProperty("google_account_id")
-//    private int googleAccountId;
-
     @JsonProperty("role")
-    private RoleEntity role;
+    private RoleEnum role;
+
     public static AuthResponse fromUser(User user) {
         return AuthResponse.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .status(String.valueOf(user.getStatus()))
-//                .facebookAccountId(user.getFacebookAccountId())
-//                .googleAccountId(user.getGoogleAccountId())
                 .role(user.getRole())
                 .build();
     }

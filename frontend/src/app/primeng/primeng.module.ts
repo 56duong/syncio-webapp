@@ -9,10 +9,13 @@ import { CarouselModule } from 'primeng/carousel';
 import { AvatarModule } from 'primeng/avatar';
 import { FormsModule } from '@angular/forms';
 import { FileUploadModule } from 'primeng/fileupload';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { SidebarModule } from 'primeng/sidebar';
 
 @NgModule({
   declarations: [],
   exports: [
+    AutoCompleteModule,
     FormsModule,
     CarouselModule,
     EditorModule,
@@ -24,6 +27,7 @@ import { FileUploadModule } from 'primeng/fileupload';
     AvatarModule,
     InputTextModule,
     FileUploadModule,
+    SidebarModule,
   ],
 })
 export class PrimengModule {}

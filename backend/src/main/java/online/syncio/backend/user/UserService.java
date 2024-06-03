@@ -1,5 +1,6 @@
 package online.syncio.backend.user;
 
+import lombok.RequiredArgsConstructor;
 import online.syncio.backend.comment.Comment;
 import online.syncio.backend.comment.CommentRepository;
 import online.syncio.backend.exception.NotFoundException;
@@ -10,6 +11,7 @@ import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messagecontent.MessageContentRepository;
 import online.syncio.backend.messageroommember.MessageRoomMember;
 import online.syncio.backend.messageroommember.MessageRoomMemberRepository;
+import online.syncio.backend.post.PostService;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.report.ReportRepository;
 import org.springframework.data.domain.Sort;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
@@ -26,19 +29,9 @@ public class UserService {
     private final ReportRepository reportRepository;
     private final MessageRoomMemberRepository messageRoomMemberRepository;
     private final MessageContentRepository messageContentRepository;
+    private final PostService postService;
 
-    public UserService(UserRepository userRepository, LikeRepository likeRepository, CommentRepository commentRepository, ReportRepository reportRepository, MessageRoomMemberRepository messageRoomMemberRepository, MessageContentRepository messageContentRepository) {
-        this.userRepository = userRepository;
-        this.likeRepository = likeRepository;
-        this.commentRepository = commentRepository;
-        this.reportRepository = reportRepository;
-        this.messageRoomMemberRepository = messageRoomMemberRepository;
-        this.messageContentRepository = messageContentRepository;
-    }
-
-    
-
-//    CRUD
+    //    CRUD
     public List<UserDTO> findAll() {
         final List<User> users = userRepository.findAll(Sort.by("createdDate").descending());
         return users.stream()
@@ -50,6 +43,19 @@ public class UserService {
         return userRepository.findById(id)
                 .map(user -> mapToDTO(user, new UserDTO()))
                 .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+    }
+
+    public UserProfile getUserProfile (final UUID id) {
+        return userRepository.findById(id)
+                             .map(user -> mapToUserProfile(user, new UserProfile()))
+                             .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+    }
+
+    public List<UserDTO> findTop20ByUsernameContainingOrEmailContaining(final String username, final String email) {
+        final List<User> users = userRepository.findTop20ByUsernameContainingOrEmailContaining(username, email);
+        return users.stream()
+                .map(user -> mapToDTO(user, new UserDTO()))
+                .toList();
     }
 
     public UUID create(final UserDTO userDTO) {
@@ -86,6 +92,20 @@ public class UserService {
         userDTO.setStatus(user.getStatus());
         return userDTO;
     }
+
+    private UserProfile mapToUserProfile (final User user, final UserProfile userProfile) {
+        userProfile.setId(user.getId());
+        userProfile.setUsername(user.getUsername());
+        userProfile.setAvtURL(user.getAvtURL());
+        userProfile.setBio(user.getBio());
+
+        userProfile.setPostCount(postService.countPostByUser_Id(user.getId()));
+        userProfile.setFollowerCount(user.getFollowers().size());
+        userProfile.setFollowingCount(user.getFollowing().size());
+
+        return userProfile;
+    }
+
 
     private User mapToEntity(final UserDTO userDTO, final User user) {
         user.setEmail(userDTO.getEmail());
@@ -149,5 +169,9 @@ public class UserService {
         }
 
         return null;
+    }
+
+    public void enableUser(UUID id) {
+        userRepository.enableUser(id);
     }
 }

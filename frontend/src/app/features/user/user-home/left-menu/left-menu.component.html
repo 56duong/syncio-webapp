@@ -1,4 +1,5 @@
-<div class="main w-full">
+<div class="main left-menu w-full"
+  [ngClass]="{'hide-menu-label': isHideMenuLabel}">
   <nav class="h-full p-4 md:px-2">
     <ul
       class="flex flex-column align-items-center lg:align-items-start xl:align-items-start gap-6 h-full pl-0 m-0 list-none">
@@ -15,10 +16,10 @@
             [routerLinkActiveOptions]="{exact: true}" [label]="menu.label" [icon]="menu.icon" [text]="true"
             [plain]="true" />
         </li>
-        <div class="p-fluid mt-auto">
+        <li class="p-fluid w-full">
           <p-button class="text-left" label="Create" icon="pi pi-pencil" [text]="true" [plain]="true"
             (click)="onCreateClick()" />
-        </div>
+        </li>
       </div>
       <div class="p-fluid w-full sm:mt-auto mt-0 mobile-hidden">
         <p-button class="text-left" label="Setting" icon="pi pi-cog" [text]="true" [plain]="true" />

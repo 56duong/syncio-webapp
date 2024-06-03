@@ -1,0 +1,24 @@
+:host {
+  padding: 0;
+}
+
+.message-item:hover,
+.message-item.active {
+  background-color: #f5f5f5;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.message-container {
+  min-height: calc(100vh - 1rem);
+  max-height: calc(100vh - 1rem);
+
+  ::ng-deep .p-divider {
+    margin: 0;
+  }
+}
+
+p-dialog {
+  position: relative;
+  z-index: 1000;
+}
