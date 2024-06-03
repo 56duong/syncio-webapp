@@ -33,7 +33,9 @@ public class Token {
     // expirationDate is the time when the token expires
     @Column(name = "refresh_expiration_date")
     private LocalDateTime refreshExpirationDate;
+
     // refreshExpirationDate is the time when the refresh token expires
+
 
     private boolean revoked;
     private boolean expired;
