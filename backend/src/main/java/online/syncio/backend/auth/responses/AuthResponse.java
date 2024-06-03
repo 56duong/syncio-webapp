@@ -25,11 +25,6 @@ public class AuthResponse {
     @JsonProperty("status")
     private String status;
 
-/*    @JsonProperty("facebook_account_id")
-    private int facebookAccountId;
-
-    @JsonProperty("google_account_id")
-    private int googleAccountId;*/
 
     @JsonProperty("role")
     private RoleEnum role;
@@ -40,8 +35,6 @@ public class AuthResponse {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .status(String.valueOf(user.getStatus()))
-/*                .facebookAccountId(user.getFacebookAccountId())
-                .googleAccountId(user.getGoogleAccountId())*/
                 .role(user.getRole())
                 .build();
     }
