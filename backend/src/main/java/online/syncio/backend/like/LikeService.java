@@ -78,7 +78,7 @@ public class LikeService {
         return like;
     }
 
-    public boolean hasLiked(UUID postId, UUID userId) {
+    public boolean hasLiked(UUID postId) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
