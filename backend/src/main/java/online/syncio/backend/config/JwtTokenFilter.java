@@ -75,28 +75,17 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         final List<Pair<String, String>> bypassTokens = Arrays.asList(
 
              
-//                Pair.of(String.format("%s/**", apiPrefix), "GET"),
-//                Pair.of(String.format("%s/**", apiPrefix), "POST"),
-//                Pair.of(String.format("%s/**", apiPrefix), "DELETE"),
-//                Pair.of(String.format("%s/**", apiPrefix), "PUT"),
-//
-//
-//                Pair.of("/**", "GET"),
+
 //
 //                Pair.of(String.format("%s/healthcheck/health", apiPrefix), "GET"),
 //                Pair.of(String.format("%s/actuator/**", apiPrefix), "GET"),
 //
-//                Pair.of(String.format("%s/roles**", apiPrefix), "GET"),
-//                Pair.of(String.format("%s/users/register", apiPrefix), "POST"),
-//                Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
-//                Pair.of(String.format("%s/users/refreshToken", apiPrefix), "POST"),
-
-
-                Pair.of("/**", "GET"),
-                Pair.of("/**", "POST"),
-                Pair.of("/**", "PUT"),
-                Pair.of("/**", "DELETE"),
-                Pair.of("/**", "PATCH")
+                Pair.of(String.format("%s/roles**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/users/register", apiPrefix), "POST"),
+                Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
+                Pair.of(String.format("%s/users/refreshToken", apiPrefix), "POST"),
+                Pair.of(String.format("%s/posts/images/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/posts", apiPrefix), "GET")
 
         );
 
