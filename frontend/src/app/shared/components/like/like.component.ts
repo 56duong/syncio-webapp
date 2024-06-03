@@ -18,8 +18,9 @@ export class LikeComponent {
   commentCount: number = 0;
   userId: number = 0;
   isLiked: boolean = false;
-  userResponse?: UserResponse | null = this.userService.getUserResponseFromLocalStorage();
-  
+  userResponse?: UserResponse | null =
+    this.userService.getUserResponseFromLocalStorage();
+
   constructor(
     private likeService: LikeService,
     private commentService: CommentService,
@@ -51,23 +52,17 @@ export class LikeComponent {
     this.likeService.countLikes(this.postId).subscribe({
       next: (count) => {
         this.likeCount = count;
-        // Check if the user has liked the post
-        if (this.userResponse) {
-          this.likeService
-            .hasLiked(this.postId, this.userResponse.id)
-            .subscribe({
-              next: (liked: boolean) => {
-                console.log(liked);
-                this.isLiked = liked;
-              },
-              error: (error: any) => {
-                console.log(error);
-              },
-            });
-        }
+        this.likeService.hasLiked(this.postId).subscribe({
+          next: (liked: boolean) => {
+            this.isLiked = liked;
+          },
+          error: (error: any) => {
+            console.error('Error checking if post is liked:', error);
+          },
+        });
       },
       error: (error) => {
-        console.log(error);
+        console.error('Error checking if post is liked:', error);
       },
     });
   }
