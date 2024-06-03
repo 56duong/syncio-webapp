@@ -22,7 +22,7 @@ public class SettingBag implements Serializable {
     public String getValue(String key) {
         Setting setting = get(key);
         if (setting != null) {
-            return setting.getValue();
+            return setting.getSettingValue();
         }
 
         return null;
@@ -31,7 +31,7 @@ public class SettingBag implements Serializable {
     public void update(String key, String value) {
         Setting setting = get(key);
         if (setting != null && value != null) {
-            setting.setValue(value);
+            setting.setSettingValue(value);
         }
     }
 
