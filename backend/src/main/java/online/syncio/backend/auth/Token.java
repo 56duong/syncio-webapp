@@ -34,7 +34,7 @@ public class Token {
     @Column(name = "refresh_expiration_date")
     private LocalDateTime refreshExpirationDate;
 
-    @Column(name = "is_mobile", columnDefinition = "TINYINT(1)")
+    @Column(name = "is_mobile", columnDefinition = "BIT")
     private boolean isMobile;
 
     private boolean revoked;

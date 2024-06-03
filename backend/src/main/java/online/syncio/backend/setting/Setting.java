@@ -16,17 +16,17 @@ import java.io.Serializable;
 public class Setting implements Serializable {
 
     @Id
-    @Column(name = "`key`", nullable = false, length = 128)
-    private String key;
+    @Column(nullable = false, length = 128)
+    private String settingKey;
 
     @Column(nullable = false, length = 1024)
-    private String value;
+    private String settingValue;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 100, nullable = false)
     private SettingCategory category;
-    public Setting(String key) {
-        this.key = key;
+    public Setting (String settingKey) {
+        this.settingKey = settingKey;
     }
 
 
@@ -34,7 +34,7 @@ public class Setting implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((key == null) ? 0 : key.hashCode());
+        result = prime * result + ((settingKey == null) ? 0 : settingKey.hashCode());
         return result;
     }
 
@@ -47,10 +47,10 @@ public class Setting implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         Setting other = (Setting) obj;
-        if (key == null) {
-            if (other.key != null)
+        if (settingKey == null) {
+            if (other.settingKey != null)
                 return false;
-        } else if (!key.equals(other.key))
+        } else if (!settingKey.equals(other.settingKey))
             return false;
         return true;
     }
