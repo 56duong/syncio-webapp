@@ -1,0 +1,53 @@
+package online.syncio.backend.label;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import online.syncio.backend.billing.Billing;
+import online.syncio.backend.user.User;
+import online.syncio.backend.userlabelinfo.UserLabelInfo;
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.UUID;
+
+@Entity
+@Table(name = "label")
+@Data
+@EntityListeners(AuditingEntityListener.class) // tự động xử lý các sự kiện của entity như @CreatedDate
+public class Label {
+    @Id
+    @Column(nullable = false, updatable = false) // không được null, không được update
+    @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator") // sử dụng lớp UUIDGenerator của Hibernate để tạo ra giá trị UUID
+    @GeneratedValue(generator = "uuid") // giá trị của thuộc tính id sẽ được tự động tạo bởi generator có tên là "uuid"
+    private UUID id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column
+    private String description;
+
+    @Column
+    private Double price;
+
+    @Column
+    @CreatedDate
+    private LocalDateTime createdDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @CreatedBy
+    private User createdBy;
+
+    // Billing
+    @OneToMany(mappedBy = "label")
+    private Set<Billing> billings;
+
+    // UserLabelInfo
+    @OneToMany(mappedBy = "label")
+    private Set<UserLabelInfo> userLabelInfos;
+}

@@ -18,12 +18,11 @@ export class LikeComponent {
   commentCount: number = 0;
   userId: number = 0;
   isLiked: boolean = false;
-  userResponse?: UserResponse | null =
-    this.userService.getUserResponseFromLocalStorage();
+  userResponse?: UserResponse | null = this.userService.getUserResponseFromLocalStorage();
+  
   constructor(
     private likeService: LikeService,
     private commentService: CommentService,
-    private tokenService: TokenService,
     private userService: UserService
   ) {}
 
@@ -38,7 +37,9 @@ export class LikeComponent {
         this.isLiked = !this.isLiked;
         this.countLikes();
       },
-      error: (error: any) => {},
+      error: (error: any) => {
+        console.log(error);
+      },
     });
   }
 

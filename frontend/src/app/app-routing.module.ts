@@ -8,6 +8,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ToastModule } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
 import { ChangePasswordComponent } from './features/authentication/changepassword/changepassword.component';
+import { AdminComponent } from './features/admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ const routes: Routes = [
   {
     path: 'admin',
     title: 'Administration | Syncio',
+    component: AdminComponent,
     loadChildren: () =>
       import('./features/admin/admin.module').then((m) => m.AdminModule),
   },
@@ -48,6 +50,11 @@ const routes: Routes = [
     path: 'reset_password',
     title: 'reset_password',
     component: ChangePasswordComponent,
+  },
+  {
+    path: 'confirm-user-register',
+    title: 'confirm-user-register',
+    component: LoginComponent,
   },
 ];
 

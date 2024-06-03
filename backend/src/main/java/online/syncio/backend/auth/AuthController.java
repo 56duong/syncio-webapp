@@ -1,11 +1,16 @@
 package online.syncio.backend.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import online.syncio.backend.auth.request.*;
+import online.syncio.backend.auth.request.ForgotPasswordForm;
+import online.syncio.backend.auth.request.RefreshTokenDTO;
+import online.syncio.backend.auth.request.RegisterDTO;
+import online.syncio.backend.auth.request.UserLoginDTO;
 import online.syncio.backend.auth.responses.AuthResponse;
 import online.syncio.backend.auth.responses.LoginResponse;
+import online.syncio.backend.auth.responses.RegisterResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
 
 import online.syncio.backend.exception.DataNotFoundException;
@@ -15,14 +20,15 @@ import online.syncio.backend.auth.responses.RegisterResponse;
 import online.syncio.backend.utils.ConstantsMessage;
 import online.syncio.backend.utils.CustomerForgetPasswordUtil;
 
-//import online.syncio.backend.utils.RabbitMQUtils;
-import online.syncio.backend.utils.ValidationUtils;
 
+
+import online.syncio.backend.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +42,8 @@ public class AuthController {
 
     private final AuthService authService;
     private final TokenService tokenService;
-    @Autowired
-    SettingService settingService;
+
+    private final SettingService settingService;
     @Value("${apiPrefix.client}")
     private String apiPrefix;
 
@@ -94,13 +100,16 @@ public class AuthController {
             }
         }
         User user = authService.createUser(registerDTO);
+
 //        rabbitMQService.sendMessage("New user registered: " + user.getEmail());
         return ResponseEntity.ok(ResponseObject.builder()
                 .status(HttpStatus.CREATED)
                 .data(RegisterResponse.fromUser(user))
-                .message("Đăng ký tài khoản thành công")
+                .message("Vui lòng xác thực tài khoản qua Email")
                 .build());
     }
+
+
 
     @PostMapping("/login")
     public ResponseEntity<ResponseObject> login(
@@ -110,20 +119,21 @@ public class AuthController {
         // Kiểm tra thông tin đăng nhập và sinh token
         String token = authService.login(
                 userLoginDTO.getEmail(),
-                userLoginDTO.getPassword(),
-                userLoginDTO.getRoleId() == null ? 1 : userLoginDTO.getRoleId()
+                userLoginDTO.getPassword()
         );
+
         String userAgent = request.getHeader("User-Agent");
         User userDetail = authService.getUserDetailsFromToken(token);
         Token jwtToken = tokenService.addToken(userDetail, token, isMobileDevice(userAgent));
 
-        LoginResponse loginResponse = LoginResponse.builder()
+        LoginResponse loginResponse = LoginResponse
+                .builder()
                 .message("Login successfully")
                 .token(jwtToken.getToken())
                 .tokenType(jwtToken.getTokenType())
                 .refreshToken(jwtToken.getRefreshToken())
                 .username(userDetail.getUsername())
-                .roles(userDetail.getAuthorities().stream().map(item -> item.getAuthority()).toList())
+                .roles(userDetail.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                 .id(userDetail.getId())
                 .build();
         return ResponseEntity.ok().body(ResponseObject.builder()
@@ -132,6 +142,7 @@ public class AuthController {
                 .status(HttpStatus.OK)
                 .build());
     }
+    
     @PostMapping("/refreshToken")
     public ResponseEntity<ResponseObject> refreshToken(
             @Valid @RequestBody RefreshTokenDTO refreshTokenDTO
@@ -215,5 +226,19 @@ public class AuthController {
                         .status(HttpStatus.OK)
                         .build()
         );
+    }
+
+
+    @PostMapping("/confirm-user-register")
+    public ResponseEntity<?> confirm(@RequestParam("token") String token) {
+                tokenService.confirmToken(token);
+        return  ResponseEntity.ok(
+                ResponseObject.builder()
+                        .message("User confirmed successfully")
+                        .data("")
+                        .status(HttpStatus.OK)
+                        .build())  ;
+
+
     }
 }

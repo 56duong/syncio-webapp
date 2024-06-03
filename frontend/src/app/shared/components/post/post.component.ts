@@ -12,9 +12,7 @@ export class PostComponent {
   
   visible: boolean = false;
 
-
   showPostDetail(event: any) {
     this.visible = event;
-
   }
 }

@@ -6,5 +6,20 @@ import { Component } from '@angular/core';
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent {
+  menus = [
+    {
+      name: 'Dashboard',
+      link: ''
+    },
 
+    {
+      name: 'Users Management',
+      link: 'users-management'
+    },
+
+    {
+      name: 'Posts Management',
+      link: 'posts-management'
+    }
+  ]
 }

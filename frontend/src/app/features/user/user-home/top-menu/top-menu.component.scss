@@ -19,3 +19,7 @@
     font-weight: bold;
   }
 }
+
+.logo ::ng-deep .p-button-label {
+  font-weight: 900;
+}
