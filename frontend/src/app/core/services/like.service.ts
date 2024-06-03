@@ -33,4 +33,9 @@ export class LikeService {
     const url = `${this.apiURL}/count/${postId}`;
     return this.http.get<number>(url);
   }
+
+  hasLiked(postId: string, userId: string): Observable<boolean> {
+    const url = `${this.apiURLPost}/${postId}/likes/${userId}`;
+    return this.http.get<boolean>(url);
+  }
 }

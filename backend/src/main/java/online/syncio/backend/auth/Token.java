@@ -30,12 +30,12 @@ public class Token {
 
     @Column(name = "expiration_date")
     private LocalDateTime expirationDate;
-
+    // expirationDate is the time when the token expires
     @Column(name = "refresh_expiration_date")
     private LocalDateTime refreshExpirationDate;
 
-    @Column(name = "is_mobile", columnDefinition = "BIT")
-    private boolean isMobile;
+    // refreshExpirationDate is the time when the refresh token expires
+
 
     private boolean revoked;
     private boolean expired;
@@ -44,5 +44,13 @@ public class Token {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public Token(String token, User user, LocalDateTime expirationDate, boolean revoked) {
+        this.token = token;
+        this.user = user;
+        this.expirationDate = expirationDate;
+        this.revoked = revoked;
+        this.expired = false; // Assume not expired at creation
+    }
 
 }

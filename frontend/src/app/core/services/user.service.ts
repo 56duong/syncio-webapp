@@ -16,6 +16,8 @@ export class UserService {
   private apiURL = environment.apiUrl + 'api/v1/users';
   private apiRegister = environment.apiUrl + 'api/v1/users/register';
   private apiResetPassword = environment.apiUrl + 'api/v1/users/reset_password';
+  private apiConfirmUserRegister =
+    environment.apiUrl + 'api/v1/users/confirm-user-register';
   private apiSendMailToPassword =
     environment.apiUrl + 'api/v1/users/forgot_password';
   private apiLogin = environment.apiUrl + 'api/v1/users/login';
@@ -39,6 +41,10 @@ export class UserService {
     return this.http.post(this.apiRegister, registerDTO, this.apiConfig);
   }
 
+  confirmUserRegister(token: string): Observable<any> {
+    const params = new HttpParams().set('token', token);
+    return this.http.post(this.apiConfirmUserRegister, {}, { params });
+  }
   sendPasswordToMailSerive(
     fogotPasswordDTO: FogotPasswordDTO
   ): Observable<any> {
@@ -65,6 +71,7 @@ export class UserService {
       if (userResponse == null || !userResponse) {
         return;
       }
+
       // Convert the userResponse object to a JSON string
       const userResponseJSON = JSON.stringify(userResponse);
       // Save the JSON string to local storage with a key (e.g., "userResponse")
@@ -139,9 +146,9 @@ export class UserService {
 
   /**
    * Search users by username or email.
-   * @param username - The username to search if exists. 
+   * @param username - The username to search if exists.
    * @param email - The email to search if exists.
-   * @returns array of users. 
+   * @returns array of users.
    */
   searchUsers(username: string, email: string): Observable<User[]> {
     const url = `${this.apiURL}/search?username=${username}&email=${email}`;
