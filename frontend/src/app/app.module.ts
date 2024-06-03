@@ -11,6 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
+import { AuthTokenInterceptorService } from './core/auth-token-interceptor.service';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -24,7 +25,13 @@ import { ToastModule } from 'primeng/toast';
     MessageModule,
     ToastModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthTokenInterceptorService,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
