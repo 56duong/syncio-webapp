@@ -8,15 +8,13 @@ import online.syncio.backend.auth.responses.AuthResponse;
 import online.syncio.backend.auth.responses.LoginResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
 
-import online.syncio.backend.config.LocalizationUtils;
 import online.syncio.backend.exception.DataNotFoundException;
-import online.syncio.backend.exception.InvalidParamException;
 import online.syncio.backend.setting.SettingService;
 import online.syncio.backend.user.User;
-import online.syncio.backend.user.UserService;
 import online.syncio.backend.auth.responses.RegisterResponse;
+import online.syncio.backend.utils.ConstantsMessage;
 import online.syncio.backend.utils.CustomerForgetPasswordUtil;
-import online.syncio.backend.utils.MessageKeys;
+
 //import online.syncio.backend.utils.RabbitMQUtils;
 import online.syncio.backend.utils.ValidationUtils;
 
@@ -30,13 +28,12 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("${api.prefix}/users")
 @RequiredArgsConstructor
 public class AuthController {
-    private final LocalizationUtils localizationUtils;
+
     private final AuthService authService;
     private final TokenService tokenService;
     @Autowired
@@ -79,7 +76,7 @@ public class AuthController {
            return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
-                    .message(localizationUtils.getLocalizedMessage(MessageKeys.EMAIL_REQUIRED))
+                    .message(ConstantsMessage.EMAIL_REQUIRED)
                     .build());
         }
 
@@ -89,7 +86,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
-                    .message(localizationUtils.getLocalizedMessage(MessageKeys.PASSWORD_NOT_MATCH))
+                    .message(ConstantsMessage.PASSWORD_NOT_MATCH)
                     .build());
         } else{
             if(!ValidationUtils.isValidEmail(registerDTO.getEmail())){
@@ -162,13 +159,13 @@ public class AuthController {
     }
 
     @PostMapping("/details")
-//    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<AuthResponse> getUserDetails(
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         try {
             String extractedToken = authorizationHeader.substring(7);
             User user = authService.getUserDetailsFromToken(extractedToken);
+            System.out.println(user);
             return ResponseEntity.ok(AuthResponse.fromUser(user));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

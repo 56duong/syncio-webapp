@@ -31,6 +31,7 @@ export class LikeComponent {
     this.countLikes();
     this.countComments();
   }
+
   likePost() {
     this.likeService.toggleLikes(this.postId, this.userResponse?.id).subscribe({
       next: () => {
@@ -49,6 +50,20 @@ export class LikeComponent {
     this.likeService.countLikes(this.postId).subscribe({
       next: (count) => {
         this.likeCount = count;
+        // Check if the user has liked the post
+        if (this.userResponse) {
+          this.likeService
+            .hasLiked(this.postId, this.userResponse.id)
+            .subscribe({
+              next: (liked: boolean) => {
+                console.log(liked);
+                this.isLiked = liked;
+              },
+              error: (error: any) => {
+                console.log(error);
+              },
+            });
+        }
       },
       error: (error) => {
         console.log(error);

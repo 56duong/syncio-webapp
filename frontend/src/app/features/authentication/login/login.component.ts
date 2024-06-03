@@ -100,8 +100,8 @@ export class LoginComponent implements OnInit {
     };
     this.userService.login(loginDTO).subscribe({
       next: (response: LoginResponse) => {
-        const { token } = response.data;
-
+        const { token ,refresh_token } = response.data;
+        console.log(response.data);
         this.tokenService.setToken(token);
 
         this.userService.getUserDetail(token).subscribe({
@@ -109,7 +109,7 @@ export class LoginComponent implements OnInit {
             this.userResponse = {
               ...response,
             };
-
+            console.log(this.userResponse);
             this.userService.saveUserResponseToLocalStorage(this.userResponse);
             if (this.userResponse?.role.name == 'ADMIN') {
               this.router.navigate(['/admin']);
@@ -147,8 +147,6 @@ export class LoginComponent implements OnInit {
       password: this.password,
       retype_password: this.retypePassword,
 
-      // facebook_account_id: 0,
-      // google_account_id: 0,
       role_id: 2,
     };
     this.userService.register(registerDTO).subscribe({

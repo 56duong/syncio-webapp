@@ -97,7 +97,7 @@ public class JwtTokenUtils {
             ) {
                 return false;
             }
-            return (email.equals(userDetails.getUsername()))
+            return (email.equals(userDetails.getEmail()))
                     && !isTokenExpired(token);
         } catch (MalformedJwtException e) {
             logger.error("Invalid JWT token: {}", e.getMessage());
