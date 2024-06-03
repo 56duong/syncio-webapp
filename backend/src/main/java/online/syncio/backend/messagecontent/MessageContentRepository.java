@@ -15,6 +15,6 @@ public interface MessageContentRepository extends JpaRepository<MessageContent, 
 
     MessageContent findFirstByUser(User user);
 
-    List<MessageContent> findByMessageRoomId(UUID messageRoomId);
+    List<MessageContent> findByMessageRoomIdOrderByDateSentAsc(UUID messageRoomId);
 
 }

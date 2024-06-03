@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Post } from 'src/app/core/interfaces/post';
 import { PostService } from 'src/app/core/services/post.service';
 import { UserService } from 'src/app/core/services/user.service';
@@ -19,7 +19,8 @@ export class CreatePostComponent {
 
   constructor(
     private postService: PostService,
-    private userService: UserService
+    private userService: UserService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   showDialog() {
@@ -35,21 +36,32 @@ export class CreatePostComponent {
 
   // create a post
   createPost() {
-    if (!this.selectedPhotoFile || this.selectedPhotoFile.length === 0) {
-      alert('Please select at least one image');
-      return;
-    }
     const formData = new FormData();
+<<<<<<< HEAD
+=======
+
+    const post: Post = {
+      caption: this.post.caption,
+      createdDate: new Date().toISOString(),
+      flag: true,
+      createdBy: this.userService.getUserResponseFromLocalStorage()?.id
+    };
+
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
     formData.append(
       'post',
       new Blob(
         [
+<<<<<<< HEAD
           JSON.stringify({
             caption: this.post.caption,
             createdDate: new Date().toISOString(),
             flag: true,
             createdBy: '5f8dfe06-774f-484b-90cf-ceed1f705b70',
           }),
+=======
+          JSON.stringify(post),
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
         ],
         {
           type: 'application/json',
@@ -61,7 +73,10 @@ export class CreatePostComponent {
       formData.append(`images`, photo);
     });
 
+    post.photos = this.selectedPhotos;
+    
     this.postService.createPost(formData).subscribe({
+<<<<<<< HEAD
       next: (id: string) => {
         const post: Post = {
           id: id,
@@ -73,10 +88,14 @@ export class CreatePostComponent {
           // createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
         };
 
+=======
+      next: (response: any) => {
+        post.id = response.body;
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
         this.postService.setNewPostCreated(post);
       },
       error: (error) => {
-        console.log(error);
+        console.error(error);
       },
     });
 
@@ -84,16 +103,19 @@ export class CreatePostComponent {
   }
 
   onPhotoSelected(event: any) {
-    this.selectedPhotoFile = Array.from(event.files); // PrimeNG provides the files directly in the `files` property on the event.
+    this.selectedPhotoFile = Array.from(event.files);
+    this.selectedPhotos = [];
 
-    this.selectedPhotos = []; // Reset or initialize the array to hold the base64 strings of the images.
     for (let file of this.selectedPhotoFile) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.selectedPhotos.push(e.target.result); // Push the base64 string to `selectedPhotos` to display in the template.
+        this.selectedPhotos = [...this.selectedPhotos, e.target.result];
+
+        this.cdr.detectChanges();
       };
-      reader.readAsDataURL(file); // Start the file reading process to convert to base64.
+      reader.readAsDataURL(file);
     }
+    this.fileUploader.clear();
   }
   // show the emoji picker (icon)
   addEmoji(event: any) {

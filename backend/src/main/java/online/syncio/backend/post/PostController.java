@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import online.syncio.backend.exception.ReferencedException;
 import online.syncio.backend.exception.ReferencedWarning;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +27,17 @@ public class PostController {
         this.postService = postService;
     }
 
+    // old
+//    @GetMapping
+//    public ResponseEntity<List<PostDTO>> getAllPosts() {
+//        return ResponseEntity.ok(postService.findAll());
+//    }
+
+    // new - get 10 post/page
     @GetMapping
-    public ResponseEntity<List<PostDTO>> getAllPosts() {
-        return ResponseEntity.ok(postService.findAll());
+    public Page<PostDTO> getPosts(@RequestParam(defaultValue = "0") int pageNumber,
+                               @RequestParam(defaultValue = "10") int pageSize) {
+        return postService.getPosts(PageRequest.of(pageNumber, pageSize));
     }
 
 
@@ -39,8 +49,11 @@ public class PostController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createPost(@RequestPart("post") @Valid CreatePostDTO postDTO,
-                                        @RequestPart("images") List<MultipartFile> images) throws IOException {
-        postDTO.setPhotos(images);
+                                        @RequestPart(name = "images", required = false) List<MultipartFile> images) throws IOException {
+
+        if (images != null && !images.isEmpty()) {
+            postDTO.setPhotos(images);
+        }
         ResponseEntity<?> createdId = postService.create(postDTO);
         return ResponseEntity.ok(createdId);
     }

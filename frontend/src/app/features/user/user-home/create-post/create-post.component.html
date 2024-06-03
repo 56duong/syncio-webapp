@@ -1,6 +1,7 @@
 <p-dialog
   [(visible)]="display"
   [modal]="true"
+  [dismissableMask]="true"
   [closable]="false"
   [responsive]="true"
   [style]="{ width: '70vw' }"
@@ -41,17 +42,17 @@
         ></button>
       </div>
     </div>
-  </ng-template> 
+  </ng-template>
   <div class="grid">
     <div class="col">
       <div class="p-fluid">
         <div class="field" style="height: 400px">
-          <p-fileUpload #fileUploader
+          <p-fileUpload
+            #fileUploader
             name="photo[]"
             mode="basic"
             chooseLabel="Choose"
             chooseIcon="pi pi-upload"
-            url="./upload"
             (onSelect)="onPhotoSelected($event)"
             [multiple]="true"
             accept="image/*"

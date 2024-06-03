@@ -1,5 +1,5 @@
 
-.main {
+.main.left-menu {
   position: sticky;
   position: -webkit-sticky;
   top: 0;
@@ -11,7 +11,7 @@
   border-right-style: solid;
   border-color: var(--gray-300);
   background-color: var(--surface-0);
-  z-index: 9999;
+  z-index: 999;
 
   @media screen and (min-width: 992px) {
     min-width: 250px;
@@ -50,19 +50,19 @@
 }
 
 // Menu active
-::ng-deep .menu-active {
+::ng-deep .left-menu .menu-active {
   .p-button-label,
   .p-button-icon {
     font-weight: bold;
   }
 }
 
-::ng-deep .p-button {
+::ng-deep .left-menu .p-button {
   text-align: left;
   padding: 1rem;
 }
 
-::ng-deep .menu .p-button.p-button-text:not(:disabled) { 
+::ng-deep .left-menu .menu .p-button.p-button-text:not(:disabled) { 
   .p-button-label,
   .p-button-icon {
     font-weight: 500;
@@ -71,7 +71,7 @@
 }
 
 // Logo
-::ng-deep .p-button.p-button-link:not(:disabled)  {
+::ng-deep .left-menu .p-button.p-button-link:not(:disabled)  {
   :hover .p-button-label {
     text-decoration: none;
     font-weight: 900;
@@ -83,20 +83,43 @@
   }
 }
 
-// Label menu
+// Hide label menu
 @media screen and (max-width: 992px) {
-  ::ng-deep .p-button.p-button-text:not(:disabled) {
+  ::ng-deep .left-menu .p-button.p-button-text:not(:disabled) {
     .p-button-label {
       display: none;
     }
 
-    .p-button-icon {
+    .left-menu .p-button-icon {
       margin: 0;
     }
   }
 }
 
-::ng-deep p-dialog {
+::ng-deep .left-menu p-dialog {
   z-index: 999999;
   position: relative;
+}
+
+// Hide menu label
+::ng-deep .hide-menu-label {
+  min-width: auto !important;
+
+  .p-button.p-button-text:not(:disabled) {
+    .p-button-label {
+      display: none;
+    }
+
+    .left-menu .p-button-icon {
+      margin: 0;
+    }
+  }
+
+  .desktop-show {
+    display: none !important;
+  }
+
+  .desktop-hidden {
+    display: block !important;
+  }
 }

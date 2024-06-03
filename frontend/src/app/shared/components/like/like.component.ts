@@ -17,22 +17,24 @@ export class LikeComponent {
   likeCount: number = 0;
   commentCount: number = 0;
   userId: number = 0;
-  userResponse?: UserResponse | null;
+  isLiked: boolean = false;
+  userResponse?: UserResponse | null = this.userService.getUserResponseFromLocalStorage();
+  
   constructor(
     private likeService: LikeService,
     private commentService: CommentService,
-    private tokenService: TokenService,
     private userService: UserService
   ) {}
 
   ngOnInit() {
     this.countLikes();
     this.countComments();
-    this.userResponse = this.userService.getUserResponseFromLocalStorage();
   }
+
   likePost() {
     this.likeService.toggleLikes(this.postId, this.userResponse?.id).subscribe({
       next: () => {
+        this.isLiked = !this.isLiked;
         this.countLikes();
       },
       error: (error: any) => {
@@ -43,7 +45,6 @@ export class LikeComponent {
 
   openDialog() {
     this.visibleChange.emit(true);
-    console.log('this.postId');
   }
 
   countLikes() {

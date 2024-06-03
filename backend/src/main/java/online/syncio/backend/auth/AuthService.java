@@ -1,16 +1,20 @@
 package online.syncio.backend.auth;
 
 import lombok.RequiredArgsConstructor;
+import online.syncio.backend.auth.request.RegisterDTO;
 import online.syncio.backend.config.LocalizationUtils;
 import online.syncio.backend.exception.DataNotFoundException;
 import online.syncio.backend.exception.ExpiredTokenException;
 import online.syncio.backend.exception.PermissionDenyException;
-import online.syncio.backend.role.RoleEntity;
-import online.syncio.backend.role.RoleRepository;
+import online.syncio.backend.user.RoleEnum;
 import online.syncio.backend.user.StatusEnum;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
+<<<<<<< HEAD
 import online.syncio.backend.auth.request.RegisterDTO;
+=======
+import online.syncio.backend.utils.CustomerRegisterUtil;
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
 import online.syncio.backend.utils.JwtTokenUtils;
 import online.syncio.backend.utils.MessageKeys;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -27,7 +31,6 @@ import java.util.Optional;
 @Service
 public class AuthService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final LocalizationUtils localizationUtils;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
@@ -41,12 +44,19 @@ public class AuthService {
         if(!email.isBlank() && userRepository.existsByEmail(email)) {
             throw new DataIntegrityViolationException("Email đã tồn tại");
         }
-        RoleEntity role =roleRepository.findById(userDTO.getRoleId())
-                .orElseThrow(() -> new DataNotFoundException(
-                        localizationUtils.getLocalizedMessage(MessageKeys.ROLE_DOES_NOT_EXISTS)));
-        if(role.getName().toUpperCase().equals(RoleEntity.ADMIN)) {
+
+        RoleEnum role = RoleEnum.findByName(userDTO.getRoleName());
+
+        if (role == null) {
+            throw new DataNotFoundException(
+                    localizationUtils.getLocalizedMessage(MessageKeys.ROLE_DOES_NOT_EXISTS)
+            );
+        }
+
+        if (role == RoleEnum.ADMIN) {
             throw new PermissionDenyException("Không được phép đăng ký tài khoản Admin");
         }
+
         //convert from userDTO => user
         User newUser = User.builder()
                 .email(userDTO.getEmail())
@@ -61,36 +71,32 @@ public class AuthService {
         String encodedPassword = passwordEncoder.encode(password);
         newUser.setPassword(encodedPassword);
 
-
         return userRepository.save(newUser);
     }
-    public String login(
-            String email,
-            String password,
-            Long roleId
-    ) throws Exception {
-        Optional<User> optionalUser = Optional.empty();
+
+    public String login (String email, String password) throws Exception {
+        Optional<User> optional = Optional.empty();
         String subject = null;
-        if(optionalUser.isEmpty() && email != null) {
-            optionalUser =   userRepository.findByEmail(email);
+
+        if (email != null) {
+            optional = userRepository.findByEmail(email);
             subject = email;
         }
 
-        if(optionalUser.isEmpty()) {
+        if (optional.isEmpty()) {
             throw new DataNotFoundException(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_PHONE_PASSWORD));
         }
 
-        User existingUser = optionalUser.get();
-
+        User existingUser = optional.get();
 
         if(!passwordEncoder.matches(password, existingUser.getPassword())) {
             throw new BadCredentialsException(localizationUtils.getLocalizedMessage(MessageKeys.PASSWORD_NOT_MATCH));
-
         }
 
-        if(!optionalUser.get().getStatus().equals(StatusEnum.ACTIVE)) {
+        if (!existingUser.getStatus().equals(StatusEnum.ACTIVE)) {
             throw new DataNotFoundException(localizationUtils.getLocalizedMessage(MessageKeys.USER_IS_LOCKED));
         }
+
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 subject, password,
                 existingUser.getAuthorities()
