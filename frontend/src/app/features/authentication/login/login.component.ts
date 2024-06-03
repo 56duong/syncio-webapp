@@ -109,10 +109,12 @@ export class LoginComponent implements OnInit {
               ...response,
             };
 
+            console.log(this.userResponse);
+
             this.userService.saveUserResponseToLocalStorage(this.userResponse);
-            if (this.userResponse?.role_name == 'ADMIN') {
+            if (this.userResponse?.role == 'ADMIN') {
               this.router.navigate(['/admin']);
-            } else if (this.userResponse?.role_name == 'USER') {
+            } else if (this.userResponse?.role == 'USER') {
               this.router.navigate(['/']);
             }
           },
