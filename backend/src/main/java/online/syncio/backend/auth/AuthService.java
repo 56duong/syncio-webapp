@@ -5,18 +5,17 @@ import online.syncio.backend.auth.request.RegisterDTO;
 import online.syncio.backend.config.LocalizationUtils;
 import online.syncio.backend.exception.DataNotFoundException;
 import online.syncio.backend.exception.ExpiredTokenException;
+import online.syncio.backend.exception.InvalidParamException;
 import online.syncio.backend.exception.PermissionDenyException;
 import online.syncio.backend.user.RoleEnum;
 import online.syncio.backend.user.StatusEnum;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
-<<<<<<< HEAD
-import online.syncio.backend.auth.request.RegisterDTO;
-=======
+
 import online.syncio.backend.utils.CustomerRegisterUtil;
->>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
 import online.syncio.backend.utils.JwtTokenUtils;
 import online.syncio.backend.utils.MessageKeys;
+import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,7 +24,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -36,6 +37,12 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
+
+    public Boolean existsByEmail(String email) {
+        // TODO Auto-generated method stub
+        return userRepository.existsByEmail(email);
+    }
+
     @Transactional
     public User createUser(RegisterDTO userDTO) throws Exception {
         //register user
@@ -60,7 +67,7 @@ public class AuthService {
         //convert from userDTO => user
         User newUser = User.builder()
                 .email(userDTO.getEmail())
-                    .password(userDTO.getPassword())
+                .password(userDTO.getPassword())
                 .username(userDTO.getUsername())
                 .status(StatusEnum.ACTIVE)
                 .build();
@@ -126,4 +133,42 @@ public class AuthService {
         Token existingToken = tokenRepository.findByRefreshToken(refreshToken);
         return getUserDetailsFromToken(existingToken.getToken());
     }
+    @Transactional
+    public void resetPassword(UUID userId, String newPassword) throws InvalidParamException,DataNotFoundException {
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
+
+        existingUser.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(existingUser);
+
+        List<Token> tokens = tokenRepository.findByUser(existingUser);
+        for(Token token : tokens) {
+            tokenRepository.delete(token);
+        }
+    }
+    public String updateResetPasswordToken(String email) throws Exception {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("User not found"));;
+
+        String token = RandomString.make(30);
+
+        user.setResetPasswordToken(token);
+        userRepository.save(user);
+
+        return token;
+
+    }
+
+    public void updatePassword(String token, String newPassword) throws Exception {
+        User customer = userRepository.findByResetPasswordToken(token);
+        if (customer == null) {
+            throw new Exception("No customer found: invalid token");
+        }
+
+        customer.setPassword(newPassword);
+        customer.setResetPasswordToken(null);
+        CustomerRegisterUtil.encodePassword(customer, passwordEncoder);
+
+        userRepository.save(customer);
+    }
+
 }

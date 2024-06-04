@@ -25,9 +25,6 @@ export class CreatePostComponent {
 
   showDialog() {
     this.display = true;
-    this.post = {}; // Reset the post object
-    this.selectedPhotos = []; // Clear selected photos display
-    this.selectedPhotoFile = [];
   }
 
   onCancel() {
@@ -37,36 +34,19 @@ export class CreatePostComponent {
   // create a post
   createPost() {
     const formData = new FormData();
-<<<<<<< HEAD
-=======
 
     const post: Post = {
       caption: this.post.caption,
       createdDate: new Date().toISOString(),
       flag: true,
-      createdBy: this.userService.getUserResponseFromLocalStorage()?.id
+      createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
     };
 
->>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
     formData.append(
       'post',
-      new Blob(
-        [
-<<<<<<< HEAD
-          JSON.stringify({
-            caption: this.post.caption,
-            createdDate: new Date().toISOString(),
-            flag: true,
-            createdBy: '5f8dfe06-774f-484b-90cf-ceed1f705b70',
-          }),
-=======
-          JSON.stringify(post),
->>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
-        ],
-        {
-          type: 'application/json',
-        }
-      )
+      new Blob([JSON.stringify(post)], {
+        type: 'application/json',
+      })
     );
 
     this.selectedPhotoFile.forEach((photo: File, index) => {
@@ -74,24 +54,10 @@ export class CreatePostComponent {
     });
 
     post.photos = this.selectedPhotos;
-    
-    this.postService.createPost(formData).subscribe({
-<<<<<<< HEAD
-      next: (id: string) => {
-        const post: Post = {
-          id: id,
-          caption: this.post.caption,
-          photos: this.selectedPhotos,
-          createdDate: new Date().toISOString(),
-          flag: true,
-          createdBy: '5f8dfe06-774f-484b-90cf-ceed1f705b70',
-          // createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
-        };
 
-=======
+    this.postService.createPost(formData).subscribe({
       next: (response: any) => {
         post.id = response.body;
->>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
         this.postService.setNewPostCreated(post);
       },
       error: (error) => {
@@ -99,6 +65,9 @@ export class CreatePostComponent {
       },
     });
 
+    this.post = {}; // Reset the post object
+    this.selectedPhotos = []; // Clear selected photos display
+    this.selectedPhotos = [];
     this.display = false;
   }
 
