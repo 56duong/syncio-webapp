@@ -8,6 +8,7 @@ import online.syncio.backend.user.UserRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,8 +24,6 @@ public class ReportService {
         this.userRepository = userRepository;
     }
 
-
-
 //    CRUD
     public List<ReportDTO> findAll() {
         final List<Report> reports = reportRepository.findAll(Sort.by("createdDate"));
@@ -33,10 +32,18 @@ public class ReportService {
                 .toList();
     }
 
-    public void create(final ReportDTO reportDTO) {
-        final Report report = new Report();
-        mapToEntity(reportDTO, report);
-        reportRepository.save(report);
+    public ReportDTO create(ReportDTO reportDTO) {
+        Report report = mapToEntity(reportDTO, new Report());
+        report.setCreatedDate(LocalDateTime.now());
+
+        // set flag of post to false
+        Post post = report.getPost();
+        post.setFlag(false);
+        postRepository.save(post);
+
+        Report savedReport = reportRepository.save(report);
+
+        return mapToDTO(savedReport, new ReportDTO());
     }
 
     public void update(final UUID postId, final UUID userId, final ReportDTO reportDTO) {
@@ -60,10 +67,11 @@ public class ReportService {
         reportDTO.setUserId(report.getUser().getId());
         reportDTO.setCreatedDate(report.getCreatedDate());
         reportDTO.setReason(report.getReason());
+        reportDTO.setDescription(report.getDescription());
         return reportDTO;
     }
 
-    private Report mapToEntity(final ReportDTO reportDTO, final Report report) {
+    private Report mapToEntity(ReportDTO reportDTO, Report report) {
         final Post post = reportDTO.getPostId() == null ? null : postRepository.findById(reportDTO.getPostId())
                 .orElseThrow(() -> new NotFoundException(Post.class, "id", reportDTO.getPostId().toString()));
         report.setPost(post);
@@ -72,6 +80,7 @@ public class ReportService {
         report.setUser(user);
         report.setCreatedDate(reportDTO.getCreatedDate());
         report.setReason(reportDTO.getReason());
+        report.setDescription(reportDTO.getDescription());
         return report;
     }
 }

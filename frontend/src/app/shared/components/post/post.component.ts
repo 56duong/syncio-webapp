@@ -10,9 +10,19 @@ import { Post } from 'src/app/core/interfaces/post';
 export class PostComponent {
   @Input() post: Post = {};
   
-  visible: boolean = false;
+  visible: boolean = false; // Used to show/hide the post detail modal
+  reportVisible: boolean = false; // Used to show/hide the report modal
 
   showPostDetail(event: any) {
     this.visible = event;
   }
+
+  showReportModal() {
+    this.reportVisible = true;
+  }
+
+  handleReportModalVisibility(event: boolean) {
+    this.reportVisible = event; // Update reportVisible based on the event emitted from ReportComponent
+  }
+
 }

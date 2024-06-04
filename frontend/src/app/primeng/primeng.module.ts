@@ -11,10 +11,12 @@ import { FormsModule } from '@angular/forms';
 import { FileUploadModule } from 'primeng/fileupload';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SidebarModule } from 'primeng/sidebar';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
   declarations: [],
   exports: [
+    DropdownModule,
     AutoCompleteModule,
     FormsModule,
     CarouselModule,

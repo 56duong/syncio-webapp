@@ -102,9 +102,10 @@
             <ng-container *ngIf="c.id && c.repliesCount && c.repliesCount > 0">
               <div class="my-2">
                 <!-- Show/Hide replies -->
-                <small (click)="viewReplies(c.id)"
+                <small *ngIf="showReplies[c.id]" 
+                  (click)="viewReplies(c.id)"
                   class="cursor-pointer text-xs my-3 block">
-                  ___{{ showReplies[c.id]?.visible ? "Hide" : "View" }} replies ({{ c.repliesCount }})
+                  ___{{ showReplies[c.id].visible ? "Hide" : "View" }} replies ({{ c.repliesCount }})
                 </small>
                 <!-- Reply List -->
                 <div *ngIf="showReplies[c.id] && showReplies[c.id].visible"
