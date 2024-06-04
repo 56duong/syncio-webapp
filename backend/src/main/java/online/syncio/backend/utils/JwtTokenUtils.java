@@ -51,9 +51,9 @@ public class JwtTokenUtils {
                     .compact();
             return token;
         }catch (Exception e) {
-            //you can "inject" Logger, instead System.out.println
+
             throw new InvalidParamException("Cannot create jwt token, error: "+e.getMessage());
-            //return null;
+
         }
     }
     private Key getSignInKey() {
@@ -97,7 +97,7 @@ public class JwtTokenUtils {
             ) {
                 return false;
             }
-            return (email.equals(userDetails.getUsername()))
+            return (email.equals(userDetails.getEmail()))
                     && !isTokenExpired(token);
         } catch (MalformedJwtException e) {
             logger.error("Invalid JWT token: {}", e.getMessage());

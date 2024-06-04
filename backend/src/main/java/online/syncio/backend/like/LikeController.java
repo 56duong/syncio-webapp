@@ -18,6 +18,14 @@ public class LikeController {
         this.likeService = likeService;
     }
 
+    @GetMapping("/{postId}/likes")
+    public ResponseEntity<Boolean> hasLiked(@PathVariable UUID postId) {
+
+        boolean hasLiked = likeService.hasLiked(postId);
+
+
+        return ResponseEntity.ok(hasLiked);
+    }
     @GetMapping
     public ResponseEntity<List<LikeDTO>> getAllLikes() {
         return ResponseEntity.ok(likeService.findAll());

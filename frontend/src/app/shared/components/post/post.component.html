@@ -65,7 +65,7 @@
 <app-report [post]="post" [display]="reportVisible" (visibleChange)="handleReportModalVisibility($event)"></app-report>
 =======
   <div>
-    <small *ngIf="post.createdBy && post.photos && post.photos.length > 0" class="font-bold">
+    <small *ngIf="post.createdBy" class="font-bold">
       {{ post.createdBy | userIdToName | async }}
     </small>
     <small>{{ post.caption }}</small>
