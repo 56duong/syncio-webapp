@@ -64,9 +64,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
             }
-            filterChain.doFilter(request, response); //enable bypass
+            filterChain.doFilter(request, response);
         }catch (Exception e) {
-            //response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write(e.getMessage());
         }
@@ -75,32 +74,18 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private boolean isBypassToken(@NonNull HttpServletRequest request) {
         final List<Pair<String, String>> bypassTokens = Arrays.asList(
 
-<<<<<<< HEAD
-=======
              
-//                Pair.of(String.format("%s/**", apiPrefix), "GET"),
-//                Pair.of(String.format("%s/**", apiPrefix), "POST"),
-//                Pair.of(String.format("%s/**", apiPrefix), "DELETE"),
-//                Pair.of(String.format("%s/**", apiPrefix), "PUT"),
-//
-//
-//                Pair.of("/**", "GET"),
+
 //
 //                Pair.of(String.format("%s/healthcheck/health", apiPrefix), "GET"),
 //                Pair.of(String.format("%s/actuator/**", apiPrefix), "GET"),
 //
-//                Pair.of(String.format("%s/roles**", apiPrefix), "GET"),
-//                Pair.of(String.format("%s/users/register", apiPrefix), "POST"),
-//                Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
-//                Pair.of(String.format("%s/users/refreshToken", apiPrefix), "POST"),
-
-
->>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
-                Pair.of("/**", "GET"),
-                Pair.of("/**", "POST"),
-                Pair.of("/**", "PUT"),
-                Pair.of("/**", "DELETE"),
-                Pair.of("/**", "PATCH")
+                Pair.of(String.format("%s/roles**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/users/register", apiPrefix), "POST"),
+                Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
+                Pair.of(String.format("%s/users/refreshToken", apiPrefix), "POST"),
+                Pair.of(String.format("%s/posts/images/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/posts", apiPrefix), "GET")
 
         );
 

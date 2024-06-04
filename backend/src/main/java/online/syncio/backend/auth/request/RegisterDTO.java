@@ -27,7 +27,4 @@ public class RegisterDTO {
     @JsonProperty("retype_password")
     private String retypePassword;
 
-    @NotNull(message = "Role name is required")
-    @JsonProperty("role_name")
-    private String roleName;
 }
