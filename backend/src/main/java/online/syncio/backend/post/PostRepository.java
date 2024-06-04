@@ -9,10 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, UUID> {
-<<<<<<< HEAD
-    List<Post> findAllByFlagTrueOrderByCreatedDateDesc();
-=======
-
     long countByCreatedBy_Id (UUID id);
->>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
 }

@@ -43,7 +43,6 @@ public class PostService {
 
     //    CRUD
     public List<PostDTO> findAll() {
-        // find all posts with flag = true and sort by createdDate in descending order
         final List<Post> posts = postRepository.findAll(Sort.by("createdDate").descending());
         return posts.stream()
                 .map(post -> mapToDTO(post, new PostDTO()))
@@ -110,13 +109,8 @@ public class PostService {
         post.setPhotos(filenames);
         post.setCreatedBy(user);
 
-<<<<<<< HEAD
-        postRepository.save(post);
-        return ResponseEntity.ok(post.getId()) ;
-=======
         Post savedPost = postRepository.save(post);
         return ResponseEntity.ok(savedPost.getId());
->>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
     }
     private boolean isImageFile(MultipartFile file) {
         String contentType = file.getContentType();
@@ -160,7 +154,7 @@ public class PostService {
         return postRepository.countByCreatedBy_Id(id);
     }
 
-//    MAPPER
+    //    MAPPER
     private PostDTO mapToDTO(final Post post, final PostDTO postDTO) {
         postDTO.setId(post.getId());
         postDTO.setCaption(post.getCaption());
@@ -184,7 +178,7 @@ public class PostService {
 
 
 
-//    REFERENCED
+    //    REFERENCED
     public ReferencedWarning getReferencedWarning(final UUID id) {
         final ReferencedWarning referencedWarning = new ReferencedWarning();
         final Post post = postRepository.findById(id)
