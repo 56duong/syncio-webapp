@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("${api.prefix}/posts")
+@RequestMapping(value = "/api/v1/posts")
 public class PostController {
 
     private final PostService postService;
@@ -40,12 +40,10 @@ public class PostController {
     @GetMapping
 
     public Page<PostDTO> getPosts(@RequestParam(defaultValue = "0") int pageNumber,
-                               @RequestParam(defaultValue = "10") int pageSize) {
+                                  @RequestParam(defaultValue = "10") int pageSize) {
         return postService.getPosts(PageRequest.of(pageNumber, pageSize));
 
     }
-
-
 
     @GetMapping("/{id}")
     public ResponseEntity<PostDTO> getPost(@PathVariable(name = "id") final UUID id) {
@@ -60,7 +58,7 @@ public class PostController {
             postDTO.setPhotos(images);
         }
         ResponseEntity<?> createdId = postService.create(postDTO);
-        return ResponseEntity.ok(createdId);
+        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -71,7 +69,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable(name = "id") UUID id) {
+    public ResponseEntity<Void> deletePost(@PathVariable(name = "id") final UUID id) {
         final ReferencedWarning referencedWarning = postService.getReferencedWarning(id);
         if (referencedWarning != null) {
             throw new ReferencedException(referencedWarning);
@@ -81,7 +79,7 @@ public class PostController {
     }
     @PostMapping("/{id}/{userId}/like")
     public ResponseEntity<?> likePost(@PathVariable(name = "id") final UUID id,
-                                           @PathVariable(name = "userId") final UUID userId) {
+                                      @PathVariable(name = "userId") final UUID userId) {
         return postService.toggleLike(id, userId);
 
     }

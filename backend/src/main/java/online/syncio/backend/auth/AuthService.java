@@ -157,12 +157,12 @@ public class AuthService {
     public String updateResetPasswordToken(String email) throws Exception {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("User not found"));;
 
-            String token = RandomString.make(30);
+        String token = RandomString.make(30);
 
-            user.setResetPasswordToken(token);
-            userRepository.save(user);
+        user.setResetPasswordToken(token);
+        userRepository.save(user);
 
-            return token;
+        return token;
 
     }
 
