@@ -16,7 +16,7 @@
           {{ post.createdDate | date : "HH:mm:ss dd/MM/yyyy" }}</small>
       </div>
     </div>
-    <span class="pi pi-ellipsis-h cursor-pointer"></span>
+    <span class="pi pi-ellipsis-h cursor-pointer" (click)="showReportModal()"></span>
   </div>
 
   <!-- photo -->
@@ -55,3 +55,9 @@
   [visible]="visible"
   (visibleChange)="showPostDetail($event)">
 </app-post-detail>
+
+<app-report 
+  [post]="post" 
+  [display]="reportVisible" 
+  (visibleChange)="handleReportModalVisibility($event)">
+</app-report>
