@@ -9,13 +9,10 @@ import { CarouselModule } from 'primeng/carousel';
 import { AvatarModule } from 'primeng/avatar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FileUploadModule } from 'primeng/fileupload';
-<<<<<<< HEAD
 import { DropdownModule } from 'primeng/dropdown';
 import { ListboxModule } from 'primeng/listbox';
-=======
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SidebarModule } from 'primeng/sidebar';
->>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
 
 @NgModule({
   declarations: [],
@@ -32,13 +29,10 @@ import { SidebarModule } from 'primeng/sidebar';
     AvatarModule,
     InputTextModule,
     FileUploadModule,
-<<<<<<< HEAD
     DropdownModule,
     ListboxModule,
     ReactiveFormsModule,
-=======
     SidebarModule,
->>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
   ],
 })
 export class PrimengModule {}

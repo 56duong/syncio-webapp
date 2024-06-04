@@ -9,7 +9,6 @@ import { Post } from 'src/app/core/interfaces/post';
 export class PostComponent {
   @Input() post: Post = {};
 
-<<<<<<< HEAD
   visible: boolean = false;
   reportVisible: boolean = false;
 
@@ -22,9 +21,5 @@ export class PostComponent {
   }
   handleReportModalVisibility(event: boolean) {
     this.reportVisible = event; // Update reportVisible based on the event emitted from ReportComponent
-=======
-  showPostDetail(event: any) {
-    this.visible = event;
->>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
   }
 }
