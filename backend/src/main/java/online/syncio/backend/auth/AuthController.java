@@ -3,29 +3,39 @@ package online.syncio.backend.auth;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
+<<<<<<< HEAD
+import online.syncio.backend.auth.request.RefreshTokenDTO;
+import online.syncio.backend.auth.request.UserLoginDTO;
+=======
 import online.syncio.backend.auth.request.ForgotPasswordForm;
 import online.syncio.backend.auth.request.RefreshTokenDTO;
 import online.syncio.backend.auth.request.RegisterDTO;
 import online.syncio.backend.auth.request.UserLoginDTO;
 import online.syncio.backend.auth.responses.AuthResponse;
-
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
 import online.syncio.backend.auth.responses.LoginResponse;
 import online.syncio.backend.auth.responses.RegisterResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
 import online.syncio.backend.config.LocalizationUtils;
-
+<<<<<<< HEAD
+import online.syncio.backend.user.User;
+import online.syncio.backend.user.UserService;
+import online.syncio.backend.auth.request.RegisterDTO;
+import online.syncio.backend.auth.responses.RegisterResponse;
+=======
 import online.syncio.backend.exception.DataNotFoundException;
 import online.syncio.backend.setting.SettingService;
 import online.syncio.backend.user.User;
 import online.syncio.backend.utils.CustomerForgetPasswordUtil;
-
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
 import online.syncio.backend.utils.MessageKeys;
 import online.syncio.backend.utils.ValidationUtils;
+<<<<<<< HEAD
 
+=======
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,10 +49,14 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.prefix}/users")
 @RequiredArgsConstructor
+
+
 public class AuthController {
     private final LocalizationUtils localizationUtils;
     private final AuthService authService;
     private final TokenService tokenService;
+<<<<<<< HEAD
+=======
     @Autowired
     SettingService settingService;
     @Value("${apiPrefix.client}")
@@ -51,6 +65,7 @@ public class AuthController {
 
     @Value("${url.frontend}")
     private String urlFE;
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
 //    private final RabbitTemplate rabbitTemplate;
 //    private final RabbitMQUtils rabbitMQService;
     /**
@@ -64,8 +79,6 @@ public class AuthController {
             @Valid @RequestBody RegisterDTO registerDTO,
             BindingResult result
     ) throws Exception {
-
-
         if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()
@@ -80,7 +93,7 @@ public class AuthController {
                     .build());
         }
         if(registerDTO.getEmail() == null || registerDTO.getEmail().trim().isBlank()) {
-            return ResponseEntity.badRequest().body(ResponseObject.builder()
+           return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .message(localizationUtils.getLocalizedMessage(MessageKeys.EMAIL_REQUIRED))
@@ -140,7 +153,7 @@ public class AuthController {
                 .status(HttpStatus.OK)
                 .build());
     }
-
+    
     @PostMapping("/refreshToken")
     public ResponseEntity<ResponseObject> refreshToken(
             @Valid @RequestBody RefreshTokenDTO refreshTokenDTO
@@ -164,6 +177,8 @@ public class AuthController {
 
     }
     private boolean isMobileDevice(String userAgent) {
+        // Kiểm tra User-Agent header để xác định thiết bị di động
+        // Ví dụ đơn giản:
         return userAgent.toLowerCase().contains("mobile");
     }
 
@@ -181,6 +196,34 @@ public class AuthController {
         }
     }
 
+<<<<<<< HEAD
+//    @PutMapping("/reset-password/{userId}")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    public ResponseEntity<ResponseObject> resetPassword(@Valid @PathVariable long userId){
+//        try {
+//            String newPassword = UUID.randomUUID().toString().substring(0, 5); // Tạo mật khẩu mới
+//            userService.resetPassword(userId, newPassword);
+//            return ResponseEntity.ok(ResponseObject.builder()
+//                    .message("Reset password successfully")
+//                    .data(newPassword)
+//                    .status(HttpStatus.OK)
+//                    .build());
+//        } catch (InvalidPasswordException e) {
+//            return ResponseEntity.ok(ResponseObject.builder()
+//                    .message("Invalid password")
+//                    .data("")
+//                    .status(HttpStatus.BAD_REQUEST)
+//                    .build());
+//        } catch (DataNotFoundException e) {
+//            return ResponseEntity.ok(ResponseObject.builder()
+//                    .message("User not found")
+//                    .data(""
+//                    .status(HttpStatus.BAD_REQUEST)
+//                    .build());
+//        }
+//    }
+
+=======
 
 
     @RequestMapping(value = "api/users/logoutDummy")
@@ -225,4 +268,5 @@ public class AuthController {
                         .build()
         );
     }
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
 }
