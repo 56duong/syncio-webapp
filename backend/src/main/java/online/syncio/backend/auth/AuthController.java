@@ -1,31 +1,30 @@
 package online.syncio.backend.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import online.syncio.backend.auth.request.ForgotPasswordForm;
 import online.syncio.backend.auth.request.RefreshTokenDTO;
 import online.syncio.backend.auth.request.RegisterDTO;
 import online.syncio.backend.auth.request.UserLoginDTO;
 import online.syncio.backend.auth.responses.AuthResponse;
-
 import online.syncio.backend.auth.responses.LoginResponse;
 import online.syncio.backend.auth.responses.RegisterResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
-import online.syncio.backend.config.LocalizationUtils;
 
 import online.syncio.backend.exception.DataNotFoundException;
 import online.syncio.backend.setting.SettingService;
 import online.syncio.backend.user.User;
+import online.syncio.backend.auth.responses.RegisterResponse;
+import online.syncio.backend.utils.ConstantsMessage;
 import online.syncio.backend.utils.CustomerForgetPasswordUtil;
 
-import online.syncio.backend.utils.MessageKeys;
-import online.syncio.backend.utils.ValidationUtils;
 
+
+import online.syncio.backend.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,11 +39,11 @@ import java.util.List;
 @RequestMapping("${api.prefix}/users")
 @RequiredArgsConstructor
 public class AuthController {
-    private final LocalizationUtils localizationUtils;
+
     private final AuthService authService;
     private final TokenService tokenService;
-    @Autowired
-    SettingService settingService;
+
+    private final SettingService settingService;
     @Value("${apiPrefix.client}")
     private String apiPrefix;
 
@@ -83,7 +82,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
-                    .message(localizationUtils.getLocalizedMessage(MessageKeys.EMAIL_REQUIRED))
+                    .message(ConstantsMessage.EMAIL_REQUIRED)
                     .build());
         }
 
@@ -93,7 +92,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
-                    .message(localizationUtils.getLocalizedMessage(MessageKeys.PASSWORD_NOT_MATCH))
+                    .message(ConstantsMessage.PASSWORD_NOT_MATCH)
                     .build());
         } else{
             if(!ValidationUtils.isValidEmail(registerDTO.getEmail())){
@@ -101,13 +100,16 @@ public class AuthController {
             }
         }
         User user = authService.createUser(registerDTO);
+
 //        rabbitMQService.sendMessage("New user registered: " + user.getEmail());
         return ResponseEntity.ok(ResponseObject.builder()
                 .status(HttpStatus.CREATED)
                 .data(RegisterResponse.fromUser(user))
-                .message("Đăng ký tài khoản thành công")
+                .message("Vui lòng xác thực tài khoản qua Email")
                 .build());
     }
+
+
 
     @PostMapping("/login")
     public ResponseEntity<ResponseObject> login(
@@ -168,13 +170,13 @@ public class AuthController {
     }
 
     @PostMapping("/details")
-//    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<AuthResponse> getUserDetails(
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         try {
             String extractedToken = authorizationHeader.substring(7);
             User user = authService.getUserDetailsFromToken(extractedToken);
+            System.out.println(user);
             return ResponseEntity.ok(AuthResponse.fromUser(user));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -224,5 +226,19 @@ public class AuthController {
                         .status(HttpStatus.OK)
                         .build()
         );
+    }
+
+
+    @PostMapping("/confirm-user-register")
+    public ResponseEntity<?> confirm(@RequestParam("token") String token) {
+        tokenService.confirmToken(token);
+        return  ResponseEntity.ok(
+                ResponseObject.builder()
+                        .message("User confirmed successfully")
+                        .data("")
+                        .status(HttpStatus.OK)
+                        .build())  ;
+
+
     }
 }

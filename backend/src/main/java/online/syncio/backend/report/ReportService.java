@@ -1,6 +1,5 @@
 package online.syncio.backend.report;
 
-import lombok.RequiredArgsConstructor;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.post.Post;
 import online.syncio.backend.post.PostRepository;
@@ -14,12 +13,18 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class ReportService {
     private final ReportRepository reportRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    //CRUD
+
+    public ReportService(ReportRepository reportRepository, PostRepository postRepository, UserRepository userRepository) {
+        this.reportRepository = reportRepository;
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
+    }
+
+    //    CRUD
     public List<ReportDTO> findAll() {
         final List<Report> reports = reportRepository.findAll(Sort.by("createdDate"));
         return reports.stream()
@@ -54,7 +59,9 @@ public class ReportService {
         reportRepository.delete(report);
     }
 
-//    MAPPER
+
+
+    //    MAPPER
     private ReportDTO mapToDTO(final Report report, final ReportDTO reportDTO) {
         reportDTO.setPostId(report.getPost().getId());
         reportDTO.setUserId(report.getUser().getId());
@@ -76,6 +83,4 @@ public class ReportService {
         report.setDescription(reportDTO.getDescription());
         return report;
     }
-
-
 }

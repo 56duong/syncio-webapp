@@ -15,7 +15,6 @@ public class EmailSettingBag extends SettingBag {
 
     public int getPort() {
         String portValue = super.getValue("MAIL_PORT");
-        System.out.println("portValue" + portValue);
         if (portValue != null && !portValue.isEmpty()) {
             return Integer.parseInt(portValue);
         } else {
