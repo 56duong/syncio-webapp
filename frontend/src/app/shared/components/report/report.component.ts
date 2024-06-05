@@ -5,6 +5,7 @@ import { Post } from 'src/app/core/interfaces/post';
 import { Report } from 'src/app/core/interfaces/report';
 import { PostService } from 'src/app/core/services/post.service';
 import { ReportService } from 'src/app/core/services/report.service';
+import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-report',
@@ -19,7 +20,12 @@ export class ReportComponent implements OnInit {
   reportForm?: FormGroup;
   reasons: SelectItem[] = [];
 
-  constructor(private reportService: ReportService, private fb: FormBuilder) {}
+  constructor(
+    private userService: UserService,
+    private reportService: ReportService, 
+    private fb: FormBuilder
+  ) {}
+
   ngOnInit(): void {
     this.reportForm = this.fb.group({
       reason: [null, Validators.required],
@@ -41,17 +47,16 @@ export class ReportComponent implements OnInit {
 
   onSubmit() {
     if (this.reportForm?.valid) {
-      debugger;
       const report: Report = {
         postId: this.post.id,
-        userId: '5f8dfe06-774f-484b-90cf-ceed1f705b70',
+        userId: this.userService.getUserResponseFromLocalStorage()?.id,
         reason: this.reportForm?.value.reason.value,
         description: this.reportForm?.value.description,
       };
+
       this.reportService.createReport(report).subscribe(
         (response) => {
           console.log('Report submitted successfully:', report);
-
           // reset the form and close the modal after successful submission
           this.reportForm?.reset();
           this.closeModal();
@@ -59,7 +64,6 @@ export class ReportComponent implements OnInit {
         (error) => {
           // Handle error
           console.error('Error submitting report:', error);
-          // Handle error as needed
         }
       );
       this.closeModal();

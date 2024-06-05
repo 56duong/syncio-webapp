@@ -170,4 +170,8 @@ public class UserService {
 
         return null;
     }
+
+    public void enableUser(UUID id) {
+        userRepository.enableUser(id);
+    }
 }

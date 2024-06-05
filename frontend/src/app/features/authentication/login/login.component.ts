@@ -10,6 +10,7 @@ import { LoginResponse } from './login.response';
 import { RegisterDTO } from '../register/register.dto';
 import { MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -60,10 +61,20 @@ export class LoginComponent implements OnInit {
     private userService: UserService,
     private tokenService: TokenService,
     private roleService: RoleService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private route: ActivatedRoute,
+    private http: HttpClient
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.route.queryParams.subscribe((params) => {
+      const token = params['token'];
+      if (token) {
+        this.confirmRegistration(token);
+      }
+    });
+  }
+
   createAccount() {
     this.router.navigate(['/register']);
   }
@@ -78,9 +89,8 @@ export class LoginComponent implements OnInit {
   }
   showSuccess(message: string) {
     this.messageService.add({
-      severity: 'Success',
-      summary: 'Authentication Failed',
-      detail: 'API Key or URL is invalid.',
+      severity: 'success',
+      detail: message,
     });
   }
   login() {
@@ -95,12 +105,12 @@ export class LoginComponent implements OnInit {
     const loginDTO: LoginDTO = {
       email: this.email,
       password: this.password,
-      role_name: "USER",
+      role_name: 'USER',
     };
     this.userService.login(loginDTO).subscribe({
       next: (response: LoginResponse) => {
-        const { token } = response.data;
-
+        const { token, refresh_token } = response.data;
+        console.log(response.data);
         this.tokenService.setToken(token);
 
         this.userService.getUserDetail(token).subscribe({
@@ -110,9 +120,9 @@ export class LoginComponent implements OnInit {
             };
 
             this.userService.saveUserResponseToLocalStorage(this.userResponse);
-            if (this.userResponse?.role_name == 'ADMIN') {
+            if (this.userResponse?.role == 'ADMIN') {
               this.router.navigate(['/admin']);
-            } else if (this.userResponse?.role_name == 'USER') {
+            } else if (this.userResponse?.role == 'USER') {
               this.router.navigate(['/']);
             }
           },
@@ -145,16 +155,25 @@ export class LoginComponent implements OnInit {
 
       password: this.password,
       retype_password: this.retypePassword,
-
-      // facebook_account_id: 0,
-      // google_account_id: 0,
-      role_name: 'USER',
     };
     this.userService.register(registerDTO).subscribe({
       next: (response: any) => {
         if (response.status === 'CREATED') {
           this.deactivate();
         }
+      },
+      complete: () => {},
+      error: (error: any) => {
+        this.showError(error?.error?.message ?? '');
+      },
+    });
+  }
+
+  confirmRegistration(token: string): void {
+    this.userService.confirmUserRegister(token).subscribe({
+      next: (response: any) => {
+        console.log('Registration confirmed:', response);
+        this.showSuccess(response.message);
       },
       complete: () => {},
       error: (error: any) => {

@@ -51,6 +51,11 @@ const routes: Routes = [
     title: 'reset_password',
     component: ChangePasswordComponent,
   },
+  {
+    path: 'confirm-user-register',
+    title: 'confirm-user-register',
+    component: LoginComponent,
+  },
 ];
 
 @NgModule({
