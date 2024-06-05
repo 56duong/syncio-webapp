@@ -9,7 +9,6 @@ import online.syncio.backend.user.User;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
