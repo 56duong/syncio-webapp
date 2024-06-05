@@ -3,7 +3,9 @@
   <div class="flex justify-content-between align-items-center">
     <div class="flex align-items-center gap-2">
       <div class="avt">
-        <img class="w-full object-cover" src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png" alt="" />
+        <img class="w-full object-cover"
+          src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
+          alt="" />
       </div>
       <div class="flex align-items-center gap-1">
         <small *ngIf="post.createdBy" class="font-bold">
@@ -14,31 +16,43 @@
           {{ post.createdDate | date : "HH:mm:ss dd/MM/yyyy" }}</small>
       </div>
     </div>
-    <span *ngIf="post.id" class="pi pi-ellipsis-h cursor-pointer" (click)="showReportModal()"></span>
+    <span class="pi pi-ellipsis-h cursor-pointer"></span>
   </div>
-
   <!-- photo -->
   <div *ngIf="post.photos && post.photos.length > 0">
-    <p-carousel [value]="post.photos" [numVisible]="1" [numScroll]="1" [circular]="false"
+    <p-carousel [value]="post.photos"
+      [numVisible]="1"
+      [numScroll]="1"
+      [circular]="false"
       [style]="{ height: '100%', position: 'relative' }">
       <ng-template let-photo pTemplate="item">
-        <img src="{{ photo }}" class="w-full h-full" style="object-fit: contain" />
+        <img src="{{ photo }}"
+          class="w-full h-full"
+          style="object-fit: contain" />
       </ng-template>
     </p-carousel>
   </div>
-
   <!-- caption (no photo) -->
-  <div *ngIf="post.photos?.length">
+  <div>
+    <small *ngIf="post.createdBy" class="font-bold">
+      {{ post.createdBy | userIdToName | async }}
+    </small>
     <small>{{ post.caption }}</small>
   </div>
-
-  <app-like *ngIf="post.id" [postId]="post.id" (visibleChange)="showPostDetail($event)"></app-like>
-  <div *ngIf="post.photos?.length">
-    <small>Introducing a new silhouette like you’ve never seen, available now</small>
-  </div>
-
+  <!-- Like -->
+  <app-like *ngIf="post.id"
+    [postId]="post.id"
+    (visibleChange)="showPostDetail($event)">
+  </app-like>
 </div>
-
-<app-post-detail *ngIf="visible" [post]="post" [visible]="visible" (visibleChange)="showPostDetail($event)"
-  cl></app-post-detail>
-<app-report [post]="post" [display]="reportVisible" (visibleChange)="handleReportModalVisibility($event)"></app-report>
+<app-post-detail
+  *ngIf="visible"
+  [post]="post"
+  [visible]="visible"
+  (visibleChange)="showPostDetail($event)">
+</app-post-detail>
+<app-report 
+  [post]="post" 
+  [display]="reportVisible" 
+  (visibleChange)="handleReportModalVisibility($event)">
+</app-report>
