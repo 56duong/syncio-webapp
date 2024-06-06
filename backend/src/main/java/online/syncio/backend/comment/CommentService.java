@@ -105,7 +105,7 @@ public class CommentService {
         final Post post = commentDTO.getPostId() == null ? null : postRepository.findById(commentDTO.getPostId())
                 .orElseThrow(() -> new NotFoundException(Post.class, "id", commentDTO.getPostId().toString()));
         comment.setPost(post);
-        final User user = commentDTO.getPostId() == null ? null : userRepository.findById(commentDTO.getUserId())
+        final User user = commentDTO.getUserId() == null ? null : userRepository.findById(commentDTO.getUserId())
                 .orElseThrow(() -> new NotFoundException(User.class, "id", commentDTO.getUserId().toString()));
         comment.setUser(user);
         comment.setCreatedDate(commentDTO.getCreatedDate());

@@ -2,7 +2,7 @@
   <div class="flex justify-content-between align-items-center p-2 pt-0">
     <div class="flex justify-content-between align-items-center gap-2">
       <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
-      <h3>{{messageRoom.name ?? '' | removeMyUsername:currentUser.username}}</h3>
+      <h3 *ngIf="currentUser.username">{{messageRoom.name ?? '' | removeMyUsername:currentUser.username}}</h3>
     </div>
     <span class="pi pi-info-circle" style="font-size: 1.5rem"></span>
   </div>
@@ -14,7 +14,7 @@
     <!-- Avatar -->
     <div class="flex flex-column justify-content-center align-items-center gap-1 my-4">
       <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 96px;">
-      <h2 class="text-3xl mt-1 mb-3" style="font-weight: 500;">{{messageRoom.name ?? '' | removeMyUsername:currentUser.username}}</h2>
+      <h2 *ngIf="currentUser.username" class="text-3xl mt-1 mb-3" style="font-weight: 500;">{{messageRoom.name ?? '' | removeMyUsername:currentUser.username}}</h2>
       <p-button *ngIf="!messageRoom.group" label="View profile" severity="my-custom-primary"></p-button>
     </div>
 

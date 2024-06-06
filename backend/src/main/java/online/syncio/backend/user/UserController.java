@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -30,10 +33,25 @@ public class UserController {
         return ResponseEntity.ok(userService.get(id));
     }
 
+    @GetMapping("/{id}/username")
+    public ResponseEntity<Map<String, String>> getUsername(@PathVariable(name = "id") final UUID id) {
+        final String username = userService.getUsernameById(id);
+        return ResponseEntity.ok(Collections.singletonMap("username", username));
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<UserDTO>> searchUsers (@RequestParam(name = "username", required = false) final String username,
                                                       @RequestParam(name = "email", required = false) final String email) {
         return ResponseEntity.ok(userService.findTop20ByUsernameContainingOrEmailContaining(username, email));
+    }
+
+    /**
+     * Get all users with at least one story created in the last 24 hours
+     * @return a list of users
+     */
+    @GetMapping("/stories")
+    public ResponseEntity<List<UserDTO>> getUsersWithStories() {
+        return ResponseEntity.ok(userService.findAllUsersWithAtLeastOneStoryAfterCreatedDate(LocalDateTime.now().minusDays(1)));
     }
 
     @PostMapping

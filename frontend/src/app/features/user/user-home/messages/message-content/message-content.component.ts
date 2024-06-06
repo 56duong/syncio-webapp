@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, Output, SimpleChange, Simpl
 import { Subscription } from 'rxjs';
 import { MessageContent } from 'src/app/core/interfaces/message-content';
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
+import { User } from 'src/app/core/interfaces/user';
 import { MessageContentService } from 'src/app/core/services/message-content.service';
 import { UserService } from 'src/app/core/services/user.service';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
@@ -14,11 +15,12 @@ import { UserResponse } from 'src/app/features/authentication/login/user.respons
 
 export class MessageContentComponent {
   @Input() messageRoom: MessageRoom = {}; // current message room
+  @Input() currentUser!: User; // Current user logged in.
   @Output() sendMessageEvent = new EventEmitter<void>();
   @ViewChild('messageContentContainer') private messageContainer!: ElementRef;
+
   messageContents: MessageContent[] = []; // Array of message contents
   messageContent: MessageContent = {}; // Message content object to send
-  currentUser!: UserResponse;
   isEmojiPickerVisible: boolean = false;
   plainComment: string = ''; // Plain text comment
   subscriptionMessageContents: Subscription = new Subscription(); // Subscription to the message contents observable
@@ -28,10 +30,6 @@ export class MessageContentComponent {
     private messageContentService: MessageContentService,
     private userService: UserService,
   ) { }
-
-  ngOnInit() {
-    this.currentUser = this.userService.getUserResponseFromLocalStorage() as UserResponse ?? {};
-  }
 
   ngOnChanges(changes: SimpleChanges) {
     if(changes['messageRoom'] && this.messageRoom.id) {

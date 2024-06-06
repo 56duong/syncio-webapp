@@ -5,6 +5,7 @@ import lombok.Data;
 import online.syncio.backend.post.Post;
 import online.syncio.backend.user.User;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -36,6 +37,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @CreatedBy
     private User user;
 
     @ManyToOne

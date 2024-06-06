@@ -86,6 +86,21 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/users/refreshToken", apiPrefix), "POST"),
                 Pair.of(String.format("%s/posts/images/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/posts", apiPrefix), "GET"),
+
+                // Like
+                Pair.of(String.format("%s/likes/count/**", apiPrefix), "GET"),
+
+                // Comment
+                Pair.of(String.format("%s/comments/**", apiPrefix), "GET"),
+
+                // User
+                Pair.of(String.format("%s/users/**/username", apiPrefix), "GET"),
+                Pair.of(String.format("%s/users/search/**", apiPrefix), "GET"),
+
+                // Story
+                Pair.of(String.format("%s/stories/images/**", apiPrefix), "GET"),
+
+                // WebSocket
                 Pair.of("/live/**", "GET")
         );
 

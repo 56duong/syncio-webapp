@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Comment } from 'src/app/core/interfaces/comment';
 import { Post } from 'src/app/core/interfaces/post';
 import { CommentService } from 'src/app/core/services/comment.service';
-import { UserService } from 'src/app/core/services/user.service';
+import { TokenService } from 'src/app/core/services/token.service';
 
 @Component({
   selector: 'app-post-detail',
@@ -25,22 +26,26 @@ export class PostDetailComponent {
     };
   } = {}; // The replies for a comment (key is the comment id)
   subscriptionComments: Subscription = new Subscription(); // Subscription to the comments observable
+  currentUserId: string = '';
 
 
   constructor(
     private commentService: CommentService,
-    private userService: UserService
+    private tokenService: TokenService,
+    private router: Router
   ) { }
 
 
   ngOnInit() {
-    if (this.post.id) {
+    this.currentUserId = this.tokenService.extractUserIdFromToken();
+
+    if (this.post.id && this.currentUserId) {
       this.commentService.connectWebSocket(this.post.id);
       this.getCommentsObservable();
     }
 
     this.getComments();
-    console.log(this.post.photos);
+    
     setTimeout(() => {
       this.post.photos = this.post.photos;
     }, 0);
@@ -142,9 +147,19 @@ export class PostDetailComponent {
   }
 
   postComment() {
+    if (!this.post.id) return;
+
+    // Empty comment
     if (!this.plainComment.trim()) return;
 
-    if (!this.post.id) return;
+    // Not logged in
+    if(this.currentUserId == null) {
+      console.log('User is not logged in');
+      this.router.navigate(['/login'], { 
+        queryParams: { message: 'Please login to comment' } 
+      });
+      return;
+    }
 
     this.comment = {
       ...this.comment,
@@ -152,9 +167,7 @@ export class PostDetailComponent {
         ?.replaceAll('<p><br></p>', '')
         .replace('@Reply&nbsp;', ''),
       postId: this.post.id,
-
-      userId: this.userService.getUserResponseFromLocalStorage()?.id
-
+      userId: this.currentUserId
     };
 
     // If the comment is a parent comment, send the comment (realtime).
@@ -188,6 +201,7 @@ export class PostDetailComponent {
             );
             if (parentComment) {
               parentComment.repliesCount = (this.comment.repliesCount ?? 0) + 1;
+              console.log(parentComment.repliesCount);
             }
 
             this.showReplies[this.comment.parentCommentId].data.unshift(

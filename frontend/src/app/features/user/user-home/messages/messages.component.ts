@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
 import { User } from 'src/app/core/interfaces/user';
 import { MessageRoomService } from 'src/app/core/services/message-room.service';
+import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
-import { UserResponse } from 'src/app/features/authentication/login/user.response';
 
 @Component({
   selector: 'app-messages',
@@ -14,7 +14,7 @@ import { UserResponse } from 'src/app/features/authentication/login/user.respons
 
 export class MessagesComponent {
   messageRooms: MessageRoom[] = []; // Array of message rooms to display in the sidebar.
-  currentUser!: UserResponse; // Current user logged in.
+  currentUser!: User; // Current user logged in.
   
   isDialogVisible: boolean = false;
   selectedUserMembers: string[] = []; // Array of selected user members to create a message room.
@@ -25,12 +25,20 @@ export class MessagesComponent {
   constructor(
     private messageRoomService: MessageRoomService,
     private userService: UserService,
+    private tokenService: TokenService,
     private router: Router
   ) { }
   
   ngOnInit() {
-    this.currentUser = this.userService.getUserResponseFromLocalStorage() as UserResponse ?? {};
-    this.getMessageRoomsByUserId(this.currentUser.id);
+    this.tokenService.getCurrentUserFromToken().subscribe({
+      next: (user) => {
+        this.currentUser = user;
+        this.getMessageRoomsByUserId(user.id);
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
 
   getMessageRoomsByUserId(userId: string) {
@@ -87,7 +95,6 @@ export class MessagesComponent {
     // extract list of id inside selectedUserMembers: User here
     const userIds = this.selectedUserMembers.map((user: any) => user.id);
     userIds.push(this.currentUser.id);
-     
     this.messageRoomService.findExactRoomWithMembers(userIds).subscribe({
       next: (existsMessageRoom) => {
         // check if the room already exists
@@ -100,7 +107,7 @@ export class MessagesComponent {
           // if not exists, create a new room
           this.messageRoomService.createMessageRoomWithUsers(userIds).subscribe({
             next: (messageRoom) => {
-              this.getMessageRoomsByUserId(this.currentUser.id);
+              this.getMessageRoomsByUserId(this.currentUser.id || '');
               this.messageRooms.push(messageRoom);
               this.isDialogVisible = false;
               this.navigateToMessageRoom(messageRoom);
@@ -125,7 +132,7 @@ export class MessagesComponent {
   sendMessageEvent() {
     // check if this selected message room is not in the message rooms array
     if(!this.messageRooms.find(room => room.id === this.selectedMessageRoom.id)) {
-      this.messageRooms.unshift(this.selectedMessageRoom);
+      this.messageRooms = [this.selectedMessageRoom, ...this.messageRooms];
     }
   }
 

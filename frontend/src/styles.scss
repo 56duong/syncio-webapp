@@ -60,6 +60,23 @@ body {
   display: none;
 }
 
+/* width */
+.primary-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Track */
+.primary-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+
+/* Handle */
+.primary-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--primary-color); 
+  border-radius: 5px;
+}
+
 /* Custom button styles
   Example usage:
   <p-button label="Primary" severity="p-button-my-custom-primary"></p-button>
