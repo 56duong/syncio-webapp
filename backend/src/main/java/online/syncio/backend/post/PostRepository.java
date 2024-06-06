@@ -9,6 +9,6 @@ import java.util.UUID;
 @Repository
 public interface PostRepository extends JpaRepository<Post, UUID> {
 
-
-    List<Post> findByUserID (UUID id);
+    /* Find posts which were created by a user with the UUID in createdBy column */
+    List<Post> findByCreatedBy_IdOrderByCreatedDateDesc (UUID id);
 }
