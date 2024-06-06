@@ -18,6 +18,7 @@ import online.syncio.backend.report.ReportRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,7 +60,20 @@ public class UserService {
                     .toList();
     }
 
-    public UUID create (final UserDTO userDTO) {
+    public String getUsernameById(final UUID id) {
+        return userRepository.findById(id)
+                .map(User::getUsername)
+                .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+    }
+
+    public List<UserDTO> findAllUsersWithAtLeastOneStoryAfterCreatedDate(final LocalDateTime createdDate) {
+        final List<User> users = userRepository.findAllUsersWithAtLeastOneStoryAfterCreatedDate(createdDate);
+        return users.stream()
+                .map(user -> mapToDTO(user, new UserDTO()))
+                .toList();
+    }
+
+    public UUID create(final UserDTO userDTO) {
         final User user = new User();
         mapToEntity(userDTO, user);
         return userRepository.save(user).getId();

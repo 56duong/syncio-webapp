@@ -24,7 +24,7 @@
         <div class="flex align-items-center gap-2">
           <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
           <div>
-            <p class="my-1">{{messageroom.name ?? '' | removeMyUsername:currentUser.username}}</p>
+            <p *ngIf="currentUser.username" class="my-1">{{messageroom.name ?? '' | removeMyUsername:currentUser.username}}</p>
             <div class="flex align-items-center gap-1 text-gray-500">
               <!-- <small>{{messageroom.lastMessage}}</small>
               <small>·</small>
@@ -43,6 +43,7 @@
     <!-- <router-outlet></router-outlet> -->
     <app-message-content *ngIf="selectedMessageRoom" 
       [messageRoom]="selectedMessageRoom"
+      [currentUser]="currentUser"
       (sendMessageEvent)="sendMessageEvent()"></app-message-content>
   </div>
 </div>

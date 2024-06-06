@@ -145,6 +145,25 @@ export class UserService {
   }
 
   /**
+   * Get username by id.
+   * @param userId 
+   * @returns response object containing the username.
+   * @example
+   * this.userService.getUsernameById(userId).subscribe({
+   *  next: (response) => {
+   *   this.username = response.username;
+   *  },
+   *  error: (error) => {
+   *   console.error(error);
+   *  }
+   * })
+   */
+  getUsernameById(userId: string): Observable<Object> {
+    const url = `${this.apiURL}/${userId}/username`;
+    return this.http.get<Object>(url);
+  }
+
+  /**
    * Search users by username or email.
    * @param username - The username to search if exists.
    * @param email - The email to search if exists.
@@ -152,6 +171,15 @@ export class UserService {
    */
   searchUsers(username: string, email: string): Observable<User[]> {
     const url = `${this.apiURL}/search?username=${username}&email=${email}`;
+    return this.http.get<User[]>(url);
+  }
+
+  /**
+   * Get all users with at least one story created in the last 24 hours
+   * @returns array of stories.
+   */
+  getUsersWithStories(): Observable<User[]> {
+    const url = `${this.apiURL}/stories`;
     return this.http.get<User[]>(url);
   }
 }

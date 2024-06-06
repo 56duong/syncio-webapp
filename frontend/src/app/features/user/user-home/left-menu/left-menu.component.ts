@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
   templateUrl: './left-menu.component.html',
   styleUrls: ['./left-menu.component.scss'],
 })
+
 export class LeftMenuComponent {
   @ViewChild(CreatePostComponent) createPostComponent: any;
   visible: boolean = false;
@@ -40,6 +41,27 @@ export class LeftMenuComponent {
       id: 'ProfileButton'
     },
   ];
+
+  createSubmenuItems = [
+    {
+      label: 'Create',
+      icon: 'pi pi-pen-to-square',
+      items: [
+        {
+          label: 'Post',
+          icon: 'pi pi-table',
+          command: () => {
+            this.onCreateClick();
+          }
+        },
+        {
+          label: 'Story',
+          icon: 'pi pi-history',
+          route: '/story/create'
+        }
+      ]
+    }
+  ]; // Submenu of the create button
 
   constructor(
     private router: Router

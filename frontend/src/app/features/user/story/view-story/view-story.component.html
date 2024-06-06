@@ -1,0 +1,40 @@
+<div>
+  <!-- Header -->
+  <div class="p-3 absolute top-0 left-0 w-full text-white flex justify-content-between align-items-center">
+    <!-- Logo -->
+    <div>
+      <h1 style="font-weight: 900;" class="text-2xl">SYNCIO</h1>
+    </div>
+    <!-- X button -->
+    <div>
+      <p-button (click)="closeViewStory()" icon="pi pi-times" [text]="true" size="large" styleClass="text-white shadow-none"></p-button>
+    </div>
+  </div>
+
+  <!-- Story -->
+  <div class="bg-black-alpha-90 container flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="shadow-2" style="border-radius: 8px;">
+      <div class="story" style="width: 390px; height: 694px;">
+        <p-carousel [value]="stories" [numVisible]="1" [numScroll]="1" class="block w-full h-full">
+          <ng-template let-story pTemplate="item">
+            <!-- Story item -->
+            <div class="item relative border-round text-center overflow-hidden">
+              <!-- Header -->
+              <div class="header text-white flex align-items-center gap-1">
+                <small *ngIf="story.createdBy" class="font-bold">
+                  {{ story.createdBy | userIdToName | async }}
+                </small>
+                <small class="text-gray-400">
+                  {{ story.createdDate | date : "HH:mm:ss dd/MM/yyyy" }}</small>
+              </div>
+              <!-- Content -->
+              <div>
+                <img src="{{ story.photoURL }}" class="block w-full h-full" />
+              </div>
+            </div>
+          </ng-template>
+        </p-carousel>
+      </div>
+    </div>
+  </div>
+</div>
