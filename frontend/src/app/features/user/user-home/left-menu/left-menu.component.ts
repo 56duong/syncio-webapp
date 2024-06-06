@@ -19,21 +19,25 @@ export class LeftMenuComponent {
       label: 'Home',
       icon: 'pi pi-home',
       routerLink: '/',
+      id: 'HomeButton'
     },
     {
       label: 'Search',
       icon: 'pi pi-search',
       routerLink: '/search',
+      id: 'SearchButton'
     },
     {
       label: 'Messages',
       icon: 'pi pi-comments',
       routerLink: 'messages',
+      id: 'MessagesButton'
     },
     {
       label: 'Profile',
       icon: 'pi pi-user',
       routerLink: 'profile',
+      id: 'ProfileButton'
     },
   ];
 
