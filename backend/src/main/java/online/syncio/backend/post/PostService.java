@@ -149,7 +149,7 @@ public class PostService {
     }
 
     public List<PostDTO> findByUserId (final UUID id) {
-        List<Post> posts = postRepository.findByUserID(id);
+        List<Post> posts = postRepository.findByCreatedBy_IdOrderByCreatedDateDesc(id);
         return posts.stream()
                     .map(post -> mapToDTO(post, new PostDTO()))
                     .collect(Collectors.toList());
