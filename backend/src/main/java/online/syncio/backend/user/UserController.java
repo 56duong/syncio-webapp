@@ -50,7 +50,7 @@ public class UserController {
      * @return a list of users
      */
     @GetMapping("/stories")
-    public ResponseEntity<List<UserDTO>> getUsersWithStories() {
+    public ResponseEntity<List<UserStoryDTO>> getUsersWithStories() {
         return ResponseEntity.ok(userService.findAllUsersWithAtLeastOneStoryAfterCreatedDate(LocalDateTime.now().minusDays(1)));
     }
 

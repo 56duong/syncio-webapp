@@ -107,8 +107,7 @@ export class MessagesComponent {
           // if not exists, create a new room
           this.messageRoomService.createMessageRoomWithUsers(userIds).subscribe({
             next: (messageRoom) => {
-              this.getMessageRoomsByUserId(this.currentUser.id || '');
-              this.messageRooms.push(messageRoom);
+              this.messageRooms = [messageRoom, ...this.messageRooms];
               this.isDialogVisible = false;
               this.navigateToMessageRoom(messageRoom);
             },

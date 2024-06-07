@@ -4,4 +4,5 @@ export interface Story {
   createdDate?: string;
   flag?: boolean;
   createdBy?: string;
+  viewed?: boolean;
 }
