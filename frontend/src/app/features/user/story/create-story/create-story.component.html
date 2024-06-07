@@ -1,0 +1,163 @@
+<div class="main">
+  <div class="card flex justify-content-center">
+    <p-sidebar #sidebarRef 
+      [visible]="true"
+      [modal]="false"
+      [showCloseIcon]="false"
+      [transitionOptions]="'0s'"
+      [styleClass]="'primary-scrollbar'">
+      <ng-template pTemplate="headless">
+          <div class="flex flex-column h-full">
+            <!-- Title   -->
+            <div class="flex align-items-center justify-content-start flex-shrink-0 gap-3">
+              <p-button [routerLink]="['/']" icon="pi pi-arrow-left" severity="secondary" [rounded]="true" [text]="true" [styleClass]="'p-1 surface-200'" />
+              <span class="font-bold text-2xl" style="color: var(--highlight-text-color);">Your story</span>
+            </div>
+            <div class="overflow-x-visible mt-4 flex flex-column gap-4">
+                
+              <!-- Background Color -->
+              <div class="flex align-items-center justify-content-between gap-1">
+                <p>Background Color</p>
+                <div class="col-6 flex justify-content-center align-items-center gap-1 surface-200 px-2 border-round-sm">
+                  <p-colorPicker 
+                    [(ngModel)]="backgroundColor"
+                    [appendTo]="'body'" 
+                    [style]="{'width':'100%'}"></p-colorPicker>
+                  <input [(ngModel)]="backgroundColor" 
+                    (ngModelChange)="backgroundColor = '#'+(backgroundColor+'').replaceAll('#', '')" 
+                    pInputText id="backgroundColor" [pKeyFilter]="'hex'"
+                    [maxlength]="7"
+                    class="w-full"
+                    style="font-size: 0.9rem; padding: 0.4rem; background-color: transparent; border: none; box-shadow: none;" />
+                </div>
+              </div>
+
+              <p-divider></p-divider>
+
+              <!-- Text -->
+              <span class="p-float-label">
+                <textarea [(ngModel)]="selectedText['text']" id="float-input" rows="5" cols="29" pInputTextarea [autoResize]="true"></textarea>
+                <label for="float-input">Text</label>
+                <div style="position: absolute; bottom: 10px; right: 10px;">
+                  <i (click)="isEmojiPickerVisible = !isEmojiPickerVisible"
+                    class="cursor-pointer fa-regular fa-face-smile text-xl"></i>
+                  <emoji-mart *ngIf="isEmojiPickerVisible"
+                    [set]="'twitter'"
+                    [showPreview]="false" 
+                    (emojiSelect)="addEmoji($event)"
+                    [enableSearch]="false"
+                    [style]="{ position: 'absolute', left: '35px' }"></emoji-mart>
+                </div>
+              </span>
+
+              <div>
+                <div class="relative">
+                </div>
+              </div>
+
+              <!-- Font-family -->
+              <div class="flex align-items-center justify-content-between gap-1">
+                <p>Font family</p>
+                <p-dropdown 
+                  [options]="['Arial', 'Cursive', 'Fantasy', 'Monospace', 'Sans-serif', 'Serif']"
+                  [(ngModel)]="selectedText['style']['font-family']"
+                  [editable]="true" 
+                  [appendTo]="'body'"
+                  class="col-6 surface-200 border-round-sm p-0">
+                </p-dropdown>
+              </div>
+
+              <!-- Text color -->
+              <div class="flex align-items-center justify-content-between gap-1">
+                <p>Text Color</p>
+                <div class="col-6 flex justify-content-center align-items-center gap-1 surface-200 px-2 border-round-sm">
+                  <p-colorPicker 
+                    [(ngModel)]="selectedText['style']['color']"
+                    [appendTo]="'body'" 
+                    [style]="{'width':'100%'}"></p-colorPicker>
+                  <input [(ngModel)]="selectedText['style']['color']" 
+                    (ngModelChange)="selectedText['style']['color'] = '#'+(selectedText['style']['color']+'').replaceAll('#', '')" 
+                    pInputText id="textColor" [pKeyFilter]="'hex'"
+                    [maxlength]="7"
+                    class="w-full"
+                    style="font-size: 0.9rem; padding: 0.4rem; background-color: transparent; border: none; box-shadow: none;" />
+                </div>
+              </div>
+
+              <!-- Font-size -->
+              <div class="flex align-items-center justify-content-between gap-1">
+                <p>Font size</p>
+                <p-dropdown 
+                  [options]="['4px', '5px', '6px', '7px', '8px', '9px', '10px', '11px', '12px', '13px', '14px', '15px', '16px', '17px', '18px', '19px', '20px', '21px', '22px', '23px', '24px', '25px', '26px', '27px', '28px', '29px', '30px', '31px', '32px', '33px', '34px', '35px', '36px', '37px', '38px', '39px', '40px']"
+                  [(ngModel)]="selectedText['style']['font-size']"
+                  [editable]="true" 
+                  [appendTo]="'body'"
+                  class="col-6 surface-200 border-round-sm p-0">
+                </p-dropdown>
+              </div>
+
+              <!-- Bold/Italic/Underline/ -->
+              <div class="flex justify-content-between gap-4">
+                <p>Font style</p>
+                <div class="font-style flex justify-content-end flex-1 gap-2">
+                  <!-- Bold -->
+                  <p-toggleButton 
+                    [ngModel]="selectedText['style']['font-weight'] == 'bold'"
+                    (ngModelChange)="selectedText['style']['font-weight'] = $event ? 'bold' : 'normal'"
+                    onLabel="B" offLabel="B" class="bold"></p-toggleButton>
+                  <!-- Italic -->
+                  <p-toggleButton 
+                    [ngModel]="selectedText['style']['font-style'] == 'italic'"
+                    (ngModelChange)="selectedText['style']['font-style'] = $event ? 'italic' : 'normal'"
+                    onLabel="I" offLabel="I" class="italic"></p-toggleButton>
+                  <!-- Underline -->
+                  <p-toggleButton [ngModel]="selectedText['style']['text-decoration'] == 'underline'"
+                    (ngModelChange)="selectedText['style']['text-decoration'] = $event ? 'underline' : 'none'" 
+                    onLabel="U" offLabel="U" class="underline"></p-toggleButton>
+                </div>
+              </div>
+
+              <!-- Button -->
+              <div class="flex gap-2">
+                <div class="p-fluid flex-2">
+                  <p-button (click)="resetSelectedText()" label="Reset" [outlined]="true"></p-button>
+                </div>
+                <div class="p-fluid flex-1">
+                  <p-button (click)="addText()" label="Add" [disabled]="!(selectedText['text'].length > 0)"></p-button>
+                </div>
+              </div>
+
+              <p-divider></p-divider>
+
+              <!-- Action -->
+              <div class="flex gap-2">
+                <div class="p-fluid flex-2">
+                  <p-button (click)="cancel()" label="Cancel" severity="danger" [outlined]="true"></p-button>
+                </div>
+                <div class="p-fluid flex-1">
+                  <p-button (click)="share()" label="Share to story" [disabled]="!(selectedText['text'].length > 0)"></p-button>
+                </div>
+              </div>
+
+            </div>
+        </div>
+      </ng-template>
+    </p-sidebar>
+  </div>
+
+  <!-- Preview -->
+  <div class="container flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="shadow-2 overflow-hidden" style="border-radius: 8px;">
+      <div class="story" style="width: 390px; height: 694px;"
+        [ngStyle]="{'background-color': backgroundColor}">
+        <div *ngFor="let text of textList" 
+          cdkDragBoundary=".story" cdkDrag
+          (cdkDragReleased)="selectedText = text"
+          [ngStyle]="text.style"
+          class="w-fit cursor-move">
+          {{text.text}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

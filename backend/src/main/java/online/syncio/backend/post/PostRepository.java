@@ -12,8 +12,10 @@ import java.util.UUID;
 @Repository
 public interface PostRepository extends JpaRepository<Post, UUID> {
     long countByCreatedBy_Id (UUID id);
-    /* Find posts which were created by a user with the UUID in createdBy column */
-    List<Post> findByCreatedBy_IdOrderByCreatedDateDesc (UUID id);
+
     Page<Post> findByReportsIsNotNullAndFlagTrue(Pageable pageable);
     Page<Post> findByReportsIsNotNullAndFlagFalse(Pageable pageable);
+
+    /* Find posts which were created by a user with the UUID in createdBy column */
+    List<Post> findByCreatedBy_IdOrderByCreatedDateDesc (UUID id);
 }

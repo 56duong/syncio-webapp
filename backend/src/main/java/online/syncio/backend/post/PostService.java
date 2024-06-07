@@ -14,11 +14,9 @@ import online.syncio.backend.report.Report;
 import online.syncio.backend.report.ReportRepository;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
-
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,25 +31,25 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+    private static final String UPLOADS_FOLDER = "uploads";
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
     private final ReportRepository reportRepository;
-    private static String UPLOADS_FOLDER = "uploads";
-
 
     //    CRUD
-    public List<PostDTO> findAll() {
+    public List<PostDTO> findAll () {
         final List<Post> posts = postRepository.findAll(Sort.by("createdDate").descending());
         return posts.stream()
                 .filter(post -> post.getFlag())
                 .map(post -> mapToDTO(post, new PostDTO()))
                 .toList();
+
     }
 
     // load post theo page
-    public Page<PostDTO> getPosts(Pageable pageable) {
+    public Page<PostDTO> getPosts (Pageable pageable) {
         // sort theo createdDate giảm dần
         Pageable sortedByCreatedDateDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdDate").descending());
         Page<Post> posts = postRepository.findAll(sortedByCreatedDateDesc);
@@ -103,15 +101,15 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public PostDTO get(final UUID id) {
+    public PostDTO get (final UUID id) {
         return postRepository.findById(id)
-                .map(post -> mapToDTO(post, new PostDTO()))
-                .orElseThrow(() -> new NotFoundException(Post.class, "id", id.toString()));
+                             .map(post -> mapToDTO(post, new PostDTO()))
+                             .orElseThrow(() -> new NotFoundException(Post.class, "id", id.toString()));
     }
 
-    public ResponseEntity<?> create(final CreatePostDTO postDTO) throws IOException {
+    public ResponseEntity<?> create (final CreatePostDTO postDTO) throws IOException {
         User user = userRepository.findById(postDTO.getCreatedBy())
-                .orElseThrow(() -> new NotFoundException(User.class, "id", postDTO.getCreatedBy().toString()));
+                                  .orElseThrow(() -> new NotFoundException(User.class, "id", postDTO.getCreatedBy().toString()));
         Post post = new Post();
 
         //Upload image
@@ -129,12 +127,12 @@ public class PostService {
                 }
                 if (file.getSize() > 10 * 1024 * 1024) {
                     return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-                            .body("File size is too large");
+                                         .body("File size is too large");
                 }
                 String contentType = file.getContentType();
                 if (contentType == null || !contentType.startsWith("image/")) {
                     return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                            .body("File must be an image");
+                                         .body("File must be an image");
                 }
 
                 String filename = storeFile(file);
@@ -150,18 +148,19 @@ public class PostService {
         Post savedPost = postRepository.save(post);
         return ResponseEntity.ok(savedPost.getId());
     }
-    private boolean isImageFile(MultipartFile file) {
+
+    private boolean isImageFile (MultipartFile file) {
         String contentType = file.getContentType();
         return contentType != null && contentType.startsWith("image/");
     }
 
-    public String storeFile(MultipartFile file) throws IOException {
+    public String storeFile (MultipartFile file) throws IOException {
         if (!isImageFile(file) || file.getOriginalFilename() == null) {
             throw new IOException("Invalid image format");
         }
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         // Thêm UUID vào trước tên file để đảm bảo tên file là duy nhất
-        String uniqueFilename = UUID.randomUUID().toString() + "_" + filename;
+        String uniqueFilename = UUID.randomUUID() + "_" + filename;
         // Đường dẫn đến thư mục mà bạn muốn lưu file
         java.nio.file.Path uploadDir = Paths.get(UPLOADS_FOLDER);
         // Kiểm tra và tạo thư mục nếu nó không tồn tại
@@ -175,21 +174,24 @@ public class PostService {
         return uniqueFilename;
     }
 
-    public void update(final UUID id, final PostDTO postDTO) {
+    public void update (final UUID id, final PostDTO postDTO) {
         final Post post = postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(Post.class, "id", id.toString()));
+                                        .orElseThrow(() -> new NotFoundException(Post.class, "id", id.toString()));
         mapToEntity(postDTO, post);
         postRepository.save(post);
     }
 
-    public void delete(final UUID id) {
+    public void delete (final UUID id) {
         final Post post = postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(Post.class, "id", id.toString()));
+                                        .orElseThrow(() -> new NotFoundException(Post.class, "id", id.toString()));
         postRepository.delete(post);
     }
 
-    public long countPostByUser_Id (final UUID id) {
-        return postRepository.countByCreatedBy_Id(id);
+    public List<PostDTO> findByUserId (final UUID id) {
+        List<Post> posts = postRepository.findByCreatedBy_IdOrderByCreatedDateDesc(id);
+        return posts.stream()
+                    .map(post -> mapToDTO(post, new PostDTO()))
+                    .collect(Collectors.toList());
     }
 
     //    MAPPER
@@ -203,27 +205,25 @@ public class PostService {
         return postDTO;
     }
 
-
-
     private Post mapToEntity(final PostDTO postDTO, final Post post) {
         post.setCaption(postDTO.getCaption());
         post.setPhotos(postDTO.getPhotos());
         post.setCreatedDate(postDTO.getCreatedDate());
         post.setFlag(postDTO.getFlag());
         final User user = postDTO.getCreatedBy() == null ? null : userRepository.findById(postDTO.getCreatedBy())
-                .orElseThrow(() -> new NotFoundException(User.class, "id", postDTO.getCreatedBy().toString()));
+                                                                                .orElseThrow(() -> new NotFoundException(User.class, "id", postDTO.getCreatedBy().toString()));
         post.setCreatedBy(user);
 
         return post;
     }
 
 
-
     //    REFERENCED
     public ReferencedWarning getReferencedWarning(final UUID id) {
+
         final ReferencedWarning referencedWarning = new ReferencedWarning();
         final Post post = postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(Post.class, "id", id.toString()));
+                                        .orElseThrow(() -> new NotFoundException(Post.class, "id", id.toString()));
 
         // Like
         final Like postLike = likeRepository.findFirstByPost(post);
@@ -253,12 +253,12 @@ public class PostService {
     }
 
     @Transactional
-    public void like(UUID postId, UUID userId) {
+    public void like (UUID postId, UUID userId) {
         try {
             Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new NotFoundException(Post.class, "id", postId.toString()));
+                                      .orElseThrow(() -> new NotFoundException(Post.class, "id", postId.toString()));
             User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new NotFoundException(User.class, "id", userId.toString()));
+                                      .orElseThrow(() -> new NotFoundException(User.class, "id", userId.toString()));
 
             // Check if the like already exists
             if (post.getLikes().stream().anyMatch(like -> like.getUser().equals(user))) {
@@ -280,26 +280,26 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseEntity<?> toggleLike(UUID postId, UUID userId) {
+    public ResponseEntity<?> toggleLike (UUID postId, UUID userId) {
         try {
             Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new NotFoundException(Post.class, "id", postId.toString()));
+                                      .orElseThrow(() -> new NotFoundException(Post.class, "id", postId.toString()));
             User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new NotFoundException(User.class, "id", userId.toString()));
+                                      .orElseThrow(() -> new NotFoundException(User.class, "id", userId.toString()));
 
             Optional<Like> existingLike = post.getLikes().stream()
-                    .filter(like -> like.getUser().equals(user))
-                    .findFirst();
+                                              .filter(like -> like.getUser().equals(user))
+                                              .findFirst();
 
             if (existingLike.isPresent()) {
                 post.getLikes().remove(existingLike.get());
                 likeRepository.delete(existingLike.get());
 
                 return ResponseEntity.ok(ResponseObject.builder()
-                        .status(HttpStatus.CREATED)
-                        .data(RegisterResponse.fromUser(user))
-                        .message("Like removed successfully.")
-                        .build());
+                                                       .status(HttpStatus.CREATED)
+                                                       .data(RegisterResponse.fromUser(user))
+                                                       .message("Like removed successfully.")
+                                                       .build());
             } else {
                 Like newLike = new Like();
                 newLike.setPost(post);
@@ -307,28 +307,19 @@ public class PostService {
                 likeRepository.save(newLike);
 
                 return ResponseEntity.ok(ResponseObject.builder()
-                        .status(HttpStatus.CREATED)
-                        .data(RegisterResponse.fromUser(user))
-                        .message("Like added successfully.")
-                        .build());
+                                                       .status(HttpStatus.CREATED)
+                                                       .data(RegisterResponse.fromUser(user))
+                                                       .message("Like added successfully.")
+                                                       .build());
             }
         } catch (Exception e) {
             System.err.println("Failed to toggle like: " + e.getMessage());
 
             return ResponseEntity.badRequest().body(ResponseObject.builder()
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .message("Failed to toggle like.")
-                    .build());
+                                                                  .status(HttpStatus.BAD_REQUEST)
+                                                                  .data(null)
+                                                                  .message("Failed to toggle like.")
+                                                                  .build());
         }
     }
-
-    public List<PostDTO> findByUserId (final UUID id) {
-        List<Post> posts = postRepository.findByCreatedBy_IdOrderByCreatedDateDesc(id);
-        return posts.stream()
-                .map(post -> mapToDTO(post, new PostDTO()))
-                .collect(Collectors.toList());
-    }
-
-
 }

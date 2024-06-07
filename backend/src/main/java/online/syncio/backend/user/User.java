@@ -10,6 +10,7 @@ import online.syncio.backend.messageroommember.MessageRoomMember;
 import online.syncio.backend.post.Post;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.story.Story;
+import online.syncio.backend.storyview.StoryView;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -108,18 +109,13 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private Set<MessageContent> messageContents;
 
-    //    Story
+//    Story
     @OneToMany(mappedBy = "createdBy")
     private Set<Story> stories;
 
-    //    View
-    @ManyToMany
-    @JoinTable(
-            name = "user_viewStories",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "viewer_id")
-    )
-    private Set<User> viewStories;
+//    StoryView
+    @OneToMany(mappedBy = "user")
+    private Set<StoryView> viewedStories;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

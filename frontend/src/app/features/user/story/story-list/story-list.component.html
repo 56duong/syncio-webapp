@@ -1,0 +1,32 @@
+<div class="container mt-4 w-full">
+  <div class="flex align-items-center justify-content-start gap-3 p-3 m-auto 
+    primary-scrollbar overflow-x-scroll"
+    style="width: min(470px, 100vw - 1rem); scroll-snap-type: x mandatory">
+    <!-- Story item -->
+    <div *ngFor="let user of usersWithStories" 
+      (click)="navigateToStory(user)"
+      class="story-item cursor-pointer text-center">
+      <!-- Avatar -->
+      <div class="avt border-circle border-3 overflow-hidden"
+        [ngClass]="user.hasUnseenStory ? 'border-primary' : 'surface-border'"
+        style="width: 64px; scroll-snap-align: start">
+        <img src="{{user.avtURL || '/assets/images/avatar.jpg'}}" alt="" 
+          class="block w-full object-cover">
+      </div>
+      <!-- Username -->
+      <p class="mt-1 text-sm" style="width: 64px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+        {{user.username}}
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- View story -->
+<div *ngIf="selectedUser != null && selectedUser.id" 
+  style="width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; z-index: 9999999;">
+  <app-view-story 
+    [userIdInput]="selectedUser.id"
+    (close)="close()"
+    (storyViewedAll)="selectedUser.hasUnseenStory = false">
+  </app-view-story>
+</div>

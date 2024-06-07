@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { MessageContent } from '../interfaces/message-content';
-import { CompatClient, IMessage, Stomp, StompSubscription } from '@stomp/stompjs';
+import { CompatClient, IMessage, Stomp } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
 
 @Injectable({
@@ -17,7 +17,6 @@ export class MessageContentService {
   private webSocketURL = environment.apiUrl + 'live'; // WebSocket URL with 'live' is the endpoint for the WebSocket configuration in the backend. In WebSocketConfig.java, the endpoint is '/live'.
   private stompClient: CompatClient = {} as CompatClient;
   private messageContentSubject: BehaviorSubject<MessageContent> = new BehaviorSubject<MessageContent>({}); // BehaviorSubject of MessageContent type. You can know when a new messageContent is received.
-  private subscription: StompSubscription = {} as StompSubscription;
 
   constructor(private http: HttpClient) {}
 
@@ -43,7 +42,7 @@ export class MessageContentService {
     this.stompClient = Stomp.over(socket);
 
     this.stompClient.connect({}, () => {
-      this.stompClient.subscribe(`/topic/messagecontent/${messageRoomId}`, (messageContent: IMessage) => {
+      this.stompClient.subscribe(`/topic/messagecontent/${messageRoomId}/${localStorage.getItem('access_token')}`, (messageContent: IMessage) => {
         this.messageContentSubject.next(JSON.parse(messageContent.body));
       });
     });
@@ -79,7 +78,7 @@ export class MessageContentService {
    * @param messageRoomId - The id of the post.
    */
   disconnect(messageRoomId: string) {
-    this.stompClient.unsubscribe(`/topic/messagecontent/${messageRoomId}`);
+    this.stompClient.unsubscribe(`/topic/messagecontent/${messageRoomId}/${localStorage.getItem('access_token')}`);
     this.stompClient.deactivate();
     this.stompClient.disconnect();
   }
@@ -91,8 +90,8 @@ export class MessageContentService {
    */
   sendMessageContent(messageContent: MessageContent) {
     this.stompClient.publish({ 
-      destination: `/app/messagecontent/${messageContent.messageRoomId}`, 
-      body: JSON.stringify(messageContent) 
+      destination: `/app/messagecontent/${messageContent.messageRoomId}/${localStorage.getItem('access_token')}`, 
+      body: JSON.stringify(messageContent)
     });
   }
 

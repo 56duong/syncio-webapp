@@ -7,17 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import jakarta.validation.Valid;
-import online.syncio.backend.exception.ReferencedException;
-import online.syncio.backend.exception.ReferencedWarning;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -62,7 +51,8 @@ public class UserController {
      * @return a list of users
      */
     @GetMapping("/stories")
-    public ResponseEntity<List<UserDTO>> getUsersWithStories() {
+
+    public ResponseEntity<List<UserStoryDTO>> getUsersWithStories() {
         return ResponseEntity.ok(userService.findAllUsersWithAtLeastOneStoryAfterCreatedDate(LocalDateTime.now().minusDays(1)));
     }
 

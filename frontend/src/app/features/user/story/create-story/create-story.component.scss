@@ -1,0 +1,61 @@
+.main {
+  font-size: 0.9rem;
+  display: flex;
+  gap: 1rem;
+}
+
+::ng-deep .p-sidebar {
+  position: sticky;
+  top: 1rem;
+  min-height: 100vh;
+  max-height: 100vh;
+  transition: 0s;
+
+  .p-sidebar-header {
+    display: none;
+  }
+
+  .p-sidebar-footer {
+    display: none;
+  }
+
+  .p-sidebar-left {
+    max-width: 20rem;
+  }
+
+  .p-sidebar-content {
+    overflow: visible !important;
+    padding: 1.25rem;
+  }
+}
+
+.container {
+  flex: auto;
+}
+
+.main ::ng-deep {
+  .p-dropdown {
+    border: none;
+    background-color: transparent;
+  }
+
+  .p-button:focus {
+    box-shadow: none;
+  }
+
+  .font-style ::ng-deep {
+    .bold span {
+      font-weight: bold;
+    }
+
+    .italic span {
+      font-weight: normal;
+      font-style: italic;
+    }
+
+    .underline span {
+      font-weight: normal;
+      text-decoration: underline;
+    }
+  }
+}
