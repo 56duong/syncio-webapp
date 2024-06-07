@@ -42,7 +42,7 @@ export class CommentService {
     this.stompClient = Stomp.over(socket);
 
     this.stompClient.connect({}, () => {
-      this.stompClient.subscribe(`/topic/comment/${postId}`, (comment: IMessage) => {
+      this.stompClient.subscribe(`/topic/comment/${postId}/${localStorage.getItem('access_token')}`, (comment: IMessage) => {
         this.commentSubject.next(JSON.parse(comment.body));
       });
     });
@@ -78,7 +78,7 @@ export class CommentService {
    * @param postId - The id of the post.
    */
   disconnect(postId: string) {
-    this.stompClient.unsubscribe(`/topic/comment/${postId}`);
+    this.stompClient.unsubscribe(`/topic/comment/${postId}/${localStorage.getItem('access_token')}`);
     this.stompClient.deactivate();
     this.stompClient.disconnect();
   }
@@ -91,9 +91,9 @@ export class CommentService {
   sendComment(comment: Comment) {
     if(comment.parentCommentId) return;
     this.stompClient.publish({ 
-        destination: `/app/comment/${comment.postId}`, 
-        body: JSON.stringify(comment) 
-      });
+      destination: `/app/comment/${comment.postId}/${localStorage.getItem('access_token')}`, 
+      body: JSON.stringify(comment) 
+    });
   }
 
 

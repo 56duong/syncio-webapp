@@ -22,6 +22,8 @@ public class StoryDTO {
     @NotNull
     private UUID createdBy;
 
+    private boolean viewed;
+
     public String getPhotoURL() {
         return "http://localhost:8080/api/v1/stories/images/" + photoURL;
     }

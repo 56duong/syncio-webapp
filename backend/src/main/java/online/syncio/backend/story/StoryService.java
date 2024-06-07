@@ -1,10 +1,13 @@
 package online.syncio.backend.story;
 
 import lombok.RequiredArgsConstructor;
+import online.syncio.backend.auth.AuthService;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.NotFoundException;
+import online.syncio.backend.storyview.StoryViewRepository;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
+import online.syncio.backend.utils.AuthUtils;
 import online.syncio.backend.utils.FIleUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,13 +23,23 @@ import java.util.UUID;
 public class StoryService {
     private final StoryRepository storyRepository;
     private final UserRepository userRepository;
+    private final StoryViewRepository storyViewRepository;
+    private final AuthUtils authUtils;
 
 
     //    CRUD
     public List<StoryDTO> findAllByCreatedBy_IdAndCreatedDateAfterOrderByCreatedDate(final UUID userId, final LocalDateTime createdDate) {
         final List<Story> stories = storyRepository.findAllByCreatedBy_IdAndCreatedDateAfterOrderByCreatedDate(userId, createdDate);
+        final  UUID viewerId = authUtils.getCurrentLoggedInUserId();
         return stories.stream()
-                .map(story -> mapToDTO(story, new StoryDTO()))
+                .map(story -> {
+                    StoryDTO storyDTO = mapToDTO(story, new StoryDTO());
+                    storyDTO.setViewed(
+                            storyViewRepository.findByUserIdAndStoryId(viewerId, story.getId())
+                            .isPresent()
+                    );
+                    return storyDTO;
+                })
                 .toList();
     }
 

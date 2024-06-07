@@ -2,6 +2,7 @@ package online.syncio.backend.story;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import online.syncio.backend.storyview.StoryView;
 import online.syncio.backend.user.User;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedBy;
@@ -9,6 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Table(name = "story")
@@ -35,4 +37,8 @@ public class Story {
     @JoinColumn(name = "user_id", nullable = false)
     @CreatedBy
     private User createdBy;
+
+//    StoryView
+    @OneToMany(mappedBy = "story")
+    private Set<StoryView> views;
 }

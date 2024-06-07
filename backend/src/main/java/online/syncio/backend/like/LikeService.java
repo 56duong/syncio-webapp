@@ -6,6 +6,7 @@ import online.syncio.backend.post.Post;
 import online.syncio.backend.post.PostRepository;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
+import online.syncio.backend.utils.AuthUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,13 +21,13 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final AuthService authService;
+    private final AuthUtils authUtils;
 
-    public LikeService(LikeRepository likeRepository, PostRepository postRepository, UserRepository userRepository, AuthService authService) {
+    public LikeService(LikeRepository likeRepository, PostRepository postRepository, UserRepository userRepository, AuthUtils authUtils) {
         this.likeRepository = likeRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
-        this.authService = authService;
+        this.authUtils = authUtils;
     }
 
 
@@ -40,7 +41,7 @@ public class LikeService {
     }
 
     public void create(final LikeDTO likeDTO) {
-        likeDTO.setUserId(authService.getCurrentLoggedInUserId());
+        likeDTO.setUserId(authUtils.getCurrentLoggedInUserId());
         final Like like = new Like();
         mapToEntity(likeDTO, like);
         likeRepository.save(like);
