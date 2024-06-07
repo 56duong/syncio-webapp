@@ -48,6 +48,41 @@ export class PostService {
       .pipe(map((response) => response.content));
   }
 
+  getPostReported(pageNumber: number, pageSize: number): Observable<Post[]> {
+    const url = this.apiURL + '/reported';
+    const param = {
+      pageNumber: pageNumber.toString(),
+      pageSize: pageSize.toString(),
+    };
+    // gọi api lấy danh sách các bài post từ csdl theo số trang và số bài post trên 1 trang
+    // dùng pipe.map để lấy mảng các bài post từ mục content của Page
+    return this.http
+      .get<any>(url, { params: param })
+      .pipe(map((response) => response.content));
+  }
+
+  getPostHidden(pageNumber: number, pageSize: number): Observable<Post[]> {
+    const url = this.apiURL + '/flagged';
+    const param = {
+      pageNumber: pageNumber.toString(),
+      pageSize: pageSize.toString(),
+    };
+
+    return this.http
+      .get<any>(url, { params: param })
+      .pipe(map((response) => response.content));
+  }
+
+  setFlagToTrue(postId: string): Observable<void> {
+    const url = `${this.apiURL}/${postId}/flag`;
+    return this.http.put<void>(url, null);
+  }
+
+  setFlagToFalse(postId: string): Observable<void> {
+    const url = `${this.apiURL}/${postId}/unflag`;
+    return this.http.put<void>(url, null);
+  }
+
   /**
    * Create a new post.
    * @param post

@@ -8,6 +8,10 @@ import { PrimengModule } from 'src/app/primeng/primeng.module';
 import { UsersManagementComponent } from './users-management/users-management.component';
 import { PostsManagementComponent } from './posts-management/posts-management.component';
 import { ReportedPostsComponent } from './reported-posts/reported-posts.component';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { HiddenPostsComponent } from './hidden-posts/hidden-posts.component';
+
+
 
 @NgModule({
   declarations: [
@@ -15,12 +19,14 @@ import { ReportedPostsComponent } from './reported-posts/reported-posts.componen
     DashboardComponent,
     UsersManagementComponent,
     PostsManagementComponent,
-    ReportedPostsComponent
+    ReportedPostsComponent,
+    HiddenPostsComponent,
   ],
   imports: [
     CommonModule,
     AdminRoutingModule,
-    PrimengModule
+    PrimengModule,
+    SharedModule
   ]
 })
 export class AdminModule { }

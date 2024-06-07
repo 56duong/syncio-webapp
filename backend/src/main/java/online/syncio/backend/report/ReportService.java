@@ -32,13 +32,19 @@ public class ReportService {
                 .toList();
     }
 
+    public List<ReportDTO> getByPostId(UUID postId) {
+        List<Report> reports = reportRepository.findByPostId(postId);
+        return reports.stream()
+                .map(report -> mapToDTO(report, new ReportDTO()))
+                .toList();
+    }
+
     public ReportDTO create(ReportDTO reportDTO) {
         Report report = mapToEntity(reportDTO, new Report());
         report.setCreatedDate(LocalDateTime.now());
 
         // set flag of post to false
         Post post = report.getPost();
-        post.setFlag(false);
         postRepository.save(post);
 
         Report savedReport = reportRepository.save(report);
@@ -58,8 +64,6 @@ public class ReportService {
                 .orElseThrow(() -> new NotFoundException(Report.class, "postId", postId.toString(), "userId", userId.toString()));
         reportRepository.delete(report);
     }
-
-
 
     //    MAPPER
     private ReportDTO mapToDTO(final Report report, final ReportDTO reportDTO) {
@@ -83,4 +87,5 @@ public class ReportService {
         report.setDescription(reportDTO.getDescription());
         return report;
     }
+
 }

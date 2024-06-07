@@ -9,6 +9,7 @@ import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messageroommember.MessageRoomMember;
 import online.syncio.backend.post.Post;
 import online.syncio.backend.report.Report;
+import online.syncio.backend.story.Story;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -69,13 +70,13 @@ public class User implements UserDetails {
     @Column(name = "reset_password_token", length = 30)
     private String resetPasswordToken;
 
-//    @CreatedBy
+    //    @CreatedBy
 //    private String createdBy;
 //    Post
     @OneToMany(mappedBy = "createdBy")
     private Set<Post> posts;
 
-//    Follow
+    //    Follow
     @ManyToMany
     @JoinTable(
             name = "user_followers",
@@ -87,25 +88,38 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "followers")
     private Set<User> following;
 
-//    Like
+    //    Like
     @OneToMany(mappedBy = "user")
     private Set<Like> likes;
 
-//    Comment
+    //    Comment
     @OneToMany(mappedBy = "user")
     private Set<Comment> comments;
 
-//    Report
+    //    Report
     @OneToMany(mappedBy = "user")
     private Set<Report> reports;
 
-//    MessageRoomMember
+    //    MessageRoomMember
     @OneToMany(mappedBy = "user")
     private Set<MessageRoomMember> messageRoomMembers;
 
-//    MessageContent
+    //    MessageContent
     @OneToMany(mappedBy = "user")
     private Set<MessageContent> messageContents;
+
+    //    Story
+    @OneToMany(mappedBy = "createdBy")
+    private Set<Story> stories;
+
+    //    View
+    @ManyToMany
+    @JoinTable(
+            name = "user_viewStories",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "viewer_id")
+    )
+    private Set<User> viewStories;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

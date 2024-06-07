@@ -29,7 +29,7 @@ export class ReportComponent implements OnInit {
   ngOnInit(): void {
     this.reportForm = this.fb.group({
       reason: [null, Validators.required],
-      description: ['', Validators.required],
+      description: [],
     });
 
     this.reasons = [
@@ -49,7 +49,8 @@ export class ReportComponent implements OnInit {
     if (this.reportForm?.valid) {
       const report: Report = {
         postId: this.post.id,
-        userId: this.userService.getUserResponseFromLocalStorage()?.id,
+        // userId: this.userService.getUserResponseFromLocalStorage()?.id,
+        userId : "5f8dfe06-774f-484b-90cf-ceed1f705b70",
         reason: this.reportForm?.value.reason.value,
         description: this.reportForm?.value.description,
       };

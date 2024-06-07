@@ -5,6 +5,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { UsersManagementComponent } from './users-management/users-management.component';
 import { PostsManagementComponent } from './posts-management/posts-management.component';
 import { ReportedPostsComponent } from './reported-posts/reported-posts.component';
+import { HiddenPostsComponent } from './hidden-posts/hidden-posts.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,11 @@ const routes: Routes = [
     path: 'reported-posts',
     component: ReportedPostsComponent,
   },
+  {
+    path: 'hidden-posts',
+    component: HiddenPostsComponent,
+  },
+  
 ];
 
 @NgModule({

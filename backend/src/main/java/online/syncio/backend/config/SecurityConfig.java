@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.reactive.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,6 +18,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -67,7 +71,6 @@ public class SecurityConfig {
     @Configuration
     @EnableWebSecurity(debug = true)
     @EnableGlobalMethodSecurity(prePostEnabled = true)
-    //@EnableWebMvc
     @RequiredArgsConstructor
     public static class WebSecurityConfig {
         private final JwtTokenFilter jwtTokenFilter;
@@ -80,7 +83,7 @@ public class SecurityConfig {
                     .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                     .authorizeHttpRequests(requests -> {
                         requests
-                        .anyRequest().permitAll()
+                                .anyRequest().permitAll()
                         ;
                     }).logout(logout -> logout.permitAll())
 
@@ -88,5 +91,18 @@ public class SecurityConfig {
             http.securityMatcher(String.valueOf(EndpointRequest.toAnyEndpoint()));
             return http.build();
         }
+    }
+
+    @Bean
+    public AuditorAware auditorAware() {
+        return () -> {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if(authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+                return Optional.empty();
+            }
+
+            User user = userRepository.findByUsername(authentication.getName()).get();
+            return Optional.of(user);
+        };
     }
 }

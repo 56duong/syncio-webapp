@@ -25,7 +25,7 @@ public class CommentService {
 
 
 
-//    CRUD
+    //    CRUD
     public List<CommentDTO> findAll() {
         final List<Comment> comments = commentRepository.findAll(Sort.by("createdDate"));
         return comments.stream()
@@ -89,7 +89,7 @@ public class CommentService {
 
 
 
-//    MAPPER
+    //    MAPPER
     private CommentDTO mapToDTO(final Comment comment, final CommentDTO commentDTO) {
         commentDTO.setId(comment.getId());
         commentDTO.setPostId(comment.getPost().getId());
@@ -105,7 +105,7 @@ public class CommentService {
         final Post post = commentDTO.getPostId() == null ? null : postRepository.findById(commentDTO.getPostId())
                 .orElseThrow(() -> new NotFoundException(Post.class, "id", commentDTO.getPostId().toString()));
         comment.setPost(post);
-        final User user = commentDTO.getPostId() == null ? null : userRepository.findById(commentDTO.getUserId())
+        final User user = commentDTO.getUserId() == null ? null : userRepository.findById(commentDTO.getUserId())
                 .orElseThrow(() -> new NotFoundException(User.class, "id", commentDTO.getUserId().toString()));
         comment.setUser(user);
         comment.setCreatedDate(commentDTO.getCreatedDate());

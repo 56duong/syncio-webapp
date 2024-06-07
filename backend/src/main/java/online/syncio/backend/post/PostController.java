@@ -38,13 +38,23 @@ public class PostController {
 
     // new - get 10 post/page
     @GetMapping
-
     public Page<PostDTO> getPosts(@RequestParam(defaultValue = "0") int pageNumber,
                                @RequestParam(defaultValue = "10") int pageSize) {
         return postService.getPosts(PageRequest.of(pageNumber, pageSize));
 
     }
 
+    @GetMapping("/reported")
+    public Page<PostDTO> getPostReport(@RequestParam(defaultValue = "0") int pageNumber,
+                                  @RequestParam(defaultValue = "10") int pageSize) {
+        return postService.getPostReported(PageRequest.of(pageNumber, pageSize));
+    }
+
+    @GetMapping("/flagged")
+    public Page<PostDTO> getPostFlagged(@RequestParam(defaultValue = "0") int pageNumber,
+                                  @RequestParam(defaultValue = "10") int pageSize) {
+        return postService.getPostUnFlagged(PageRequest.of(pageNumber, pageSize));
+    }
 
 
     @GetMapping("/{id}")
@@ -103,6 +113,27 @@ public class PostController {
             }
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    // change flag of post
+    @PutMapping("/{postId}/flag")
+    public ResponseEntity<Void> flagPost(@PathVariable(name = "postId") final UUID postId) {
+        try {
+            postService.setFlag(postId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("/{postId}/unflag")
+    public ResponseEntity<Void> unFlagPost(@PathVariable(name = "postId") final UUID postId) {
+        try {
+            postService.setUnFlag(postId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

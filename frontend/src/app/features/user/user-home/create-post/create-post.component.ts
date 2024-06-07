@@ -39,7 +39,8 @@ export class CreatePostComponent {
       caption: this.post.caption,
       createdDate: new Date().toISOString(),
       flag: true,
-      createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
+      // createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
+      createdBy:"5f8dfe06-774f-484b-90cf-ceed1f705b70"
     };
 
     formData.append(

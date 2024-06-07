@@ -25,5 +25,9 @@ export class AdminComponent {
       name: 'Reported Posts',
       link: 'reported-posts',
     },
+    {
+      name: 'Hidden Posts',
+      link: 'hidden-posts',
+    },
   ];
 }
