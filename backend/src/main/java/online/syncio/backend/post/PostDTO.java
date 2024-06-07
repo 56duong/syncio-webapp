@@ -2,10 +2,12 @@ package online.syncio.backend.post;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import online.syncio.backend.report.ReportDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -31,4 +33,5 @@ public class PostDTO {
 
     @NotNull
     private UUID createdBy;
+
 }

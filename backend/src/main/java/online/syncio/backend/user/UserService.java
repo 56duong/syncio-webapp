@@ -11,12 +11,14 @@ import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messagecontent.MessageContentRepository;
 import online.syncio.backend.messageroommember.MessageRoomMember;
 import online.syncio.backend.messageroommember.MessageRoomMemberRepository;
+import online.syncio.backend.post.PostDTO;
 import online.syncio.backend.post.PostService;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.report.ReportRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,14 +34,14 @@ public class UserService {
     private final PostService postService;
 
     //    CRUD
-    public List<UserDTO> findAll() {
+    public List<UserDTO> findAll () {
         final List<User> users = userRepository.findAll(Sort.by("createdDate").descending());
         return users.stream()
                 .map(user -> mapToDTO(user, new UserDTO()))
                 .toList();
     }
 
-    public UserDTO get(final UUID id) {
+    public UserDTO get (final UUID id) {
         return userRepository.findById(id)
                 .map(user -> mapToDTO(user, new UserDTO()))
                 .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
@@ -47,12 +49,25 @@ public class UserService {
 
     public UserProfile getUserProfile (final UUID id) {
         return userRepository.findById(id)
-                             .map(user -> mapToUserProfile(user, new UserProfile()))
-                             .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+                .map(user -> mapToUserProfile(user, new UserProfile()))
+                .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
     }
 
-    public List<UserDTO> findTop20ByUsernameContainingOrEmailContaining(final String username, final String email) {
+    public List<UserDTO> findTop20ByUsernameContainingOrEmailContaining (final String username, final String email) {
         final List<User> users = userRepository.findTop20ByUsernameContainingOrEmailContaining(username, email);
+        return users.stream()
+                .map(user -> mapToDTO(user, new UserDTO()))
+                .toList();
+    }
+
+    public String getUsernameById(final UUID id) {
+        return userRepository.findById(id)
+                .map(User::getUsername)
+                .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+    }
+
+    public List<UserDTO> findAllUsersWithAtLeastOneStoryAfterCreatedDate(final LocalDateTime createdDate) {
+        final List<User> users = userRepository.findAllUsersWithAtLeastOneStoryAfterCreatedDate(createdDate);
         return users.stream()
                 .map(user -> mapToDTO(user, new UserDTO()))
                 .toList();
@@ -64,22 +79,22 @@ public class UserService {
         return userRepository.save(user).getId();
     }
 
-    public void update(final UUID id, final UserDTO userDTO) {
+    public void update (final UUID id, final UserDTO userDTO) {
         final User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
         mapToEntity(userDTO, user);
         userRepository.save(user);
     }
 
-    public void delete(final UUID id) {
+    public void delete (final UUID id) {
         final User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
         userRepository.delete(user);
     }
 
 
-//    MAPPER
-    private UserDTO mapToDTO(final User user, final UserDTO userDTO) {
+    //    MAPPER
+    private UserDTO mapToDTO (final User user, final UserDTO userDTO) {
         userDTO.setId(user.getId());
         userDTO.setEmail(user.getEmail());
         userDTO.setUsername(user.getUsername());
@@ -99,15 +114,18 @@ public class UserService {
         userProfile.setAvtURL(user.getAvtURL());
         userProfile.setBio(user.getBio());
 
-        userProfile.setPostCount(postService.countPostByUser_Id(user.getId()));
         userProfile.setFollowerCount(user.getFollowers().size());
         userProfile.setFollowingCount(user.getFollowing().size());
+
+        List<PostDTO> userPosts = postService.findByUserId(user.getId());
+        userProfile.setPostDTOList(userPosts);
+        userProfile.setPostCount(userPosts.size());
 
         return userProfile;
     }
 
 
-    private User mapToEntity(final UserDTO userDTO, final User user) {
+    private User mapToEntity (final UserDTO userDTO, final User user) {
         user.setEmail(userDTO.getEmail());
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
@@ -121,9 +139,8 @@ public class UserService {
     }
 
 
-
-//    REFERENCED
-    public ReferencedWarning getReferencedWarning(final UUID id) {
+    //    REFERENCED
+    public ReferencedWarning getReferencedWarning (final UUID id) {
         final ReferencedWarning referencedWarning = new ReferencedWarning();
         final User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
@@ -171,7 +188,7 @@ public class UserService {
         return null;
     }
 
-    public void enableUser(UUID id) {
+    public void enableUser (UUID id) {
         userRepository.enableUser(id);
     }
 }

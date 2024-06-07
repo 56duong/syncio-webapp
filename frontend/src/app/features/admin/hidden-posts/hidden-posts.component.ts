@@ -5,11 +5,11 @@ import { Post } from 'src/app/core/interfaces/post';
 import { PostService } from 'src/app/core/services/post.service';
 
 @Component({
-  selector: 'app-reported-posts',
-  templateUrl: './reported-posts.component.html',
-  styleUrls: ['./reported-posts.component.scss']
+  selector: 'app-hidden-posts',
+  templateUrl: './hidden-posts.component.html',
+  styleUrls: ['./hidden-posts.component.scss']
 })
-export class ReportedPostsComponent {
+export class HiddenPostsComponent {
   posts: Post[] = [];
   
   pageNumber: number = 0;
@@ -17,7 +17,7 @@ export class ReportedPostsComponent {
   loading: boolean = false;
   endOfFeed: boolean = false;
   
-  isReportedPostsPage: boolean = true;
+  isHiddenPostsPage: boolean = true;
 
   private newPostCreatedSubscription!: Subscription;
   
@@ -26,13 +26,12 @@ export class ReportedPostsComponent {
 
   ngOnInit() {
     this.getPosts();
-    this.isReportedPostsPage = this.router.url.includes('reported-posts');
+    this.isHiddenPostsPage = this.router.url.includes('hidden-posts');
 
     // Subscribe to the new post created event to add the new post to the top of the feed.
     this.postService.getNewPostCreated().subscribe({
       next: (post) => {
         if (post) {
-          
           // Add the new post to the top of the feed
           this.posts.unshift(post);
         }
@@ -65,7 +64,7 @@ export class ReportedPostsComponent {
     }
     this.loading = true;
 
-    this.postService.getPostReported(this.pageNumber, this.pageSize).subscribe({
+    this.postService.getPostHidden(this.pageNumber, this.pageSize).subscribe({
       next: (posts) => {
         if (Array.isArray(posts)) {
           if (posts.length === 0) {
@@ -93,13 +92,12 @@ export class ReportedPostsComponent {
     }
   }
 
-  onHidePost(postId: string): void {
-    this.postService.setFlagToTrue(postId).subscribe(
+  onActivePost(postId: string): void {
+    this.postService.setFlagToFalse(postId).subscribe(
       () => {
-        console.log('Flag set to true successfully');
+        console.log('Active post successfully');
         this.posts = this.posts.filter(post => post.id !== postId);
         console.log('PostId:', postId);
-        
       },
       error => {
         console.error('Error setting flag to true', error);

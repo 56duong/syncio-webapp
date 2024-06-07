@@ -13,7 +13,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ListboxModule } from 'primeng/listbox';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SidebarModule } from 'primeng/sidebar';
-import { DropdownModule } from 'primeng/dropdown';
+
 
 @NgModule({
   declarations: [],
