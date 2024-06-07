@@ -21,6 +21,7 @@ import java.security.SecureRandom;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -110,5 +111,9 @@ public class JwtTokenUtils {
         }
 
         return false;
+    }
+
+    public UUID extractUserId(String token) {
+        return extractClaim(token, claims -> UUID.fromString(claims.get("userId").toString()));
     }
 }

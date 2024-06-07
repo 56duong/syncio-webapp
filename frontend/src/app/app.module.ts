@@ -11,7 +11,9 @@ import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
-import { AuthTokenInterceptorService } from './core/auth-token-interceptor.service';
+import { AuthTokenInterceptorService } from './core/interceptors/auth-token-interceptor.service';
+import { MessageService } from 'primeng/api';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -27,6 +29,7 @@ import { AuthTokenInterceptorService } from './core/auth-token-interceptor.servi
     ReactiveFormsModule,
   ],
   providers: [
+    MessageService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthTokenInterceptorService,
