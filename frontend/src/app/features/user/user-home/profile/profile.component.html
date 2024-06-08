@@ -4,8 +4,15 @@
       <div class="profile-photo">
         <div class="profile-photo-inner">
           <div class="profile-photo-content">
-            <button title="Change Profile Pic">
-              <img alt="Change Profile Pic" src="{{ userProfile.avtURL }}" />
+            <input
+              type="file"
+              #fileInput
+              style="display: none"
+              accept="image/*"
+              (change)="onFileSelected($event)"
+            />
+            <button title="Change Profile Pic" (click)="fileInput.click()">
+              <img alt="Change Profile Pic" [src]="userProfile.avtURL" />
             </button>
           </div>
         </div>
@@ -68,7 +75,8 @@
         </div>
       </section>
     </header>
-    <div class="highlight"></div>
+    <!-- Show Story  -->
+    <!-- <div class="highlight"></div> -->
     <div class="menu">
       <a class="current" href="/{{ userProfile.id }}/"> posts </a>
       <a href="/{{ userProfile.id }}/saved">saved</a>
