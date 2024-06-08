@@ -14,6 +14,7 @@ import online.syncio.backend.auth.responses.RegisterResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
 
 import online.syncio.backend.exception.DataNotFoundException;
+import online.syncio.backend.post.AvatarUpdateDTO;
 import online.syncio.backend.setting.SettingService;
 import online.syncio.backend.user.User;
 import online.syncio.backend.auth.responses.RegisterResponse;
@@ -36,6 +37,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("${api.prefix}/users")
@@ -263,6 +265,13 @@ public class AuthController {
         return ResponseEntity.notFound().build();
     }
 
-
-
+    @PutMapping("/{id}/avatar")
+    public ResponseEntity<?> updateAvatar(@PathVariable UUID id, @RequestBody AvatarUpdateDTO avatarUpdateDTO) {
+        try {
+            ResponseEntity<?> updatedUser = authService.updateAvatar(id, avatarUpdateDTO.getAvtURL());
+            return ResponseEntity.ok("Success");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }

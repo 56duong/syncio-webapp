@@ -20,10 +20,12 @@ import online.syncio.backend.utils.JwtTokenUtils;
 import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -178,6 +180,13 @@ public class AuthService {
         CustomerRegisterUtil.encodePassword(customer, passwordEncoder);
 
         userRepository.save(customer);
+    }
+    public ResponseEntity<?> updateAvatar(UUID userId, String avtURL) {
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
+
+        existingUser.setAvtURL(avtURL);
+        userRepository.save(existingUser);
     }
 
 }
