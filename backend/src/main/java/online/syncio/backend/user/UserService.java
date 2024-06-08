@@ -11,6 +11,8 @@ import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messagecontent.MessageContentRepository;
 import online.syncio.backend.messageroommember.MessageRoomMember;
 import online.syncio.backend.messageroommember.MessageRoomMemberRepository;
+import online.syncio.backend.post.Post;
+import online.syncio.backend.post.PostDTO;
 import online.syncio.backend.post.PostService;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.report.ReportRepository;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +49,7 @@ public class UserService {
     }
 
     public UserProfile getUserProfile (final UUID id) {
-        return userRepository.findById(id)
+        return userRepository.findByIdWithPosts(id)
                              .map(user -> mapToUserProfile(user, new UserProfile()))
                              .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
     }
@@ -98,12 +101,39 @@ public class UserService {
         userProfile.setUsername(user.getUsername());
         userProfile.setAvtURL(user.getAvtURL());
         userProfile.setBio(user.getBio());
-
-        userProfile.setPostCount(postService.countPostByUser_Id(user.getId()));
+        userProfile.setPosts(user.getPosts().stream()
+                .map(this::convertToPostDTO)
+                .collect(Collectors.toSet()));
         userProfile.setFollowerCount(user.getFollowers().size());
         userProfile.setFollowingCount(user.getFollowing().size());
 
         return userProfile;
+    }
+
+    private PostDTO convertToPostDTO(Post post) {
+        PostDTO postDTO = new PostDTO();
+
+        // Set fields from Post entity to PostDTO
+        postDTO.setId(post.getId());
+        postDTO.setCaption(post.getCaption());
+
+        // Assuming photos is a list of photo identifiers or filenames
+        if (post.getPhotos() != null) {
+            List<String> photoUrls = post.getPhotos().stream()
+                    .map(photo -> photo)
+                    .collect(Collectors.toList());
+            postDTO.setPhotos(photoUrls);
+        }
+
+        postDTO.setCreatedDate(post.getCreatedDate());
+        postDTO.setFlag(post.getFlag());
+
+        // Set the createdBy field to the ID of the user who created the post
+        if (post.getCreatedBy() != null) {
+            postDTO.setCreatedBy(post.getCreatedBy().getId());
+        }
+
+        return postDTO;
     }
 
 

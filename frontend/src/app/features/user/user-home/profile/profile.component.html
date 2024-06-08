@@ -1,1 +1,94 @@
-<p>profile works!</p>
+<main id="my-profile" class="profile-page dark-off">
+  <div class="profile-page-inner">
+    <header>
+      <div class="profile-photo">
+        <div class="profile-photo-inner">
+          <div class="profile-photo-content">
+            <button title="Change Profile Pic">
+              <img alt="Change Profile Pic" src="{{ userProfile.avtURL }}" />
+            </button>
+          </div>
+        </div>
+      </div>
+      <section>
+        <div class="profile-setting dark-off">
+          <h2>{{ userProfile.username }}</h2>
+          <a href="/accounts/edit/">
+            <button
+              type="button"
+              (click)="handleEditProfile()"
+              style="background-color: rgba(0, 0, 0, 0.1)"
+            >
+              Edit Profile
+            </button>
+          </a>
+          <div class="setting-icon">
+            <button type="button">
+              <svg
+                aria-label="Options"
+                fill="#262626"
+                height="24"
+                viewBox="0 0 48 48"
+                width="24"
+              >
+                <path
+                  clipRule="evenodd"
+                  [attr.d]="settingIcon"
+                  fillRule="evenodd"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <ul>
+          <li>
+            <span>
+              <span>{{ userProfile.posts?.length }} </span>
+              posts
+            </span>
+          </li>
+          <li>
+            <a href="/sarojsh01/followers/">
+              <span>{{ userProfile.followerCount }} </span>
+              followers
+            </a>
+          </li>
+          <li>
+            <a href="/sarojsh01/followers/">
+              <span>{{ userProfile.followingCount }} </span>
+              following
+            </a>
+          </li>
+        </ul>
+        <div class="intro">
+          <h3>{{ userProfile.username }}</h3>
+          <br />
+          <span>{{ userProfile.bio }}</span>
+          <a href="http://{{ userProfile.bio }}">{{ userProfile.bio }}</a>
+        </div>
+      </section>
+    </header>
+    <div class="highlight"></div>
+    <div class="menu">
+      <a class="current" href="/{{ userProfile.id }}/"> posts </a>
+      <a href="/{{ userProfile.id }}/saved">saved</a>
+      <a href="/{{ userProfile.id }}/tagged">tagged</a>
+    </div>
+    <div class="content">
+      <article>
+        <div class="row-container">
+          <div class="content-row" *ngFor="let post of userProfile.posts">
+            <div class="photo" *ngFor="let photoUrl of post.photos">
+              <img
+                alt="Post Image"
+                height="100%"
+                width="100%"
+                [src]="photoUrl"
+              />
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</main>

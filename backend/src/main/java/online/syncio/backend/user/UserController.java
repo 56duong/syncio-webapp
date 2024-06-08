@@ -61,6 +61,7 @@ public class UserController {
 
 
     @GetMapping("/profile/{id}")
+    @ResponseBody
     public ResponseEntity<UserProfile> getUserProfile (@PathVariable(name = "id") final UUID id) {
         return ResponseEntity.ok(userService.getUserProfile(id));
     }

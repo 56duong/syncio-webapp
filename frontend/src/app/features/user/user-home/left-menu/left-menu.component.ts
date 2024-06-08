@@ -39,6 +39,7 @@ export class LeftMenuComponent {
 
   constructor(
     private router: Router
+    
   ) { }
 
   ngOnInit() {

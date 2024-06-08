@@ -3,7 +3,10 @@ package online.syncio.backend.user;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import online.syncio.backend.post.Post;
+import online.syncio.backend.post.PostDTO;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -19,7 +22,7 @@ public class UserProfile {
 
     private String bio;
 
-    private long postCount;
+    private Set<PostDTO> posts;
 
     private long followerCount;
 
