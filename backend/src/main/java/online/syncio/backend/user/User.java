@@ -72,7 +72,7 @@ public class User implements UserDetails {
 //    @CreatedBy
 //    private String createdBy;
 //    Post
-    @OneToMany(mappedBy = "createdBy")
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
     private Set<Post> posts;
 
 //    Follow

@@ -82,7 +82,7 @@ public class SecurityConfig {
                         requests
                         .anyRequest().permitAll()
                         ;
-                    }).logout(logout -> logout.permitAll())
+                    })
 
                     .csrf(AbstractHttpConfigurer::disable);
             http.securityMatcher(String.valueOf(EndpointRequest.toAnyEndpoint()));

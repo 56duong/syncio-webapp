@@ -28,7 +28,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +44,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final TokenService tokenService;
+    private final TokenRepository tokenRepository;
 
     private final SettingService settingService;
     @Value("${apiPrefix.client}")
@@ -184,15 +187,6 @@ public class AuthController {
     }
 
 
-
-    @RequestMapping(value = "api/users/logoutDummy")
-    @PreAuthorize("permitAll()")
-    @ResponseStatus(HttpStatus.OK)
-    public void logout() {
-
-    }
-
-
     @PostMapping(value = "/forgot_password")
     public ResponseEntity<?> forgotPassword(HttpServletRequest request,@Valid @RequestBody ForgotPasswordForm forgotPasswordForm) throws Exception {
 
@@ -241,4 +235,34 @@ public class AuthController {
 
 
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        final String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+
+            return ResponseEntity.badRequest().body("Invalid Authorization header format.");
+        }
+
+
+        final String jwt = authHeader.substring(7);
+
+        var storedToken = tokenRepository.findByToken(jwt);
+
+        if (storedToken != null) {
+            storedToken.setExpired(true);
+            storedToken.setRevoked(true);
+            tokenRepository.save(storedToken);
+
+            SecurityContextHolder.clearContext();
+
+            return ResponseEntity.ok().body("Logged out successfully.");
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+
+
 }

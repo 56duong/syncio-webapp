@@ -144,6 +144,16 @@ export class UserService {
     return this.http.get<User>(url);
   }
 
+    /**
+   * Get User Profile By Id.
+   * @param userId - The userId to search if exists.
+   * @returns Object users.
+   */
+  getUserProfile(userId: any): Observable<User> {
+    const url = `${this.apiURL}/profile/${userId}`;
+    return this.http.get<User>(url);
+  }
+
   /**
    * Search users by username or email.
    * @param username - The username to search if exists.
