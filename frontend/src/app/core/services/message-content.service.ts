@@ -17,6 +17,7 @@ export class MessageContentService {
   private webSocketURL = environment.apiUrl + 'live'; // WebSocket URL with 'live' is the endpoint for the WebSocket configuration in the backend. In WebSocketConfig.java, the endpoint is '/live'.
   private stompClient: CompatClient = {} as CompatClient;
   private messageContentSubject: BehaviorSubject<MessageContent> = new BehaviorSubject<MessageContent>({}); // BehaviorSubject of MessageContent type. You can know when a new messageContent is received.
+  private subscription: any;
 
   constructor(private http: HttpClient) {}
 
@@ -42,7 +43,7 @@ export class MessageContentService {
     this.stompClient = Stomp.over(socket);
 
     this.stompClient.connect({}, () => {
-      this.stompClient.subscribe(`/topic/messagecontent/${messageRoomId}/${localStorage.getItem('access_token')}`, (messageContent: IMessage) => {
+      this.subscription = this.stompClient.subscribe(`/topic/messagecontent/${messageRoomId}/${localStorage.getItem('access_token')}`, (messageContent: IMessage) => {
         this.messageContentSubject.next(JSON.parse(messageContent.body));
       });
     });
@@ -75,12 +76,13 @@ export class MessageContentService {
 
   /**
    * Disconnect from the WebSocket.
-   * @param messageRoomId - The id of the post.
    */
-  disconnect(messageRoomId: string) {
-    this.stompClient.unsubscribe(`/topic/messagecontent/${messageRoomId}/${localStorage.getItem('access_token')}`);
-    this.stompClient.deactivate();
-    this.stompClient.disconnect();
+  disconnect() {
+    if(this.subscription) this.subscription.unsubscribe();
+    if(Object.keys(this.stompClient).length) {
+      this.stompClient.deactivate();
+      this.stompClient.disconnect();
+    }
   }
 
   /**

@@ -28,4 +28,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("SELECT u FROM User u JOIN u.stories s WHERE s.createdDate > :createdDate")
     List<User> findAllUsersWithAtLeastOneStoryAfterCreatedDate(LocalDateTime createdDate);
+
+    @Query("SELECT u.username FROM User u WHERE u.id = :id")
+    String findUsernameById(UUID id);
 }

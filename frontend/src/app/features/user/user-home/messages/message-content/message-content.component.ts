@@ -38,7 +38,7 @@ export class MessageContentComponent {
 
       // Disconnect
       if(messageRoom.previousValue && messageRoom.previousValue.id) {
-        this.messageContentService.disconnect(messageRoom.previousValue.id);
+        this.messageContentService.disconnect();
       }
       this.subscriptionMessageContents.unsubscribe();
       
@@ -54,7 +54,7 @@ export class MessageContentComponent {
   }
 
   ngOnDestroy() {
-    if (this.messageRoom.id) this.messageContentService.disconnect(this.messageRoom.id);
+    if (this.messageRoom.id) this.messageContentService.disconnect();
     this.subscriptionMessageContents.unsubscribe();
   }
 
@@ -117,6 +117,7 @@ export class MessageContentComponent {
   sendMessage() {
     if(this.plainComment.trim() === '') return;
 
+    let date = new Date();
     this.messageContent = {
       ...this.messageContent,
       user: {
@@ -124,7 +125,7 @@ export class MessageContentComponent {
         username: this.currentUser.username,
       },
       messageRoomId: this.messageRoom.id,
-      dateSent: new Date().toISOString()
+      dateSent: new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString(),
     };
 
     this.messageContentService.sendMessageContent(this.messageContent);

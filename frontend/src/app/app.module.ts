@@ -13,6 +13,7 @@ import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { AuthTokenInterceptorService } from './core/interceptors/auth-token-interceptor.service';
 import { MessageService } from 'primeng/api';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent],
@@ -29,6 +30,7 @@ import { MessageService } from 'primeng/api';
   ],
   providers: [
     MessageService,
+    DatePipe,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthTokenInterceptorService,
