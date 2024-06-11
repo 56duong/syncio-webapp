@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { CreatePostComponent } from '../create-post/create-post.component';
 import { Router } from '@angular/router';
+import { TokenService } from 'src/app/core/services/token.service';
 
 @Component({
   selector: 'app-left-menu',
@@ -14,6 +15,7 @@ export class LeftMenuComponent {
   isHideMenuLabel: boolean = false; // Hide the menu label for specific tabs
   currentTab: string = ''; // Current tab
   hideTabs: string[] = ['messages']; // Tabs to hide
+  currentUserId: string = '';
 
   menus: any[] = [
     {
@@ -33,13 +35,7 @@ export class LeftMenuComponent {
       icon: 'pi pi-comments',
       routerLink: 'messages',
       id: 'MessagesButton'
-    },
-    {
-      label: 'Profile',
-      icon: 'pi pi-user',
-      routerLink: 'profile',
-      id: 'ProfileButton'
-    },
+    }
   ];
 
   createSubmenuItems = [
@@ -64,10 +60,13 @@ export class LeftMenuComponent {
   ]; // Submenu of the create button
 
   constructor(
-    private router: Router
+    private router: Router,
+    private tokenService: TokenService
   ) { }
 
   ngOnInit() {
+    this.currentUserId = this.tokenService.extractUserIdFromToken();
+    
     // Get the current tab when routing changes
     this.router.events.subscribe(() => {
       this.currentTab = this.router.url.split('/')[1].split('?')[0];

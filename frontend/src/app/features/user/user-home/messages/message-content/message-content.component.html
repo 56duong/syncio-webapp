@@ -21,7 +21,7 @@
     <!-- Message content -->
     <div class="p-2 flex flex-column gap-2">
       <div *ngFor="let messageContent of messageContents" 
-        [title]="messageContent.dateSent | date: 'HH:mm:ss dd/MM/yyyy'"
+        [title]="messageContent.dateSent | dateAgoPipe: 'day'"
         [ngClass]="{'my-message': messageContent.user?.id === currentUser.id}"
         class="message-content-item">
         <img 
