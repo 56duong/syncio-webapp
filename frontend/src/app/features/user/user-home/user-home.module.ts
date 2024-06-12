@@ -11,10 +11,8 @@ import { TopMenuComponent } from './top-menu/top-menu.component';
 import { CoreModule } from 'src/app/core/core.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ProfileComponent } from './profile/profile.component';
-import { MessagesComponent } from './messages/messages.component';
 import { SearchComponent } from './search/search.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
-import { MessageContentComponent } from './messages/message-content/message-content.component';
 import { StoryListComponent } from '../story/story-list/story-list.component';
 import { ViewStoryComponent } from '../story/view-story/view-story.component';
 
@@ -26,9 +24,7 @@ import { ViewStoryComponent } from '../story/view-story/view-story.component';
     LeftMenuComponent,
     TopMenuComponent,
     ProfileComponent,
-    MessagesComponent,
     SearchComponent,
-    MessageContentComponent,
     StoryListComponent,
     ViewStoryComponent
   ],

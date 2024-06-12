@@ -43,7 +43,7 @@ export class CommentService {
     this.stompClient = Stomp.over(socket);
 
     this.stompClient.connect({}, () => {
-      this.subscription = this.stompClient.subscribe(`/topic/comment/${postId}/${localStorage.getItem('access_token')}`, (comment: IMessage) => {
+      this.subscription = this.stompClient.subscribe(`/topic/comment/${postId}`, (comment: IMessage) => {
         this.commentSubject.next(JSON.parse(comment.body));
       });
     });
@@ -93,7 +93,10 @@ export class CommentService {
   sendComment(comment: Comment) {
     if(comment.parentCommentId) return;
     this.stompClient.publish({ 
-      destination: `/app/comment/${comment.postId}/${localStorage.getItem('access_token')}`, 
+      headers: {
+        'token': localStorage.getItem('access_token') || '', // Send the token in the header to authenticate the user.
+      },
+      destination: `/app/comment/${comment.postId}`, 
       body: JSON.stringify(comment) 
     });
   }

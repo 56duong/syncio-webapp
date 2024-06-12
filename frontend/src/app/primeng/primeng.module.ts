@@ -12,20 +12,24 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SidebarModule } from 'primeng/sidebar';
 import { DropdownModule } from 'primeng/dropdown';
-import { ColorPickerModule } from 'primeng/colorpicker';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { TieredMenuModule } from 'primeng/tieredmenu';
+import { ContextMenuModule } from 'primeng/contextmenu';
+import { TabViewModule } from 'primeng/tabview';
+import { SliderModule } from 'primeng/slider';
 
 @NgModule({
   declarations: [],
   exports: [
+    SliderModule,
+    TabViewModule,
+    ContextMenuModule,
     TieredMenuModule,
     ScrollPanelModule,
     ToggleButtonModule,
     KeyFilterModule,
-    ColorPickerModule,
     DropdownModule,
     AutoCompleteModule,
     FormsModule,

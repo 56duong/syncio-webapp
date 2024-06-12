@@ -3,43 +3,6 @@
   height: 100%;
 }
 
-.message-content-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.5rem;
-  width: 100%;
-}
-
-.message-content-item .message-content-text {
-  margin: 0;
-  padding: 7px 12px;
-  border: 1px solid var(--gray-300);
-  border-radius: 18px;
-}
-
-::ng-deep .message-content-item .message-content-text p {
-  margin: 0;
-}
-
-.response-message {
-  flex-direction: row;
-}
-
-.my-message img {
-  display: none;
-}
-
-.my-message {
-  flex-direction: row-reverse;
-}
-
-.my-message .message-content-text {
-  background-color: var(--gray-200);
-  border-color: var(--gray-200);
-}
-
 // Message input
 .message-input ::ng-deep {
   border: 1px solid var(--gray-300);
