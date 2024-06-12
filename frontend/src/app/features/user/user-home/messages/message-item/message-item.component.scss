@@ -1,0 +1,47 @@
+.message-content-item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.message-content-item .message-content-text {
+  margin: 0;
+  padding: 7px 12px;
+  border: 1px solid var(--gray-300);
+  border-radius: 18px;
+  width: fit-content;
+}
+
+::ng-deep .message-content-text p {
+  margin: 0;
+}
+
+.response-message {
+  flex-direction: row;
+}
+
+.my-message img {
+  display: none;
+}
+
+.my-message {
+  flex-direction: row-reverse;
+}
+
+.my-message .message-content-text {
+  background-color: var(--gray-200);
+  border-color: var(--gray-200);
+}
+
+.my-reply {
+  border-right: 3px solid var(--gray-300);
+  padding-right: 0.5rem;
+}
+
+.other-reply {
+  border-left: 3px solid var(--gray-300);
+  padding-left: 0.5rem;
+}

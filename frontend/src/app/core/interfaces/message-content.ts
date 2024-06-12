@@ -6,4 +6,5 @@ export interface MessageContent {
   user?: User;
   message?: string;
   dateSent?: string;
+  replyTo?: MessageContent;
 }

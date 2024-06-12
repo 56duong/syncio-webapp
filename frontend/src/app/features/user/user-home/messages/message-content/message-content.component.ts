@@ -1,11 +1,10 @@
 import { Component, ElementRef, EventEmitter, Input, Output, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
+import { ContextMenu } from 'primeng/contextmenu';
 import { Subscription } from 'rxjs';
 import { MessageContent } from 'src/app/core/interfaces/message-content';
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
 import { User } from 'src/app/core/interfaces/user';
 import { MessageContentService } from 'src/app/core/services/message-content.service';
-import { UserService } from 'src/app/core/services/user.service';
-import { UserResponse } from 'src/app/features/authentication/login/user.response';
 
 @Component({
   selector: 'app-message-content',
@@ -24,11 +23,22 @@ export class MessageContentComponent {
   isEmojiPickerVisible: boolean = false;
   plainComment: string = ''; // Plain text comment
   subscriptionMessageContents: Subscription = new Subscription(); // Subscription to the message contents observable
-
+  
+  // REPLY SECTION
+  @ViewChild('contextMenu') contextMenu!: ContextMenu;
+  replyingTo: MessageContent = {}; // Message content to reply to
+  contextMenuItems: any[] = [
+    {
+      label: 'Reply',
+      icon: 'pi pi-reply',
+      command: () => {
+        this.messageContent.replyTo = {...this.replyingTo};
+      }
+    }
+  ]; // Context menu items when right-clicking on a message
 
   constructor(
     private messageContentService: MessageContentService,
-    private userService: UserService,
   ) { }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -38,7 +48,7 @@ export class MessageContentComponent {
 
       // Disconnect
       if(messageRoom.previousValue && messageRoom.previousValue.id) {
-        this.messageContentService.disconnect(messageRoom.previousValue.id);
+        this.messageContentService.disconnect();
       }
       this.subscriptionMessageContents.unsubscribe();
       
@@ -49,12 +59,8 @@ export class MessageContentComponent {
     }
   }
 
-  ngAfterViewChecked() {
-    this.scrollToBottom();
-  }
-
   ngOnDestroy() {
-    if (this.messageRoom.id) this.messageContentService.disconnect(this.messageRoom.id);
+    if (this.messageRoom.id) this.messageContentService.disconnect();
     this.subscriptionMessageContents.unsubscribe();
   }
 
@@ -72,6 +78,9 @@ export class MessageContentComponent {
     this.subscriptionMessageContents = this.messageContentService.getMessageContentsObservable().subscribe({
       next: (messageContent) => {
         this.messageContents.push(messageContent);
+        setTimeout(() => {
+          this.scrollToBottom();
+        }, 50);
       },
       error: (error) => {
         console.log(error);
@@ -88,6 +97,9 @@ export class MessageContentComponent {
     this.messageContentService.getMessageContentByRoomId(this.messageRoom.id).subscribe({
       next: (messageContents) => {
         this.messageContents = messageContents;
+        setTimeout(() => {
+          this.scrollToBottom();
+        }, 50);
       },
       error: (error) => {
         console.log(error);
@@ -117,6 +129,7 @@ export class MessageContentComponent {
   sendMessage() {
     if(this.plainComment.trim() === '') return;
 
+    let date = new Date();
     this.messageContent = {
       ...this.messageContent,
       user: {
@@ -124,7 +137,7 @@ export class MessageContentComponent {
         username: this.currentUser.username,
       },
       messageRoomId: this.messageRoom.id,
-      dateSent: new Date().toISOString()
+      dateSent: new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString(),
     };
 
     this.messageContentService.sendMessageContent(this.messageContent);
@@ -134,5 +147,18 @@ export class MessageContentComponent {
     if(this.messageContents.length === 0) {
       this.sendMessageEvent.emit(); // Emit the event to the parent component
     }
+    
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 50);
   }
+
+
+  /* ------------------------------ REPLY SECTION ----------------------------- */
+
+  onContextMenu(event: any, messageContent: MessageContent) {
+    this.replyingTo = messageContent;
+    this.contextMenu.show(event);
+  }
+
 }
