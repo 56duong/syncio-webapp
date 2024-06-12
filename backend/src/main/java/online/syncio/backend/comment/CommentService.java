@@ -1,10 +1,12 @@
 package online.syncio.backend.comment;
 
+import lombok.AllArgsConstructor;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.post.Post;
 import online.syncio.backend.post.PostRepository;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
+import online.syncio.backend.utils.AuthUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -12,16 +14,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-
-    public CommentService(CommentRepository commentRepository, PostRepository postRepository, UserRepository userRepository) {
-        this.commentRepository = commentRepository;
-        this.postRepository = postRepository;
-        this.userRepository = userRepository;
-    }
+    private final AuthUtils authUtils;
 
 
 
@@ -65,6 +63,9 @@ public class CommentService {
     }
 
     public UUID create(final CommentDTO commentDTO) {
+        final UUID userId = authUtils.getCurrentLoggedInUserId();
+        if(userId != null) commentDTO.setUserId(userId);
+
         final Comment comment = new Comment();
         mapToEntity(commentDTO, comment);
         return commentRepository.save(comment).getId();
@@ -105,7 +106,7 @@ public class CommentService {
         final Post post = commentDTO.getPostId() == null ? null : postRepository.findById(commentDTO.getPostId())
                 .orElseThrow(() -> new NotFoundException(Post.class, "id", commentDTO.getPostId().toString()));
         comment.setPost(post);
-        final User user = commentDTO.getPostId() == null ? null : userRepository.findById(commentDTO.getUserId())
+        final User user = commentDTO.getUserId() == null ? null : userRepository.findById(commentDTO.getUserId())
                 .orElseThrow(() -> new NotFoundException(User.class, "id", commentDTO.getUserId().toString()));
         comment.setUser(user);
         comment.setCreatedDate(commentDTO.getCreatedDate());

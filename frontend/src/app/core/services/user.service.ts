@@ -8,6 +8,7 @@ import { HttpUtilService } from './http.util.service';
 import { LoginDTO } from 'src/app/features/authentication/login/login.dto';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
 import { FogotPasswordDTO } from 'src/app/features/authentication/forgotpassword/forgotpassword.dto';
+import { UserStory } from '../interfaces/user-story';
 
 @Injectable({
   providedIn: 'root',
@@ -66,7 +67,7 @@ export class UserService {
     return this.http.post(this.apiUserDetail, {}, { headers: headers });
   }
 
-  saveUserResponseToLocalStorage(userResponse?: UserResponse) {
+  saveUserResponseToLocalStorage(userResponse?: UserResponse | null) {
     try {
       if (userResponse == null || !userResponse) {
         return;
@@ -121,8 +122,13 @@ export class UserService {
    *    }
    *  })
    */
-  getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiURL);
+  getUsers(username?: string): Observable<User[]> {
+    const url = username ? `${this.apiURL}?username=${username}` : this.apiURL;
+    return this.http.get<User[]>(url);
+  }
+  isFollowing(userId: string, targetId: string): Observable<any> {
+    const url = `${this.apiURL}/${userId}/is-following/${targetId}`;
+    return this.http.get(url);
   }
 
   /**
@@ -144,7 +150,7 @@ export class UserService {
     return this.http.get<User>(url);
   }
 
-    /**
+  /**
    * Get User Profile By Id.
    * @param userId - The userId to search if exists.
    * @returns Object users.
@@ -152,6 +158,39 @@ export class UserService {
   getUserProfile(userId: any): Observable<User> {
     const url = `${this.apiURL}/profile/${userId}`;
     return this.http.get<User>(url);
+  }
+
+  updateUser(user: User, userId: any): Observable<User> {
+    const url = `${this.apiURL}/update-profile/${userId}`;
+    return this.http.put<User>(url, user);
+  }
+
+  followUser(targetId: string): Observable<any> {
+    const url = `${this.apiURL}/follow/${targetId}`;
+    return this.http.post(url, {});
+  }
+
+  unfollowUser(targetId: string): Observable<any> {
+    const url = `${this.apiURL}/unfollow/${targetId}`;
+    return this.http.post(url, {});
+  }
+  /**
+   * Get username by id.
+   * @param userId
+   * @returns response object containing the username.
+   * @example
+   * this.userService.getUsernameById(userId).subscribe({
+   *  next: (response) => {
+   *   this.username = response.username;
+   *  },
+   *  error: (error) => {
+   *   console.error(error);
+   *  }
+   * })
+   */
+  getUsernameById(userId: string): Observable<Object> {
+    const url = `${this.apiURL}/${userId}/username`;
+    return this.http.get<Object>(url);
   }
 
   /**
@@ -163,5 +202,19 @@ export class UserService {
   searchUsers(username: string, email: string): Observable<User[]> {
     const url = `${this.apiURL}/search?username=${username}&email=${email}`;
     return this.http.get<User[]>(url);
+  }
+
+  /**
+   * Get all users with at least one story created in the last 24 hours
+   * @returns array of stories.
+   */
+  getUsersWithStories(): Observable<UserStory[]> {
+    const url = `${this.apiURL}/stories`;
+    return this.http.get<UserStory[]>(url);
+  }
+
+  changeAvatar(formData: FormData): Observable<string> {
+    const url = `${this.apiURL}/avatar`;
+    return this.http.post<string>(url, formData);
   }
 }

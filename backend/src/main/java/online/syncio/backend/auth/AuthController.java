@@ -35,6 +35,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -135,6 +136,7 @@ public class AuthController {
                 .builder()
                 .message("Login successfully")
                 .token(jwtToken.getToken())
+                .bio(userDetail.getBio())
                 .tokenType(jwtToken.getTokenType())
                 .refreshToken(jwtToken.getRefreshToken())
                 .username(userDetail.getUsername())
@@ -265,10 +267,10 @@ public class AuthController {
         return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/{id}/avatar")
-    public ResponseEntity<?> updateAvatar(@PathVariable UUID id, @RequestBody AvatarUpdateDTO avatarUpdateDTO) {
+    @PutMapping("/avatar")
+    public ResponseEntity<?> updateAvatar(@RequestParam("file") MultipartFile file) {
         try {
-            ResponseEntity<?> updatedUser = authService.updateAvatar(id, avatarUpdateDTO.getAvtURL());
+            authService.updateAvatar(file);
             return ResponseEntity.ok("Success");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

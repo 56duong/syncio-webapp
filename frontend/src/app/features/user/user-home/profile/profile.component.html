@@ -11,8 +11,8 @@
               accept="image/*"
               (change)="onFileSelected($event)"
             />
-            <button title="Change Profile Pic" (click)="fileInput.click()">
-              <img alt="Change Profile Pic" [src]="userProfile.avtURL" />
+            <button title="" (click)="fileInput.click()">
+              <img alt="" [src]="userProfile.avtURL" />
             </button>
           </div>
         </div>
@@ -20,7 +20,35 @@
       <section>
         <div class="profile-setting dark-off">
           <h2>{{ userProfile.username }}</h2>
-          <a href="/accounts/edit/">
+
+          <a>
+            <button
+              *ngIf="loginUser !== userProfile.id && !isFollowing"
+              type="button"
+              (click)="handleFollowUser(userProfile.id)"
+              style="background-color: rgba(0, 0, 0, 0.1)"
+            >
+              Folllow
+            </button>
+          </a>
+
+          <a>
+            <button
+              *ngIf="loginUser !== userProfile.id && isFollowing"
+              type="button"
+              (click)="handleUnFollowUser(userProfile.id)"
+              style="background-color: rgba(0, 0, 0, 0.1)"
+            >
+              Folllowing
+            </button>
+          </a>
+
+          <a *ngIf="loginUser !== userProfile.id" href="/messages">
+            <button type="button" style="background-color: rgba(0, 0, 0, 0.1)">
+              Messages
+            </button>
+          </a>
+          <a *ngIf="loginUser === userProfile.username" href="/edit-profile">
             <button
               type="button"
               (click)="handleEditProfile()"
@@ -29,7 +57,8 @@
               Edit Profile
             </button>
           </a>
-          <div class="setting-icon">
+
+          <div *ngIf="loginUser === userProfile.username" class="setting-icon">
             <button type="button">
               <svg
                 aria-label="Options"

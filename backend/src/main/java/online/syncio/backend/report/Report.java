@@ -34,4 +34,5 @@ public class Report {
     @Enumerated(EnumType.STRING)
     private ReasonEnum reason;
 
+    private String description;
 }

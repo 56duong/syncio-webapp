@@ -15,6 +15,9 @@ import { MessagesComponent } from './messages/messages.component';
 import { SearchComponent } from './search/search.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { MessageContentComponent } from './messages/message-content/message-content.component';
+import { StoryListComponent } from '../story/story-list/story-list.component';
+import { ViewStoryComponent } from '../story/view-story/view-story.component';
+import { SearchSuggestionComponent } from './search/search-suggestion/search-suggestion.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +30,10 @@ import { MessageContentComponent } from './messages/message-content/message-cont
     MessagesComponent,
     SearchComponent,
     MessageContentComponent,
+    StoryListComponent,
+    ViewStoryComponent,
+    SearchSuggestionComponent
+
   ],
   imports: [
     CommonModule,

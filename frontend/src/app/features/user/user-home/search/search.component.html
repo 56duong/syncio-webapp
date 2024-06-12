@@ -1,1 +1,107 @@
-<p>search works!</p>
+<!-- <div class="container-search">
+  <h2>Search</h2>
+  <input
+    id="nav-search-input"
+    class="nav-search-input"
+    type="text"
+    autoCapitalize="none"
+    placeholder="Search"
+    (keyup)="handleKeyup($event)"
+    [value]="searchKey"
+  />
+  <span *ngIf="clickInput" class="nav-search-icon-left"></span>
+  <div
+    *ngIf="clickInput && dataFetched"
+    class="nav-search-clear-icon"
+    role="button"
+    tabIndex="0"
+    (click)="clickClearInput($event)"
+  ></div>
+  <div *ngIf="clickInput && !dataFetched" class="nav-search-loader">
+    <img alt="loader" src="/frontend\src\assets\images\loader.gif" />
+  </div>
+  <div *ngIf="suggestions.length > 0">
+    <div>
+      <div class="search-result-arrow"></div>
+      <div class="search-result-container">
+        <div class="search-result">
+          <app-search-suggestion
+            *ngFor="let suggestion of suggestions; let i = index"
+            [suggestion]="suggestion"
+            [imgUrl]="imgUrl"
+            (click)="clickSuggestion($event)"
+          ></app-search-suggestion>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    *ngIf="!clickInput"
+    class="nav-search-container"
+    role="button"
+    tabIndex="0"
+    (click)="onClickInput()"
+  ></div> 
+</div> -->
+<div class="search__wrap">
+  <div
+    id="search"
+    class="search_section"
+    (click)="$event.stopPropagation()"
+    [class.show]="showSearch"
+  >
+    <h2>Search</h2>
+    <form method="post">
+      <input
+        type="text"
+        placeholder="Search"
+        (keyup)="handleKeyup($event)"
+        [value]="searchKey"
+      />
+    </form>
+    <div class="find">
+      <div class="desc">
+        <h4>Recent</h4>
+        <p><a (click)="clickClearInput($event)">Clear all</a></p>
+      </div>
+      <div class="account">
+        <div class="cart">
+          <div>
+            <div class="img">
+              <img src="./images/profile_img.jpg" alt="" />
+            </div>
+            <div class="info">
+              <div *ngIf="suggestions.length > 0">
+                <div>
+                  <div class="search-result-arrow"></div>
+                  <div class="search-result-container">
+                    <div class="search-result">
+                      <app-search-suggestion
+                        *ngFor="let suggestion of suggestions; let i = index"
+                        [suggestion]="suggestion"
+                        [imgUrl]="imgUrl"
+                        (click)="clickSuggestion($event)"
+                      ></app-search-suggestion>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="clear">
+            <div
+              *ngIf="clickInput && dataFetched"
+              class="nav-search-clear-icon"
+              role="button"
+              tabIndex="0"
+              (click)="clickClearInput($event)"
+            >
+              X
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="showSearch" class="search__outside" (click)="closeSearch()"></div>
+</div>

@@ -1,6 +1,8 @@
 package online.syncio.backend.comment;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import online.syncio.backend.utils.JwtTokenUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -13,13 +15,11 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/api/v1/comments")
+@AllArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
-
-    public CommentController(final CommentService commentService) {
-        this.commentService = commentService;
-    }
+    private final JwtTokenUtils jwtTokenUtils;
 
     @GetMapping
     public ResponseEntity<List<CommentDTO>> getAllComments() {
@@ -59,13 +59,17 @@ public class CommentController {
      * The @SendTo("/topic/comment/{postId}") annotation means that the return value of this method
      * will be sent to the "/topic/comment/{postId}" destination.
      * @param postId the post id
+     * @param token the token
      * @param commentDTO the comment
      * @return the comment
      */
-    @MessageMapping("/comment/{postId}")
-    @SendTo("/topic/comment/{postId}")
+    @MessageMapping("/comment/{postId}/{token}")
+    @SendTo("/topic/comment/{postId}/{token}")
     public CommentDTO addComment(@DestinationVariable final UUID postId,
+                                   @DestinationVariable final String token,
                                    final CommentDTO commentDTO) {
+        final UUID userId = jwtTokenUtils.extractUserId(token);
+        commentDTO.setUserId(userId);
         final UUID createdId = commentService.create(commentDTO);
         commentDTO.setId(createdId);
         return commentDTO;

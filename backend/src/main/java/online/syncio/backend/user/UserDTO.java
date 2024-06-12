@@ -33,6 +33,8 @@ public class UserDTO {
 
     private String bio;
 
+    private long followerCount;
+
     // Automatically create "creation time"
     private LocalDateTime createdDate = LocalDateTime.now();
 
