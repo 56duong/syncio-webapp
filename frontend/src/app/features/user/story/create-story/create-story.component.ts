@@ -91,7 +91,7 @@ export class CreateStoryComponent {
    * @param event 
    * @param imageUpload 
    */
-  onSelectImage(event: any, imageUpload: any) {
+  onSelectImageUpload(event: any, imageUpload: any) {
     this.objectList = [...this.objectList, {
       type: 'image',
       id: this.generateId(),
