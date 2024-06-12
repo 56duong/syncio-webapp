@@ -151,10 +151,9 @@
                           chooseLabel="Upload" 
                           chooseIcon="pi pi-upload"
                           name="demo[]" 
-                          url="https://www.primefaces.org/cdn/api/upload.php" 
                           accept="image/*" 
                           [maxFileSize]="5000000" 
-                          (onSelectImage)="onSelectImage($event, imageUpload)" />
+                          (onSelect)="onSelectImageUpload($event, imageUpload)" />
                       </div>
                     </div>
                     <!-- Delete Image -->
