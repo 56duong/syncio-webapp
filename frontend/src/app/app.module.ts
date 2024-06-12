@@ -11,7 +11,14 @@ import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
-import { AuthTokenInterceptorService } from './core/auth-token-interceptor.service';
+import { AuthTokenInterceptorService } from './core/interceptors/auth-token-interceptor.service';
+import { MessageService } from 'primeng/api';
+
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -24,8 +31,15 @@ import { AuthTokenInterceptorService } from './core/auth-token-interceptor.servi
     MessagesModule,
     MessageModule,
     ToastModule,
+    MatInputModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [
+    MessageService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthTokenInterceptorService,

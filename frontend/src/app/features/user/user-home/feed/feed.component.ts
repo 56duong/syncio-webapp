@@ -2,6 +2,8 @@ import {Component, HostListener} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Post } from 'src/app/core/interfaces/post';
 import { PostService } from 'src/app/core/services/post.service';
+import { TokenService } from 'src/app/core/services/token.service';
+
 
 @Component({
   selector: 'app-feed',
@@ -18,8 +20,12 @@ export class FeedComponent {
   // new
 
   private newPostCreatedSubscription!: Subscription;
+  isLogged: boolean = this.tokenService.isValidToken();
 
-  constructor(private postService: PostService) {}
+  constructor(
+    private postService: PostService,
+    private tokenService: TokenService
+  ) {}
 
   ngOnInit() {
     this.getPosts();

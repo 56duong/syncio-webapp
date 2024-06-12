@@ -18,4 +18,6 @@ public class ReportDTO {
     @NotNull
     private ReasonEnum reason;
 
+    private String description;
+
 }

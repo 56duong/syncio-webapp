@@ -11,10 +11,22 @@ import { FormsModule } from '@angular/forms';
 import { FileUploadModule } from 'primeng/fileupload';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SidebarModule } from 'primeng/sidebar';
+import { DropdownModule } from 'primeng/dropdown';
+import { ColorPickerModule } from 'primeng/colorpicker';
+import { KeyFilterModule } from 'primeng/keyfilter';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { TieredMenuModule } from 'primeng/tieredmenu';
 
 @NgModule({
   declarations: [],
   exports: [
+    TieredMenuModule,
+    ScrollPanelModule,
+    ToggleButtonModule,
+    KeyFilterModule,
+    ColorPickerModule,
+    DropdownModule,
     AutoCompleteModule,
     FormsModule,
     CarouselModule,

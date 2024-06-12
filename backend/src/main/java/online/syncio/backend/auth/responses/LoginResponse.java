@@ -24,6 +24,7 @@ public class LoginResponse {
     //user's detail
     private UUID id;
     private String username;
-
+    private String email;
+    private String bio;
     private List<String> roles;
 }

@@ -5,6 +5,7 @@ import lombok.Data;
 import online.syncio.backend.messageroom.MessageRoom;
 import online.syncio.backend.user.User;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -35,6 +36,7 @@ public class MessageContent {
 
     @ManyToOne
     @JoinColumn(name = "sender_id")
+    @CreatedBy
     private User user;
 
 }

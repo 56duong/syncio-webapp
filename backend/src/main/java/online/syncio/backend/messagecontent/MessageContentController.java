@@ -1,6 +1,8 @@
 package online.syncio.backend.messagecontent;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import online.syncio.backend.utils.JwtTokenUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -13,13 +15,11 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/api/v1/messagecontents")
+@AllArgsConstructor
 public class MessageContentController {
 
     private final MessageContentService messageContentService;
-
-    public MessageContentController(final MessageContentService messageContentService) {
-        this.messageContentService = messageContentService;
-    }
+    private final JwtTokenUtils jwtTokenUtils;
 
     @GetMapping
     public ResponseEntity<List<MessageContentDTO>> getAllMessageContents() {
@@ -44,13 +44,17 @@ public class MessageContentController {
      * The @SendTo("/topic/messagecontent/{messageRoomId}") annotation means that the return value of this method
      * will be sent to the "/topic/messagecontent/{messageRoomId}" destination.
      * @param messageRoomId the message room id
+     * @param token the token
      * @param messageContentDTO the message content
      * @return the message content
      */
-    @MessageMapping("/messagecontent/{messageRoomId}")
-    @SendTo("/topic/messagecontent/{messageRoomId}")
+    @MessageMapping("/messagecontent/{messageRoomId}/{token}")
+    @SendTo("/topic/messagecontent/{messageRoomId}/{token}")
     public MessageContentDTO addComment(@DestinationVariable final UUID messageRoomId,
+                                 @DestinationVariable final String token,
                                  final MessageContentDTO messageContentDTO) {
+        final UUID userId = jwtTokenUtils.extractUserId(token);
+        messageContentDTO.getUser().setId(userId);
         final UUID createdId = messageContentService.create(messageContentDTO);
         messageContentDTO.setId(createdId);
         return messageContentDTO;

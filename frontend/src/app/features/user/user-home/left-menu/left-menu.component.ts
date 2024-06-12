@@ -1,6 +1,8 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { CreatePostComponent } from '../create-post/create-post.component';
 import { Router } from '@angular/router';
+import { UserService } from 'src/app/core/services/user.service';
+import { UserResponse } from 'src/app/features/authentication/login/user.response';
 
 @Component({
   selector: 'app-left-menu',
@@ -8,39 +10,69 @@ import { Router } from '@angular/router';
   styleUrls: ['./left-menu.component.scss'],
 })
 export class LeftMenuComponent {
+  
   @ViewChild(CreatePostComponent) createPostComponent: any;
+
+  @Output() searchToggle = new EventEmitter<void>();
+
+  toggleSearch(): void {
+    this.searchToggle.emit();
+  }
+
   visible: boolean = false;
   isHideMenuLabel: boolean = false; // Hide the menu label for specific tabs
   currentTab: string = ''; // Current tab
   hideTabs: string[] = ['messages']; // Tabs to hide
-
+  userResponse?: UserResponse | null =
+    this.userService.getUserResponseFromLocalStorage();
   menus: any[] = [
     {
       label: 'Home',
       icon: 'pi pi-home',
       routerLink: '/',
+      id: 'HomeButton',
     },
     {
       label: 'Search',
       icon: 'pi pi-search',
-      routerLink: '/search',
+      id: 'SearchButton',
     },
     {
       label: 'Messages',
       icon: 'pi pi-comments',
       routerLink: 'messages',
+      id: 'MessagesButton',
     },
     {
       label: 'Profile',
       icon: 'pi pi-user',
-      routerLink: 'profile',
+      routerLink: this.profileRouterLink,
+      id: 'ProfileButton',
     },
   ];
+  get profileRouterLink() {
+    const userId = this.userResponse?.id;
+    return userId ? ['/profile', userId] : ['/profile'];
+  }
+  createSubmenuItems = [
+    {
+      label: 'Create',
+      icon: 'pi pi-pen-to-square',
+      items: [
+        {
+          label: 'Post',
+          icon: 'pi pi-table',
+        },
+        {
+          label: 'Story',
+          icon: 'pi pi-history',
+          route: '/story/create',
+        },
+      ],
+    },
+  ]; // Submenu of the create button
 
-  constructor(
-    private router: Router
-    
-  ) { }
+  constructor(private router: Router, private userService: UserService) {}
 
   ngOnInit() {
     // Get the current tab when routing changes
@@ -49,9 +81,8 @@ export class LeftMenuComponent {
       this.isHideMenuLabel = this.hideTabs.includes(this.currentTab);
     });
   }
-
-  onCreateClick() {
-    this.createPostComponent.showDialog();
+  onSearchClick(): void {
+    this.router.navigate(['/search']);
   }
 
 }

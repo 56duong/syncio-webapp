@@ -9,6 +9,8 @@ import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messageroommember.MessageRoomMember;
 import online.syncio.backend.post.Post;
 import online.syncio.backend.report.Report;
+import online.syncio.backend.story.Story;
+import online.syncio.backend.storyview.StoryView;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -107,6 +109,16 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private Set<MessageContent> messageContents;
 
+//    Story
+    @OneToMany(mappedBy = "createdBy")
+    private Set<Story> stories;
+
+//    StoryView
+    @OneToMany(mappedBy = "user")
+    private Set<StoryView> viewedStories;
+
+    @Column(name = "username_last_modified")
+    private LocalDateTime usernameLastModified;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
@@ -135,5 +147,15 @@ public class User implements UserDetails {
         return true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);}
 }

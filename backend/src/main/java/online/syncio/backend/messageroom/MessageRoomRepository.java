@@ -31,7 +31,7 @@ public interface MessageRoomRepository extends JpaRepository<MessageRoom, UUID> 
     Optional<MessageRoom> findExactRoomWithMembers(@Param("userIds") List<UUID> userIds, @Param("size") long size);
 
     /**
-     * Find all rooms with at least one content and user id
+     * Find all rooms of user with at least one content
      * @param userId User id to search
      * @return List of MessageRoom
      */
