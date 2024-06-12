@@ -8,6 +8,7 @@ import { PrimengModule } from '../primeng/primeng.module';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportComponent } from './components/report/report.component';
+import { ResizableDraggableComponent } from './components/resizable-draggable/resizable-draggable.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { ReportComponent } from './components/report/report.component';
     LikeComponent, 
     PostDetailComponent,
     ReportComponent,
+    ResizableDraggableComponent
   ],
   imports: [
     PickerComponent,
@@ -24,6 +26,9 @@ import { ReportComponent } from './components/report/report.component';
     FormsModule,
     ReactiveFormsModule
   ],
-  exports: [PostComponent],
+  exports: [
+    PostComponent,
+    ResizableDraggableComponent
+  ],
 })
 export class SharedModule {}

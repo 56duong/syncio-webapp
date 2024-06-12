@@ -20,27 +20,26 @@
 
     <!-- Message content -->
     <div class="p-2 flex flex-column gap-2">
-      <div *ngFor="let messageContent of messageContents" 
-        [title]="messageContent.dateSent | date: 'HH:mm:ss dd/MM/yyyy'"
-        [ngClass]="{'my-message': messageContent.user?.id === currentUser.id}"
-        class="message-content-item">
-        <img 
-          src="{{messageContent.user?.avtURL}}" 
-          onerror="this.src='/assets/images/avatar.jpg'"
-          class="border-circle" style="width: 32px;">
-        <div>
-          <small *ngIf="messageContent.user?.id !== currentUser.id && messageRoom.group"
-            class="block text-xs text-gray-600" style="margin-left: 6px;">{{messageContent.user?.username}}</small>
-          <div class="message-content-text" [innerHTML]="messageContent.message"></div>
-        </div>
-      </div>
+      <app-message-item *ngFor="let mc of messageContents" 
+        (contextmenu)="onContextMenu($event, mc)"
+        [messageContent]="mc" 
+        [currentUser]="currentUser" 
+        [messageRoom]="messageRoom">
+      </app-message-item>
     </div>
   </div>
 
   <!-- <p-divider></p-divider> -->
 
   <!-- Message input -->
-  <div class="flex justify-content-between align-items-center p-2">
+  <div class="flex flex-column justify-content-between align-items-center p-2">
+    <!-- Reply -->
+    <div *ngIf="messageContent.replyTo"
+      class="relative border-top-1 border-gray-300 w-full pb-3 pt-2">
+      <p class="my-2">Replying to {{messageContent.replyTo.user?.username}}</p>
+      <p class="message-content-text text-sm text-gray-500 my-0" [innerHTML]="messageContent.replyTo.message"></p>
+      <i (click)="messageContent.replyTo = undefined" class="pi pi-times absolute top-0 right-0 p-3 cursor-pointer"></i>
+    </div>
     <div class="message-input flex justify-content-between align-items-center w-full px-2">
       <div class="relative">
         <i (click)="isEmojiPickerVisible = !isEmojiPickerVisible"
@@ -64,3 +63,7 @@
   </div>
 
 </div>
+
+
+
+<p-contextMenu #contextMenu [model]="contextMenuItems" />

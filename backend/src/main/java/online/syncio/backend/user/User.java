@@ -4,6 +4,7 @@ package online.syncio.backend.user;
 import jakarta.persistence.*;
 import lombok.*;
 import online.syncio.backend.comment.Comment;
+import online.syncio.backend.commentlike.CommentLike;
 import online.syncio.backend.like.Like;
 import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messageroommember.MessageRoomMember;
@@ -96,6 +97,10 @@ public class User implements UserDetails {
 //    Comment
     @OneToMany(mappedBy = "user")
     private Set<Comment> comments;
+
+//    CommentLike
+    @OneToMany(mappedBy = "user")
+    private Set<CommentLike> commentLikes;
 
 //    Report
     @OneToMany(mappedBy = "user")

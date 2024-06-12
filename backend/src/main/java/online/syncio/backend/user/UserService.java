@@ -110,9 +110,7 @@ public class UserService {
     }
 
     public String getUsernameById(final UUID id) {
-        return userRepository.findById(id)
-                .map(User::getUsername)
-                .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+        return userRepository.findUsernameById(id);
     }
 
     public List<UserStoryDTO> findAllUsersWithAtLeastOneStoryAfterCreatedDate(final LocalDateTime createdDate) {

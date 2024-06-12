@@ -93,6 +93,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 // Comment
                 Pair.of(String.format("%s/comments/**", apiPrefix), "GET"),
 
+                // CommentLike
+                Pair.of(String.format("%s/commentlikes/count/**", apiPrefix), "GET"),
+
                 // User
                 Pair.of(String.format("%s/users/**/username", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/search/**", apiPrefix), "GET"),
