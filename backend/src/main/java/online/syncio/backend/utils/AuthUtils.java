@@ -23,15 +23,4 @@ public class AuthUtils {
         return user.getId();
     }
 
-    /**
-     * Get the current logged in username
-     * @return the current logged in username or null if no user is logged in
-     */
-    public String getCurrentLoggedInUsername() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
-            return null;
-        }
-        return authentication.getName();
-    }
 }

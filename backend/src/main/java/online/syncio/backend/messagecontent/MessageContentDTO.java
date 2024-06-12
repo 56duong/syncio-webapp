@@ -23,4 +23,6 @@ public class MessageContentDTO {
 
     private LocalDateTime dateSent;
 
+    private MessageContentDTO replyTo;
+
 }

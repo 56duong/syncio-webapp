@@ -43,7 +43,7 @@ export class MessageContentService {
     this.stompClient = Stomp.over(socket);
 
     this.stompClient.connect({}, () => {
-      this.subscription = this.stompClient.subscribe(`/topic/messagecontent/${messageRoomId}/${localStorage.getItem('access_token')}`, (messageContent: IMessage) => {
+      this.subscription = this.stompClient.subscribe(`/topic/messagecontent/${messageRoomId}`, (messageContent: IMessage) => {
         this.messageContentSubject.next(JSON.parse(messageContent.body));
       });
     });
@@ -92,7 +92,10 @@ export class MessageContentService {
    */
   sendMessageContent(messageContent: MessageContent) {
     this.stompClient.publish({ 
-      destination: `/app/messagecontent/${messageContent.messageRoomId}/${localStorage.getItem('access_token')}`, 
+      headers: {
+        'token': localStorage.getItem('access_token') || '', // Send the token in the header to authenticate the user.
+      },
+      destination: `/app/messagecontent/${messageContent.messageRoomId}`, 
       body: JSON.stringify(messageContent)
     });
   }

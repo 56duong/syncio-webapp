@@ -6,6 +6,7 @@ import online.syncio.backend.utils.JwtTokenUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
@@ -63,11 +64,11 @@ public class CommentController {
      * @param commentDTO the comment
      * @return the comment
      */
-    @MessageMapping("/comment/{postId}/{token}")
-    @SendTo("/topic/comment/{postId}/{token}")
+    @MessageMapping("/comment/{postId}")
+    @SendTo("/topic/comment/{postId}")
     public CommentDTO addComment(@DestinationVariable final UUID postId,
-                                   @DestinationVariable final String token,
-                                   final CommentDTO commentDTO) {
+                                 @Header("token") final String token,
+                                 final CommentDTO commentDTO) {
         final UUID userId = jwtTokenUtils.extractUserId(token);
         commentDTO.setUserId(userId);
         final UUID createdId = commentService.create(commentDTO);
