@@ -34,24 +34,19 @@ export class CreatePostComponent {
   // create a post
   createPost() {
     const formData = new FormData();
-
+    console.log('this.post');
     const post: Post = {
       caption: this.post.caption,
       createdDate: new Date().toISOString(),
       flag: true,
-      createdBy: this.userService.getUserResponseFromLocalStorage()?.id
+      createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
     };
 
     formData.append(
       'post',
-      new Blob(
-        [
-          JSON.stringify(post),
-        ],
-        {
-          type: 'application/json',
-        }
-      )
+      new Blob([JSON.stringify(post)], {
+        type: 'application/json',
+      })
     );
 
     this.selectedPhotoFile.forEach((photo: File, index) => {
@@ -59,7 +54,7 @@ export class CreatePostComponent {
     });
 
     post.photos = this.selectedPhotos;
-    
+
     this.postService.createPost(formData).subscribe({
       next: (response: any) => {
         post.id = response.body;

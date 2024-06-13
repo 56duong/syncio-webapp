@@ -15,10 +15,7 @@ import { AuthTokenInterceptorService } from './core/interceptors/auth-token-inte
 import { MessageService } from 'primeng/api';
 import { DatePipe } from '@angular/common';
 
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+
 import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [AppComponent],
@@ -32,10 +29,6 @@ import { ReactiveFormsModule } from '@angular/forms';
     MessagesModule,
     MessageModule,
     ToastModule,
-    MatInputModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatIconModule,
     FormsModule,
     ReactiveFormsModule,
   ],
