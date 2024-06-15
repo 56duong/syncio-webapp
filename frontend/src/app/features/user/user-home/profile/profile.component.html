@@ -32,7 +32,7 @@
             </button>
           </a>
 
-          <a>
+          <!-- <a>
             <button
               *ngIf="loginUser !== userProfile.id && isFollowing"
               type="button"
@@ -41,6 +41,38 @@
             >
               Folllowing
             </button>
+          </a> -->
+
+          <a
+            class="dropdown"
+            *ngIf="loginUser !== userProfile.id && isFollowing"
+          >
+            <button
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Following
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a
+                  class="dropdown-item"
+                  (click)="handleUnFollowUser(userProfile.id)"
+                >
+                  <span>Unfollow</span>
+                </a>
+              </li>
+              <li *ngIf="loginUser !== userProfile.id && !isCloseFriend">
+                <a
+                  class="dropdown-item"
+                  (click)="handleAddCloseFriends(userProfile.id)"
+                >
+                  <span>Close friends</span>
+                </a>
+              </li>
+            </ul>
           </a>
 
           <a *ngIf="loginUser !== userProfile.id" href="/messages">

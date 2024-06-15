@@ -75,6 +75,9 @@ export class LeftMenuComponent {
         {
           label: 'Post',
           icon: 'pi pi-table',
+          command: () => {
+            this.onCreateClick();
+          },
         },
         {
           label: 'Story',
@@ -104,5 +107,7 @@ export class LeftMenuComponent {
   onSearchClick(): void {
     this.router.navigate(['/search']);
   }
-
+  onCreateClick() {
+    this.createPostComponent.showDialog();
+  }
 }

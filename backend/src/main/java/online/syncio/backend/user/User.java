@@ -90,6 +90,15 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "followers")
     private Set<User> following;
 
+    // Close Friends
+    @ManyToMany
+    @JoinTable(
+            name = "user_close_friends",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "close_friend_id")
+    )
+    private Set<User> closeFriends;
+
 //    Like
     @OneToMany(mappedBy = "user")
     private Set<Like> likes;
