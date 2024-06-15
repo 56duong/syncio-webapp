@@ -19,6 +19,13 @@ import { TieredMenuModule } from 'primeng/tieredmenu';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { TabViewModule } from 'primeng/tabview';
 import { SliderModule } from 'primeng/slider';
+import { TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
+import { TagModule } from 'primeng/tag';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { DataViewModule } from 'primeng/dataview';
 
 @NgModule({
   declarations: [],
@@ -41,9 +48,15 @@ import { SliderModule } from 'primeng/slider';
     DialogModule,
     ButtonModule,
     AvatarModule,
-    InputTextModule,
     FileUploadModule,
     SidebarModule,
+    TableModule,
+    ToastModule,
+    ToolbarModule,
+    TagModule,
+    ConfirmDialogModule,
+    RadioButtonModule,
+    DataViewModule,
   ],
 })
 export class PrimengModule {}
