@@ -24,7 +24,8 @@
         (contextmenu)="onContextMenu($event, mc)"
         [messageContent]="mc" 
         [currentUser]="currentUser" 
-        [messageRoom]="messageRoom">
+        [messageRoom]="messageRoom"
+        class="flex flex-column">
       </app-message-item>
     </div>
   </div>
@@ -37,27 +38,65 @@
     <div *ngIf="messageContent.replyTo"
       class="relative border-top-1 border-gray-300 w-full pb-3 pt-2">
       <p class="my-2">Replying to {{messageContent.replyTo.user?.username}}</p>
-      <p class="message-content-text text-sm text-gray-500 my-0" [innerHTML]="messageContent.replyTo.message"></p>
-      <i (click)="messageContent.replyTo = undefined" class="pi pi-times absolute top-0 right-0 p-3 cursor-pointer"></i>
+      <!-- Content -->
+      <div class="message-content opacity-50 primary-scrollbar"
+        style="max-height: 120px; overflow: scroll;">
+        <app-message-item-content [messageContent]="messageContent.replyTo"></app-message-item-content>
+      </div>
+      <!-- Close reply icon -->
+      <i (click)="messageContent.replyTo = undefined" 
+        class="pi pi-times absolute top-0 right-0 p-3 cursor-pointer">
+      </i>
     </div>
-    <div class="message-input flex justify-content-between align-items-center w-full px-2">
+
+    <div class="message-input flex justify-content-between align-items-center w-full px-2 gap-2">
+      <!-- Emoji -->
       <div class="relative">
         <i (click)="isEmojiPickerVisible = !isEmojiPickerVisible"
-            class="cursor-pointer fa-regular fa-face-smile text-xl"></i>
+          class="cursor-pointer fa-regular fa-face-smile text-xl"></i>
         <emoji-mart *ngIf="isEmojiPickerVisible"
-            [set]="'twitter'"
-            [showPreview]="false" 
-            (emojiSelect)="addEmoji($event)"
-            [style]="{ position: 'absolute', bottom: '30px', right: '20 px' }"></emoji-mart>
+          [set]="'twitter'"
+          [showPreview]="false" 
+          (emojiSelect)="addEmoji($event)"
+          [style]="{ position: 'absolute', bottom: '30px', right: '20 px' }"></emoji-mart>
       </div>
-      <p-editor (onTextChange)="textChange($event)" [(ngModel)]="messageContent.message" [formats]="['bold']"
-          placeholder="Message..." [style]="{ maxHeight: '40px' }">
-          <ng-template pTemplate="header" hidden></ng-template>
+
+      <!-- Sticker -->
+      <div>
+        <i (click)="op.toggle($event)" 
+          class="fa-regular fa-note-sticky cursor-pointer text-xl"></i>
+        <p-overlayPanel #op>
+          <div class="flex flex-column gap-3 w-25rem">
+            <app-sticker (stickerClick)="sendSticker($event)"></app-sticker>
+          </div>
+        </p-overlayPanel>
+      </div>
+
+      <!-- Image -->
+      <div>
+        <p-fileUpload 
+          #imageUploader
+          mode="basic"
+          chooseIcon="pi pi-image"
+          name="photo"
+          accept="image/*" 
+          [maxFileSize]="5000000" 
+          [multiple]="true"
+          (onSelect)="sendPhotos($event)" />
+      </div>
+
+      <!-- Input -->
+      <p-editor (onTextChange)="textChange($event)" 
+        [(ngModel)]="messageContent.message" 
+        [formats]="['bold']"
+        placeholder="Message..." [style]="{ maxHeight: '40px' }">
+        <ng-template pTemplate="header" hidden></ng-template>
       </p-editor>
 
       <!-- Send button -->
-      <p-button [disabled]="plainComment.trim().length <= 0" (click)="sendMessage()"
-          label="Send" size="small" [text]="true"></p-button>    
+      <p-button [disabled]="plainComment.trim().length <= 0" 
+        (click)="sendMessage('TEXT')"
+        label="Send" size="small" [text]="true"></p-button>    
     </div>
     
   </div>
@@ -66,4 +105,5 @@
 
 
 
+<!-- Context menu show on right click on message content -->
 <p-contextMenu #contextMenu [model]="contextMenuItems" />

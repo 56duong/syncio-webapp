@@ -7,4 +7,11 @@ export interface MessageContent {
   message?: string;
   dateSent?: string;
   replyTo?: MessageContent;
+  type?: MessageContentTypeEnum;
+}
+
+export enum MessageContentTypeEnum {
+  TEXT = 'TEXT',
+  STICKER = 'STICKER',
+  IMAGE = 'IMAGE',
 }

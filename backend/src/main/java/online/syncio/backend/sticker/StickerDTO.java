@@ -1,4 +1,4 @@
-package online.syncio.backend.story;
+package online.syncio.backend.sticker;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -7,24 +7,21 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
-public class StoryDTO {
+public class StickerDTO {
 
     private UUID id;
 
-    @NotNull
-    private String photoURL;
+    private String name;
 
     private LocalDateTime createdDate;
 
     @NotNull
     private Boolean flag;
 
-    @NotNull
     private UUID createdBy;
 
-    private boolean viewed;
+    @NotNull
+    private Long stickerGroupId;
 
-    public String getPhotoURL() {
-        return "http://localhost:8080/api/v1/images/" + photoURL;
-    }
+    private String imageUrl;
 }

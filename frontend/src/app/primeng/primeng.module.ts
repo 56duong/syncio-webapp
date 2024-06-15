@@ -26,10 +26,16 @@ import { TagModule } from 'primeng/tag';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { DataViewModule } from 'primeng/dataview';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { ImageModule } from 'primeng/image';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @NgModule({
   declarations: [],
   exports: [
+    InputSwitchModule,
+    ImageModule,
+    OverlayPanelModule,
     SliderModule,
     TabViewModule,
     ContextMenuModule,

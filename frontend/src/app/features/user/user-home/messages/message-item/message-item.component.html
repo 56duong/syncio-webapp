@@ -1,30 +1,31 @@
-<div [title]="messageContent.dateSent | dateAgoPipe: 'day'"
-     [ngClass]="{'my-message': isCurrentUser()}"
-     [id]="messageContent.id"
-     class="message-content-item">
+<div [title]="messageContent.dateSent | dateAgoPipe: 'day'" 
+  [ngClass]="{'my-message': isCurrentUser()}"
+  [id]="messageContent.id" class="message-content-item">
   <!-- Avatar -->
   <img src="{{messageContent.user?.avtURL}}" 
-       onerror="this.src='/assets/images/avatar.jpg'"
-       class="border-circle" style="width: 32px;">
-  <div class="flex flex-column"
-       [style.align-items]="isCurrentUser() ? 'flex-end' : 'flex-start'">
+    onerror="this.src='/assets/images/avatar.jpg'" 
+    class="avatar border-circle"
+    style="width: 32px;">
+  <div class="flex flex-column w-full" [style.align-items]="isCurrentUser() ? 'flex-end' : 'flex-start'">
     <!-- Username (with reply) -->
-    <small *ngIf="shouldShowUsername()" 
-      class="block text-xs text-gray-600" style="margin-left: 6px;">
-      {{getUsername()}} 
-      <span *ngIf="messageContent.replyTo"> 
-        replied to 
+    <small *ngIf="shouldShowUsername()" class="block text-xs text-gray-600" style="margin-left: 6px;">
+      {{getUsername()}}
+      <span *ngIf="messageContent.replyTo">
+        replied to
         {{getReplyToUsername()}}</span>
     </small>
     <!-- Reply -->
-    <div [ngClass]="isCurrentUser() ? 'my-reply' : 'other-reply'"
-      (click)="scrollToMessage(messageContent.replyTo.id)">
-      <div *ngIf="messageContent.replyTo" 
-        [innerHTML]="messageContent.replyTo.message"
-        class="message-content-text mb-1 opacity-60">
+    <div [ngClass]="isCurrentUser() ? 'my-reply' : 'other-reply'" 
+      (click)="scrollToMessage(messageContent.replyTo.id)"
+      class="cursor-pointer">
+      <div *ngIf="messageContent.replyTo"
+        class="mb-1 opacity-60 overflow-y-auto primary-scrollbar"
+        style="max-height: 130px; pointer-events: none;">
+        <app-message-item-content [messageContent]="messageContent.replyTo"></app-message-item-content>
       </div>
     </div>
-    <!-- Text -->
-    <div class="message-content-text" [innerHTML]="messageContent.message"></div>
+
+    <!-- Content inside -->
+    <app-message-item-content [messageContent]="messageContent"></app-message-item-content>
   </div>
 </div>

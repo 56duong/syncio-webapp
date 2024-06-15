@@ -14,12 +14,10 @@ import { ToastModule } from 'primeng/toast';
 import { AuthTokenInterceptorService } from './core/interceptors/auth-token-interceptor.service';
 import { MessageService } from 'primeng/api';
 import { DatePipe } from '@angular/common';
-
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CustomReuseStrategy } from './core/strategies/custom-reuse-strategy';
+import { RouteReuseStrategy } from '@angular/router';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -32,10 +30,6 @@ import { ReactiveFormsModule } from '@angular/forms';
     MessagesModule,
     MessageModule,
     ToastModule,
-    MatInputModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatIconModule,
     FormsModule,
     ReactiveFormsModule,
   ],
@@ -47,6 +41,7 @@ import { ReactiveFormsModule } from '@angular/forms';
       useClass: AuthTokenInterceptorService,
       multi: true,
     },
+    { provide: RouteReuseStrategy, useClass: CustomReuseStrategy }
   ],
   bootstrap: [AppComponent],
 })

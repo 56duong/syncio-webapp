@@ -124,4 +124,13 @@ export class MessageContentService {
     return this.http.get<MessageContent[]>(url);
   }
 
+  /**
+   * Upload photos with FormData containing the 'photos' key with the value of the photos.
+   * @param formData - The FormData object containing the photos.
+   * @returns array of photo URLs.
+   */
+  uploadPhotos(formData: FormData): Observable<string[]> {
+    return this.http.post<string[]>(`${this.apiURL}/upload`, formData);
+  }
+
 }
