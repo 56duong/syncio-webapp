@@ -3,6 +3,7 @@ import { CreatePostComponent } from '../create-post/create-post.component';
 import { Router } from '@angular/router';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
 import { TokenService } from 'src/app/core/services/token.service';
+import { UserService } from 'src/app/core/services/user.service';
 
 
 @Component({
@@ -11,7 +12,7 @@ import { TokenService } from 'src/app/core/services/token.service';
   styleUrls: ['./left-menu.component.scss'],
 })
 export class LeftMenuComponent {
-  
+
   @ViewChild(CreatePostComponent) createPostComponent: any;
 
   @Output() searchToggle = new EventEmitter<void>();
@@ -55,6 +56,11 @@ export class LeftMenuComponent {
       routerLink: this.profileRouterLink,
       id: 'ProfileButton',
     },
+    {
+      label: 'Label Shopping',
+      icon: 'pi pi-shopping-cart',
+      routerLink: 'labels-shop',
+    },
 
   ];
   get profileRouterLink() {
@@ -82,9 +88,9 @@ export class LeftMenuComponent {
 
   constructor(
     private router: Router,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private userService: UserService
   ) { }
-
 
   ngOnInit() {
     this.currentUserId = this.tokenService.extractUserIdFromToken();

@@ -20,6 +20,11 @@ export class AdminComponent {
     {
       name: 'Posts Management',
       link: 'posts-management'
-    }
+    },
+    
+    {
+      name: 'Labels Management',
+      link: 'labels-management'
+    },
   ]
 }
