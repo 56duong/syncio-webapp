@@ -1,0 +1,26 @@
+<div class="card">
+    <p-dataView #dv [value]="labels" [layout]="'grid'">
+        <ng-template let-label pTemplate="gridItem">
+            <div class="col-12 sm:col-6 lg:col-12 xl:col-3 p-2">
+                <div class="p-4 border-1 surface-border surface-card border-round">
+                    <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+                        <span class="flex align-items-center gap-2">
+                            <i class="pi pi-tag"></i>
+                            <span class="font-semibold">GIF</span>
+                        </span>
+                        <!-- <p-tag >INSTOCK</p-tag> -->
+                    </div>
+                    <div class="flex flex-column align-items-center gap-3 py-5">
+                        <img class="w-9 shadow-2 border-round" [src]="getImageUrl(label.labelURL)" width="200" height="200"  [alt]="label.name" />
+                        <div class="text-2xl font-bold">{{ label.name }}</div>
+                        <!-- <p-rating [ngModel]="label.rating" [readonly]="true" [cancel]="false"></p-rating> -->
+                    </div>
+                    <div class="flex align-items-center justify-content-between">
+                        <span class="text-2xl font-semibold">{{ '$' + label.price }}</span>
+                        <button pButton icon="pi pi-shopping-cart" class="p-button-rounded" [disabled]="label.inventoryStatus === 'OUTOFSTOCK'"></button>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-dataView>
+</div>

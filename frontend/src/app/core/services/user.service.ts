@@ -42,6 +42,17 @@ export class UserService {
     return this.http.post(this.apiRegister, registerDTO, this.apiConfig);
   }
 
+  // Create user using User Controller
+  createUserInAdmin(user: User): Observable<any> {
+    return this.http.post(this.apiURL, user, this.apiConfig);
+
+  }
+
+  // Update user using User Controller
+  updateUserInAdmin(user: User): Observable<any> {
+    return this.http.put(`${this.apiURL}/${user.id}`, user, this.apiConfig);
+  }
+
   confirmUserRegister(token: string): Observable<any> {
     const params = new HttpParams().set('token', token);
     return this.http.post(this.apiConfirmUserRegister, {}, { params });

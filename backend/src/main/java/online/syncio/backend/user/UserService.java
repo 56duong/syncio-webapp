@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -46,6 +47,8 @@ public class UserService {
     private final PostService postService;
     private final StoryViewRepository storyViewRepository;
     private final AuthUtils authUtils;
+    private final PasswordEncoder passwordEncoder;
+
 
     //    CRUD
     public List<UserDTO> findAll (Optional<String> username) {
@@ -128,6 +131,10 @@ public class UserService {
     }
 
     public UUID create(final UserDTO userDTO) {
+        // encode password
+        String encodePassword = passwordEncoder.encode(userDTO.getPassword());
+        userDTO.setPassword(encodePassword);
+        
         final User user = new User();
         mapToEntity(userDTO, user);
         return userRepository.save(user).getId();
@@ -136,6 +143,10 @@ public class UserService {
     public void update (final UUID id, final UserDTO userDTO) {
         final User user = userRepository.findById(id)
                                         .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+            
+        String encodePassword = passwordEncoder.encode(userDTO.getPassword());
+        userDTO.setPassword(encodePassword);
+
         mapToEntity(userDTO, user);
         userRepository.save(user);
     }
