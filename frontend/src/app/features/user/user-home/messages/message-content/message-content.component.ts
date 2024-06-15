@@ -1,8 +1,9 @@
 import { Component, ElementRef, EventEmitter, Input, Output, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
 import { ContextMenu } from 'primeng/contextmenu';
 import { Subscription } from 'rxjs';
-import { MessageContent } from 'src/app/core/interfaces/message-content';
+import { MessageContent, MessageContentTypeEnum } from 'src/app/core/interfaces/message-content';
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
+import { Sticker } from 'src/app/core/interfaces/sticker';
 import { User } from 'src/app/core/interfaces/user';
 import { MessageContentService } from 'src/app/core/services/message-content.service';
 
@@ -36,6 +37,10 @@ export class MessageContentComponent {
       }
     }
   ]; // Context menu items when right-clicking on a message
+
+  // IMAGE/STICKER SECTION
+  @ViewChild('imageUploader') imageUploader: any; // Image uploader component use to upload and send images
+  MessageContentTypeEnum = MessageContentTypeEnum;
 
   constructor(
     private messageContentService: MessageContentService,
@@ -126,8 +131,8 @@ export class MessageContentComponent {
   /**
    * Send a message.
    */
-  sendMessage() {
-    if(this.plainComment.trim() === '') return;
+  sendMessage(type: 'TEXT' | 'STICKER' | 'IMAGE') {
+    if(type === 'TEXT' && this.plainComment.trim() === '') return;
 
     let date = new Date();
     this.messageContent = {
@@ -138,6 +143,11 @@ export class MessageContentComponent {
       },
       messageRoomId: this.messageRoom.id,
       dateSent: new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString(),
+      type: type === 'TEXT' 
+              ? MessageContentTypeEnum.TEXT 
+              : type === 'STICKER' 
+                ? MessageContentTypeEnum.STICKER 
+                : MessageContentTypeEnum.IMAGE,
     };
 
     this.messageContentService.sendMessageContent(this.messageContent);
@@ -159,6 +169,43 @@ export class MessageContentComponent {
   onContextMenu(event: any, messageContent: MessageContent) {
     this.replyingTo = messageContent;
     this.contextMenu.show(event);
+  }
+
+
+  /* -------------------------- IMAGE/STICKER SECTION ------------------------- */
+
+  /**
+   * When receiving a sticker from the sticker picker, send the sticker.
+   */
+  sendSticker(sticker: Sticker) {
+    this.messageContent.message = sticker.imageUrl;
+    this.sendMessage('STICKER');
+  }
+
+  /**
+   * Upload photos and receive the image names and send the message with the image tags.
+   * @param event The event object containing the selected photos.
+   */
+  sendPhotos(event: any) {
+    const selectedPhotos = Array.from(event.files);
+
+    const formData = new FormData();
+    selectedPhotos.forEach((photo: any) => {
+      formData.append(`photos`, photo);
+    });
+
+    this.messageContentService.uploadPhotos(formData).subscribe({
+      next: (response) => {
+        // output: ['image1.jpg','image2.jpg','image3.jpg', ...]
+        this.messageContent.message = response.toString();
+        this.sendMessage('IMAGE');
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+
+    this.imageUploader.clear();
   }
 
 }

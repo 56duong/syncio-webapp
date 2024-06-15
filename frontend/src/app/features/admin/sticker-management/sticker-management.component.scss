@@ -1,0 +1,62 @@
+p-button ::ng-deep .p-button.p-button-icon-only {
+  width: 2.5rem;
+  padding: 0.5rem 0;
+}
+
+.p-input-icon-left .p-inputtext {
+  padding: 0.5rem 0.75rem;
+}
+
+.p-input-icon-left > .p-inputtext {
+  padding-left: 2.5rem;
+}
+
+p-button ::ng-deep {
+  .p-button {
+    padding: 0.5rem 1rem;
+  }
+
+  .p-button-label {
+    font-weight: 500;
+  }
+
+  .p-button.p-button-secondary {
+    color: #475569;
+    background: #f1f5f9;
+    border: 1px solid #f1f5f9;
+  }
+}
+
+
+/* --------------------------------- TOOLBAR -------------------------------- */
+
+p-toolbar ::ng-deep {
+  .p-toolbar {
+    padding: 0.75rem;
+    background-color: #ffffff;
+  }
+}
+
+
+/* ---------------------------------- TABLE --------------------------------- */
+
+p-table ::ng-deep {
+  .p-datatable .p-datatable-tbody > tr > td {
+    padding: 0.75rem 1rem;
+  }
+  
+  .p-datatable .p-datatable-thead > tr > th {
+    padding: 0.75rem 1rem;
+    background-color: #ffffff;
+  }
+
+  .p-datatable.p-datatable-hoverable-rows .p-datatable-tbody > tr:not(.p-highlight):hover {
+    background: #f1f5f9;
+    color: #1e293b;
+  }
+
+  .p-datatable .p-datatable-tbody > tr.p-highlight {
+    background: #EFF6FF;
+    color: #1D4ED8;
+  }
+}

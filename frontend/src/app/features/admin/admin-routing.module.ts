@@ -5,6 +5,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { UsersManagementComponent } from './users-management/users-management.component';
 import { PostsManagementComponent } from './posts-management/posts-management.component';
 import { LabelsManagementComponent } from './labels-management/labels-management.component';
+import { StickerManagementComponent } from './sticker-management/sticker-management.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,10 @@ const routes: Routes = [
   {
     path: 'labels-management',
     component: LabelsManagementComponent
+  },
+  {
+    path: 'sticker-management',
+    component: StickerManagementComponent
   }
 ];
 

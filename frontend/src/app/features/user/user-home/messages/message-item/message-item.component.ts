@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { MessageContentTypeEnum } from 'src/app/core/interfaces/message-content';
 
 @Component({
   selector: 'app-message-item',
@@ -6,10 +7,16 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./message-item.component.scss']
 })
 
+/**
+ * Component for displaying a single message item.
+ * Contains avatar, username, reply-to, message content, and timestamp.
+ */
 export class MessageItemComponent {
   @Input() messageContent: any;
   @Input() currentUser: any;
   @Input() messageRoom: any;
+
+  MessageContentTypeEnum = MessageContentTypeEnum;
 
   /**
    * Scroll to the message with the given id
@@ -49,4 +56,5 @@ export class MessageItemComponent {
         ? 'you' 
         : this.messageContent.replyTo.user?.username;
   }
+
 }
