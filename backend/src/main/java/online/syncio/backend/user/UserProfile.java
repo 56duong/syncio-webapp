@@ -1,5 +1,6 @@
 package online.syncio.backend.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -24,6 +25,12 @@ public class UserProfile {
     private String bio;
 
     private Set<PostDTO> posts;
+    @JsonProperty("isCloseFriend")
+
+    private boolean isCloseFriend;
+    @JsonProperty("isFollowing")
+
+    private boolean isFollowing;
 
     private long followerCount;
 

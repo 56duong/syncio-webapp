@@ -70,9 +70,15 @@ public class UserService {
                              .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
     }
 
-    public UserProfile getUserProfile (final UUID id) {
+    public UserProfile getUserProfile (final UUID id)  {
         return userRepository.findByIdWithPosts(id)
-                             .map(user -> mapToUserProfile(user, new UserProfile()))
+                             .map(user -> {
+                                 try {
+                                     return mapToUserProfile(user, new UserProfile());
+                                 } catch (DataNotFoundException e) {
+                                     throw new RuntimeException(e);
+                                 }
+                             })
                              .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
     }
     @jakarta.transaction.Transactional
@@ -159,7 +165,15 @@ public class UserService {
         return userDTO;
     }
 
-    private UserProfile mapToUserProfile (final User user, final UserProfile userProfile) {
+    private UserProfile mapToUserProfile (final User user, final UserProfile userProfile) throws DataNotFoundException {
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        User currentUser  = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new DataNotFoundException("Current user not found"));
+
+        boolean isCloseFriend = currentUser.getCloseFriends().contains(user);
+        userProfile.setCloseFriend(isCloseFriend);
+        boolean isFollowing = currentUser.getFollowing().contains(user);
+        userProfile.setFollowing(isFollowing);
         userProfile.setId(user.getId());
         userProfile.setUsername(user.getUsername());
         userProfile.setAvtURL(user.getAvtURL());
@@ -169,6 +183,7 @@ public class UserService {
                 .collect(Collectors.toSet()));
         userProfile.setFollowerCount(user.getFollowers().size());
         userProfile.setFollowingCount(user.getFollowing().size());
+
 
         return userProfile;
     }
@@ -322,5 +337,24 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Target user not found"));
 
         return user.getFollowing().contains(target);
+    }
+
+    public boolean addCloseFriend( UUID friendId) {
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        User user = userRepository.findById(currentUserId).orElseThrow(() -> new RuntimeException("User not found"));
+        Optional<User> friendOpt = userRepository.findById(friendId);
+
+        if (!friendOpt.isPresent()) {
+            throw new RuntimeException("User not found.");
+        }
+        User friend = friendOpt.get();
+
+        if (user.getFollowing().contains(friend)) {
+            user.getCloseFriends().add(friend);
+            userRepository.save(user);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

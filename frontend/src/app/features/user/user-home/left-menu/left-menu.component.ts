@@ -10,7 +10,6 @@ import { UserResponse } from 'src/app/features/authentication/login/user.respons
   styleUrls: ['./left-menu.component.scss'],
 })
 export class LeftMenuComponent {
-  
   @ViewChild(CreatePostComponent) createPostComponent: any;
 
   @Output() searchToggle = new EventEmitter<void>();
@@ -62,6 +61,9 @@ export class LeftMenuComponent {
         {
           label: 'Post',
           icon: 'pi pi-table',
+          command: () => {
+            this.onCreateClick();
+          },
         },
         {
           label: 'Story',
@@ -84,5 +86,7 @@ export class LeftMenuComponent {
   onSearchClick(): void {
     this.router.navigate(['/search']);
   }
-
+  onCreateClick() {
+    this.createPostComponent.showDialog();
+  }
 }

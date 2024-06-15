@@ -24,7 +24,8 @@ export class ProfileComponent implements OnInit {
     bio: '',
     posts: [],
   };
-  public isFollowing: boolean = false;
+  public isFollowing?: boolean = false;
+  public isCloseFriend?: boolean = false;
   userResponse?: UserResponse | null =
     this.userService.getUserResponseFromLocalStorage();
   public loginUser: string = this.userResponse?.id || '';
@@ -38,13 +39,13 @@ export class ProfileComponent implements OnInit {
     let id;
     this.route.params.subscribe((params) => {
       id = params['userId'];
-      this.checkFollowStatus(id);
+      // this.checkFollowStatus(id);
       this.loadUserProfile(id);
     });
   }
 
   private loadUserProfile(userId: string): void {
-    this.checkFollowStatus(userId);
+    // this.checkFollowStatus(userId);
     this.userService.getUserProfile(userId).subscribe((response) => {
       this.userProfile.id = response.id;
       this.userProfile.username = response.username;
@@ -53,17 +54,19 @@ export class ProfileComponent implements OnInit {
       this.userProfile.avtURL = response.avtURL;
       this.userProfile.bio = response.bio;
       this.userProfile.posts = response.posts;
+      this.isFollowing = response.isFollowing;
+      this.isCloseFriend = response.isCloseFriend;
     });
   }
-  private checkFollowStatus(targetId: string): void {
-    if (this.loginUser !== targetId) {
-      this.userService
-        .isFollowing(this.loginUser, targetId)
-        .subscribe((response: any) => {
-          this.isFollowing = response;
-        });
-    }
-  }
+  // private checkFollowStatus(targetId: string): void {
+  //   if (this.loginUser !== targetId) {
+  //     this.userService
+  //       .isFollowing(this.loginUser, targetId)
+  //       .subscribe((response: any) => {
+  //         this.isFollowing = response;
+  //       });
+  //   }
+  // }
   public handleEditProfile(): void {
     this.router.navigate(['/edit-profile']);
   }
@@ -87,7 +90,6 @@ export class ProfileComponent implements OnInit {
   public handleFollowUser(targetId: any): void {
     this.userService.followUser(targetId).subscribe({
       next: (response) => {
-        console.log('Follow successful', response);
         this.isFollowing = true;
         if (this.userProfile && this.userProfile.followerCount !== undefined) {
           this.userProfile.followerCount += 1;
@@ -101,7 +103,6 @@ export class ProfileComponent implements OnInit {
   public handleUnFollowUser(targetId: any): void {
     this.userService.unfollowUser(targetId).subscribe({
       next: (response) => {
-        console.log('UnFollow successful', response);
         this.isFollowing = false;
         if (this.userProfile && this.userProfile.followerCount !== undefined) {
           this.userProfile.followerCount -= 1;
@@ -109,6 +110,17 @@ export class ProfileComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error following user', error);
+      },
+    });
+  }
+
+  public handleAddCloseFriends(targetId: any): void {
+    this.userService.addCloseFriends(targetId).subscribe({
+      next: (response: any) => {
+        this.isCloseFriend = response;
+      },
+      error: (error: any) => {
+        console.error('Error adding close friends', error);
       },
     });
   }
