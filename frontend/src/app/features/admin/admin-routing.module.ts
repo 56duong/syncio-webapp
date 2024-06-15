@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { UsersManagementComponent } from './users-management/users-management.component';
 import { PostsManagementComponent } from './posts-management/posts-management.component';
+import { LabelsManagementComponent } from './labels-management/labels-management.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,10 @@ const routes: Routes = [
   {
     path: 'posts-management',
     component: PostsManagementComponent
+  },
+  {
+    path: 'labels-management',
+    component: LabelsManagementComponent
   }
 ];
 
