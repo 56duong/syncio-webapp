@@ -1,7 +1,6 @@
 package online.syncio.backend.user;
 
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -16,7 +15,6 @@ public class UserDTO {
 
     @NotNull
     @Size(max = 89)
-    @Email
     private String email;
 
     @NotNull
@@ -34,8 +32,6 @@ public class UserDTO {
     private String coverURL;
 
     private String bio;
-
-    private long followerCount;
 
     // Automatically create "creation time"
     private LocalDateTime createdDate = LocalDateTime.now();

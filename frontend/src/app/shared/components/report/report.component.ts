@@ -5,6 +5,7 @@ import { Post } from 'src/app/core/interfaces/post';
 import { Report } from 'src/app/core/interfaces/report';
 import { PostService } from 'src/app/core/services/post.service';
 import { ReportService } from 'src/app/core/services/report.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
@@ -23,7 +24,8 @@ export class ReportComponent implements OnInit {
   constructor(
     private userService: UserService,
     private reportService: ReportService, 
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -57,6 +59,7 @@ export class ReportComponent implements OnInit {
 
       this.reportService.createReport(report).subscribe(
         (response) => {
+          this.toastService.showSuccess('success', 'Thank you for your feedback');
           console.log('Report submitted successfully:', report);
           // reset the form and close the modal after successful submission
           this.reportForm?.reset();

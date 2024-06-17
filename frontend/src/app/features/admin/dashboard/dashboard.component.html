@@ -1,1 +1,48 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+    <div class="flex overflow-hidden">
+    <h1 class="flex-none flex align-items-center justify-content-center">Social Network Dashboard</h1>
+    <div class="flex-grow-1 flex align-items-center justify-content-center font-bold  border-round"></div>
+    <p-button class="flex-none flex align-items-center justify-content-center">Export to Excel</p-button>
+  </div>
+    <div class="summary-cards flex">
+      <div class="summary-card flex-1 align-items-center justify-content-center m-2 px-5 py-3 border-round border-1" id="total-users">
+        <p><i class="pi pi-user" style="color: #708090"></i>
+          Total Users</p>
+        <h2>{{totalUsers}}</h2>
+      </div>
+      <div class="summary-card flex-1 align-items-center justify-content-center m-2 px-5 py-3 border-round border-1" id="total-posts">
+        <p><i class="pi pi-file-edit" style="color: #708090"></i>Total Posts</p>
+        <h2>{{totalPosts}}</h2>
+      </div>
+      <div class="summary-card flex-1 align-items-center justify-content-center m-2 px-5 py-3 border-round border-1" id="total-reported-posts">
+        <p><i class="pi pi-file-excel" style="color: #708090"></i>Total Reported Posts</p>
+        <h2>{{totalPostsReported}}</h2>
+      </div>
+    </div>
+  
+    <div class="mt-2">
+      <p-dropdown [options]="daysOptions" [(ngModel)]="selectedDays" (ngModelChange)="selectDays()"></p-dropdown>
+    </div>
+    <div class="grid mx-2">
+      <div class="chart-section col-8 p-2" >
+        <canvas id="newUsersChart"></canvas>
+      </div>
+      <div class="outstanding-users-section col-4  align-items-center justify-content-between border-round border-1" >
+        <h3 class="px-3">Top Users Interation</h3>
+        <ul>
+          <li *ngFor="let user of outstandingUsers" class="user-card" style="list-style: none;">  
+            <!-- <img [src]="user.avtURL" alt=""> -->
+            <div class="flex flex-grow ">
+              <img class=" flex-grow-1 p-2" style="width: 50px; height: 50px; object-fit: contain;" 
+              src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
+              alt="" />
+              <p class="flex-grow-1 p-2">{{ user.username }}</p>
+          </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  
+    

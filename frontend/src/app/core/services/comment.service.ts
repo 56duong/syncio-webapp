@@ -17,7 +17,6 @@ export class CommentService {
   private webSocketURL = environment.apiUrl + 'live'; // WebSocket URL with 'live' is the endpoint for the WebSocket configuration in the backend. In WebSocketConfig.java, the endpoint is '/live'.
   private stompClient: CompatClient = {} as CompatClient;
   private commentSubject: BehaviorSubject<Comment> = new BehaviorSubject<Comment>({}); // BehaviorSubject of Comment type. You can know when a new comment is received.
-  private subscription: any
 
   constructor(private http: HttpClient) { }
 
@@ -43,7 +42,7 @@ export class CommentService {
     this.stompClient = Stomp.over(socket);
 
     this.stompClient.connect({}, () => {
-      this.subscription = this.stompClient.subscribe(`/topic/comment/${postId}`, (comment: IMessage) => {
+      this.stompClient.subscribe(`/topic/comment/${postId}/${localStorage.getItem('access_token')}`, (comment: IMessage) => {
         this.commentSubject.next(JSON.parse(comment.body));
       });
     });
@@ -76,13 +75,12 @@ export class CommentService {
 
   /**
    * Disconnect from the WebSocket.
+   * @param postId - The id of the post.
    */
-  disconnect() {
-    if(this.subscription) this.subscription.unsubscribe();
-    if(Object.keys(this.stompClient).length) {
-      this.stompClient.deactivate();
-      this.stompClient.disconnect();
-    }
+  disconnect(postId: string) {
+    this.stompClient.unsubscribe(`/topic/comment/${postId}/${localStorage.getItem('access_token')}`);
+    this.stompClient.deactivate();
+    this.stompClient.disconnect();
   }
 
   /**
@@ -93,10 +91,7 @@ export class CommentService {
   sendComment(comment: Comment) {
     if(comment.parentCommentId) return;
     this.stompClient.publish({ 
-      headers: {
-        'token': localStorage.getItem('access_token') || '', // Send the token in the header to authenticate the user.
-      },
-      destination: `/app/comment/${comment.postId}`, 
+      destination: `/app/comment/${comment.postId}/${localStorage.getItem('access_token')}`, 
       body: JSON.stringify(comment) 
     });
   }

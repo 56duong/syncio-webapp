@@ -11,10 +11,12 @@ export class AdminComponent {
       name: 'Dashboard',
       link: '',
     },
+
     {
       name: 'Users Management',
       link: 'users-management',
     },
+
     {
       name: 'Posts Management',
       link: 'posts-management',
@@ -27,13 +29,5 @@ export class AdminComponent {
       name: 'Hidden Posts',
       link: 'hidden-posts',
     },
-    {
-      name: 'Labels Management',
-      link: 'labels-management'
-    },
-    {
-      name: 'Sticker Management',
-      link: 'sticker-management'
-    }
-  ]
+  ];
 }

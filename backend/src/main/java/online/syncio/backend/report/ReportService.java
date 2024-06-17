@@ -1,5 +1,6 @@
 package online.syncio.backend.report;
 
+import jakarta.transaction.Transactional;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.post.Post;
 import online.syncio.backend.post.PostRepository;
@@ -59,10 +60,13 @@ public class ReportService {
         reportRepository.save(report);
     }
 
-    public void delete(final UUID postId, final UUID userId) {
-        final Report report = reportRepository.findByPostIdAndUserId(postId, userId)
-                .orElseThrow(() -> new NotFoundException(Report.class, "postId", postId.toString(), "userId", userId.toString()));
-        reportRepository.delete(report);
+    // delete all reports of a postId
+    @Transactional
+    public void deleteAllByPostId(UUID postId) {
+        if (postRepository.findById(postId).isEmpty()) {
+            throw new NotFoundException(Post.class, "id", postId.toString());
+        }
+        reportRepository.deleteByPostId(postId);
     }
 
     //    MAPPER

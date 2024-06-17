@@ -52,7 +52,7 @@ public class CommentService {
     }
 
     public List<CommentDTO> findByPostIdAndParentCommentIsNull(final UUID postId) {
-        return commentRepository.findByPostIdAndParentCommentIsNullOrderByCreatedDateDesc(postId)
+        return commentRepository.findByPostIdAndParentCommentIsNull(postId)
                 .stream()
                 .map(comment -> mapToDTO(comment, new CommentDTO()))
                 .toList();
@@ -97,17 +97,8 @@ public class CommentService {
         commentDTO.setUserId(comment.getUser().getId());
         commentDTO.setCreatedDate(comment.getCreatedDate());
         commentDTO.setText(comment.getText());
-        // if it is a reply, set the parent comment id, if it is a comment, set the replies count.
-        // Reply don't need replies count, comment don't need parent comment id
-        if(comment.getParentComment() != null) {
-            // it is a reply
-            commentDTO.setParentCommentId(comment.getParentComment().getId());
-        }
-        else {
-            // it is a comment
-            commentDTO.setRepliesCount(commentRepository.countByPostIdAndParentCommentId(comment.getPost().getId(), comment.getId()));
-        }
-        commentDTO.setLikesCount((long) comment.getCommentLikes().size());
+        commentDTO.setParentCommentId(comment.getParentComment() == null ? null : comment.getParentComment().getId());
+        commentDTO.setRepliesCount(commentRepository.countByPostIdAndParentCommentId(comment.getPost().getId(), comment.getId()));
         return commentDTO;
     }
 

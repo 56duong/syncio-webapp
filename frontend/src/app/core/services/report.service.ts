@@ -18,4 +18,8 @@ export class ReportService {
   getReportsByPostId(postId: string): Observable<Report[]> {
     return this.http.get<Report[]>(`${this.apiURL}/${postId}`);
   }
+  deleteReportsByPostId(postId: string): Observable<void> {
+    const url = `${this.apiURL}/${postId}`;
+    return this.http.delete<void>(url);
+  }
 }

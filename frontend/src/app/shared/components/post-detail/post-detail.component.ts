@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Comment } from 'src/app/core/interfaces/comment';
 import { Post } from 'src/app/core/interfaces/post';
-import { CommentLikeService } from 'src/app/core/services/comment-like.service';
 import { CommentService } from 'src/app/core/services/comment.service';
 import { TokenService } from 'src/app/core/services/token.service';
 
@@ -12,38 +11,33 @@ import { TokenService } from 'src/app/core/services/token.service';
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.scss'],
 })
-
 export class PostDetailComponent {
-  @Input() post: Post = {}; // Current post
+  @Input() post: Post = {};
   @Input() visible: boolean = false;
   @Output() visibleChange: EventEmitter<any> = new EventEmitter(); // Event emitter to close the dialog.
   isEmojiPickerVisible: boolean = false;
-  comments: Comment[] = []; // List of parent comments
-  comment: Comment = {}; // Current comment to post
+  comments: Comment[] = [];
+  comment: Comment = {};
   plainComment: string = ''; // Plain text comment
   showReplies: {
-    [id: string]: { // The comment id
+    [id: string]: {
       visible: boolean;
-      data: Comment[]; // list of replies
+      data: Comment[];
     };
   } = {}; // The replies for a comment (key is the comment id)
   subscriptionComments: Subscription = new Subscription(); // Subscription to the comments observable
   currentUserId: string = '';
-  commentLikes: { 
-    [id: string]: boolean;
-  } = {}; // The likes for a comment (key is the comment id)
 
   constructor(
-    private commentLikeService: CommentLikeService,
     private commentService: CommentService,
     private tokenService: TokenService,
     private router: Router
   ) { }
 
+
   ngOnInit() {
     this.currentUserId = this.tokenService.extractUserIdFromToken();
 
-    // If user is logged in, connect to the WebSocket and get the comments observable.
     if (this.post.id && this.currentUserId) {
       this.commentService.connectWebSocket(this.post.id);
       this.getCommentsObservable();
@@ -57,7 +51,7 @@ export class PostDetailComponent {
   }
 
   ngOnDestroy() {
-    if(this.post.id) this.commentService.disconnect();
+    if(this.post.id) this.commentService.disconnect(this.post.id);
     this.subscriptionComments.unsubscribe();
   }
 
@@ -67,7 +61,23 @@ export class PostDetailComponent {
   getCommentsObservable() {
     this.subscriptionComments = this.commentService.getCommentsObservable().subscribe({
       next: (comment) => {
-        this.comments.unshift({ ...comment, createdDate: 'Just now' });
+        this.comments.unshift({ ...comment, createdDate: 'now' });
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
+
+  /**
+   * Get comments for the post. The comment is a parent comment if the parentCommentId is null.
+   */
+  getComments() {
+    if (!this.post.id) return;
+
+    this.commentService.getParentComments(this.post.id).subscribe({
+      next: (comments) => {
+        this.comments = comments;
       },
       error: (error) => {
         console.log(error);
@@ -79,9 +89,46 @@ export class PostDetailComponent {
     this.visibleChange.emit(false);
   }
 
+  addEmoji(event: any) {
+    this.comment.text = `${this.comment.text || ''}${event.emoji.native}`;
+    // Update the plain comment with the emoji.
+    this.plainComment = event.emoji.native;
+  }
 
+  onReply(commentId: string) {
+    this.comment.text = '@Reply&nbsp;';
+    this.comment.parentCommentId = commentId;
+  }
 
-  /* --------------------------- TEXT INPUT SECTION --------------------------- */
+  /**
+   * View replies for a comment. If replies have not been fetched yet, fetch them.
+   * @param commentId - The comment id.
+   */
+  viewReplies(commentId: string) {
+    if (this.showReplies[commentId]) {
+      // Toggle visibility of replies
+      this.showReplies[commentId].visible =
+        !this.showReplies[commentId].visible;
+    } else {
+      // Initialize the replies object
+      this.showReplies[commentId] = {
+        visible: true,
+        data: [],
+      };
+
+      if (!this.post.id) return;
+
+      // If replies have not been fetched yet, fetch them
+      this.commentService.getReplies(this.post.id, commentId).subscribe({
+        next: (replies) => {
+          this.showReplies[commentId].data = replies;
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+    }
+  }
 
   /**
    * Get the plain text comment to prevent empty comments and check if the comment is a reply.
@@ -98,135 +145,12 @@ export class PostDetailComponent {
       : undefined;
   }
 
-  addEmoji(event: any) {
-    this.comment.text = `${this.comment.text || ''}${event.emoji.native}`;
-    // Update the plain comment with the emoji.
-    this.plainComment = event.emoji.native;
-  }
-
-  /**
-   * Prepares a reply to a comment.
-   * @param {string} commentId - The ID of the comment being replied to.
-   */
-  onReply(commentId: string) {
-    this.comment.text = '@Reply&nbsp;';
-    this.comment.parentCommentId = commentId;
-  }
-
-
-
-  /* ---------------------------- GET DATA SECTION ---------------------------- */
-
-  /**
-   * Get comments for the post. The comment is a parent comment if the parentCommentId is null.
-   */
-  getComments() {
+  postComment() {
     if (!this.post.id) return;
 
-    this.commentService.getParentComments(this.post.id).subscribe({
-      next: (comments) => {
-        this.comments = comments;
-        // Initialize the comment likes and check if the user has liked the comment.
-        this.comments.forEach((comment) => {
-          if(!comment.id || !this.currentUserId) return;
-          this.commentLikes[comment.id] = this.hasCommentLiked(comment.id);
-        });
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    });
-  }
+    // Empty comment
+    if (!this.plainComment.trim()) return;
 
-  /**
-   * View replies for a comment. If replies have not been fetched yet, fetch them.
-   * @param commentId - The comment id.
-   */
-  viewReplies(commentId: string) {
-    if (this.showReplies[commentId]) {
-      // Toggle visibility of replies
-      this.showReplies[commentId].visible = !this.showReplies[commentId].visible;
-    } 
-    else {
-      // Initialize the replies object
-      this.showReplies[commentId] = {
-        visible: true,
-        data: [],
-      };
-
-      if (!this.post.id) return;
-
-      // If replies have not been fetched yet, fetch them
-      this.commentService.getReplies(this.post.id, commentId).subscribe({
-        next: (replies) => {
-          this.showReplies[commentId].data = replies;
-          
-          this.showReplies[commentId].data.forEach((comment) => {
-            if(!comment.id || !this.currentUserId) return;
-            this.commentLikes[comment.id] = this.hasCommentLiked(comment.id);
-          });
-        },
-        error: (error) => {
-          console.log(error);
-        },
-      });
-    }
-  }
-
-  /**
-   * Check if the current user has liked a comment.
-   * @param commentId
-   */
-  hasCommentLiked(commentId: string) {
-    if(this.currentUserId == null) return false;
-
-    // Check if the comment has been initialized.
-    if(this.commentLikes[commentId]) {
-      return this.commentLikes[commentId];
-    }
-
-    // If the comment has not been initialized, fetch the like status.
-    this.commentLikeService.hasCommentLiked(commentId).subscribe({
-      next: (data) => {
-        this.commentLikes[commentId] = data;
-        return data;
-      },
-      error: (error: any) => {
-        console.log(error);
-      },
-    });
-    return false;
-  }
-  
-
-
-  /* ---------------------------- POST DATA SECTION --------------------------- */
-
-  /**
-   * Like a comment.
-   * @param comment - The comment object to like or unlike.
-   */
-  likeComment(comment: Comment) {
-    
-    if(!comment.id || this.currentUserId == null) return;
-
-    this.commentLikeService.toggleLikeComment(comment.id).subscribe({
-      next: () => {
-        if(!comment.id) return;
-        // Toggle the like status.
-        this.commentLikes[comment.id] = !this.commentLikes[comment.id];
-        // Update the likes count.
-        if(comment.likesCount != undefined) {
-          comment.likesCount += this.commentLikes[comment.id] ? 1 : -1;
-        }
-      },
-      error: (error: any) => {
-        console.log(error);
-      },
-    });
-  }
-
-  postComment() {
     // Not logged in
     if(this.currentUserId == null) {
       console.log('User is not logged in');
@@ -236,19 +160,13 @@ export class PostDetailComponent {
       return;
     }
 
-    if (!this.post.id) return;
-
-    // Empty comment
-    if (!this.plainComment.trim()) return;
-
     this.comment = {
       ...this.comment,
       text: this.comment.text
         ?.replaceAll('<p><br></p>', '')
         .replace('@Reply&nbsp;', ''),
       postId: this.post.id,
-      userId: this.currentUserId,
-      likesCount: 0,
+      userId: this.currentUserId
     };
 
     // If the comment is a parent comment, send the comment (realtime).
@@ -263,7 +181,7 @@ export class PostDetailComponent {
           this.comment = {
             ...this.comment,
             id: id,
-            createdDate: 'Just now',
+            createdDate: 'now',
           };
 
           if (this.comment.parentCommentId) {
@@ -282,6 +200,7 @@ export class PostDetailComponent {
             );
             if (parentComment) {
               parentComment.repliesCount = (this.comment.repliesCount ?? 0) + 1;
+              console.log(parentComment.repliesCount);
             }
 
             this.showReplies[this.comment.parentCommentId].data.unshift(
@@ -297,5 +216,4 @@ export class PostDetailComponent {
       });
     }
   }
-
 }

@@ -47,6 +47,11 @@ export class PostService {
       .get<any>(this.apiURL, { params: param })
       .pipe(map((response) => response.content));
   }
+  getTotalPostsCount(): Observable<number> {
+    // Assuming the API provides total post count in the response
+    return this.http.get<any>(this.apiURL, { params: { pageNumber: '1', pageSize: '1' } })
+      .pipe(map(response => response.totalElements));
+  }
 
   getPostReported(pageNumber: number, pageSize: number): Observable<Post[]> {
     const url = this.apiURL + '/reported';
@@ -59,6 +64,11 @@ export class PostService {
     return this.http
       .get<any>(url, { params: param })
       .pipe(map((response) => response.content));
+  }
+  getTotalPostReported(): Observable<number> {
+    const url = this.apiURL + '/reported';
+    return this.http.get<any>(url, { params: { pageNumber: '1', pageSize: '1' } })
+      .pipe(map(response => response.totalElements));
   }
 
   getPostHidden(pageNumber: number, pageSize: number): Observable<Post[]> {

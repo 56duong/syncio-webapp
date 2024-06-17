@@ -13,13 +13,22 @@ export class PostComponent implements OnInit{
   @Input() post: Post = {};
   @Input() isReportedPostsPage: boolean = false;
   @Input() isHiddenPostsPage: boolean = false;
+  @Output() deleteReportsEvent = new EventEmitter<string>();
   reports: Report[] = [];
   visible: boolean = false; // Used to show/hide the post detail modal
   reportVisible: boolean = false; // Used to show/hide the report modal
 
+  reasonDialogVisible: boolean = false;
+
   @Output() hidePostEvent = new EventEmitter<string>();
   @Output() activePostEvent = new EventEmitter<string>();
-  mostFrequentReason: string | null = null; // Variable to hold the most frequent reason
+
+  reasonCounts: { [key: string]: number } = {
+    'SPAM': 0,
+    'HARASSMENT': 0,
+    'VIOLENCE': 0,
+    'INAPPROPRIATE_CONTENT': 0
+  }; // Variable to hold the most frequent reason
 
   constructor(private reportService: ReportService) {}
 
@@ -31,13 +40,13 @@ export class PostComponent implements OnInit{
 
   getReports(): void {
     if (this.post.id) {
+      console.log('Post ID:', this.post.id);
       this.reportService.getReportsByPostId(this.post.id).pipe(
         tap(reports => this.reports = reports),
-        map(reports => this.findMostFrequentReason(reports))
+        tap(reports => this.countReasons(reports))
       ).subscribe(
-        (mostFrequentReason) => {
-          this.mostFrequentReason = mostFrequentReason;
-          console.log('Most Frequent Reason:', mostFrequentReason);
+        () => {
+          console.log('Reason Counts:', this.reasonCounts);
         },
         (error) => {
           console.log(error);
@@ -46,27 +55,28 @@ export class PostComponent implements OnInit{
     }
   }
 
-  // get the most frequent reason reports of a post
-  findMostFrequentReason(reports: Report[]): string | null {
-    if (!reports.length) return null;
-
-    const reasonCount: { [key: string]: number } = {};
-    let maxCount = 0;
-    let mostFrequentReason = null;
+  // Count specific reasons in the reports of a post
+  countReasons(reports: Report[]): void {
+    // Reset the counts
+    this.reasonCounts = {
+      'SPAM': 0,
+      'HARASSMENT': 0,
+      'VIOLENCE': 0,
+      'INAPPROPRIATE_CONTENT': 0
+    };
 
     for (const report of reports) {
       const reason = report.reason;
-      reasonCount[reason] = (reasonCount[reason] || 0) + 1;
-
-      if (reasonCount[reason] > maxCount) {
-        maxCount = reasonCount[reason];
-        mostFrequentReason = reason;
+      if (this.reasonCounts.hasOwnProperty(reason)) {
+        this.reasonCounts[reason] += 1;
       }
     }
-
-    return mostFrequentReason;
-    
   }
+
+  reasonKeys(): string[] {
+    return Object.keys(this.reasonCounts);
+  }
+  
   showPostDetail(event: any) {
     this.visible = event;
   }
@@ -85,5 +95,19 @@ export class PostComponent implements OnInit{
 
   onActivePost(): void {
     this.activePostEvent.emit(this.post.id);
+  }
+
+  showReasonCountsDialog() {
+    this.reasonDialogVisible = true;
+  }
+
+  hideReasonCountsDialog() {
+    this.reasonDialogVisible = false;
+  }
+
+  deleteReport(): void {
+    if (confirm('Are you sure you want to delete all reports for this post?')) {
+      this.deleteReportsEvent.emit(this.post.id);
+    }
   }
 }

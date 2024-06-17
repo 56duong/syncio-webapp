@@ -95,6 +95,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/reports", apiPrefix), "POST"),
                 Pair.of(String.format("%s/reports/**", apiPrefix), "DELETE"),
                 Pair.of(String.format("%s/users", apiPrefix), "GET"),
+                Pair.of(String.format("%s/users/**", apiPrefix), "GET"),
 
                 // Like
                 Pair.of(String.format("%s/likes/count/**", apiPrefix), "GET"),
@@ -102,27 +103,15 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 // Comment
                 Pair.of(String.format("%s/comments/**", apiPrefix), "GET"),
 
-                // CommentLike
-                Pair.of(String.format("%s/commentlikes/count/**", apiPrefix), "GET"),
-
                 // User
                 Pair.of(String.format("%s/users/**/username", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/search/**", apiPrefix), "GET"),
-
-                // Label
-                Pair.of(String.format("%s/labels/**", apiPrefix), "GET"),
-                Pair.of(String.format("%s/labels/", apiPrefix), "GET"),
-                Pair.of(String.format("%s/labels/**", apiPrefix), "POST"),
-                Pair.of(String.format("%s/labels/**", apiPrefix), "PUT"),
 
                 // Story
                 Pair.of(String.format("%s/stories/images/**", apiPrefix), "GET"),
 
                 // WebSocket
-                Pair.of("/live/**", "GET"),
-
-                // Global images view
-                Pair.of(String.format("%s/images/**", apiPrefix), "GET")
+                Pair.of("/live/**", "GET")
         );
 
         String requestPath = request.getServletPath();

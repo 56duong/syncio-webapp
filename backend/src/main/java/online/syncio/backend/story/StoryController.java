@@ -1,5 +1,6 @@
 package online.syncio.backend.story;
 
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -37,4 +39,23 @@ public class StoryController {
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
 
+    @GetMapping("/images/{imageName}")
+    public ResponseEntity<?> viewImage(@PathVariable String imageName) {
+        try {
+            java.nio.file.Path imagePath = Paths.get("uploads/"+imageName);
+            UrlResource resource = new UrlResource(imagePath.toUri());
+
+            if (resource.exists()) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(resource);
+            } else {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(new UrlResource(Paths.get("uploads/notfound.jpeg").toUri()));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
