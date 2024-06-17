@@ -15,9 +15,8 @@
           {{ post.createdBy | userIdToName | async }}
         </small>
         <small class="text-gray-500">•</small>
-        <small class="text-gray-500" [title]="post.createdDate | date: 'HH:mm:ss dd/MM/yyyy'">
-          {{ post.createdDate | dateAgoPipe }}
-        </small>
+        <small class="text-gray-500">
+          {{ post.createdDate | date : "HH:mm:ss dd/MM/yyyy" }}</small>
       </div>
     </div>
     <span *ngIf="!isReportedPostsPage && !isHiddenPostsPage" class="pi pi-ellipsis-h cursor-pointer" (click)="showReportModal()"></span>

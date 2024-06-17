@@ -55,17 +55,19 @@
             </div>
             <!-- footer -->
             <div class="flex align-items-center gap-3 mt-2">
-              <small class="text-gray-500 text-xs" [title]="post.createdDate | date: 'HH:mm:ss dd/MM/yyyy'">{{post.createdDate | dateAgoPipe}}</small>
+              <small class="text-gray-500 text-xs">{{post.createdDate | date: "HH:mm:ss dd/MM/yyyy"}}</small>
             </div>
           </div>
           <br />
         </div>
-        <span class="pi pi-ellipsis-h cursor-pointer"></span>
+        <span (click)="closeDialog()"
+          class="pi pi-ellipsis-h cursor-pointer">
+        </span>
       </div>
 
       <p-divider></p-divider>
 
-      <!-- --------------------------- LIST OF COMMENT --------------------------- -->
+      <!-- List of Comment -->
       <div class="hide-scrollbar p-3 flex flex-column gap-4"
         [style]="{ width: '100%', overflow: 'auto', flex: '1' }">
         <div *ngFor="let c of comments" class="flex align-items-start gap-2">
@@ -83,29 +85,20 @@
             <div class="comment-text inline" [innerHTML]="c.text"></div>
             <!-- footer -->
             <div class="flex align-items-center gap-3 mt-2">
-              <small class="text-gray-500 text-xs" [title]="c.createdDate == 'Just now' ? c.createdDate : c.createdDate | date: 'HH:mm:ss dd/MM/yyyy'">
-                {{c.createdDate | dateAgoPipe}}
+              <small class="text-gray-500 text-xs">
+                {{c.createdDate?.toLowerCase() == "now" ? "Now" : (c.createdDate | date : "HH:mm:ss dd/MM/yyyy")}}
               </small>
-              <!-- Like -->
-              <div class="flex justify-content-center align-items-center gap-1">
-                <span (click)="likeComment(c)" class="cursor-pointer"
-                [ngClass]="c.id && commentLikes[c.id] ? 'pi pi-heart-fill text-red-500' : 'pi pi-heart'"
-                style="font-size: 1rem"></span>
-                <span class="text-gray-500 text-xs">
-                  {{c.likesCount}} like{{c.likesCount && c.likesCount > 1 ? 's' : ''}}
-                </span>
-              </div>
               <!-- Reply -->
               <small (click)="onReply(c.id || '')"
                 [ngClass]="{ 'text-blue-500 font-bold': c.id === comment.parentCommentId }"
-                class="cursor-pointer text-xs">
-                Reply
-              </small>
+                class="cursor-pointer text-xs"
+              >Reply</small>
               <!-- 3 dots -->
-              <span class="pi pi-ellipsis-h cursor-pointer"></span>
+              <span (click)="closeDialog()"
+                class="pi pi-ellipsis-h cursor-pointer"
+              ></span>
             </div>
-
-            <!-- ------------------------------- REPLIES ------------------------------- -->
+            <!-- View replies -->
             <ng-container *ngIf="c.id && c.repliesCount && c.repliesCount > 0">
               <div class="my-2">
                 <!-- Show/Hide replies -->
@@ -136,25 +129,17 @@
                       </div>
                       <!-- footer -->
                       <div class="flex align-items-center gap-3 mt-2">
-                        <small class="text-gray-500 text-xs" [title]="reply.createdDate == 'Just now' ? reply.createdDate : reply.createdDate | date: 'HH:mm:ss dd/MM/yyyy'">
-                          {{reply.createdDate | dateAgoPipe}}
+                        <small class="text-gray-500 text-xs">
+                          {{reply.createdDate?.toLowerCase() == "now" ? "Now" : (c.createdDate | date: "HH:mm:ss dd/MM/yyyy")}}
                         </small>
-                        <!-- Like -->
-                        <div class="flex justify-content-center align-items-center gap-1">
-                          <span (click)="likeComment(reply)" class="cursor-pointer"
-                          [ngClass]="reply.id && commentLikes[reply.id] ? 'pi pi-heart-fill text-red-500' : 'pi pi-heart'"
-                          style="font-size: 1rem"></span>
-                          <span class="text-gray-500 text-xs">
-                            {{reply.likesCount}} like{{reply.likesCount && reply.likesCount > 1 ? 's' : ''}}
-                          </span>
-                        </div>
                         <!-- Reply of reply -->
                         <small (click)="onReply(reply.parentCommentId ? reply.parentCommentId : '')"
-                          class="cursor-pointer text-xs">
-                          Reply
-                        </small>
+                          class="cursor-pointer text-xs"
+                        >Reply</small>
                         <!-- 3 dots -->
-                        <span class="pi pi-ellipsis-h cursor-pointer"></span>
+                        <span (click)="closeDialog()"
+                          class="pi pi-ellipsis-h cursor-pointer"
+                        ></span>
                       </div>
                     </div>
                   </div>
@@ -208,7 +193,6 @@
           label="Post"
           size="small"
           [text]="true"
-          styleClass="shadow-none"
         ></p-button>
       </div>
     </div>

@@ -38,7 +38,9 @@ export class LikeComponent {
         this.isLiked = !this.isLiked;
         this.countLikes();
       },
-      error: (error: any) => {},
+      error: (error: any) => {
+        console.log(error);
+      },
     });
   }
 
@@ -50,20 +52,14 @@ export class LikeComponent {
     this.likeService.countLikes(this.postId).subscribe({
       next: (count) => {
         this.likeCount = count;
-
-        if (
-          this.userResponse &&
-          (this.userResponse.id !== null || this.userResponse.id !== undefined)
-        ) {
-          this.likeService.hasLiked(this.postId).subscribe({
-            next: (liked: boolean) => {
-              this.isLiked = liked;
-            },
-            error: (error: any) => {
-              console.error('Error checking if post is liked:', error);
-            },
-          });
-        }
+        this.likeService.hasLiked(this.postId).subscribe({
+          next: (liked: boolean) => {
+            this.isLiked = liked;
+          },
+          error: (error: any) => {
+            console.error('Error checking if post is liked:', error);
+          },
+        });
       },
       error: (error) => {
         console.error('Error checking if post is liked:', error);
@@ -76,7 +72,9 @@ export class LikeComponent {
       next: (count) => {
         this.commentCount = count;
       },
-      error: (error) => {},
+      error: (error) => {
+        console.log(error);
+      },
     });
   }
 }

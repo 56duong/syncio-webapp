@@ -13,10 +13,6 @@ import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { AuthTokenInterceptorService } from './core/interceptors/auth-token-interceptor.service';
 import { MessageService } from 'primeng/api';
-import { DatePipe } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { CustomReuseStrategy } from './core/strategies/custom-reuse-strategy';
-import { RouteReuseStrategy } from '@angular/router';
 
 @NgModule({
   declarations: [AppComponent],
@@ -30,18 +26,15 @@ import { RouteReuseStrategy } from '@angular/router';
     MessagesModule,
     MessageModule,
     ToastModule,
-    FormsModule,
     ReactiveFormsModule,
   ],
   providers: [
     MessageService,
-    DatePipe,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthTokenInterceptorService,
       multi: true,
     },
-    { provide: RouteReuseStrategy, useClass: CustomReuseStrategy }
   ],
   bootstrap: [AppComponent],
 })

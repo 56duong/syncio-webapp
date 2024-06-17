@@ -23,4 +23,6 @@ public interface ReportRepository extends JpaRepository<Report, PkUserPost> {
 
     @Query("SELECT r FROM Report r WHERE r.post.id = :postId")
     List<Report> findByPostId(@Param("postId") UUID postId);
+
+    void deleteByPostId(UUID postId);
 }

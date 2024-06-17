@@ -35,16 +35,13 @@ public class Label {
     private Double price;
 
     @Column
-    private String labelURL;
-
-    @Column
     @CreatedDate
     private LocalDateTime createdDate;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    @CreatedBy
-//    private User createdBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @CreatedBy
+    private User createdBy;
 
     // Billing
     @OneToMany(mappedBy = "label")

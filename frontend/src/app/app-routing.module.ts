@@ -2,24 +2,22 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './features/authentication/login/login.component';
 import { ForgotpasswordComponent } from './features/authentication/forgotpassword/forgotpassword.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { ToastModule } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
 import { ChangePasswordComponent } from './features/authentication/changepassword/changepassword.component';
 import { AdminComponent } from './features/admin/admin.component';
-import { ProfileFormComponent } from './features/user/user-home/profile-form/profile-form.component';
-import { SearchComponent } from './features/user/user-home/search/search.component';
 
 @NgModule({
-  declarations: [ProfileFormComponent],
+  declarations: [
+    // your components
+  ],
   imports: [
     // other modules
     ToastModule,
     DialogModule,
-    FormsModule,
-    ReactiveFormsModule,
   ],
   // providers, bootstrap, etc.
 })
@@ -58,12 +56,6 @@ const routes: Routes = [
     title: 'confirm-user-register',
     component: LoginComponent,
   },
-  {
-    path: 'edit-profile',
-    title: 'edit-profile',
-    component: ProfileFormComponent,
-  },
-  { path: 'search', component: SearchComponent },
 ];
 
 @NgModule({

@@ -2,17 +2,6 @@
   font-size: 0.9rem;
   display: flex;
   gap: 1rem;
-
-  ::ng-deep {
-    .p-tabview-panels {
-      padding: 0;
-      margin-top: 2rem;
-    }
-
-    .p-tabview .p-tabview-nav li .p-tabview-nav-link {
-      padding: 1rem 1.125rem;
-    }
-  }
 }
 
 ::ng-deep .p-sidebar {
@@ -21,7 +10,6 @@
   min-height: 100vh;
   max-height: 100vh;
   transition: 0s;
-  overflow: scroll;
 
   .p-sidebar-header {
     display: none;
@@ -56,6 +44,10 @@
   }
 
   .font-style ::ng-deep {
+    .bold span {
+      font-weight: bold;
+    }
+
     .italic span {
       font-weight: normal;
       font-style: italic;
@@ -65,14 +57,5 @@
       font-weight: normal;
       text-decoration: underline;
     }
-  }
-
-  .color-picker {
-    position: fixed;
-  }
-
-  p-togglebutton.bold .p-togglebutton,
-  p-togglebutton.bold .p-togglebutton .p-button-label {
-    font-weight: inherit;
   }
 }
