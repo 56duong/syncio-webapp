@@ -7,8 +7,17 @@ import { map } from 'rxjs/operators';
 })
 
 export class UserIdToNamePipe implements PipeTransform {
-  constructor(private userService: UserService) { }
+  constructor(
+    private userService: UserService
+  ) { }
 
+  /**
+   * Transforms a user ID into a username.
+   * @param userId 
+   * @returns The username of the user with the given ID, or null if the user is not found.
+   * @example
+   * {{ userId | userIdToName | async }}
+   */
   transform(userId: string): any {
     return this.userService
       .getUsernameById(userId)

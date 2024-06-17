@@ -11,7 +11,9 @@ import { ReportedPostsComponent } from './reported-posts/reported-posts.componen
 import { SharedModule } from 'src/app/shared/shared.module';
 import { HiddenPostsComponent } from './hidden-posts/hidden-posts.component';
 
-
+import { LabelsManagementComponent } from './labels-management/labels-management.component';
+import { StickerManagementComponent } from './sticker-management/sticker-management.component';
+import { CoreModule } from 'src/app/core/core.module';
 
 @NgModule({
   declarations: [
@@ -21,12 +23,15 @@ import { HiddenPostsComponent } from './hidden-posts/hidden-posts.component';
     PostsManagementComponent,
     ReportedPostsComponent,
     HiddenPostsComponent,
+    LabelsManagementComponent,
+    StickerManagementComponent
   ],
   imports: [
     CommonModule,
     AdminRoutingModule,
     PrimengModule,
-    SharedModule
+    SharedModule,
+    CoreModule
   ]
 })
 export class AdminModule { }

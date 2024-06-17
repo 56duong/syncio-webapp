@@ -1,0 +1,102 @@
+$body-bg: rgb(255, 255, 255);
+$primary-blue : rgb(0, 149, 246);
+$btn-opacity : 0.7;
+$input-bg : rgb(250, 250, 250);
+$separator-color : rgb(219, 219, 219);
+$log-fac:rgb(56, 81, 133);
+$forgot-pass : rgb(0, 55, 107);
+$black : rgb(38, 38, 38);
+$gray-color : rgb(142, 142, 142);
+$edit-button : rgb(239, 239, 239);
+$gray : rgb(239, 239, 239);
+$white : white;
+
+// .search__wrap {
+//     position: relative;
+//     width: 100%;
+//     height: 100vh; 
+//   }
+  
+  .search__outside {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    outline: none !important;
+    z-index: 1; 
+  }
+
+.search_section{
+  transition: all 1s ease;
+  opacity: 0;
+  left:  -20em;
+  z-index: 2;
+  position: absolute;
+  background-color: $white;
+  padding: 10px;
+  width: 350px;
+  border: 1px solid #cccccc; 
+  border-radius: 10px; 
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+
+  &.show{
+      transition: all 1s ease;
+      opacity: 1 !important;
+      left: 17.6em;
+      top: -1%;
+  }
+  
+  height: 100vh;
+  padding: 1.5em 1em;
+  
+  h2{
+      color: $black;
+      padding-bottom: 1em;
+      font-size: 25px;
+  }
+  form{
+      background-color: $gray;
+      border-radius: 5px;
+      padding: 5px;
+      margin-bottom: 1.5em;
+      input{
+          background: transparent !important;
+          font-weight: 300;
+          padding: 5px 10px;
+          outline: none;
+          border: none !important;
+          width: 100%;
+      }
+      
+  }
+  .find{
+      .desc{
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          padding: 0;
+          margin-bottom: 20px;
+          h4{
+              margin: 0;
+              font-size: 20px;
+          }
+          p{
+              margin: 0;
+              a{
+                  font-weight: 500;
+                  color: $primary-blue;
+              }
+          }
+      }
+      .account{
+          .clear{
+              a{
+                  color: $gray-color;
+              }
+          }
+          // background-color: aqua;
+      }
+  }
+}
+

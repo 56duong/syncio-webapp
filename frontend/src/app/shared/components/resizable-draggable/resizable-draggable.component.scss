@@ -1,0 +1,48 @@
+#object {
+  position: absolute;
+  cursor: move;
+  box-sizing: content-box; // prevent border size from affecting the size of the object
+}
+
+.object-corner-resize {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border-radius: 50%;
+  border: 1px solid #0099ff;
+} 
+
+#object-top-left-resize { 
+  top: -5px; 
+  left: -5px;
+  cursor: nw-resize; 
+}
+
+#object-top-right-resize { 
+  top: -5px; 
+  right: -5px; 
+  cursor: ne-resize;
+}
+
+#object-bottom-left-resize { 
+  bottom: -5px; 
+  left: -5px;
+  cursor: sw-resize; 
+}
+
+#object-bottom-right-resize { 
+  bottom: -5px; 
+  right: -5px; 
+  cursor: se-resize;
+}
+
+.content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+}

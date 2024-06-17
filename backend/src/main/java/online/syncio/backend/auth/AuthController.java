@@ -14,6 +14,7 @@ import online.syncio.backend.auth.responses.RegisterResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
 
 import online.syncio.backend.exception.DataNotFoundException;
+import online.syncio.backend.post.AvatarUpdateDTO;
 import online.syncio.backend.setting.SettingService;
 import online.syncio.backend.user.User;
 import online.syncio.backend.auth.responses.RegisterResponse;
@@ -28,12 +29,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("${api.prefix}/users")
@@ -42,6 +47,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final TokenService tokenService;
+    private final TokenRepository tokenRepository;
 
     private final SettingService settingService;
     @Value("${apiPrefix.client}")
@@ -130,6 +136,7 @@ public class AuthController {
                 .builder()
                 .message("Login successfully")
                 .token(jwtToken.getToken())
+                .bio(userDetail.getBio())
                 .tokenType(jwtToken.getTokenType())
                 .refreshToken(jwtToken.getRefreshToken())
                 .username(userDetail.getUsername())
@@ -184,15 +191,6 @@ public class AuthController {
     }
 
 
-
-    @RequestMapping(value = "api/users/logoutDummy")
-    @PreAuthorize("permitAll()")
-    @ResponseStatus(HttpStatus.OK)
-    public void logout() {
-
-    }
-
-
     @PostMapping(value = "/forgot_password")
     public ResponseEntity<?> forgotPassword(HttpServletRequest request,@Valid @RequestBody ForgotPasswordForm forgotPasswordForm) throws Exception {
 
@@ -241,4 +239,45 @@ public class AuthController {
 
 
     }
+<<<<<<< HEAD
 }
+=======
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        final String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+
+            return ResponseEntity.badRequest().body("Invalid Authorization header format.");
+        }
+
+
+        final String jwt = authHeader.substring(7);
+
+        var storedToken = tokenRepository.findByToken(jwt);
+
+        if (storedToken != null) {
+            storedToken.setExpired(true);
+            storedToken.setRevoked(true);
+            tokenRepository.save(storedToken);
+
+            SecurityContextHolder.clearContext();
+
+            return ResponseEntity.ok().body("Logged out successfully.");
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/avatar")
+    public ResponseEntity<?> updateAvatar(@RequestParam("file") MultipartFile file) {
+        try {
+            authService.updateAvatar(file);
+            return ResponseEntity.ok("Success");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+}
+>>>>>>> origin/master

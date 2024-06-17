@@ -1,1 +1,163 @@
-<p>profile works!</p>
+<main id="my-profile" class="profile-page dark-off">
+  <div class="profile-page-inner">
+    <header>
+      <div class="profile-photo">
+        <div class="profile-photo-inner">
+          <div class="profile-photo-content">
+            <input
+              type="file"
+              #fileInput
+              style="display: none"
+              accept="image/*"
+              (change)="onFileSelected($event)"
+            />
+            <button title="" (click)="fileInput.click()">
+              <img alt="" [src]="userProfile.avtURL" />
+            </button>
+          </div>
+        </div>
+      </div>
+      <section>
+        <div class="profile-setting dark-off">
+          <h2>{{ userProfile.username }}</h2>
+
+          <a>
+            <button
+              *ngIf="loginUser !== userProfile.id && !isFollowing"
+              type="button"
+              (click)="handleFollowUser(userProfile.id)"
+              style="background-color: rgba(0, 0, 0, 0.1)"
+            >
+              Folllow
+            </button>
+          </a>
+
+          <!-- <a>
+            <button
+              *ngIf="loginUser !== userProfile.id && isFollowing"
+              type="button"
+              (click)="handleUnFollowUser(userProfile.id)"
+              style="background-color: rgba(0, 0, 0, 0.1)"
+            >
+              Folllowing
+            </button>
+          </a> -->
+
+          <a
+            class="dropdown"
+            *ngIf="loginUser !== userProfile.id && isFollowing"
+          >
+            <button
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Following
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a
+                  class="dropdown-item"
+                  (click)="handleUnFollowUser(userProfile.id)"
+                >
+                  <span>Unfollow</span>
+                </a>
+              </li>
+              <li *ngIf="loginUser !== userProfile.id && !isCloseFriend">
+                <a
+                  class="dropdown-item"
+                  (click)="handleAddCloseFriends(userProfile.id)"
+                >
+                  <span>Close friends</span>
+                </a>
+              </li>
+            </ul>
+          </a>
+
+          <a *ngIf="loginUser !== userProfile.id" href="/messages">
+            <button type="button" style="background-color: rgba(0, 0, 0, 0.1)">
+              Messages
+            </button>
+          </a>
+          <a *ngIf="loginUser === userProfile.username" href="/edit-profile">
+            <button
+              type="button"
+              (click)="handleEditProfile()"
+              style="background-color: rgba(0, 0, 0, 0.1)"
+            >
+              Edit Profile
+            </button>
+          </a>
+
+          <div *ngIf="loginUser === userProfile.username" class="setting-icon">
+            <button type="button">
+              <svg
+                aria-label="Options"
+                fill="#262626"
+                height="24"
+                viewBox="0 0 48 48"
+                width="24"
+              >
+                <path
+                  clipRule="evenodd"
+                  [attr.d]="settingIcon"
+                  fillRule="evenodd"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <ul>
+          <li>
+            <span>
+              <span>{{ userProfile.posts?.length }} </span>
+              posts
+            </span>
+          </li>
+          <li>
+            <a href="/sarojsh01/followers/">
+              <span>{{ userProfile.followerCount }} </span>
+              followers
+            </a>
+          </li>
+          <li>
+            <a href="/sarojsh01/followers/">
+              <span>{{ userProfile.followingCount }} </span>
+              following
+            </a>
+          </li>
+        </ul>
+        <div class="intro">
+          <h3>{{ userProfile.username }}</h3>
+          <br />
+          <span>{{ userProfile.bio }}</span>
+          <a href="http://{{ userProfile.bio }}">{{ userProfile.bio }}</a>
+        </div>
+      </section>
+    </header>
+    <!-- Show Story  -->
+    <!-- <div class="highlight"></div> -->
+    <div class="menu">
+      <a class="current" href="/{{ userProfile.id }}/"> posts </a>
+      <a href="/{{ userProfile.id }}/saved">saved</a>
+      <a href="/{{ userProfile.id }}/tagged">tagged</a>
+    </div>
+    <div class="content">
+      <article>
+        <div class="row-container">
+          <div class="content-row" *ngFor="let post of userProfile.posts">
+            <div class="photo" *ngFor="let photoUrl of post.photos">
+              <img
+                alt="Post Image"
+                height="100%"
+                width="100%"
+                [src]="photoUrl"
+              />
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</main>

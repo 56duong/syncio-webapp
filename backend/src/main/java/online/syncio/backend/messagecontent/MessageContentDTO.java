@@ -23,4 +23,8 @@ public class MessageContentDTO {
 
     private LocalDateTime dateSent;
 
+    private TypeEnum type;
+
+    private MessageContentDTO replyTo;
+
 }

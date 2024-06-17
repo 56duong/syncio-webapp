@@ -15,7 +15,7 @@
       </div>
       <!-- Username -->
       <p class="mt-1 text-sm" style="width: 64px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-        {{user.username}}
+        {{currentUserId === user.id ? 'Your Story' : user.username}}
       </p>
     </div>
   </div>
