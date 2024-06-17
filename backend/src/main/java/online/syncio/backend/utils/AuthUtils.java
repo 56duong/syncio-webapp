@@ -10,6 +10,10 @@ import java.util.UUID;
 
 @Component
 public class AuthUtils {
+    /**
+     * Get the current logged in user id
+     * @return the current logged in user id or null if no user is logged in
+     */
     public UUID getCurrentLoggedInUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
@@ -18,4 +22,5 @@ public class AuthUtils {
         User user = (User) authentication.getPrincipal();
         return user.getId();
     }
+
 }

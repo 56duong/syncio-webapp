@@ -4,6 +4,7 @@ package online.syncio.backend.user;
 import jakarta.persistence.*;
 import lombok.*;
 import online.syncio.backend.comment.Comment;
+import online.syncio.backend.commentlike.CommentLike;
 import online.syncio.backend.like.Like;
 import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messageroommember.MessageRoomMember;
@@ -74,7 +75,7 @@ public class User implements UserDetails {
     //    @CreatedBy
 //    private String createdBy;
 //    Post
-    @OneToMany(mappedBy = "createdBy")
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
     private Set<Post> posts;
 
     //    Follow
@@ -89,7 +90,16 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "followers")
     private Set<User> following;
 
-    //    Like
+    // Close Friends
+    @ManyToMany
+    @JoinTable(
+            name = "user_close_friends",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "close_friend_id")
+    )
+    private Set<User> closeFriends;
+
+    // Like
     @OneToMany(mappedBy = "user")
     private Set<Like> likes;
 
@@ -97,7 +107,11 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private Set<Comment> comments;
 
-    //    Report
+//  CommentLike
+    @OneToMany(mappedBy = "user")
+    private Set<CommentLike> commentLikes;
+
+//   Report
     @OneToMany(mappedBy = "user")
     private Set<Report> reports;
 
@@ -117,6 +131,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private Set<StoryView> viewedStories;
 
+    @Column(name = "username_last_modified")
+    private LocalDateTime usernameLastModified;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
@@ -145,5 +161,15 @@ public class User implements UserDetails {
         return true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);}
 }

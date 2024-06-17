@@ -1,7 +1,8 @@
 <div class="md:flex block">
   <app-top-menu class="mobile-show"></app-top-menu>
-  <app-left-menu></app-left-menu>
+  <app-left-menu (searchToggle)="toggleSearch()"></app-left-menu>
   <div class="container p-2">
     <router-outlet></router-outlet>
+    <app-search [showSearch]="showSearch" (onClose)="toggleSearch()"></app-search>
   </div>
 </div>

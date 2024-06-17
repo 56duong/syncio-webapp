@@ -6,9 +6,11 @@ import online.syncio.backend.utils.JwtTokenUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -48,16 +50,26 @@ public class MessageContentController {
      * @param messageContentDTO the message content
      * @return the message content
      */
-    @MessageMapping("/messagecontent/{messageRoomId}/{token}")
-    @SendTo("/topic/messagecontent/{messageRoomId}/{token}")
+    @MessageMapping("/messagecontent/{messageRoomId}")
+    @SendTo("/topic/messagecontent/{messageRoomId}")
     public MessageContentDTO addComment(@DestinationVariable final UUID messageRoomId,
-                                 @DestinationVariable final String token,
-                                 final MessageContentDTO messageContentDTO) {
+                                        @Header("token") final String token,
+                                        final MessageContentDTO messageContentDTO) {
         final UUID userId = jwtTokenUtils.extractUserId(token);
         messageContentDTO.getUser().setId(userId);
         final UUID createdId = messageContentService.create(messageContentDTO);
         messageContentDTO.setId(createdId);
         return messageContentDTO;
+    }
+
+    /**
+     * Used to upload photos. Mean send a message content type IMAGE with photos
+     * @param photos the photos
+     * @return the list of photo urls
+     */
+    @PostMapping("/upload")
+    public ResponseEntity<List<String>> uploadPhotos(@RequestParam("photos") List<MultipartFile> photos) {
+        return ResponseEntity.ok(messageContentService.uploadPhotos(photos));
     }
 
 }
