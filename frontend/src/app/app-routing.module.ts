@@ -11,6 +11,8 @@ import { ChangePasswordComponent } from './features/authentication/changepasswor
 import { AdminComponent } from './features/admin/admin.component';
 import { ProfileFormComponent } from './features/user/user-home/profile-form/profile-form.component';
 import { SearchComponent } from './features/user/user-home/search/search.component';
+import { PrimengModule } from './primeng/primeng.module';
+import { RegisterComponent } from './features/authentication/register/register.component';
 
 @NgModule({
   declarations: [ProfileFormComponent],
@@ -44,6 +46,11 @@ const routes: Routes = [
     component: LoginComponent,
   },
   {
+    path: 'register',
+    title: 'Register',
+    component: RegisterComponent,
+  },
+  {
     path: 'forgot_password',
     title: 'forgot',
     component: ForgotpasswordComponent,
@@ -71,6 +78,7 @@ const routes: Routes = [
     LoginComponent,
     ForgotpasswordComponent,
     ChangePasswordComponent,
+    RegisterComponent
   ],
   imports: [
     FormsModule,
@@ -79,6 +87,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     ToastModule,
     DialogModule,
+    PrimengModule
   ],
   exports: [RouterModule],
 })
