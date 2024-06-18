@@ -183,7 +183,6 @@ public class AuthController {
         try {
             String extractedToken = authorizationHeader.substring(7);
             User user = authService.getUserDetailsFromToken(extractedToken);
-            System.out.println(user);
             return ResponseEntity.ok(AuthResponse.fromUser(user));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

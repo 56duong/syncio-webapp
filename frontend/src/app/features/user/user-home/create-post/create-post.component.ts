@@ -1,6 +1,7 @@
 import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Post } from 'src/app/core/interfaces/post';
 import { PostService } from 'src/app/core/services/post.service';
+import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
@@ -16,12 +17,18 @@ export class CreatePostComponent {
   selectedPhotos: string[] = [];
   selectedPhotoFile: File[] = [];
   isEmojiPickerVisible: boolean = false;
+  currentUsername: any;
 
   constructor(
     private postService: PostService,
     private userService: UserService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private tokenService: TokenService
   ) {}
+
+  ngOnInit() {
+    this.currentUsername = this.tokenService.extractUsernameFromToken();
+  }
 
   showDialog() {
     this.display = true;
@@ -93,7 +100,7 @@ export class CreatePostComponent {
   }
   // show the emoji picker (icon)
   addEmoji(event: any) {
-    this.post.caption += event.emoji.native;
+    this.post.caption = this.post.caption ? this.post.caption + event.emoji.native : event.emoji.native;
     this.isEmojiPickerVisible = false;
   }
 }

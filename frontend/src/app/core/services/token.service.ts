@@ -56,6 +56,20 @@ export class TokenService {
     }
 
     /**
+     * Extract the username from the token. Return an empty string if the token is expired or not found.
+     * @returns the username, or null if the token is expired or not found.
+     */
+    extractUsernameFromToken(): any {
+        const token = this.getToken();
+        if (!token || this.jwtHelperService.isTokenExpired(token)) {
+            return null;
+        }
+
+        let userObject = this.jwtHelperService.decodeToken(token);
+        return 'username' in userObject ? userObject['username'] : '';
+    }
+
+    /**
      * Check if the token is valid.
      * @returns true if the token is valid, false otherwise.
      */

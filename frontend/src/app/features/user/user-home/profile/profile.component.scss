@@ -115,15 +115,13 @@
   min-width: 0;
 }
 
-.profile-page .profile-setting h2 {
+.profile-page .profile-setting h1 {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #262626;
-  color: rgba(var(--i1d, 38, 38, 38), 1);
   font-weight: 300;
-  font-size: 28px;
+  font-size: 24px;
   line-height: 32px;
   margin: -5px 0 -6px;
 }
@@ -140,8 +138,6 @@
   background-color: transparent;
   border: 1px solid #dbdbdb;
   border: 1px solid rgba(var(--ca6, 219, 219, 219), 1);
-  color: #262626;
-  color: rgba(var(--f75, 38, 38, 38), 1);
   border-radius: 4px;
   position: relative;
   width: 100%;
@@ -284,7 +280,7 @@
   -ms-flex-direction: row;
   flex-direction: row;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   -webkit-box-pack: center;
   -webkit-justify-content: center;
   -ms-flex-pack: center;
@@ -367,26 +363,6 @@
   -webkit-flex-grow: 1;
   -ms-flex-positive: 1;
   flex-grow: 1;
-}
-
-.profile-page .content .row-container {
-  flex-direction: column;
-  padding-bottom: 0px;
-  padding-top: 0px;
-}
-
-.profile-page .content-row {
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
-  flex-direction: row;
-}
-
-@media (min-width: 736px) {
-  .profile-page .content-row {
-    margin-bottom: 28px;
-  }
 }
 
 .profile-page .content .photo {
@@ -505,8 +481,7 @@ button {
 
 a,
 a:visited {
-  color: #00376b;
-  color: rgba(var(--fe0, 0, 55, 107), 1);
+  color: #737373;
   text-decoration: none;
 }
 .dropdown {

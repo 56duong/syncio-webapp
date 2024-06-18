@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { CreatePostComponent } from '../create-post/create-post.component';
 import { Router } from '@angular/router';
-import { UserResponse } from 'src/app/features/authentication/login/user.response';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
 
@@ -25,11 +24,8 @@ export class LeftMenuComponent {
   isHideMenuLabel: boolean = false; // Hide the menu label for specific tabs
   currentTab: string = ''; // Current tab
   hideTabs: string[] = ['messages']; // Tabs to hide
-  userResponse?: UserResponse | null =
-    this.userService.getUserResponseFromLocalStorage();
 
   currentUserId: string = '';
-
 
   menus: any[] = [
     {
@@ -51,22 +47,13 @@ export class LeftMenuComponent {
       id: 'MessagesButton',
     },
     {
-      label: 'Profile',
-      icon: 'pi pi-user',
-      routerLink: this.profileRouterLink,
-      id: 'ProfileButton',
-    },
-    {
       label: 'Label Shopping',
       icon: 'pi pi-shopping-cart',
       routerLink: 'labels-shop',
     },
 
   ];
-  get profileRouterLink() {
-    const userId = this.userResponse?.id;
-    return userId ? ['/profile', userId] : ['/profile'];
-  }
+
   createSubmenuItems = [
     {
       label: 'Create',

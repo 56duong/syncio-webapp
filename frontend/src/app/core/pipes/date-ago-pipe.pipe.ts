@@ -14,7 +14,7 @@ export class DateAgoPipePipe implements PipeTransform {
    * If the date is more than 1 day ago, it returns the date in 'HH:mm:ss dd/MM/yyyy' format.
    * Example: '1 hour ago', '2 hours ago', 'Just now', '12:34:56 01/12/2022'.
    * @param value The date to be transformed.
-   * @param type The type of time interval to be used. Default is 'week'.
+   * @param type The type of time interval to be used to display 'HH:mm:ss dd/MM/yyyy' format when more than 1 type ago. Default is 'week'.
    * @returns A string representing how long ago the date was, or the original value if it's not a valid date.
    * @example
    * {{ post.createdDate | dateAgoPipe }}
@@ -32,13 +32,13 @@ export class DateAgoPipePipe implements PipeTransform {
 
       // Define the intervals for year, month, week, day, hour, minute, and second in seconds.
       const intervals: { [key: string]: number } = {
-        'year': 31536000,
-        'month': 2592000,
-        'week': 604800,
-        'day': 86400,
-        'hour': 3600,
-        'minute': 60,
-        'second': 1
+        'y': 31536000,
+        'mth': 2592000,
+        'w': 604800,
+        'd': 86400,
+        'h': 3600,
+        'm': 60,
+        's': 1
       };
 
       let counter;
@@ -50,16 +50,12 @@ export class DateAgoPipePipe implements PipeTransform {
         // If the count is greater than 0, it means the difference includes the current interval.
         if (counter > 0) {
           // If the count is 1, return the count and the interval in singular form.
-          if (counter === 1) {
-            return counter + ' ' + i + ' ago'; // singular (1 day ago)
-          } 
-          else if (i === type) {
-            // If the interval is 'type' (may be day, week, month, year) and the count is more than 1, return the date in 'HH:mm:ss dd/MM/yyyy' format.
-            return this.datePipe.transform(value, 'HH:mm:ss dd/MM/yyyy'); // more than 1 day ago
+          if (counter === 1 || i !== type) {
+            return counter + i; // 1h, 1d, 3m, 6y
           } 
           else {
-            // Otherwise, return the count and the interval in plural form.
-            return counter + ' ' + i + 's ago'; // plural (2 days ago)
+            // If the interval is 'type' (may be day, week, month, year) and the count is more than 1, return the date in 'HH:mm:ss dd/MM/yyyy' format.
+            return this.datePipe.transform(value, 'HH:mm:ss dd/MM/yyyy'); // more than 1 day ago
           }
         }
       }

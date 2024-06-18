@@ -12,14 +12,15 @@
               (change)="onFileSelected($event)"
             />
             <button title="" (click)="fileInput.click()">
-              <img alt="" [src]="userProfile.avtURL" />
+              <img alt="" [src]="userProfile.avtURL"
+                onerror="this.src='/assets/images/avatar.jpg'"  />
             </button>
           </div>
         </div>
       </div>
       <section>
         <div class="profile-setting dark-off">
-          <h2>{{ userProfile.username }}</h2>
+          <h1>{{ userProfile.username }}</h1>
 
           <a>
             <button
@@ -76,21 +77,13 @@
           </a>
 
           <a *ngIf="loginUser !== userProfile.id" href="/messages">
-            <button type="button" style="background-color: rgba(0, 0, 0, 0.1)">
-              Messages
-            </button>
+            <p-button (click)="handleEditProfile()" label="Messages" severity="my-custom-primary"></p-button>
           </a>
-          <a *ngIf="loginUser === userProfile.username" href="/edit-profile">
-            <button
-              type="button"
-              (click)="handleEditProfile()"
-              style="background-color: rgba(0, 0, 0, 0.1)"
-            >
-              Edit Profile
-            </button>
+          <a *ngIf="loginUser === userProfile.id" href="/edit-profile">
+            <p-button (click)="handleEditProfile()" label="Edit Profile" severity="my-custom-primary"></p-button>
           </a>
 
-          <div *ngIf="loginUser === userProfile.username" class="setting-icon">
+          <div *ngIf="loginUser === userProfile.id" class="setting-icon">
             <button type="button">
               <svg
                 aria-label="Options"
@@ -145,17 +138,17 @@
     </div>
     <div class="content">
       <article>
-        <div class="row-container">
-          <div class="content-row" *ngFor="let post of userProfile.posts">
-            <div class="photo" *ngFor="let photoUrl of post.photos">
-              <img
-                alt="Post Image"
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;">
+          <ng-container *ngFor="let post of userProfile.posts">
+            <div *ngIf="post.photos && post.photos.length > 0" style="aspect-ratio: 1/1;" >
+              <img alt="Post Image"
                 height="100%"
                 width="100%"
-                [src]="photoUrl"
-              />
+                [src]="post.photos[0]"
+                style="object-fit: cover;"
+                />
             </div>
-          </div>
+          </ng-container>
         </div>
       </article>
     </div>
