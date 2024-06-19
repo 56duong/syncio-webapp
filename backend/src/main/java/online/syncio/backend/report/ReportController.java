@@ -36,10 +36,9 @@ public class ReportController {
     }
 
     // delete report
-    @DeleteMapping("/{postId}/{userId}")
-    public ResponseEntity<Void> deleteReport(@PathVariable(name = "postId") final UUID postId,
-                                            @PathVariable(name = "userId") final UUID userId) {
-        reportService.delete(postId, userId);
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deleteReport(@PathVariable(name = "postId") final UUID postId) {
+        reportService.deleteAllByPostId(postId);
         return ResponseEntity.noContent().build();
     }
 

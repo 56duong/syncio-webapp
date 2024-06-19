@@ -1,7 +1,11 @@
 <div class="post flex flex-column m-auto gap-3 border-bottom-1 border-gray-300 pb-4 mt-4">
   <!-- Most Frequent Reason -->
-  <div *ngIf="isReportedPostsPage && mostFrequentReason" class="flex align-items-center gap-2">
+  <!-- <div *ngIf="isReportedPostsPage && mostFrequentReason" class="flex align-items-center gap-2">
     <small >Most reports: <span class="font-bold">{{ mostFrequentReason }}</span></small>
+  </div> -->
+  <div class="flex justify-content-between align-items-center">
+    <!-- Existing content -->
+    <p-button *ngIf="isReportedPostsPage" label="View Report Reasons" icon="pi pi-info-circle" (click)="showReasonCountsDialog()"></p-button>
   </div>
   <div class="flex justify-content-between align-items-center">
     <div class="flex align-items-center gap-2">
@@ -66,3 +70,17 @@
   [display]="reportVisible" 
   (visibleChange)="handleReportModalVisibility($event)">
 </app-report>
+
+<!-- Reason Counts -->
+<p-dialog header="Report Reasons Count" [(visible)]="reasonDialogVisible" [modal]="true" [style]="{width: '300px'}" (onHide)="hideReasonCountsDialog()">
+  <ul style="list-style-type: none; padding: 0;">
+    <li class="pt-3" *ngFor="let reason of reasonKeys()">
+      {{ reason }}: {{ reasonCounts[reason] }}
+    </li>
+  </ul>
+  <div class="flex justify-content-end gap-2 mt-2">
+    <button pButton label="Delete Report" icon="pi pi-trash" class="p-button-danger" (click)="deleteReport()"></button>
+    <button pButton label="Close" icon="pi pi-times" (click)="hideReasonCountsDialog()"></button>
+  </div>
+</p-dialog>
+
