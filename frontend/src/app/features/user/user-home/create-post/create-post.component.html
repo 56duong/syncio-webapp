@@ -4,11 +4,11 @@
   [dismissableMask]="true"
   [closable]="false"
   [responsive]="true"
-  [style]="{ width: '70vw' }"
+  [style]="{ width: '80vw', maxWidth: '900px' }"
   [baseZIndex]="10000"
   header="Header"
 >
-  <ng-template pTemplate="header">
+  <ng-template pTemplate="header" style="padding: 0;">
     <div
       class="modal-header"
       style="
@@ -17,7 +17,6 @@
         align-items: center;
         width: 100%;
         border-bottom: 1px solid #ccc;
-        padding-bottom: 10px;
       "
     >
       <div>
@@ -30,66 +29,70 @@
         ></button>
       </div>
       <div>
-        <h3 style="margin: 0">Create New Post</h3>
+        <p style="margin: 0; font-weight: 600;">Create New Post</p>
       </div>
       <div>
         <button
           pButton
           type="button"
-          label="Create Post"
+          label="Share"
           (click)="createPost()"
           class="p-button-text"
         ></button>
       </div>
     </div>
   </ng-template>
-  <div class="grid">
-    <div class="col">
+  <div class="flex">
+    <div class="col-7 p-0">
       <div class="p-fluid">
-        <div class="field" style="height: 400px">
-          <p-fileUpload
+        <div class="flex justify-content-center align-items-center" style="height: 500px">
+          <p-fileUpload  *ngIf="selectedPhotos.length === 0"
             #fileUploader
             name="photo[]"
             mode="basic"
-            chooseLabel="Choose"
+            chooseLabel="Select from computer"
             chooseIcon="pi pi-upload"
             (onSelect)="onPhotoSelected($event)"
             [multiple]="true"
             accept="image/*"
           >
           </p-fileUpload>
-          <div *ngFor="let photo of selectedPhotos">
-            <img
-              [src]="photo"
-              alt="Selected photo"
-              style="width: 100%; margin-top: 10px"
-            />
-          </div>
+          <p-carousel *ngIf="selectedPhotos.length > 0"
+            [value]="selectedPhotos"
+            [numVisible]="1"
+            [numScroll]="1"
+            [circular]="false"
+            [ngClass]="selectedPhotos.length == 1 ? 'hide-slide-control' : ''">
+            <ng-template let-photo pTemplate="item">
+              <img src="{{ photo }}"
+                class="w-full h-full"
+                style="object-fit: cover" />
+            </ng-template>
+          </p-carousel>
         </div>
       </div>
     </div>
 
-    <div class="col">
+    <p-divider layout="vertical"></p-divider>
+
+    <div class="col-5 px-3 pt-2">
       <div class="p-fluid">
         <div class="field">
-          <div
-            class="inline-flex align-items-center justify-content-center gap-2"
-          >
-            <p-avatar
-              image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
-              shape="circle"
-            />
-            <span class="font-bold white-space-nowrap"> Amy Elsner </span>
+          <div class="inline-flex align-items-center justify-content-center gap-2">
+            <p-avatar shape="circle"
+              image="/assets/images/avatar.jpg" />
+            <span class="font-semibold white-space-nowrap">{{currentUsername}}</span>
           </div>
         </div>
         <div class="field">
           <textarea
             id="content"
-            rows="12"
+            rows="8"
             pInputTextarea
             [(ngModel)]="post.caption"
             [autoResize]="true"
-            placeholder="Add a content..."
+            placeholder="Write a caption..."
+            class="border-0 outline-none p-0"
           ></textarea>
         </div>
         <div class="field">
@@ -102,10 +105,14 @@
               *ngIf="isEmojiPickerVisible"
               [showPreview]="false"
               (emojiSelect)="addEmoji($event)"
-              [style]="{ position: 'absolute', bottom: '30px', left: '-50px' }"
+              [enableSearch]="false"
+              [style]="{ position: 'absolute', top: '20px', left: '-18px', zIndex: '1' }"
             ></emoji-mart>
           </div>
         </div>
+
+        <p-divider></p-divider>
+
       </div>
     </div>
   </div>

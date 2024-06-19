@@ -1,0 +1,83 @@
+p-dialog ::ng-deep {
+  .p-dialog-header {
+    padding: 0;
+  }
+
+  .modal-header {
+    padding: 2px 5px;
+  }
+
+  .p-dialog-content {
+    padding: 0;
+    overflow: unset;
+  }
+
+}
+
+p-fileupload ::ng-deep {
+  .p-button {
+    padding: 0.5rem 1rem;
+  }
+
+  .p-button-label {
+    font-weight: 500;
+  }
+}
+
+p-divider ::ng-deep {
+  .p-divider {
+    margin: 0;
+  }
+}
+
+p-carousel ::ng-deep {
+  height: 100%;
+  position: relative;
+
+  .p-carousel {
+    height: 100%;
+  }
+  
+  // Photos
+  .p-carousel-content,
+  .p-carousel-container,
+  .p-carousel-items-container {
+    height: 100%;
+  }
+
+  .p-carousel-indicators {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  // Next/Prev buttons
+  .p-carousel .p-carousel-content .p-carousel-prev, 
+  .p-carousel .p-carousel-content .p-carousel-next {
+    position: absolute;
+    z-index: 9;
+  }
+  
+  .p-carousel .p-carousel-content .p-carousel-next {
+    right: 0;
+  }
+
+  // Indicator
+  .p-carousel .p-carousel-indicators .p-carousel-indicator button {
+    width: 0.5rem;
+    border-radius: 50%;
+  }
+}
+
+// hide slide control when 1 photo
+p-carousel.hide-slide-control ::ng-deep {
+  .p-carousel .p-carousel-content .p-carousel-prev, 
+  .p-carousel .p-carousel-content .p-carousel-next {
+    display: none;
+  }
+
+  .p-carousel .p-carousel-indicators {
+    display: none;
+  }
+}

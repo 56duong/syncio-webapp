@@ -119,7 +119,7 @@ export class StickerManagementComponent {
   onStickerGroupSelect(event: any) {
     const stickerGroupId = event.data.id;
     // if sticker group has no stickers, get stickers
-    if (this.selectedStickerGroup.stickers?.length === 0) {
+    if (this.selectedStickerGroup.stickers?.length === 0 || !this.selectedStickerGroup.stickers) {
       this.stickerService.getStickersByGroupId(stickerGroupId).subscribe({
         next: (data) => {
           this.selectedStickerGroup.stickers = data;
