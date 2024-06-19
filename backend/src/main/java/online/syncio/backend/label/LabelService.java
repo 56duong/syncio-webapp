@@ -98,16 +98,37 @@ public class LabelService {
     public String processUploadedFile(MultipartFile file, String newName) {
 
         String contentType = file.getContentType();
-        if (contentType == null || !contentType.startsWith("image/")) {
+        if (contentType == null || !contentType.startsWith("image/")) { // image/gif, image/png, image/jpeg, image/jpg, image/bmp, image/webp
             throw new AppException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Invalid image format", null);
         }
 
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        if (!fileName.toLowerCase().endsWith(".gif")) {
-            throw new AppException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Invalid image format. Only .gif images are supported", null);
+
+        String newFileName = "";
+
+        if (fileName.toLowerCase().endsWith(".gif")) {
+            newFileName = newName + ".gif";
         }
 
-        String newFileName = newName + ".gif";
+        if (fileName.toLowerCase().endsWith(".png")) {
+            newFileName = newName + ".png";
+        }
+
+        if (fileName.toLowerCase().endsWith(".jpeg")) {
+            newFileName = newName + ".jpeg";
+        }
+
+        if (fileName.toLowerCase().endsWith(".jpg")) {
+            newFileName = newName + ".jpg";
+        }
+        if (fileName.toLowerCase().endsWith(".bmp")) {
+            newFileName = newName + ".bmp";
+        }
+
+        if (fileName.toLowerCase().endsWith(".webp")) {
+            newFileName = newName + ".webp";
+        }
+
         java.nio.file.Path uploadDir = Paths.get("uploads");
 
         try {

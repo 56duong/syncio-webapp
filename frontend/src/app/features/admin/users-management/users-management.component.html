@@ -67,8 +67,8 @@
                 </th>
                 <!-- <th pSortableColumn="id" style="min-width:15rem">ID <p-sortIcon field="id"></p-sortIcon></th> -->
                 <th pSortableColumn="username" style="min-width:18rem">Username <p-sortIcon field="username"></p-sortIcon></th>
-                <th pSortableColumn="email" style="min-width:24rem">Email <p-sortIcon field="email"></p-sortIcon></th>
-                <th pSortableColumn="createDate" style="min-width:24rem">Date Create <p-sortIcon field="createDate"></p-sortIcon></th>
+                <th pSortableColumn="email" style="min-width:21rem">Email <p-sortIcon field="email"></p-sortIcon></th>
+                <th pSortableColumn="createDate" style="min-width:18rem">Date Create <p-sortIcon field="createDate"></p-sortIcon></th>
                 <th pSortableColumn="role" style="min-width:11rem">Role <p-sortIcon field="role"></p-sortIcon></th>
                 <th pSortableColumn="status" style="min-width:11rem">Status <p-sortIcon field="status"></p-sortIcon></th>
                 <th pSortableColumn="action" style="min-width:6rem">Action</th>
@@ -108,8 +108,6 @@
     [modal]="true" 
     styleClass="p-fluid">
         <ng-template pTemplate="content">
-            <!-- Avatar -->
-            <!-- <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + user.avtURL" [alt]="user.avtURL" class="block m-auto pb-3" *ngIf="user.avtURL" /> -->
             
             <!-- Username -->
             <div class="field">
@@ -121,7 +119,7 @@
             <!-- Email -->
             <div class="field">
                 <label for="email">Email</label>
-                <input type="text" pInputText id="email" [(ngModel)]="user.email" required />
+                <input type="email" pInputText id="email" [(ngModel)]="user.email" required email/>
                 <small class="p-error" *ngIf="submitted && !user.email">Email is required.</small>
             </div>
 
@@ -166,16 +164,6 @@
                 <textarea id="bio" pInputTextarea [(ngModel)]="user.bio" required rows="3" cols="20"></textarea>
             </div>
 
-            <!-- <div class="formgrid grid">
-                <div class="field col">
-                    <label for="price">Price</label>
-                    <p-inputNumber id="price" [(ngModel)]="user.role" mode="currency" currency="USD" locale="en-US"></p-inputNumber>
-                </div>
-                <div class="field col">
-                    <label for="quantity">Quantity</label>
-                    <p-inputNumber id="quantity" [(ngModel)]="user.role"></p-inputNumber>
-                </div>
-            </div> -->
         </ng-template>
 
     <ng-template pTemplate="footer">

@@ -23,6 +23,8 @@ export class LabelsManagementComponent implements OnInit {
 
     user?: UserResponse | null = this.userService.getUserResponseFromLocalStorage();
 
+    nameCreatedBy?: any;
+
     selectedLabels: string[] = [];
 
     selectedLabelFile: File[] = [];
@@ -42,6 +44,19 @@ export class LabelsManagementComponent implements OnInit {
         this.labelService.getLabels().subscribe({
             next: (data) => {
                 this.labels = data;
+                // chuyen uuid cua createdBy thanh username cho de nhin
+                this.labels.forEach((label) => {
+                    if (label.createdBy) {
+                        this.userService.getUser(label.createdBy).subscribe({
+                            next: (data) => {
+                                this.nameCreatedBy = data.username;
+                            },
+                            error: (error) => {
+                                this.toastService.showError('Error fetching user', error);
+                            },
+                        });
+                    }  
+                }); 
             },
             error: (error) => {
                 this.toastService.showError('Error fetching labels', error);
@@ -94,6 +109,24 @@ export class LabelsManagementComponent implements OnInit {
 
         const formData = new FormData();
 
+        // check input name is "" 
+        if (this.label.name == "") {
+            this.toastService.showError('Error','Please enter name');
+            return;
+        }
+
+        // check price is null
+        if (this.label.price == null) {
+            this.toastService.showError('Error','Please enter price');
+            return;
+        }
+
+        // check price < 0
+        if (this.label.price < 0) {
+            this.toastService.showError('Error','Price must be greater than 0');
+            return;
+        }
+
         const label: Label = {
             name: this.label.name,
             price: this.label.price,
@@ -116,6 +149,14 @@ export class LabelsManagementComponent implements OnInit {
         // xu ly create hoac update
         if (this.label.id) {
             // neu ton tai id -> update label
+            // check xem ten moi co trung voi ten cua cac label khac tru ban than hay ko
+            const currentIndex = this.labels.findIndex((x) => x.id === this.label.id);
+            
+            if (this.labels.some((label, index) => label.name === this.label.name && index !== currentIndex)) {
+                this.toastService.showError('Error','Label name already exists');
+                return;
+            }
+
             this.labelService.updateLabel(this.label.id, formData).subscribe({
                 next: (response: any) => {
                     console.log(response);
@@ -132,13 +173,14 @@ export class LabelsManagementComponent implements OnInit {
             });
 
         } else {
-            // nguoc lai -> create label
+            // nguoc lai if id not exist -> create label
             // Kiểm tra xem tên đã tồn tại trong mảng chưa
             if (this.labels.some((label) => label.name === this.label.name)) {
                 this.toastService.showError('Error','Label name already exists');
                 return;
             }
 
+            // if create new -> check image is null 
             if (this.selectedLabels[0] == null) {
                 this.toastService.showError('Error','Please select label image');
                 return;

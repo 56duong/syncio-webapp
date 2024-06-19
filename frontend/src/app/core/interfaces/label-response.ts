@@ -3,5 +3,7 @@ export interface LabelResponse {
     name?: string;
     price?: number;
     labelURL?: string;
+    status?: string;
+    type?: string;
     isPurcharse?: boolean;
   }

@@ -21,6 +21,8 @@ export class LabelsShopComponent {
     labels!: LabelResponse[];
     label!: LabelResponse;
     vnpay!: VNPay;
+    type?: string;
+    statuses?: any[];
     dateNow: any = null;
     user?: UserResponse | null = this.userService.getUserResponseFromLocalStorage();
 
@@ -37,16 +39,15 @@ export class LabelsShopComponent {
               console.log(data);
               this.labels = data;
               this.dateNow = Date.now();
-              this.labels.forEach((label) => {
-                console.log(label.isPurcharse);
-              })
+              this.labels.forEach((label) => label.type = label.labelURL?.split('.').pop()?.toLocaleUpperCase());
           },
           error: (error) => {
               console.error('Error fetching labels', error);
           },
         });
       }
-      
+
+     
     }
 
   buyNow(label: Label) {
