@@ -1,5 +1,5 @@
 <div class="card">
-    <p-dataView #dv [value]="labels" [layout]="'grid'">
+    <p-dataView #dv [value]="labels" [layout]="'grid'" [rows]="8" [paginator]="true" paginatorPosition = 'top'>
         <ng-template let-label pTemplate="gridItem">
             <div class="col-12 sm:col-6 lg:col-12 xl:col-3 p-2">
                 <div class="p-4 border-1 surface-border surface-card border-round">
@@ -11,13 +11,14 @@
                         <!-- <p-tag >INSTOCK</p-tag> -->
                     </div>
                     <div class="flex flex-column align-items-center gap-3 py-5">
-                        <img class="w-9 shadow-2 border-round" [src]="getImageUrl(label.labelURL)" width="200" height="200"  [alt]="label.name" />
+                        <img class="w-9 shadow-2 border-round" src="{{label.labelURL + '?view=' + dateNow }}" width="180" height="180"  [alt]="label.name" />
                         <div class="text-2xl font-bold">{{ label.name }}</div>
                         <!-- <p-rating [ngModel]="label.rating" [readonly]="true" [cancel]="false"></p-rating> -->
                     </div>
                     <div class="flex align-items-center justify-content-between">
-                        <span class="text-2xl font-semibold">{{ '$' + label.price }}</span>
-                        <button pButton icon="pi pi-shopping-cart" class="p-button-rounded" [disabled]="label.inventoryStatus === 'OUTOFSTOCK'"></button>
+                        <span class="text-2xl font-semibold">{{label.price + ' VND'}}</span>
+                        <button *ngIf="!label.purcharse" (click)="buyNow(label)" pButton class="p-button-rounded" >Mua ngay</button>
+                        <button *ngIf="label.purcharse" disabled pButton class="p-button-rounded" ><span class="pi pi-check-circle" style="margin-right: 5px;"> </span>Đã mua</button>
                     </div>
                 </div>
             </div>

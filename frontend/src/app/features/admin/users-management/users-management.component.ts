@@ -1,13 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { RoleEnum, User } from 'src/app/core/interfaces/user';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { RoleEnum, StatusEnum, User } from 'src/app/core/interfaces/user';
+import { ToastService } from 'src/app/core/services/toast.service';
 import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
     selector: 'app-users-management',
     templateUrl: './users-management.component.html',
     styleUrls: ['./users-management.component.scss'],
-    providers: [MessageService, ConfirmationService],
 })
 
 export class UsersManagementComponent implements OnInit {
@@ -27,8 +26,8 @@ export class UsersManagementComponent implements OnInit {
 
     constructor(
         private userService: UserService,
-        private messageService: MessageService,
-        private confirmationService: ConfirmationService
+        private toastService: ToastService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
@@ -58,6 +57,7 @@ export class UsersManagementComponent implements OnInit {
         this.submitted = false;
         this.userDialog = true;
         this.user.role = RoleEnum.USER; // mặc định khi new 1 User sẽ 4cus vào role 'USER'
+        this.user.status = StatusEnum.ACTIVE; // mặc định khi new 1 User sẽ 4cus vào status 'ACTIVE'
     }
 
     editUser(user: User) {
@@ -86,20 +86,15 @@ export class UsersManagementComponent implements OnInit {
                                 this.users[index] = user;
                             },
                             error: (error) => {
-                                console.error('Error fetching user', error);
+                                this.toastService.showError('Error','Error fetching user');
                             },
                         });
 
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: 'Successful',
-                            detail: 'User Updated',
-                            life: 3000,
-                        });
+                        this.toastService.showSuccess('Success','User Updated');
                     },
 
                     error: (error) => {
-                        console.error('Error updating user', error);
+                        this.toastService.showError('Error','Error updating user');
                     },
                 });
 
@@ -108,27 +103,20 @@ export class UsersManagementComponent implements OnInit {
                     next: (data) => { // api create trả về data là UUID
                         this.userService.getUser(data).subscribe({
                             next: (user) => { // getUser trả về data là user vừa được create
-                                console.log(user); 
                                 this.user = user; // gán user được trả về vào biến user hiện tại đang rỗng
-                                this.users.push(this.user); // đẩy user vào mảng 
+                                this.users.unshift(this.user); // đẩy user vào đầu mảng 
                                 this.users = [...this.users]; // update lại mảng
                             },
                             error: (error) => {
-                                console.error('Error fetching user', error);
+                                this.toastService.showError('Error','Error fetching user');
                             }
                         })
+                        this.toastService.showSuccess('Success','User Created');
                     },
                     error: (error) => {
-                        console.error('Error creating user', error);
+                        this.toastService.showError('Error','Error creating user');
                     }
-                });
-
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'User Created',
-                    life: 3000,
-                });
+                }); 
             }
 
             this.userDialog = false;

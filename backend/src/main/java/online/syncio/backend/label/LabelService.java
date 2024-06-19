@@ -3,7 +3,9 @@ package online.syncio.backend.label;
 import online.syncio.backend.billing.BillingRepository;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.NotFoundException;
+import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
+import online.syncio.backend.userlabelinfo.UserLabelInfo;
 import online.syncio.backend.userlabelinfo.UserLabelInfoRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -18,7 +20,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class LabelService {
@@ -42,7 +46,8 @@ public class LabelService {
         labelDTO.setPrice(label.getPrice());
         labelDTO.setLabelURL(label.getLabelURL());
         labelDTO.setCreatedDate(label.getCreatedDate());
-        //labelDTO.setCreatedBy(label.getCreatedBy().getId());
+        labelDTO.setCreatedBy(label.getCreatedBy().getId());
+        labelDTO.setStatus(label.getStatus());
         return labelDTO;
     }
 
@@ -53,9 +58,12 @@ public class LabelService {
         label.setPrice(labelDTO.getPrice());
         label.setLabelURL(labelDTO.getLabelURL());
         label.setCreatedDate(labelDTO.getCreatedDate());
-//        final User user = labelDTO.getCreatedBy() == null ? null : userRepository.findById(labelDTO.getCreatedBy())
-//                .orElseThrow(() -> new NotFoundException(User.class, "id", labelDTO.getCreatedBy().toString()));
-//        label.setCreatedBy(user);
+        label.setStatus(labelDTO.getStatus());
+
+        final User user = labelDTO.getCreatedBy() == null ? null : userRepository.findById(labelDTO.getCreatedBy())
+                .orElseThrow(() -> new NotFoundException(User.class, "id", labelDTO.getCreatedBy().toString()));
+        label.setCreatedBy(user);
+
         return label;
     }
 
@@ -65,6 +73,26 @@ public class LabelService {
         return labels.stream()
                 .map(label -> mapToDTO(label, new LabelDTO()))
                 .toList();
+    }
+
+    public List<LabelResponseDTO> getAllLabelWithPurcharseStatus (UUID user_id) {
+        // lay ra tat ca cac label tu db
+        List<Label> labels = labelRepository.findAll();
+
+        // lay thong tin cac label ma nguoi dung da mua
+        List<UserLabelInfo> userLabelInfos = userLabelInfoRepository.findByUserId(user_id);
+
+        // chuyen danh sach UserLabelInfo sang danh sach ID Label ma nguoi dung da mua
+        Set<UUID> purcharsedLabelIds = userLabelInfos.stream()
+                .map(userLabelInfo -> userLabelInfo.getLabel().getId())
+                .collect(Collectors.toSet());
+
+        // tao danh sach DTO de tra ve, moi DTO chua thong tin label va trang thai mua
+        return labels.stream().map(
+                label -> {
+                    boolean isPurcharse = purcharsedLabelIds.contains(label.getId());
+                    return new LabelResponseDTO(label, isPurcharse);
+                }).collect(Collectors.toList());
     }
 
     public String processUploadedFile(MultipartFile file, String newName) {
@@ -97,7 +125,12 @@ public class LabelService {
     }
 
     public LabelDTO create(final LabelUploadRequest labelUploadRequest) throws IOException {
+        System.out.println("labelUploadRequest.labelDTO().getCreatedBy() in create: " + labelUploadRequest.labelDTO().getCreatedBy());
+        User user = userRepository.findById(labelUploadRequest.labelDTO().getCreatedBy())
+                .orElseThrow(() -> new NotFoundException(User.class, "id", labelUploadRequest.labelDTO().getCreatedBy().toString()));
         Label label = new Label();
+
+        System.out.println("user_id sau findById: " + user.getId());
 
         if (labelUploadRequest.file() != null) {
             String newFileName = processUploadedFile(labelUploadRequest.file(), labelUploadRequest.labelDTO().getName());
@@ -106,7 +139,9 @@ public class LabelService {
             label.setPrice(labelUploadRequest.labelDTO().getPrice());
             label.setDescription(labelUploadRequest.labelDTO().getDescription());
             label.setLabelURL(newFileName);
-
+            label.setCreatedBy(user);
+            label.setStatus(labelUploadRequest.labelDTO().getStatus());
+            System.out.println("user_id neu file != null: " + user.getId());
             labelRepository.save(label);
         }
 
@@ -120,6 +155,8 @@ public class LabelService {
     }
 
     public LabelDTO update (final UUID id, final LabelUploadRequest labelUploadRequest) throws IOException {
+        User user = userRepository.findById(labelUploadRequest.labelDTO().getCreatedBy())
+                .orElseThrow(() -> new NotFoundException(User.class, "id", labelUploadRequest.labelDTO().getCreatedBy().toString()));
         final Label label = labelRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Label.class, "id", id.toString()));
 
@@ -153,14 +190,10 @@ public class LabelService {
         label.setName(labelUploadRequest.labelDTO().getName());
         label.setPrice(labelUploadRequest.labelDTO().getPrice());
         label.setDescription(labelUploadRequest.labelDTO().getDescription());
+        label.setCreatedBy(user);
+        label.setStatus(labelUploadRequest.labelDTO().getStatus());
 
         labelRepository.save(label);
         return mapToDTO(label, new LabelDTO());
-    }
-
-    public void delete(final UUID id){
-        final Label label = labelRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(Label.class, "id", id.toString()));
-        labelRepository.delete(label);
     }
 }

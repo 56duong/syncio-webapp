@@ -1,7 +1,6 @@
 <div class="main mt-3 mr-3">
   <!-- card -->
   <div class="card">
-    <p-toast></p-toast>
     <p-toolbar styleClass="mb-4 gap-2">
       <ng-template pTemplate="left">
         <!-- nut them moi -->
@@ -88,25 +87,26 @@
           <!-- <th pSortableColumn="id" style="min-width: 15rem">
             ID <p-sortIcon field="id"></p-sortIcon>
           </th> -->
-          <th pSortableColumn="name" style="min-width: 10rem">
+          <th pSortableColumn="name" style="min-width: 8rem">
             Name <p-sortIcon field="name"></p-sortIcon>
           </th>
           <th pSortableColumn="price" style="min-width: 8rem">
-            Price <p-sortIcon field="price"></p-sortIcon>
+            Price (VND) <p-sortIcon field="price"></p-sortIcon>
           </th>
-          <th pSortableColumn="description" style="min-width: 20rem">
+          <th pSortableColumn="description" style="min-width: 15rem">
             Description <p-sortIcon field="description"></p-sortIcon>
           </th>
           <th pSortableColumn="url" style="min-width: 6rem">
             Image
           </th>
-          <th pSortableColumn="labelURL" style="min-width: 5rem">
+          <th pSortableColumn="labelURL" style="min-width: 4rem">
             URL <p-sortIcon field="labelURL"></p-sortIcon>
           </th>
           <th pSortableColumn="createDate">
             Date Create <p-sortIcon field="createDate"></p-sortIcon>
           </th>
-          <!-- <th pSortableColumn="createdBy">Created By <p-sortIcon field="createdBy"></p-sortIcon></th> -->
+          <th pSortableColumn="createdBy">Created By <p-sortIcon field="createdBy"></p-sortIcon></th>
+          <th pSortableColumn="status" style="min-width:4rem">Status <p-sortIcon field="status"></p-sortIcon></th>
           <th pSortableColumn="action" style="min-width: 4rem">Action</th>
         </tr>
       </ng-template>
@@ -115,8 +115,7 @@
           <td>
             <p-tableCheckbox [value]="label"></p-tableCheckbox>
           </td>
-          <!-- <td>{{ label.id }}</td> -->
-          <!-- <td><img [src]="'/images/demo/product/' + user.image" [alt]="user.username" width="50" class="shadow-4" /></td> -->
+          
           <td>{{ label.name }}</td>
           <td>{{ label.price }}</td>
           <td>{{ label.description }}</td>
@@ -128,8 +127,11 @@
           </td>
           
           <td>{{ label.labelURL }}</td>
-          <td>{{ label.createdDate }}</td>
-          <!-- <td>{{ label.createdBy }}</td> -->
+          <td>{{ label.createdDate | date:'HH:mm:ss dd/MM/yyyy' }}</td>
+          <td>{{ label.createdBy }}</td>
+          <td>
+            <p-tag [value]="label.status" [severity]="getSeverity(label.status)"></p-tag>
+        </td>
           <td>
             <button
               pButton
@@ -189,6 +191,19 @@
           >Price is required.</small
         >
       </div>
+
+      <!-- Status -->
+      <div class="field" *ngIf="label">
+        <label for="status">Status</label>
+        <p-dropdown [(ngModel)]="label.status" inputId="status" [options]="statuses">
+            <ng-template pTemplate="selectedItem">
+                <p-tag *ngIf="label.status" [value]="label.status" [severity]="getSeverity(label.status)"></p-tag>
+            </ng-template>
+            <ng-template let-option pTemplate="item">
+                <p-tag [value]="option.label" [severity]="getSeverity(option.label)"></p-tag>
+            </ng-template>
+        </p-dropdown>
+    </div>
 
       <!-- Decsription -->
       <div class="field">
@@ -254,7 +269,4 @@
       ></button>
     </ng-template>
   </p-dialog>
-
-  <!-- confirDialog -->
-  <p-confirmDialog [style]="{ width: '450px' }"> </p-confirmDialog>
 </div>

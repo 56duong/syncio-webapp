@@ -16,7 +16,7 @@ public class UserDTO {
 
     @NotNull
     @Size(max = 89)
-    @Email
+    @Email(message = "Email should be valid")
     private String email;
 
     @NotNull

@@ -1,0 +1,14 @@
+a:visited {
+    color: blue; /* Đặt lại màu sắc như ban đầu */
+}
+
+.rounded-icon {
+    font-size: 5rem;
+    color: aliceblue;
+    border-radius: 50%;
+    display: inline-block;
+    width: 10rem;
+    height: 10rem;
+    text-align: center;
+    line-height: 10rem; /* Align the icon vertically */
+}
