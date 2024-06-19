@@ -23,7 +23,7 @@ public class BillingController {
 
     @PostMapping
     public ResponseEntity<Void> createBilling(@RequestBody @Valid BillingDTO billingDTO) {
-        billingService.create(billingDTO);
+        billingService.createBilling(billingDTO);
         return ResponseEntity.ok().build();
     }
 }

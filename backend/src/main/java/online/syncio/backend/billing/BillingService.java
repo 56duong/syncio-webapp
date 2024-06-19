@@ -26,7 +26,9 @@ public class BillingService {
     private BillingDTO mapToDTO(Billing billing, BillingDTO billingDTO) {
         billingDTO.setUserId(billing.getUser().getId());
         billingDTO.setLabelId(billing.getLabel().getId());
+        billingDTO.setOrderNo(billing.getOrderNo());
         billingDTO.setAmount(billing.getAmount());
+        billingDTO.setStatus(billing.getStatus());
         billingDTO.setCreatedDate(billing.getCreatedDate());
         return billingDTO;
     }
@@ -39,6 +41,8 @@ public class BillingService {
                 .orElseThrow(() -> new NotFoundException(Label.class, "id", billingDTO.getLabelId().toString()));
         billing.setUser(user);
         billing.setLabel(label);
+        billing.setOrderNo(billingDTO.getOrderNo());
+        billing.setStatus(billingDTO.getStatus());
         billing.setAmount(billingDTO.getAmount());
         billing.setCreatedDate(billingDTO.getCreatedDate());
         return billing;
@@ -52,9 +56,17 @@ public class BillingService {
                 .toList();
     }
 
-    public void create(BillingDTO billingDTO) {
+    public Billing findByOrderNo(String orderNo) {
+        return billingRepository.findByOrderNo(orderNo);
+    }
+
+    public void createBilling(BillingDTO billingDTO) {
         Billing billing = new Billing();
         mapToEntity(billingDTO, billing);
+        billingRepository.save(billing);
+    }
+
+    public void updateBilling(Billing billing) {
         billingRepository.save(billing);
     }
 }
