@@ -4,10 +4,10 @@
 >
   <nav class="h-full p-4 md:px-2">
     <ul
-      class="flex flex-column align-items-center lg:align-items-start xl:align-items-start gap-6 h-full pl-0 m-0 list-none"
+      class="flex flex-column align-items-center lg:align-items-start xl:align-items-start gap-4 h-full pl-0 m-0 list-none"
     >
       <!-- Logo -->
-      <div class="mobile-hidden">
+      <div class="mobile-hidden logo">
         <li class="p-fluid">
           <p-button
             class="desktop-show"
@@ -59,7 +59,7 @@
                   class="p-menuitem-link"
                 >
                   <span [class]="item.icon + ' p-menuitem-icon'"></span>
-                  <span class="ml-2 p-menuitem-text">{{ item.label }}</span>
+                  <span class="p-menuitem-text">{{ item.label }}</span>
                 </a>
               </ng-container>
               <ng-template #withoutRoute>
@@ -70,7 +70,7 @@
                     class="p-menuitem-link"
                   >
                     <span [class]="item.icon + ' p-menuitem-icon'"></span>
-                    <span class="ml-2 p-menuitem-text">{{ item.label }}</span>
+                    <span class="p-menuitem-text">{{ item.label }}</span>
                     <span
                       *ngIf="hasSubmenu"
                       class="pi pi-angle-right ml-auto"
@@ -80,7 +80,7 @@
                 <ng-template #withoutUrl>
                   <a class="p-menuitem-link">
                     <span [class]="item.icon + ' p-menuitem-icon'"></span>
-                    <span class="ml-2 p-menuitem-text">{{ item.label }}</span>
+                    <span class="p-menuitem-text">{{ item.label }}</span>
                     <span
                       *ngIf="hasSubmenu"
                       class="pi pi-angle-right ml-auto"
@@ -93,9 +93,21 @@
         </li>
         <!-- Profile -->
         <li class="p-fluid w-full">
-          <p-button [id]="'ProfileButton'" class="text-left" styleClass="shadow-none" 
-            routerLinkActive="menu-active" [routerLink]="'profile'"
-            [label]="(currentUserId ? (currentUserId | userIdToName | async) : 'Profile') || 'Profile'" [icon]="'pi pi-user'" [text]="true" [plain]="true" />
+          <!-- Not logged in -->
+          <p-button *ngIf="!currentUserId" 
+            [id]="'ProfileButton'" class="text-left" styleClass="shadow-none" [text]="true" [plain]="true"
+            [icon]="'pi pi-user'" label="Log in"
+            [routerLink]="['login']" />
+          <!-- Logged in -->
+          <div>
+            <p-button *ngIf="currentUserId" 
+              [id]="'ProfileButton'" class="text-left" styleClass="shadow-none" [text]="true" [plain]="true"
+              routerLinkActive="menu-active"
+              [routerLink]="['profile', currentUserId]"
+              [label]="(currentUserId | userIdToName | async) ?? ''">
+              <img src="/assets/images/avatar.jpg" style="width: 28px; margin-right: 0.5rem; border-radius: 50%;"/>
+            </p-button>
+          </div>
         </li>
       </div>
       <!-- Setting -->
@@ -109,7 +121,8 @@
         />
       </div>
     </ul>
-
-    <app-create-post></app-create-post>
   </nav>
+
+  <app-create-post></app-create-post>
+
 </div>
