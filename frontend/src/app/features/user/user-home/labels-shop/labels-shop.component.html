@@ -6,19 +6,22 @@
                     <div class="flex flex-wrap align-items-center justify-content-between gap-2">
                         <span class="flex align-items-center gap-2">
                             <i class="pi pi-tag"></i>
-                            <span class="font-semibold">GIF</span>
+                            <span class="font-semibold">{{label.type}}</span>
                         </span>
-                        <!-- <p-tag >INSTOCK</p-tag> -->
+                        <p-tag *ngIf="label.status === 'ENABLED'" [severity]="'success'">IN STOCK</p-tag>
+                        <p-tag *ngIf="label.status === 'DISABLED'" [severity]="'danger'">OUT OF STOCK</p-tag>
+
                     </div>
                     <div class="flex flex-column align-items-center gap-3 py-5">
-                        <img class="w-9 shadow-2 border-round" src="{{label.labelURL + '?view=' + dateNow }}" width="180" height="180"  [alt]="label.name" />
+                        <img class="w-9 shadow-2 border-round" src="{{label.labelURL + '?view=' + dateNow }}" width="160" height="160"  [alt]="label.name" />
                         <div class="text-2xl font-bold">{{ label.name }}</div>
                         <!-- <p-rating [ngModel]="label.rating" [readonly]="true" [cancel]="false"></p-rating> -->
                     </div>
                     <div class="flex align-items-center justify-content-between">
                         <span class="text-2xl font-semibold">{{label.price + ' VND'}}</span>
-                        <button *ngIf="!label.purcharse" (click)="buyNow(label)" pButton class="p-button-rounded" >Mua ngay</button>
-                        <button *ngIf="label.purcharse" disabled pButton class="p-button-rounded" ><span class="pi pi-check-circle" style="margin-right: 5px;"> </span>Đã mua</button>
+                        <button *ngIf="!label.purcharse" [disabled]="label.status == 'DISABLED'" (click)="buyNow(label)" pButton class="p-button-rounded" >Mua ngay</button>
+                        <button *ngIf="label.purcharse " disabled pButton class="p-button-rounded" ><span class="pi pi-check-circle" style="margin-right: 5px;"> </span>Đã mua</button>
+                        
                     </div>
                 </div>
             </div>

@@ -12,17 +12,6 @@
           class="p-button-success mr-2"
           (click)="openNew()"
         ></button>
-
-        <!-- nut xoa -->
-        <!-- <button 
-                pButton 
-                pRipple 
-                label="Delete" 
-                icon="pi pi-trash" 
-                class="p-button-danger" 
-                (click)="deleteSelectedUsers()" 
-                [disabled]="!selectedUsers || !selectedUsers.length">
-            </button> -->
       </ng-template>
       <!-- nut import, export file -->
       <ng-template pTemplate="right">
@@ -48,7 +37,7 @@
     <p-table
       #dt
       [value]="labels"
-      [rows]="10"
+      [rows]="6"
       [paginator]="true"
       [globalFilterFields]="[
         'name',
@@ -84,27 +73,20 @@
           <th style="width: 4rem">
             <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
           </th>
-          <!-- <th pSortableColumn="id" style="min-width: 15rem">
-            ID <p-sortIcon field="id"></p-sortIcon>
-          </th> -->
           <th pSortableColumn="name" style="min-width: 8rem">
             Name <p-sortIcon field="name"></p-sortIcon>
           </th>
           <th pSortableColumn="price" style="min-width: 8rem">
             Price (VND) <p-sortIcon field="price"></p-sortIcon>
           </th>
-          <th pSortableColumn="description" style="min-width: 15rem">
+          <th pSortableColumn="description" style="min-width: 12rem">
             Description <p-sortIcon field="description"></p-sortIcon>
           </th>
           <th pSortableColumn="url" style="min-width: 6rem">
             Image
           </th>
-          <th pSortableColumn="labelURL" style="min-width: 4rem">
-            URL <p-sortIcon field="labelURL"></p-sortIcon>
-          </th>
-          <th pSortableColumn="createDate">
-            Date Create <p-sortIcon field="createDate"></p-sortIcon>
-          </th>
+          
+          <th pSortableColumn="createDate">Date Create <p-sortIcon field="createDate"></p-sortIcon></th>
           <th pSortableColumn="createdBy">Created By <p-sortIcon field="createdBy"></p-sortIcon></th>
           <th pSortableColumn="status" style="min-width:4rem">Status <p-sortIcon field="status"></p-sortIcon></th>
           <th pSortableColumn="action" style="min-width: 4rem">Action</th>
@@ -125,10 +107,9 @@
               <img src="{{label.labelURL + '?view=' + dateNow}}" width="50" height="50" style="object-fit: contain" />
             </div>
           </td>
-          
-          <td>{{ label.labelURL }}</td>
+        
           <td>{{ label.createdDate | date:'HH:mm:ss dd/MM/yyyy' }}</td>
-          <td>{{ label.createdBy }}</td>
+          <td>{{ nameCreatedBy}}</td>
           <td>
             <p-tag [value]="label.status" [severity]="getSeverity(label.status)"></p-tag>
         </td>
@@ -180,13 +161,7 @@
       <!-- Price -->
       <div class="field">
         <label for="price">Price</label>
-        <input
-          type="text"
-          pInputText
-          id="price"
-          [(ngModel)]="label.price"
-          required
-        />
+        <p-inputNumber id="price" [(ngModel)]="label.price" inputId="currency-vn" mode="currency" currency="VND" locale="vi-VN"> </p-inputNumber>
         <small class="p-error" *ngIf="submitted && !label.price"
           >Price is required.</small
         >

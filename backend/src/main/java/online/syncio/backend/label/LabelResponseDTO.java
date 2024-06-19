@@ -11,6 +11,7 @@ public class LabelResponseDTO {
     private String name;
     private Double price;
     private String labelURL;
+    private StatusEnum status;
     private boolean isPurcharse;
 
     public LabelResponseDTO(Label label, boolean isPurcharse) {
@@ -18,6 +19,7 @@ public class LabelResponseDTO {
         this.name = label.getName();
         this.price = label.getPrice();
         this.labelURL = label.getLabelURL();
+        this.status = label.getStatus();
         this.isPurcharse = isPurcharse;
     }
 
