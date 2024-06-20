@@ -4,14 +4,12 @@ import { Router } from '@angular/router';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
 
-
 @Component({
   selector: 'app-left-menu',
   templateUrl: './left-menu.component.html',
   styleUrls: ['./left-menu.component.scss'],
 })
 export class LeftMenuComponent {
-
   @ViewChild(CreatePostComponent) createPostComponent: any;
 
   @Output() searchToggle = new EventEmitter<void>();
@@ -43,7 +41,6 @@ export class LeftMenuComponent {
       label: 'Messages',
       icon: 'pi pi-comments',
       routerLink: 'messages',
-
       id: 'MessagesButton',
     },
     {
@@ -51,7 +48,6 @@ export class LeftMenuComponent {
       icon: 'pi pi-shopping-cart',
       routerLink: 'labels-shop',
     },
-
   ];
 
   createSubmenuItems = [
@@ -75,16 +71,16 @@ export class LeftMenuComponent {
     },
   ]; // Submenu of the create button
 
-
   constructor(
     private router: Router,
     private tokenService: TokenService,
     private userService: UserService
   ) { }
 
+
   ngOnInit() {
     this.currentUserId = this.tokenService.extractUserIdFromToken();
-    
+
     // Get the current tab when routing changes
     this.router.events.subscribe(() => {
       this.currentTab = this.router.url.split('/')[1].split('?')[0];
@@ -94,7 +90,9 @@ export class LeftMenuComponent {
   onSearchClick(): void {
     this.router.navigate(['/search']);
   }
+
   onCreateClick() {
     this.createPostComponent.showDialog();
   }
+
 }

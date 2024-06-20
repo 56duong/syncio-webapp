@@ -21,6 +21,7 @@ import online.syncio.backend.report.Report;
 import online.syncio.backend.report.ReportRepository;
 import online.syncio.backend.storyview.StoryViewRepository;
 import online.syncio.backend.utils.AuthUtils;
+import online.syncio.backend.utils.ConstantsMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -361,6 +362,25 @@ public class UserService {
         if (user.getFollowing().contains(friend)) {
             user.getCloseFriends().add(friend);
             userRepository.save(user);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean removeCloseFriend(UUID friendId) throws DataNotFoundException {
+        Optional<User> friendOpt = userRepository.findById(friendId);
+        if (!friendOpt.isPresent()) {
+            throw new DataNotFoundException(ConstantsMessage.USER_NOT_FOUND);
+        }
+
+        User friend = friendOpt.get();
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        User currentUser = userRepository.findById(currentUserId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (currentUser.getCloseFriends().contains(friend)) {
+            currentUser.getCloseFriends().remove(friend);
+            userRepository.save(currentUser);
             return true;
         } else {
             return false;
