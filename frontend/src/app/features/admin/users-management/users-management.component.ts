@@ -78,8 +78,6 @@ export class UsersManagementComponent implements OnInit {
     saveUser() {
         this.submitted = true;
 
-        
-        
         // check email is empty
         if (!this.user.email?.trim()) {
             this.toastService.showError('Error','Email is required');
@@ -93,20 +91,6 @@ export class UsersManagementComponent implements OnInit {
         
         if (this.user.username?.trim()) {
             if (this.user.id) { // ton tai id -> update user
-                // check username co trung ko tru ban than
-                const currentIndex = this.users.findIndex((u) => u.id === this.user.id);
-
-                if (this.users.some((u, index) => u.username === this.user.username && index!== currentIndex)) {
-                    this.toastService.showError('Error','Username already exists');
-                    return;
-                }
-
-                // check email co trung ko tru ban than
-                if (this.users.some((u, index) => u.email === this.user.email && index!== currentIndex)) {
-                    this.toastService.showError('Error','Email already exists');
-                    return;
-                }
-
                 this.userService.updateUserInAdmin(this.user).subscribe({
                     next: (data) => {  // update trong UserController trả về UUID => data = UUID
                         const index = this.users.findIndex(u => u.id === data);
@@ -125,23 +109,11 @@ export class UsersManagementComponent implements OnInit {
                     },
 
                     error: (error) => {
-                        this.toastService.showError('Error','Error updating user');
+                        this.toastService.showError('Error', error.error.message);
                     },
                 });
 
             } else { // nguoc lai ko ton tai id (openNew -> this.user = {}) -> create user
-                // check username is ready
-                if (this.users.some(u => u.username === this.user.username)) {
-                    this.toastService.showError('Error','Username already exists');
-                    return;
-                }
-
-                // check email is ready
-                if (this.users.some(u => u.email === this.user.email)) {
-                    this.toastService.showError('Error','Email already exists');
-                    return;
-                }
-
                 this.userService.createUserInAdmin(this.user).subscribe({
                     next: (data) => { // api create trả về data là UUID
                         this.userService.getUser(data).subscribe({
@@ -157,7 +129,7 @@ export class UsersManagementComponent implements OnInit {
                         this.toastService.showSuccess('Success','User Created');
                     },
                     error: (error) => {
-                        this.toastService.showError('Error','Error creating user');
+                        this.toastService.showError('Error', error.error.message);
                     }
                 }); 
             }

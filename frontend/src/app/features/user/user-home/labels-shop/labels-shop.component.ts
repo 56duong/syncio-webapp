@@ -54,7 +54,6 @@ export class LabelsShopComponent {
     if (label.id && this.user?.id && label.price) {
       let params = new HttpParams()
       .set('labelID', label.id)
-      .set('userID', this.user.id)
       .set('amount', label.price);
 
       this.paymentService.createVNPayPayment(params).subscribe({
