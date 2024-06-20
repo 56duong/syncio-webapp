@@ -80,6 +80,14 @@
               shape="circle"
             />
             <span class="font-bold white-space-nowrap"> Amy Elsner </span>
+
+            <button
+              pButton
+              pRipple
+              [label]="getVisibilityLabel(selectedVisibility)"
+              (click)="onShowModalPublic()"
+              class="p-button-success padding-7"
+            ></button>
           </div>
         </div>
         <div class="field">
@@ -108,5 +116,39 @@
         </div>
       </div>
     </div>
+  </div>
+</p-dialog>
+<p-dialog
+  header="
+  Subject of the article"
+  [modal]="true"
+  [(visible)]="displayModal"
+  [style]="{ width: '25rem' }"
+  [closable]="false"
+>
+  <button
+    pButton
+    type="button"
+    icon="pi pi-chevron-left"
+    (click)="onBack()"
+    class="round-button"
+  ></button>
+  <div class="modal-content">
+    <span class="p-text-secondary block mb-5">Who can see your posts?</span>
+    <div *ngFor="let visibility of visibilityOptions | keyvalue">
+      <input
+        type="radio"
+        [id]="visibility.value"
+        name="visibility"
+        [(ngModel)]="selectedVisibility"
+        [value]="visibility.value"
+        (change)="setVisibility(visibility.value)"
+      />
+      <label [for]="visibility.value">{{ visibility.value }}</label>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <p-button label="Save" severity="success" (click)="saveVisibility()" />
   </div>
 </p-dialog>

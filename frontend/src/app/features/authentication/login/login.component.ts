@@ -3,7 +3,6 @@ import { NgForm } from '@angular/forms';
 import { UserResponse } from './user.response';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/core/services/user.service';
-import { TokenService } from '../token/token.service';
 import { RoleService } from '../role/role.service';
 import { LoginDTO } from './login.dto';
 import { LoginResponse } from './login.response';
@@ -11,6 +10,7 @@ import { RegisterDTO } from '../register/register.dto';
 import { MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
 import { HttpClient } from '@angular/common/http';
+import { TokenService } from 'src/app/core/services/token.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -143,10 +143,32 @@ export class LoginComponent implements OnInit {
   }
 
   register() {
-    const usernameRegex = /^[a-zA-Z0-9]{3,}$/;
-
+    const usernameRegex = /^[a-zA-Z0-9]{3,50}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!usernameRegex.test(this.username)) {
-      this.showError('It should contain at least 3 characters.');
+      if (/[^a-zA-Z0-9]/.test(this.username)) {
+        this.showError('Username should not contain special characters.');
+        return;
+      }
+      if (this.username.length < 3 || this.username.length > 50) {
+        this.showError(
+          'Username should contain 3 to 50 alphanumeric characters.'
+        );
+        return;
+      }
+    }
+
+    //validate email
+    if (!emailRegex.test(this.email)) {
+      if (!this.email.includes('@')) {
+        this.showError('Email should contain an "@" symbol.');
+        return;
+      }
+      if (!this.email.includes('.')) {
+        this.showError('Email should contain a domain name with a "."');
+        return;
+      }
+      this.showError('Email is invalid.');
       return;
     }
     const registerDTO: RegisterDTO = {
@@ -160,6 +182,7 @@ export class LoginComponent implements OnInit {
       next: (response: any) => {
         if (response.status === 'CREATED') {
           this.deactivate();
+          this.showSuccess(response.message);
         }
       },
       complete: () => {},

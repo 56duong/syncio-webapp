@@ -1,4 +1,5 @@
 import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Visibility } from 'src/app/core/interfaces/Visibility';
 import { Post } from 'src/app/core/interfaces/post';
 import { PostService } from 'src/app/core/services/post.service';
 import { UserService } from 'src/app/core/services/user.service';
@@ -16,13 +17,29 @@ export class CreatePostComponent {
   selectedPhotos: string[] = [];
   selectedPhotoFile: File[] = [];
   isEmojiPickerVisible: boolean = false;
-
+  displayModal: boolean = false;
   constructor(
     private postService: PostService,
     private userService: UserService,
     private cdr: ChangeDetectorRef
   ) {}
 
+  visibilityOptions = Visibility;
+  selectedVisibility: Visibility = Visibility.PUBLIC;
+  getVisibilityLabel(visibility: Visibility): string {
+    switch (visibility) {
+      case Visibility.PUBLIC:
+        return 'Public';
+      case Visibility.PRIVATE:
+        return 'Private';
+      case Visibility.FRIENDS:
+        return 'Friends';
+      case Visibility.CLOSE_FRIENDS:
+        return 'Close Friends';
+      default:
+        return 'Set Visibility'; // Label mặc định
+    }
+  }
   showDialog() {
     this.display = true;
   }
@@ -39,19 +56,14 @@ export class CreatePostComponent {
       caption: this.post.caption,
       createdDate: new Date().toISOString(),
       flag: true,
-      createdBy: this.userService.getUserResponseFromLocalStorage()?.id
+      createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
+      visibility: this.selectedVisibility,
     };
-
     formData.append(
       'post',
-      new Blob(
-        [
-          JSON.stringify(post),
-        ],
-        {
-          type: 'application/json',
-        }
-      )
+      new Blob([JSON.stringify(post)], {
+        type: 'application/json',
+      })
     );
 
     this.selectedPhotoFile.forEach((photo: File, index) => {
@@ -59,7 +71,7 @@ export class CreatePostComponent {
     });
 
     post.photos = this.selectedPhotos;
-    
+
     this.postService.createPost(formData).subscribe({
       next: (response: any) => {
         post.id = response.body;
@@ -95,5 +107,24 @@ export class CreatePostComponent {
   addEmoji(event: any) {
     this.post.caption += event.emoji.native;
     this.isEmojiPickerVisible = false;
+  }
+
+  // show modal select privacy
+  onShowModalPublic() {
+    this.displayModal = true;
+    this.onCancel();
+  }
+
+  onBack() {
+    this.displayModal = false;
+    this.showDialog();
+  }
+
+  setVisibility(visibility: Visibility): void {
+    this.selectedVisibility = visibility;
+  }
+  saveVisibility() {
+    this.displayModal = false;
+    this.showDialog();
   }
 }
