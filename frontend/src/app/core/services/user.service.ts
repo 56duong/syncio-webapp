@@ -179,6 +179,11 @@ export class UserService {
     const url = `${this.apiURL}/add-close-friend/${friendId}`;
     return this.http.post(url, {});
   }
+
+  removeCloseFriends(friendId: string): Observable<any> {
+    const url = `${this.apiURL}/remove-close-friend/${friendId}`;
+    return this.http.post(url, {});
+  }
   /**
    * Get username by id.
    * @param userId

@@ -1,0 +1,6 @@
+export enum Visibility {
+  PRIVATE = 'PRIVATE',
+  FRIENDS = 'FRIENDS',
+  CLOSE_FRIENDS = 'CLOSE_FRIENDS',
+  PUBLIC = 'PUBLIC',
+}

@@ -100,12 +100,11 @@ public class PostService {
                 filenames.add(filename);
             }
         }
-
+        post.setVisibility(postDTO.getVisibility());
         post.setCaption(postDTO.getCaption());
         post.setFlag(postDTO.getFlag());
         post.setPhotos(filenames);
         post.setCreatedBy(user);
-
         Post savedPost = postRepository.save(post);
         return ResponseEntity.ok(savedPost.getId());
     }

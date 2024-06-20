@@ -93,16 +93,16 @@ public class SecurityConfig {
         }
     }
 
-    @Bean
-    public AuditorAware auditorAware() {
-        return () -> {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if(authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
-                return Optional.empty();
-            }
-
-            User user = userRepository.findByUsername(authentication.getName()).get();
-            return Optional.of(user);
-        };
-    }
+//    @Bean
+//    public AuditorAware auditorAware() {
+//        return () -> {
+//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//            if(authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+//                return Optional.empty();
+//            }
+//
+//            User user = userRepository.findByUsername(authentication.getName()).get();
+//            return Optional.of(user);
+//        };
+//    }
 }

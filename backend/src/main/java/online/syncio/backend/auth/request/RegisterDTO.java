@@ -20,7 +20,7 @@ public class RegisterDTO {
     private String username;
 
     @NotBlank(message = "Password cannot be blank")
-    @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters")
+    @Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters")
     @Pattern(regexp = "^[^\\s]+$", message = "Password must not contain spaces")
     private String password;
 
