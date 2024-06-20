@@ -46,12 +46,12 @@
 <div class="search__wrap">
   <div
     id="search"
-    class="search_section"
+    class="search_section flex flex-column"
     (click)="$event.stopPropagation()"
     [class.show]="showSearch"
   >
-    <h2>Search</h2>
-    <form method="post">
+    <h2 class="font-semibold px-3">Search</h2>
+    <form method="post" style="width: calc(100% - 2rem); margin: 0 auto;">
       <input
         type="text"
         placeholder="Search"
@@ -59,10 +59,13 @@
         [value]="searchKey"
       />
     </form>
-    <div class="find">
-      <div class="desc">
-        <h4>Recent</h4>
-        <p><a (click)="clickClearInput($event)">Clear all</a></p>
+
+    <p-divider></p-divider>
+
+    <div class="find primary-scrollbar overflow-y-scroll">
+      <div class="desc px-3">
+        <h4 class="font-semibold mb-0">Recent</h4>
+        <p class="cursor-pointer"><a (click)="clickClearInput($event)">Clear all</a></p>
       </div>
       <div class="account">
         <div class="cart">
@@ -75,7 +78,7 @@
                 <div>
                   <div class="search-result-arrow"></div>
                   <div class="search-result-container">
-                    <div class="search-result">
+                    <div class="search-result flex flex-column gap-2">
                       <app-search-suggestion
                         *ngFor="let suggestion of suggestions; let i = index"
                         [suggestion]="suggestion"

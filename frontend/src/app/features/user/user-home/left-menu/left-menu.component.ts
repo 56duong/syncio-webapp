@@ -1,9 +1,8 @@
-import { UserService } from './../../../../core/services/user.service';
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { CreatePostComponent } from '../create-post/create-post.component';
 import { Router } from '@angular/router';
-import { UserResponse } from 'src/app/features/authentication/login/user.response';
 import { TokenService } from 'src/app/core/services/token.service';
+import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-left-menu',
@@ -23,8 +22,6 @@ export class LeftMenuComponent {
   isHideMenuLabel: boolean = false; // Hide the menu label for specific tabs
   currentTab: string = ''; // Current tab
   hideTabs: string[] = ['messages']; // Tabs to hide
-  userResponse?: UserResponse | null =
-    this.userService.getUserResponseFromLocalStorage();
 
   currentUserId: string = '';
 
@@ -47,16 +44,12 @@ export class LeftMenuComponent {
       id: 'MessagesButton',
     },
     {
-      label: 'Profile',
-      icon: 'pi pi-user',
-      routerLink: this.profileRouterLink,
-      id: 'ProfileButton',
+      label: 'Label Shopping',
+      icon: 'pi pi-shopping-cart',
+      routerLink: 'labels-shop',
     },
   ];
-  get profileRouterLink() {
-    const userId = this.userResponse?.id;
-    return userId ? ['/profile', userId] : ['/profile'];
-  }
+
   createSubmenuItems = [
     {
       label: 'Create',
@@ -65,6 +58,9 @@ export class LeftMenuComponent {
         {
           label: 'Post',
           icon: 'pi pi-table',
+          command: () => {
+            this.onCreateClick();
+          },
         },
         {
           label: 'Story',
@@ -79,7 +75,8 @@ export class LeftMenuComponent {
     private router: Router,
     private tokenService: TokenService,
     private userService: UserService
-  ) {}
+  ) { }
+
 
   ngOnInit() {
     this.currentUserId = this.tokenService.extractUserIdFromToken();
@@ -93,4 +90,9 @@ export class LeftMenuComponent {
   onSearchClick(): void {
     this.router.navigate(['/search']);
   }
+
+  onCreateClick() {
+    this.createPostComponent.showDialog();
+  }
+
 }

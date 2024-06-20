@@ -4,36 +4,32 @@
   align-items: flex-end;
   justify-content: flex-start;
   gap: 0.5rem;
-  width: 100%;
+  width: 66.66%;
+  align-self: start;
 }
 
-.message-content-item .message-content-text {
-  margin: 0;
-  padding: 7px 12px;
-  border: 1px solid var(--gray-300);
-  border-radius: 18px;
-  width: fit-content;
+.my-message.message-content-item {
+  flex-direction: row-reverse;
+  align-self: end;
 }
 
-::ng-deep .message-content-text p {
-  margin: 0;
+.my-message.message-content-item ::ng-deep .message-content {
+  background-color: var(--gray-200);
+  border-color: var(--gray-200);
+  align-items: end;
+}
+
+.my-message.message-content-item ::ng-deep .message-content.message-content-sticker
+.my-message.message-content-item ::ng-deep .message-content.message-content-image {
+  align-items: end;
 }
 
 .response-message {
   flex-direction: row;
 }
 
-.my-message img {
+.my-message img.avatar {
   display: none;
-}
-
-.my-message {
-  flex-direction: row-reverse;
-}
-
-.my-message .message-content-text {
-  background-color: var(--gray-200);
-  border-color: var(--gray-200);
 }
 
 .my-reply {

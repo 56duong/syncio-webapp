@@ -26,7 +26,8 @@
       [numVisible]="1"
       [numScroll]="1"
       [circular]="false"
-      [style]="{ height: '100%', position: 'relative' }">
+      [style]="{ height: '100%', position: 'relative' }"
+      [ngClass]="post.photos.length == 1 ? 'hide-slide-control' : ''">
       <ng-template let-photo pTemplate="item">
         <img src="{{ photo }}"
           class="w-full h-full"
@@ -36,8 +37,8 @@
   </div>
 
   <!-- caption -->
-  <div>
-    <small *ngIf="post.createdBy" class="font-bold">
+  <div *ngIf="post.caption">
+    <small *ngIf="post.createdBy && post.photos?.length" class="font-bold mr-1">
       {{ post.createdBy | userIdToName | async }}
     </small>
     <small>{{ post.caption }}</small>

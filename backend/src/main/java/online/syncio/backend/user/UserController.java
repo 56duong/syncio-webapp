@@ -10,6 +10,7 @@ import online.syncio.backend.exception.ReferencedWarning;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController (final UserService userService) {
+    public UserController (final UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
     }
 
@@ -89,8 +90,6 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<UserProfile> getUserProfile (@PathVariable(name = "id") final UUID id) {
         return ResponseEntity.ok(userService.getUserProfile(id));
-
-
     }
     @PutMapping("/update-profile/{id}")
     public ResponseEntity<?> updateProfile(@PathVariable(name = "id") final UUID id, @RequestBody UpdateProfileDTO user) {
@@ -158,5 +157,24 @@ public class UserController {
     ) {
         boolean isFollowing = userService.isFollowing(userId, targetId);
         return ResponseEntity.ok().body(isFollowing);
+    }
+
+    /**
+     * Add a user to the close friends list of another user
+     * @param friendId the user to add to the close friends list
+     * @return a response entity with a message
+     */
+    @PostMapping("/add-close-friend/{friendId}")
+    public ResponseEntity<?> addCloseFriend(@PathVariable UUID friendId) {
+        try {
+            boolean isAdded = userService.addCloseFriend(friendId);
+            if (isAdded) {
+                return ResponseEntity.ok(isAdded);
+            } else {
+                return ResponseEntity.badRequest().body(isAdded);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("An error occurred: " + e.getMessage());
+        }
     }
 }
