@@ -109,7 +109,7 @@
           </td>
         
           <td>{{ label.createdDate | date:'HH:mm:ss dd/MM/yyyy' }}</td>
-          <td>{{ nameCreatedBy}}</td>
+          <td>{{ label.createdBy | userIdToName | async  }}</td>
           <td>
             <p-tag [value]="label.status" [severity]="getSeverity(label.status)"></p-tag>
         </td>

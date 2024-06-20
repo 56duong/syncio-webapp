@@ -44,19 +44,6 @@ export class LabelsManagementComponent implements OnInit {
         this.labelService.getLabels().subscribe({
             next: (data) => {
                 this.labels = data;
-                // chuyen uuid cua createdBy thanh username cho de nhin
-                this.labels.forEach((label) => {
-                    if (label.createdBy) {
-                        this.userService.getUser(label.createdBy).subscribe({
-                            next: (data) => {
-                                this.nameCreatedBy = data.username;
-                            },
-                            error: (error) => {
-                                this.toastService.showError('Error fetching user', error);
-                            },
-                        });
-                    }  
-                }); 
             },
             error: (error) => {
                 this.toastService.showError('Error fetching labels', error);
