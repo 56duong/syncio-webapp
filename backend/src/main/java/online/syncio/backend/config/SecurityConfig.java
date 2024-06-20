@@ -97,7 +97,6 @@ public class SecurityConfig implements WebMvcConfigurer {
             return http.build();
         }
     }
-
     @Bean
     public AuditorAware auditorAware() {
         return () -> {
@@ -116,5 +115,6 @@ public class SecurityConfig implements WebMvcConfigurer {
         registry.addResourceHandler(apiPrefix + "/images/**")
                 .addResourceLocations("file:uploads/");
     }
+
 
 }

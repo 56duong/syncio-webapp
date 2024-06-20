@@ -124,4 +124,14 @@ export class ProfileComponent implements OnInit {
       },
     });
   }
+  public handleRemoveCloseFriends(targetId: any): void {
+    this.userService.removeCloseFriends(targetId).subscribe({
+      next: (response: any) => {
+        this.isCloseFriend = false;
+      },
+      error: (error: any) => {
+        console.error('Error removing close friends', error);
+      },
+    });
+  }
 }

@@ -3,7 +3,6 @@ import { NgForm } from '@angular/forms';
 import { UserResponse } from './user.response';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/core/services/user.service';
-import { TokenService } from '../token/token.service';
 import { RoleService } from '../role/role.service';
 import { LoginDTO } from './login.dto';
 import { LoginResponse } from './login.response';
@@ -11,6 +10,8 @@ import { RegisterDTO } from '../register/register.dto';
 import { MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
 import { HttpClient } from '@angular/common/http';
+import { TokenService } from 'src/app/core/services/token.service';
+import { NotificationService } from 'src/app/core/services/notification.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -50,10 +51,6 @@ export class LoginComponent implements OnInit {
   userResponse?: UserResponse;
 
   onEmailChange() {
-    // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    // if (this.email.length < 6 || !emailRegex.test(this.email)) {
-    //   this.showError('Invalid email');
-    // }
   }
   constructor(
     private router: Router,
@@ -61,7 +58,7 @@ export class LoginComponent implements OnInit {
     private userService: UserService,
     private tokenService: TokenService,
     private roleService: RoleService,
-    private messageService: MessageService,
+    private notificationService: NotificationService,
     private route: ActivatedRoute,
     private http: HttpClient
   ) {}
@@ -81,25 +78,14 @@ export class LoginComponent implements OnInit {
   navigateToForgotPassword() {
     this.router.navigate(['/forgot_password']);
   }
-  showError(message: string) {
-    this.messageService.add({
-      severity: 'error',
-      detail: message,
-    });
-  }
-  showSuccess(message: string) {
-    this.messageService.add({
-      severity: 'success',
-      detail: message,
-    });
-  }
+
   login() {
     if (this.email == null || this.email == '') {
-      this.showError('Email is required');
+      this.notificationService.showError('Email is required');
       return;
     }
     if (this.password == null || this.password == '') {
-      this.showError(' Password is required');
+      this.notificationService.showError(' Password is required');
       return;
     }
     const loginDTO: LoginDTO = {
@@ -110,7 +96,6 @@ export class LoginComponent implements OnInit {
     this.userService.login(loginDTO).subscribe({
       next: (response: LoginResponse) => {
         const { token, refresh_token } = response.data;
-        console.log(response.data);
         this.tokenService.setToken(token);
 
         this.userService.getUserDetail(token).subscribe({
@@ -128,13 +113,13 @@ export class LoginComponent implements OnInit {
           },
           complete: () => {},
           error: (error: any) => {
-            this.showError(error.error.message);
+            this.notificationService.showError(error.error.message);
           },
         });
       },
       complete: () => {},
       error: (error: any) => {
-        this.showError(error.error.message);
+        this.notificationService.showError(error.error.message);
       },
     });
   }
@@ -143,10 +128,38 @@ export class LoginComponent implements OnInit {
   }
 
   register() {
-    const usernameRegex = /^[a-zA-Z0-9]{3,}$/;
-
+    const usernameRegex = /^[a-zA-Z0-9]{3,50}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!usernameRegex.test(this.username)) {
-      this.showError('It should contain at least 3 characters.');
+      if (/[^a-zA-Z0-9]/.test(this.username)) {
+        this.notificationService.showError(
+          'Username should not contain special characters.'
+        );
+        return;
+      }
+      if (this.username.length < 3 || this.username.length > 50) {
+        this.notificationService.showError(
+          'Username should contain 3 to 50 alphanumeric characters.'
+        );
+        return;
+      }
+    }
+
+    //validate email
+    if (!emailRegex.test(this.email)) {
+      if (!this.email.includes('@')) {
+        this.notificationService.showError(
+          'Email should contain an "@" symbol.'
+        );
+        return;
+      }
+      if (!this.email.includes('.')) {
+        this.notificationService.showError(
+          'Email should contain a domain name with a "."'
+        );
+        return;
+      }
+      this.notificationService.showError('Email is invalid.');
       return;
     }
     const registerDTO: RegisterDTO = {
@@ -160,11 +173,12 @@ export class LoginComponent implements OnInit {
       next: (response: any) => {
         if (response.status === 'CREATED') {
           this.deactivate();
+          this.notificationService.showSuccess(response.message);
         }
       },
       complete: () => {},
       error: (error: any) => {
-        this.showError(error?.error?.message ?? '');
+        this.notificationService.showError(error?.error?.message ?? '');
       },
     });
   }
@@ -173,11 +187,11 @@ export class LoginComponent implements OnInit {
     this.userService.confirmUserRegister(token).subscribe({
       next: (response: any) => {
         console.log('Registration confirmed:', response);
-        this.showSuccess(response.message);
+        this.notificationService.showSuccess(response.message);
       },
       complete: () => {},
       error: (error: any) => {
-        this.showError(error?.error?.message ?? '');
+        this.notificationService.showError(error?.error?.message ?? '');
       },
     });
   }

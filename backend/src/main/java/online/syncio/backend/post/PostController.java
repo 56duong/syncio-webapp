@@ -38,7 +38,6 @@ public class PostController {
 
     // new - get 10 post/page
     @GetMapping
-
     public Page<PostDTO> getPosts(@RequestParam(defaultValue = "0") int pageNumber,
                                @RequestParam(defaultValue = "10") int pageSize) {
         return postService.getPosts(PageRequest.of(pageNumber, pageSize));
