@@ -1,3 +1,4 @@
+
 p-dialog ::ng-deep {
   .p-dialog-header {
     padding: 0;
@@ -81,3 +82,35 @@ p-carousel.hide-slide-control ::ng-deep {
     display: none;
   }
 }
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 20px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+.btn_margin {
+    margin-left: 10px;
+}
+.round-button {
+    border-radius: 50%; 
+    width: 40px;
+    height: 40px; 
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    border: none; 
+    position: absolute;
+    top: 14px;
+    right: 20px;
+  }
+  
+  .round-button .pi {
+    margin: 0;
+  }
+  .padding-7{
+    padding: 7px;
+  }
+

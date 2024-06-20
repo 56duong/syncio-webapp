@@ -33,6 +33,7 @@ export class LikeComponent {
   }
 
   likePost() {
+    console.log('likePost');
     this.likeService.toggleLikes(this.postId, this.userResponse?.id).subscribe({
       next: () => {
         this.isLiked = !this.isLiked;

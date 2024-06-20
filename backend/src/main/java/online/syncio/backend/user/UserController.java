@@ -177,4 +177,18 @@ public class UserController {
             return ResponseEntity.badRequest().body("An error occurred: " + e.getMessage());
         }
     }
+
+    @PostMapping("/remove-close-friend/{friendId}")
+    public ResponseEntity<?> removeCloseFriend(@PathVariable UUID friendId) {
+        try {
+            boolean isRemoved = userService.removeCloseFriend(friendId);
+            if (isRemoved) {
+                return ResponseEntity.ok(isRemoved);
+            } else {
+                return ResponseEntity.badRequest().body(isRemoved);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("An error occurred: " + e.getMessage());
+        }
+    }
 }
