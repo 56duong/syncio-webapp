@@ -26,12 +26,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Optional;
 
 @Configuration
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
+    @Value("${api.prefix}")
+    private String apiPrefix;
+
     private final UserRepository userRepository;
     //user's detail object
     @Bean
@@ -105,4 +110,11 @@ public class SecurityConfig {
             return Optional.of(user);
         };
     }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler(apiPrefix + "/images/**")
+                .addResourceLocations("file:uploads/");
+    }
+
 }

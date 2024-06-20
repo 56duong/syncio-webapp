@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -46,6 +47,8 @@ public class UserService {
     private final PostService postService;
     private final StoryViewRepository storyViewRepository;
     private final AuthUtils authUtils;
+    private final PasswordEncoder passwordEncoder;
+
 
     //    CRUD
     public List<UserDTO> findAll (Optional<String> username) {
@@ -70,9 +73,15 @@ public class UserService {
                              .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
     }
 
-    public UserProfile getUserProfile (final UUID id) {
+    public UserProfile getUserProfile (final UUID id)  {
         return userRepository.findByIdWithPosts(id)
-                             .map(user -> mapToUserProfile(user, new UserProfile()))
+                             .map(user -> {
+                                 try {
+                                     return mapToUserProfile(user, new UserProfile());
+                                 } catch (DataNotFoundException e) {
+                                     throw new RuntimeException(e);
+                                 }
+                             })
                              .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
     }
     @jakarta.transaction.Transactional
@@ -122,6 +131,10 @@ public class UserService {
     }
 
     public UUID create(final UserDTO userDTO) {
+        // encode password
+        String encodePassword = passwordEncoder.encode(userDTO.getPassword());
+        userDTO.setPassword(encodePassword);
+        
         final User user = new User();
         mapToEntity(userDTO, user);
         return userRepository.save(user).getId();
@@ -130,6 +143,10 @@ public class UserService {
     public void update (final UUID id, final UserDTO userDTO) {
         final User user = userRepository.findById(id)
                                         .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+            
+        String encodePassword = passwordEncoder.encode(userDTO.getPassword());
+        userDTO.setPassword(encodePassword);
+
         mapToEntity(userDTO, user);
         userRepository.save(user);
     }
@@ -157,7 +174,15 @@ public class UserService {
         return userDTO;
     }
 
-    private UserProfile mapToUserProfile (final User user, final UserProfile userProfile) {
+    private UserProfile mapToUserProfile (final User user, final UserProfile userProfile) throws DataNotFoundException {
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        User currentUser  = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new DataNotFoundException("Current user not found"));
+
+        boolean isCloseFriend = currentUser.getCloseFriends().contains(user);
+        userProfile.setCloseFriend(isCloseFriend);
+        boolean isFollowing = currentUser.getFollowing().contains(user);
+        userProfile.setFollowing(isFollowing);
         userProfile.setId(user.getId());
         userProfile.setUsername(user.getUsername());
         userProfile.setAvtURL(user.getAvtURL());
@@ -167,6 +192,7 @@ public class UserService {
                 .collect(Collectors.toSet()));
         userProfile.setFollowerCount(user.getFollowers().size());
         userProfile.setFollowingCount(user.getFollowing().size());
+
 
         return userProfile;
     }
@@ -320,5 +346,24 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Target user not found"));
 
         return user.getFollowing().contains(target);
+    }
+
+    public boolean addCloseFriend( UUID friendId) {
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        User user = userRepository.findById(currentUserId).orElseThrow(() -> new RuntimeException("User not found"));
+        Optional<User> friendOpt = userRepository.findById(friendId);
+
+        if (!friendOpt.isPresent()) {
+            throw new RuntimeException("User not found.");
+        }
+        User friend = friendOpt.get();
+
+        if (user.getFollowing().contains(friend)) {
+            user.getCloseFriends().add(friend);
+            userRepository.save(user);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

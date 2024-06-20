@@ -31,6 +31,9 @@ public class MessageContent {
     @CreatedDate
     private LocalDateTime dateSent;
 
+    @Enumerated(EnumType.STRING)
+    private TypeEnum type;
+
     @ManyToOne
     @JoinColumn(name = "message_room_id")
     private MessageRoom messageRoom;

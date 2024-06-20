@@ -16,6 +16,7 @@ import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { StoryListComponent } from '../story/story-list/story-list.component';
 import { ViewStoryComponent } from '../story/view-story/view-story.component';
 import { SearchSuggestionComponent } from './search/search-suggestion/search-suggestion.component';
+import { LabelsShopComponent } from './labels-shop/labels-shop.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { SearchSuggestionComponent } from './search/search-suggestion/search-sug
     SearchComponent,
     StoryListComponent,
     ViewStoryComponent,
-    SearchSuggestionComponent
+    SearchSuggestionComponent,
+    LabelsShopComponent
 
   ],
   imports: [

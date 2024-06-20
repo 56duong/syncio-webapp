@@ -115,15 +115,13 @@
   min-width: 0;
 }
 
-.profile-page .profile-setting h2 {
+.profile-page .profile-setting h1 {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #262626;
-  color: rgba(var(--i1d, 38, 38, 38), 1);
   font-weight: 300;
-  font-size: 28px;
+  font-size: 24px;
   line-height: 32px;
   margin: -5px 0 -6px;
 }
@@ -140,8 +138,6 @@
   background-color: transparent;
   border: 1px solid #dbdbdb;
   border: 1px solid rgba(var(--ca6, 219, 219, 219), 1);
-  color: #262626;
-  color: rgba(var(--f75, 38, 38, 38), 1);
   border-radius: 4px;
   position: relative;
   width: 100%;
@@ -284,7 +280,7 @@
   -ms-flex-direction: row;
   flex-direction: row;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   -webkit-box-pack: center;
   -webkit-justify-content: center;
   -ms-flex-pack: center;
@@ -367,26 +363,6 @@
   -webkit-flex-grow: 1;
   -ms-flex-positive: 1;
   flex-grow: 1;
-}
-
-.profile-page .content .row-container {
-  flex-direction: column;
-  padding-bottom: 0px;
-  padding-top: 0px;
-}
-
-.profile-page .content-row {
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
-  flex-direction: row;
-}
-
-@media (min-width: 736px) {
-  .profile-page .content-row {
-    margin-bottom: 28px;
-  }
 }
 
 .profile-page .content .photo {
@@ -505,9 +481,66 @@ button {
 
 a,
 a:visited {
-  color: #00376b;
-  color: rgba(var(--fe0, 0, 55, 107), 1);
+  color: #737373;
   text-decoration: none;
+}
+.dropdown {
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+  background-color: #6c757d;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Ensures spacing between logo and text */
+}
+.dropdown-toggle::after {
+  display: none; /* Hides the default dropdown arrow, if you want */
+}
+
+.dropdown-menu {
+  display: none!important;
+  position: absolute ;
+  top: 100%;
+  left: 0;
+  background-color:#ccc;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  width: auto;
+  padding: 0;
+  margin-top: 5px;
+  z-index: 1000;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block !important; /* Shows the dropdown menu when hovering over .dropdown */
+}
+
+.dropdown-menu li {
+  list-style: none;
+  margin-right:0 !important
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adds space between icon and text */
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #333;
+  transition: background-color 0.3s ease-in-out;
+  margin-left:0 !important;
+  font-size:14px;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f8f8;
 }
 
 

@@ -100,11 +100,20 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/users/**/username", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/search/**", apiPrefix), "GET"),
 
+                // Label
+                Pair.of(String.format("%s/labels/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/labels/", apiPrefix), "GET"),
+                Pair.of(String.format("%s/labels/**", apiPrefix), "POST"),
+                Pair.of(String.format("%s/labels/**", apiPrefix), "PUT"),
+
                 // Story
                 Pair.of(String.format("%s/stories/images/**", apiPrefix), "GET"),
 
                 // WebSocket
-                Pair.of("/live/**", "GET")
+                Pair.of("/live/**", "GET"),
+
+                // Global images view
+                Pair.of(String.format("%s/images/**", apiPrefix), "GET")
         );
 
         String requestPath = request.getServletPath();

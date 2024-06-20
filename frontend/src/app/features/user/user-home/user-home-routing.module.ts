@@ -5,6 +5,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { MessagesComponent } from './messages/messages.component';
 import { SearchComponent } from './search/search.component';
 import { CreatePostComponent } from './create-post/create-post.component';
+import { LabelsShopComponent } from './labels-shop/labels-shop.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,10 @@ const routes: Routes = [
   {
     path: 'create-post',
     component: CreatePostComponent,
+  },
+  {
+    path: 'labels-shop',
+    component: LabelsShopComponent
   },
 ];
 

@@ -1,5 +1,6 @@
 package online.syncio.backend.messagecontent;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.messageroom.MessageRoom;
@@ -7,9 +8,12 @@ import online.syncio.backend.messageroom.MessageRoomRepository;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserDTO;
 import online.syncio.backend.user.UserRepository;
+import online.syncio.backend.utils.FIleUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -62,6 +66,19 @@ public class MessageContentService {
         messageContentRepository.delete(messageContent);
     }
 
+    @Transactional
+    public List<String> uploadPhotos(final List<MultipartFile> photos) {
+        return photos.stream()
+                .map(photo -> {
+                    try {
+                        return FIleUtils.storeFile(photo);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Could not save photo: " + photo.getOriginalFilename());
+                    }
+                })
+                .toList();
+    }
+
 
 
 //    MAPPER
@@ -77,11 +94,15 @@ public class MessageContentService {
 
         messageContentDTO.setMessage(messageContent.getMessage());
         messageContentDTO.setDateSent(messageContent.getDateSent());
+        messageContentDTO.setType(messageContent.getType());
 
+        // If the message is a reply to another message, set the replyTo field (parent message content is the message being replied to)
         if(messageContent.getParentMessageContent() != null) {
             MessageContentDTO replyTo = new MessageContentDTO();
             replyTo.setId(messageContent.getParentMessageContent().getId());
             replyTo.setMessage(messageContent.getParentMessageContent().getMessage());
+            replyTo.setDateSent(messageContent.getParentMessageContent().getDateSent());
+            replyTo.setType(messageContent.getParentMessageContent().getType());
             UserDTO replyToUserDTO = new UserDTO();
             replyToUserDTO.setId(messageContent.getParentMessageContent().getUser().getId());
             replyToUserDTO.setUsername(messageContent.getParentMessageContent().getUser().getUsername());
@@ -104,6 +125,7 @@ public class MessageContentService {
 
         messageContent.setMessage(messageContentDTO.getMessage());
         messageContent.setDateSent(messageContentDTO.getDateSent());
+        messageContent.setType(messageContentDTO.getType());
 
         final MessageContent parentMessageContent = messageContentDTO.getReplyTo() == null ? null : messageContentRepository.findById(messageContentDTO.getReplyTo().getId())
                 .orElseThrow(() -> new NotFoundException(MessageContent.class, "id", messageContentDTO.getReplyTo().getId().toString()));
