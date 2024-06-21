@@ -1,6 +1,13 @@
 import { Component } from '@angular/core';
 import { Label } from 'src/app/core/interfaces/label';
 import { LabelService } from 'src/app/core/services/label.service';
+import { UserService } from 'src/app/core/services/user.service';
+import { UserResponse } from 'src/app/features/authentication/login/user.response';
+import { PaymentService } from 'src/app/core/services/payment.service';
+import { VNPay } from 'src/app/core/interfaces/vnpay';
+import { HttpParams } from '@angular/common/http';
+import { LabelResponse } from 'src/app/core/interfaces/label-response';
+
 
 
 @Component({
@@ -10,40 +17,59 @@ import { LabelService } from 'src/app/core/services/label.service';
 })
 
 export class LabelsShopComponent {
-    //layout: string = 'grid';
 
-    labels!: Label[];
+    labels!: LabelResponse[];
+    label!: LabelResponse;
+    vnpay!: VNPay;
+    type?: string;
+    statuses?: any[];
+    dateNow: any = null;
+    user?: UserResponse | null = this.userService.getUserResponseFromLocalStorage();
 
-    constructor(private labelService: LabelService) {}
+    constructor(
+      private labelService: LabelService,
+      private userService: UserService,
+      private paymentService: PaymentService,
+    ) {}
 
     ngOnInit() {
-      this.labelService.getLabels().subscribe({
+      if (this.user?.id){
+        this.labelService.getLabelsWithPurchaseStatus(this.user?.id).subscribe({
           next: (data) => {
-              this.labels = data.slice(0, 12);
+              console.log(data);
+              this.labels = data;
+              this.dateNow = Date.now();
+              this.labels.forEach((label) => label.type = label.labelURL?.split('.').pop()?.toLocaleUpperCase());
           },
           error: (error) => {
               console.error('Error fetching labels', error);
           },
+        });
+      }
+
+     
+    }
+
+  buyNow(label: Label) {
+    if (label.id && this.user?.id && label.price) {
+      let params = new HttpParams()
+      .set('labelID', label.id)
+      .set('amount', label.price);
+
+      this.paymentService.createVNPayPayment(params).subscribe({
+        next: (data)  => {
+          this.vnpay = data;
+          console.log(data);
+
+          if (this.vnpay.paymentURL) {
+            window.location.href = this.vnpay.paymentURL;
+          }
+        },
+        
+        error: (error) => {
+          console.error('Error creating payment', error);
+        }
       });
+    }
   }
-
-  getImageUrl(url: string) {
-    return url + '?' + Date.now();
-}
-
-    // getSeverity(status: string) {
-    //     switch (status) {
-    //         case 'INSTOCK':
-    //             return 'success';
-
-    //         case 'LOWSTOCK':
-    //             return 'warning';
-
-    //         case 'OUTOFSTOCK':
-    //             return 'danger';
-
-    //         default:
-    //             return null;
-    //     }
-    // };
 }

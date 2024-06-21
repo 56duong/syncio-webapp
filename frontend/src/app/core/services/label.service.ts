@@ -8,6 +8,7 @@ import { HttpUtilService } from './http.util.service';
 import { LoginDTO } from 'src/app/features/authentication/login/login.dto';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
 import { FogotPasswordDTO } from 'src/app/features/authentication/forgotpassword/forgotpassword.dto';
+import { LabelResponse } from '../interfaces/label-response';
 @Injectable({
     providedIn: 'root',
 })
@@ -40,6 +41,11 @@ export class LabelService {
 
     getLabels(): Observable<Label[]> {
         return this.http.get<Label[]>(this.apiURL);
+    }
+
+    getLabelsWithPurchaseStatus(user_id: string): Observable<LabelResponse[]> {
+        const params = new HttpParams().set('user_id', user_id);
+        return this.http.get<LabelResponse[]>(`${this.apiURL}/buy`, { params });
     }
 
     /**

@@ -17,6 +17,7 @@ import { StoryListComponent } from '../story/story-list/story-list.component';
 import { ViewStoryComponent } from '../story/view-story/view-story.component';
 import { SearchSuggestionComponent } from './search/search-suggestion/search-suggestion.component';
 import { LabelsShopComponent } from './labels-shop/labels-shop.component';
+import { PaymentInfoComponent } from './payment-info/payment-info.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { LabelsShopComponent } from './labels-shop/labels-shop.component';
     StoryListComponent,
     ViewStoryComponent,
     SearchSuggestionComponent,
-    LabelsShopComponent
+    LabelsShopComponent,
+    PaymentInfoComponent
 
   ],
   imports: [
