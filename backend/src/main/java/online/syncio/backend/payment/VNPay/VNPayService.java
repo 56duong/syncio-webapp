@@ -7,9 +7,12 @@ import online.syncio.backend.billing.Billing;
 import online.syncio.backend.billing.BillingDTO;
 import online.syncio.backend.billing.BillingService;
 import online.syncio.backend.billing.StatusEnum;
+import online.syncio.backend.exception.AppException;
 import online.syncio.backend.userlabelinfo.UserLabelInfo;
 import online.syncio.backend.userlabelinfo.UserLabelInfoDTO;
 import online.syncio.backend.userlabelinfo.UserLabelInfoService;
+import online.syncio.backend.utils.AuthUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,6 +25,7 @@ public class VNPayService {
     private final VNPayConfig vnpayConfig;
     private final BillingService billingService;
     private final UserLabelInfoService userLabelInfoService;
+    private final AuthUtils authUtils;
     public VNPayDTO.VNPayResponse createVNPayPayment(HttpServletRequest request) {
         long amount = Integer.parseInt(request.getParameter("amount"))*100L;
         String bankCode = request.getParameter("bankCode");
@@ -45,7 +49,12 @@ public class VNPayService {
 
         BillingDTO billingDTO = new BillingDTO();
         UUID labelId = UUID.fromString(request.getParameter("labelID"));
-        UUID userId = UUID.fromString(request.getParameter("userID"));
+        UUID userId = authUtils.getCurrentLoggedInUserId();
+
+        // Not logged in
+        if (userId == null) {
+            throw new AppException(HttpStatus.FORBIDDEN, "You must be logged in to buy a label", null);
+        }
         Double amountDTO = Double.parseDouble(request.getParameter("amount"));
 
         billingDTO.setLabelId(labelId);

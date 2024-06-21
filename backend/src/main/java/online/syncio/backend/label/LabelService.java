@@ -109,6 +109,9 @@ public class LabelService {
         }
         else {
             fileName = newName + fileName.substring(fileName.lastIndexOf("."));
+            System.out.println("old file name: " + file.getOriginalFilename());
+            System.out.println("new file name: " + fileName);
+            System.out.println("file extension: " + fileName.substring(fileName.lastIndexOf(".")));
         }
 
         java.nio.file.Path uploadDir = Paths.get("uploads");

@@ -114,7 +114,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of("/uploads/**", "GET"),
 
                 // Global images view
-                Pair.of(String.format("%s/images/**", apiPrefix), "GET")
+                Pair.of(String.format("%s/images/**", apiPrefix), "GET"),
+
+                // Payment
+                Pair.of(String.format("%s/payment/vnpay-callback", apiPrefix), "GET")
         );
 
         String requestPath = request.getServletPath();
