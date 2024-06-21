@@ -8,6 +8,7 @@ import online.syncio.backend.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserLabelInfoService {
@@ -45,6 +46,13 @@ public class UserLabelInfoService {
     // Find all
     public List<UserLabelInfoDTO> findAll() {
         final List<UserLabelInfo> userLabelInfos = userLabelInfoRepository.findAll();
+        return userLabelInfos.stream()
+                .map(userLabelInfo -> mapToDTO(userLabelInfo, new UserLabelInfoDTO()))
+                .toList();
+    }
+
+    public List<UserLabelInfoDTO> findByUserId(final UUID userId) {
+        final List<UserLabelInfo> userLabelInfos = userLabelInfoRepository.findByUserId(userId);
         return userLabelInfos.stream()
                 .map(userLabelInfo -> mapToDTO(userLabelInfo, new UserLabelInfoDTO()))
                 .toList();

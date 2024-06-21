@@ -105,8 +105,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 // Label
                 Pair.of(String.format("%s/labels/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/labels/", apiPrefix), "GET"),
-                Pair.of(String.format("%s/labels/**", apiPrefix), "POST"),
-                Pair.of(String.format("%s/labels/**", apiPrefix), "PUT"),
 
                 // Story
                 Pair.of(String.format("%s/stories/images/**", apiPrefix), "GET"),
