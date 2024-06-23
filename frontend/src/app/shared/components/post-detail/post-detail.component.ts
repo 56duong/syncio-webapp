@@ -1,11 +1,17 @@
+import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Comment } from 'src/app/core/interfaces/comment';
+import { ActionEnum } from 'src/app/core/interfaces/notification';
 import { Post } from 'src/app/core/interfaces/post';
 import { CommentLikeService } from 'src/app/core/services/comment-like.service';
 import { CommentService } from 'src/app/core/services/comment.service';
+import { NotificationService } from 'src/app/core/services/notification.service';
+import { PostService } from 'src/app/core/services/post.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 import { TokenService } from 'src/app/core/services/token.service';
+import { TextUtils } from 'src/app/core/utils/text-utils';
 
 @Component({
   selector: 'app-post-detail',
@@ -17,10 +23,15 @@ export class PostDetailComponent {
   @Input() post: Post = {}; // Current post
   @Input() visible: boolean = false;
   @Output() visibleChange: EventEmitter<any> = new EventEmitter(); // Event emitter to close the dialog.
+  
+  isDirectPost: boolean = false; // Check if the user is viewing the post directly.
+
+  currentUserId: string = ''; // The id of the current logged-in user
   isEmojiPickerVisible: boolean = false;
+  plainComment: string = ''; // Plain text comment
+  
   comments: Comment[] = []; // List of parent comments
   comment: Comment = {}; // Current comment to post
-  plainComment: string = ''; // Plain text comment
   showReplies: {
     [id: string]: { // The comment id
       visible: boolean;
@@ -28,37 +39,108 @@ export class PostDetailComponent {
     };
   } = {}; // The replies for a comment (key is the comment id)
   subscriptionComments: Subscription = new Subscription(); // Subscription to the comments observable
-  currentUserId: string = '';
+  
   commentLikes: { 
     [id: string]: boolean;
-  } = {}; // The likes for a comment (key is the comment id)
+  } = {}; // The likes for a comment by logged in user (key is the comment id)
+
+  ownerParentCommentId: string = ''; // The id of the owner of the parent comment. Use to send notification to the owner of the parent comment.
+
+  reportVisible: boolean = false; // Used to show/hide the report modal
+  dialogVisible: boolean = false;
+  dialogItems: any = [
+    { 
+      label: 'Report',
+      color: 'red', 
+      action: () => this.reportVisible = true
+    },
+    { 
+      label: 'Copy link',
+      action: () => this.copyLink()
+    },
+    { 
+      label: 'Cancel',
+      action: () => this.dialogVisible = false
+    }
+  ];
 
   constructor(
+    private postService: PostService,
     private commentLikeService: CommentLikeService,
     private commentService: CommentService,
+    private notificationService: NotificationService,
     private tokenService: TokenService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private location: Location,
+    private textUtils: TextUtils,
+    private toastService: ToastService
   ) { }
 
   ngOnInit() {
     this.currentUserId = this.tokenService.extractUserIdFromToken();
 
-    // If user is logged in, connect to the WebSocket and get the comments observable.
-    if (this.post.id && this.currentUserId) {
-      this.commentService.connectWebSocket(this.post.id);
-      this.getCommentsObservable();
+    // Get the post id from the route if it is not set. Mean the user is viewing the post directly.
+    if(!this.post.id) {
+      this.isDirectPost = true;
+      this.visible = true;
+
+      // Subscribe to the route params to get the post id.
+      this.route.params.subscribe(params => {
+        this.post.id = params['id'];
+
+        if(this.post.id) {
+          // Get the post from database
+          this.postService.getPostById(this.post.id).subscribe({
+            next: (post) => {
+              this.post = { ...post};
+              this.post.photos = this.post.photos;
+              
+              // If user is logged in, connect to the WebSocket and get the comments observable.
+              if (this.post.id && this.currentUserId) {
+                if(this.post.id) this.commentService.disconnect();
+                this.subscriptionComments.unsubscribe();
+
+                this.commentService.connectWebSocket(this.post.id);
+                this.getCommentsObservable();
+              }
+
+              this.getComments();
+              
+            },
+            error: (error) => {
+              console.log(error);
+            },
+          });
+        }
+      });
+    }
+    else {
+      // If the post id is set, the user is viewing the post from the feed.
+      // If user is logged in, connect to the WebSocket and get the comments observable.
+      if (this.post.id && this.currentUserId) {
+        this.commentService.connectWebSocket(this.post.id);
+        this.getCommentsObservable();
+      }
+
+      this.getComments();
+
+      setTimeout(() => {
+        this.post.photos = this.post.photos;
+      }, 0);
     }
 
-    this.getComments();
+    // If user is logged in, connect to the WebSocket for notifications.
+    if(this.currentUserId) {
+      this.notificationService.connectWebSocket(this.currentUserId);
+    }
     
-    setTimeout(() => {
-      this.post.photos = this.post.photos;
-    }, 0);
   }
 
   ngOnDestroy() {
     if(this.post.id) this.commentService.disconnect();
     this.subscriptionComments.unsubscribe();
+    if(this.currentUserId) this.notificationService.disconnect();
   }
 
   /**
@@ -68,6 +150,16 @@ export class PostDetailComponent {
     this.subscriptionComments = this.commentService.getCommentsObservable().subscribe({
       next: (comment) => {
         this.comments.unshift({ ...comment, createdDate: 'Just now' });
+        // send notification to owner of the post
+        if (this.post.createdBy != this.currentUserId) {
+          this.notificationService.sendNotification({
+            targetId: this.post.id,
+            actorId: this.currentUserId,
+            actionType: ActionEnum.COMMENT_POST,
+            redirectURL: `/post/${this.post.id}`,
+            recipientId: this.post.createdBy,
+          });
+        }
       },
       error: (error) => {
         console.log(error);
@@ -77,6 +169,7 @@ export class PostDetailComponent {
 
   closeDialog() {
     this.visibleChange.emit(false);
+    this.location.replaceState('/');
   }
 
 
@@ -96,6 +189,10 @@ export class PostDetailComponent {
     this.comment.parentCommentId = this.comment.text?.includes('@Reply&nbsp;')
       ? this.comment.parentCommentId
       : undefined;
+
+    if(!this.comment.parentCommentId) {
+      this.ownerParentCommentId = '';
+    }
   }
 
   addEmoji(event: any) {
@@ -108,9 +205,10 @@ export class PostDetailComponent {
    * Prepares a reply to a comment.
    * @param {string} commentId - The ID of the comment being replied to.
    */
-  onReply(commentId: string) {
+  onReply(commentId: string, ownerParentCommentId: string) {
     this.comment.text = '@Reply&nbsp;';
     this.comment.parentCommentId = commentId;
+    this.ownerParentCommentId = ownerParentCommentId;
   }
 
 
@@ -288,6 +386,17 @@ export class PostDetailComponent {
               this.comment
             );
 
+            // send notification to owner of the parent comment
+            if (this.ownerParentCommentId != this.currentUserId) {
+              this.notificationService.sendNotification({
+                targetId: this.post.id,
+                actorId: this.currentUserId,
+                actionType: ActionEnum.COMMENT_REPLY,
+                redirectURL: `/post/${this.post.id}`,
+                recipientId: this.ownerParentCommentId,
+              });
+            }
+
             this.comment = {};
           }
         },
@@ -296,6 +405,19 @@ export class PostDetailComponent {
         },
       });
     }
+  }
+
+  async copyLink() {
+    await this.textUtils.copyToClipboard(window.location.href + 'post/' + this.post.id);
+    this.toastService.showSuccess('Success', 'Link copied to clipboard');
+  }
+
+  handleReportModalVisibility(event: boolean) {
+    this.reportVisible = event; // Update reportVisible based on the event emitted from ReportComponent
+  }
+
+  hideDialog() {
+    this.dialogVisible = false;
   }
 
 }

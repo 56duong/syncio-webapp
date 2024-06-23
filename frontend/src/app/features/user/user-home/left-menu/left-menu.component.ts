@@ -12,10 +12,10 @@ import { UserService } from 'src/app/core/services/user.service';
 export class LeftMenuComponent {
   @ViewChild(CreatePostComponent) createPostComponent: any;
 
-  @Output() searchToggle = new EventEmitter<void>();
+  @Output() actionToggle = new EventEmitter<string>();
 
   toggleSearch(): void {
-    this.searchToggle.emit();
+    this.actionToggle.emit('search');
   }
 
   visible: boolean = false;
@@ -42,6 +42,11 @@ export class LeftMenuComponent {
       icon: 'pi pi-comments',
       routerLink: 'messages',
       id: 'MessagesButton',
+    },
+    {
+      label: 'Notifications',
+      icon: 'pi pi-heart',
+      id: 'NotificationsButton',
     },
     {
       label: 'Label Shopping',
@@ -95,4 +100,8 @@ export class LeftMenuComponent {
     this.createPostComponent.showDialog();
   }
 
+  toggleNotifications(): void {
+    this.actionToggle.emit('notifications');
+  }
+  
 }

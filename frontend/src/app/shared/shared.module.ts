@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportComponent } from './components/report/report.component';
 import { ResizableDraggableComponent } from './components/resizable-draggable/resizable-draggable.component';
 import { StickerPickerComponent } from './components/sticker-picker/sticker-picker.component';
+import { GlobalDialogComponent } from './components/global-dialog/global-dialog.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { StickerPickerComponent } from './components/sticker-picker/sticker-pick
     PostDetailComponent,
     ReportComponent,
     ResizableDraggableComponent,
-    StickerPickerComponent
+    StickerPickerComponent,
+    GlobalDialogComponent
   ],
   imports: [
     PickerComponent,

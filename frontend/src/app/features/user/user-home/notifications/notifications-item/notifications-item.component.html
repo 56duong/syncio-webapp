@@ -1,0 +1,141 @@
+<div [routerLink]='notification.redirectURL' [ngSwitch]="notification.actionType"
+  class="p-3"
+  [ngClass]="notification.state != StateEnum.SEEN_AND_READ ? 'not-seen-and-read' : ''">
+
+  <!-- LIKE_POST -->
+  <div *ngSwitchCase="ActionEnum.LIKE_POST"
+    class="flex align-items-center gap-1">
+
+    <!-- Actor avatar -->
+    <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
+
+    <div class="flex-1">
+      <div class="line-clamp-2">
+        <!-- Actor username -->
+        <span *ngIf="notification.actorId" class="font-semibold">
+          {{notification.actorId | userIdToName | async}}
+        </span>
+    
+        <!-- Others count if there are more than one actor -->
+        <span *ngIf="notification.actorCount && notification.actorCount > 1">
+          and {{notification.actorCount - 1}} other<ng-container *ngIf="notification.actorCount - 1 > 1">s</ng-container>
+        </span>
+        
+        <!-- Action -->
+        <span> liked your post</span>
+  
+        <!-- If post has photo, show dot, else show caption -->
+        <span *ngIf="notification.imageURL">.</span>
+        <span *ngIf="notification.previewText && !notification.imageURL">: {{notification.previewText}}</span>
+      </div>
+
+      <!-- Created date -->
+      <small class="ml-1 text-xs text-gray-500">{{notification.createdDate | dateAgoPipe}}</small>
+    
+    </div>
+
+    <!-- First photo of the post if it exists  -->
+    <img *ngIf="notification.imageURL" [src]="notification.imageURL" style="width: 48px; height: 49px; object-fit: cover;">
+  </div>
+
+
+  <!-- COMMENT_POST -->
+  <div *ngSwitchCase="ActionEnum.COMMENT_POST"
+    class="flex align-items-center gap-1">
+
+    <!-- Actor avatar -->
+    <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
+
+    <div class="flex-1">
+      <div class="line-clamp-2">
+        <!-- Actor username -->
+        <span *ngIf="notification.actorId" class="font-semibold">
+          {{notification.actorId | userIdToName | async}}
+        </span>
+    
+        <!-- Others count if there are more than one actor -->
+        <span *ngIf="notification.actorCount && notification.actorCount > 1">
+          and {{notification.actorCount - 1}} other<ng-container *ngIf="notification.actorCount - 1 > 1">s</ng-container>
+        </span>
+        
+        <!-- Action -->
+        <span> commented on your post</span>
+  
+        <!-- If post has photo, show dot, else show caption -->
+        <span *ngIf="notification.imageURL">.</span>
+        <span *ngIf="notification.previewText && !notification.imageURL">: {{notification.previewText}}</span>
+      </div>
+
+      <!-- Created date -->
+      <small class="ml-1 text-xs text-gray-500">{{notification.createdDate | dateAgoPipe}}</small>
+    
+    </div>
+
+    <!-- First photo of the post if it exists  -->
+    <img *ngIf="notification.imageURL" [src]="notification.imageURL" style="width: 48px; height: 49px; object-fit: cover;">
+  </div>
+
+
+  <!-- COMMENT_REPLY -->
+  <div *ngSwitchCase="ActionEnum.COMMENT_REPLY"
+    class="flex align-items-center gap-1">
+
+    <!-- Actor avatar -->
+    <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
+
+    <div class="flex-1">
+      <div class="line-clamp-2">
+        <!-- Actor username -->
+        <span *ngIf="notification.actorId" class="font-semibold">
+          {{notification.actorId | userIdToName | async}}
+        </span>
+    
+        <!-- Others count if there are more than one actor -->
+        <span *ngIf="notification.actorCount && notification.actorCount > 1">
+          and {{notification.actorCount - 1}} other<ng-container *ngIf="notification.actorCount - 1 > 1">s</ng-container>
+        </span>
+        
+        <!-- Action -->
+        <span> replied to your comment</span>
+  
+        <!-- If post has photo, show dot, else show caption -->
+        <span *ngIf="notification.imageURL">.</span>
+        <span *ngIf="notification.previewText && !notification.imageURL">: {{notification.previewText}}</span>
+      </div>
+
+      <!-- Created date -->
+      <small class="ml-1 text-xs text-gray-500">{{notification.createdDate | dateAgoPipe}}</small>
+    
+    </div>
+
+    <!-- First photo of the post if it exists  -->
+    <img *ngIf="notification.imageURL" [src]="notification.imageURL" style="width: 48px; height: 49px; object-fit: cover;">
+  </div>
+
+  <!-- FOLLOW -->
+  <div *ngSwitchCase="ActionEnum.FOLLOW"
+    class="flex align-items-center gap-1">
+
+    <!-- Actor avatar -->
+    <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
+
+    <div class="flex-1">
+      <div class="line-clamp-2">
+        <!-- Actor username -->
+        <span *ngIf="notification.actorId" class="font-semibold">
+          {{notification.actorId | userIdToName | async}}
+        </span>
+    
+        <!-- Action -->
+        <span> started following you.</span>
+      </div>
+
+      <!-- Created date -->
+      <small class="ml-1 text-xs text-gray-500">{{notification.createdDate | dateAgoPipe}}</small>
+    
+    </div>
+
+  </div>
+
+</div>
+
