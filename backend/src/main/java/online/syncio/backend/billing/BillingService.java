@@ -67,14 +67,7 @@ public class BillingService {
     }
 
     public void createBilling(BillingDTO billingDTO) {
-        UUID currentLoggedInUserId = authUtils.getCurrentLoggedInUserId();
 
-        // Not logged in
-        if (currentLoggedInUserId == null) {
-            throw new AppException(HttpStatus.FORBIDDEN, "You must be logged in to buy a label", null);
-        }
-
-        billingDTO.setUserId(currentLoggedInUserId);
         Billing billing = new Billing();
         mapToEntity(billingDTO, billing);
         billingRepository.save(billing);
