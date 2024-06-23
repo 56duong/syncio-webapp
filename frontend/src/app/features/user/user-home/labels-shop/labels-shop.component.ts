@@ -40,6 +40,7 @@ export class LabelsShopComponent {
               this.labels = data;
               this.dateNow = Date.now();
               this.labels.forEach((label) => label.type = label.labelURL?.split('.').pop()?.toLocaleUpperCase());
+              console.log(this.label.type);
           },
           error: (error) => {
               console.error('Error fetching labels', error);
@@ -51,7 +52,7 @@ export class LabelsShopComponent {
     }
 
   buyNow(label: Label) {
-    if (label.id && this.user?.id && label.price) {
+    if (label.id && label.price) {
       let params = new HttpParams()
       .set('labelID', label.id)
       .set('amount', label.price);
