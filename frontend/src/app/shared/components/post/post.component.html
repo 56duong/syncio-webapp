@@ -17,7 +17,8 @@
         </small>
       </div>
     </div>
-    <span class="pi pi-ellipsis-h cursor-pointer" (click)="showReportModal()"></span>
+    <!-- 3 dots -->
+    <span class="pi pi-ellipsis-h cursor-pointer" (click)="dialogVisible = !dialogVisible"></span>
   </div>
 
   <!-- photo -->
@@ -45,8 +46,9 @@
   </div>
 
   <!-- Like -->
-  <app-like *ngIf="post.id"
+  <app-like *ngIf="post.id && post.createdBy"
     [postId]="post.id"
+    [createdBy]="post.createdBy"
     (visibleChange)="showPostDetail($event)">
   </app-like>
 </div>
@@ -55,7 +57,8 @@
   *ngIf="visible"
   [post]="post"
   [visible]="visible"
-  (visibleChange)="showPostDetail($event)">
+  (visibleChange)="showPostDetail($event)"
+  style="position: relative; z-index: 1102;">
 </app-post-detail>
 
 <app-report 
@@ -63,3 +66,9 @@
   [display]="reportVisible" 
   (visibleChange)="handleReportModalVisibility($event)">
 </app-report>
+
+<app-global-dialog
+  [display]="dialogVisible"
+  [items]="dialogItems"
+  (displayChange)="hideDialog()">
+</app-global-dialog>

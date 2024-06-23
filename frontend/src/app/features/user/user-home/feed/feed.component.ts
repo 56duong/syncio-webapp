@@ -84,7 +84,7 @@ export class FeedComponent {
   }
   @HostListener('window:scroll', ['$event'])
   onScroll(event: any) {
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight * 0.95) {
       this.getPosts();
     }
   }

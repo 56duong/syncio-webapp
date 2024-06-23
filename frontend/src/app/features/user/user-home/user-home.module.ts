@@ -18,6 +18,8 @@ import { ViewStoryComponent } from '../story/view-story/view-story.component';
 import { SearchSuggestionComponent } from './search/search-suggestion/search-suggestion.component';
 import { LabelsShopComponent } from './labels-shop/labels-shop.component';
 import { PaymentInfoComponent } from './payment-info/payment-info.component';
+import { NotificationsComponent } from './notifications/notifications.component';
+import { NotificationsItemComponent } from './notifications/notifications-item/notifications-item.component';
 
 @NgModule({
   declarations: [
@@ -32,8 +34,9 @@ import { PaymentInfoComponent } from './payment-info/payment-info.component';
     ViewStoryComponent,
     SearchSuggestionComponent,
     LabelsShopComponent,
-    PaymentInfoComponent
-
+    PaymentInfoComponent,
+    NotificationsComponent,
+    NotificationsItemComponent
   ],
   imports: [
     CommonModule,

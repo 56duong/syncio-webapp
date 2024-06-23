@@ -1,0 +1,17 @@
+<p-dialog 
+  [(visible)]="display" 
+  (onHide)="onHide()"
+  [modal]="true" 
+  [closable]="false" 
+  [resizable]="false"
+  [draggable]="false"
+  [dismissableMask]="true">
+  <ng-template pTemplate="content">
+    <button *ngFor="let item of items"
+      (click)="onItemClick(item)" 
+      class="dialog-item">
+      <i *ngIf="item.icon" [ngClass]="'pi' + (item.icon ? ' pi-' + item.icon : '')" [ngStyle]="{'color': item.color}"></i>
+      <span *ngIf="item.label" [ngStyle]="{'color': item.color}">{{item.label}}</span>
+    </button>
+  </ng-template>
+</p-dialog>

@@ -38,7 +38,7 @@
             routerLinkActive="menu-active"
             [routerLink]="menu.routerLink"
             [routerLinkActiveOptions]="{ exact: true }"
-            (click)="menu.id === 'SearchButton' ? toggleSearch() : null"
+            (click)="menu.id === 'SearchButton' ? toggleSearch() : menu.id === 'NotificationsButton' ? toggleNotifications() : null"
             [label]="menu.label"
             [icon]="menu.icon"
             [text]="true"

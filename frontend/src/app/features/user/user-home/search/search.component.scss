@@ -106,3 +106,9 @@ $white : white;
         }
     }
 }
+
+@media screen and (max-width: 992px) {
+    .search_section.show {
+        left: 5.4em !important;
+    }
+}

@@ -3,19 +3,21 @@
   header=""
   [closeOnEscape]="true"
   [(visible)]="visible"
-  [modal]="true"
-  [dismissableMask]="true"
+  [modal]="!isDirectPost"
+  [dismissableMask]="!isDirectPost"
   [autoZIndex]="true"
   (onHide)="closeDialog()"
   [showHeader]="false"
   [breakpoints]="{ '1180px': '90vw' }"
   class="post-detail-dialog"
+  [ngClass]="isDirectPost ? 'direct-post-dialog' : ''"
   [style]="{ width: '80vw', height: '100%', zIndex: '999999' }"
   [draggable]="false"
   [resizable]="false">
   <div class="flex h-full lg:flex-row xl:flex-row flex-column">
     <!-- Left side (Photos) -->
-    <div class="left col-12 lg:col-8 xl:col-8 lg:h-full xl:h-full h-5/6 p-0">
+    <div class="left col-12 lg:h-full xl:h-full h-5/6 p-0"
+      [ngClass]="post.photos && post.photos.length && post.photos.length > 0 ? 'lg:col-8 xl:col-8' : 'max-w-0'">
       <p-carousel *ngIf="post.photos && post.photos?.length"
         [value]="post.photos"
         [numVisible]="1"
@@ -35,8 +37,10 @@
     <p-divider class="hidden lg:block xl:block" layout="vertical"></p-divider>
     <!-- Horizontal on small screen -->
     <p-divider class="block lg:hidden xl:hidden"></p-divider>
+
     <!-- Right side (Details) -->
-    <div class="right col-12 lg:col-4 xl:col-4 flex flex-column h-full p-0">
+    <div class="right col-12 flex flex-column h-full p-0"
+      [ngClass]="!post.photos || !post.photos.length || post.photos.length === 0 ? 'lg:col-12 xl:col-12' : 'lg:col-4 xl:col-4'">
       <!-- Avatar header -->
       <div class="p-3 flex justify-content-between align-items-center">
         <div class="flex align-items-center gap-2">
@@ -54,7 +58,8 @@
           </div>
           <br />
         </div>
-        <span class="pi pi-ellipsis-h cursor-pointer"></span>
+        <!-- 3 dots -->
+        <span (click)="dialogVisible = !dialogVisible" class="pi pi-ellipsis-h cursor-pointer"></span>
       </div>
 
       <p-divider></p-divider>
@@ -64,7 +69,7 @@
         [style]="{ width: '100%', overflow: 'auto', flex: '1' }">
 
         <!-- Caption as comment -->
-        <div class="flex align-items-start gap-2">
+        <div *ngIf="post.caption" class="flex align-items-start gap-2">
           <div class="avt">
             <img class="w-full object-cover"
               src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
@@ -116,7 +121,7 @@
                 </span>
               </div>
               <!-- Reply -->
-              <small (click)="onReply(c.id || '')"
+              <small (click)="onReply(c.id || '', c.userId || '')"
                 [ngClass]="{ 'text-blue-500 font-bold': c.id === comment.parentCommentId }"
                 class="cursor-pointer text-xs">
                 Reply
@@ -169,7 +174,7 @@
                           </span>
                         </div>
                         <!-- Reply of reply -->
-                        <small (click)="onReply(reply.parentCommentId ? reply.parentCommentId : '')"
+                        <small (click)="onReply(reply.parentCommentId ? reply.parentCommentId : '', reply.userId || '')"
                           class="cursor-pointer text-xs">
                           Reply
                         </small>
@@ -188,9 +193,10 @@
       <p-divider></p-divider>
 
       <!-- Likes section -->
-      <app-like *ngIf="post.id"
+      <app-like *ngIf="post.id && post.createdBy"
         [isOnPostDetails]="true"
         [postId]="post.id"
+        [createdBy]="post.createdBy"
         class="p-3"
       ></app-like>
 
@@ -204,11 +210,11 @@
             class="cursor-pointer fa-regular fa-face-smile text-xl"></i>
           <emoji-mart *ngIf="isEmojiPickerVisible"
             [showPreview]="false"
+            [enableSearch]="false"
             (emojiSelect)="addEmoji($event)"
             [style]="{ position: 'absolute', bottom: '30px', right: '20 px' }"
           ></emoji-mart>
         </div>
-
 
         <!-- Comment input -->
         <p-editor (onTextChange)="textChange($event)"
@@ -224,7 +230,7 @@
 
         <!-- Post button -->
         <p-button [disabled]="plainComment.trim().length <= 0"
-          (click)="postComment()"
+          (click)="postComment(); isEmojiPickerVisible = false"
           label="Post"
           size="small"
           [text]="true"
@@ -234,3 +240,15 @@
     </div>
   </div>
 </p-dialog>
+
+<app-report 
+  [post]="post" 
+  [display]="reportVisible" 
+  (visibleChange)="handleReportModalVisibility($event)">
+</app-report>
+
+<app-global-dialog
+  [display]="dialogVisible"
+  [items]="dialogItems"
+  (displayChange)="hideDialog()">
+</app-global-dialog>
