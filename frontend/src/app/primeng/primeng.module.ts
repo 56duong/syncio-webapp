@@ -10,6 +10,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ListboxModule } from 'primeng/listbox';
+=======
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SidebarModule } from 'primeng/sidebar';
 import { DropdownModule } from 'primeng/dropdown';
@@ -55,9 +56,11 @@ import { InputNumberModule } from 'primeng/inputnumber';
     AvatarModule,
     InputTextModule,
     FileUploadModule,
+<<<<<<< HEAD
     DropdownModule,
     ListboxModule,
     ReactiveFormsModule,
+=======
     SidebarModule,
     TableModule,
     ToastModule,
