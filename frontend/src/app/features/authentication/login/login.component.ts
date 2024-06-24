@@ -50,8 +50,7 @@ export class LoginComponent implements OnInit {
   selectedRole: string | undefined; // Biến để lưu giá trị được chọn từ dropdown
   userResponse?: UserResponse;
 
-  onEmailChange() {
-  }
+  onEmailChange() {}
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -80,6 +79,7 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
+    console.log('login', this.email);
     if (this.email == null || this.email == '') {
       this.notificationService.showError('Email is required');
       return;
