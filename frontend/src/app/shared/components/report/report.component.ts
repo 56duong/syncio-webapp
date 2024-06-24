@@ -39,6 +39,7 @@ export class ReportComponent implements OnInit {
       { label: 'HARASSMENT', value: 'HARASSMENT' },
       { label: 'VIOLENCE', value: 'VIOLENCE' },
       { label: 'INAPPROPRIATE CONTENT', value: 'INAPPROPRIATE_CONTENT' },
+      // { label: 'NUDE', value : 'NUDE'}
     ];
   }
 
@@ -73,4 +74,5 @@ export class ReportComponent implements OnInit {
       this.closeModal();
     }
   }
+  
 }

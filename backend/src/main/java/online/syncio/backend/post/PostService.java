@@ -12,6 +12,7 @@ import online.syncio.backend.like.Like;
 import online.syncio.backend.like.LikeRepository;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.report.ReportRepository;
+import online.syncio.backend.user.EngagementMetricsDTO;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
 import org.springframework.data.domain.*;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -321,5 +323,19 @@ public class PostService {
                                                                   .message("Failed to toggle like.")
                                                                   .build());
         }
+    }
+
+    public EngagementMetricsDTO getEngagementMetrics (int days) {
+        LocalDateTime startDate = LocalDateTime.now().minusDays(days);
+        List<Post> posts = postRepository.findAllPostsSince(startDate);
+
+        long totalLikes = likeRepository.countLikesForPosts(posts);
+        long totalComments = commentRepository.countCommentsForPosts(posts);
+
+        EngagementMetricsDTO metrics = new EngagementMetricsDTO();
+        metrics.setLikes(totalLikes);
+        metrics.setComments(totalComments);
+
+        return metrics;
     }
 }
