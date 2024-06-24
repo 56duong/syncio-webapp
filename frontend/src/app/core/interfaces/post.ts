@@ -7,4 +7,5 @@ export interface Post {
   createdBy?: string;
   likeCount?: number;
   commentCount?: number;
+  visibility?: string;
 }

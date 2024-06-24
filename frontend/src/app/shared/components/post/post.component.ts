@@ -1,8 +1,13 @@
+import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { map, tap } from 'rxjs';
 import { Post } from 'src/app/core/interfaces/post';
 import { Report } from 'src/app/core/interfaces/report';
 import { ReportService } from 'src/app/core/services/report.service';
+import { ToastService } from 'src/app/core/services/toast.service';
+import { TextUtils } from 'src/app/core/utils/text-utils';
+
+
 
 @Component({
   selector: 'app-post',
@@ -17,6 +22,35 @@ export class PostComponent implements OnInit{
   reports: Report[] = [];
   visible: boolean = false; // Used to show/hide the post detail modal
   reportVisible: boolean = false; // Used to show/hide the report modal
+  
+  dialogVisible: boolean = false;
+  dialogItems: any = [
+    { 
+      label: 'Report', 
+      // icon: 'pi pi-check', 
+      color: 'red', 
+      action: () => this.showReportModal() 
+    },
+    { 
+      label: 'Copy link',
+      action: () => this.copyLink()
+    },
+    { 
+      label: 'Cancel',
+      action: () => this.dialogVisible = false
+    }
+  ];
+
+  constructor(
+    private location: Location,
+    private textUtils: TextUtils,
+    private toastService: ToastService,
+    private reportService: ReportService
+  ) {}
+
+  hideDialog() {
+    this.dialogVisible = false;
+  }
 
   reasonDialogVisible: boolean = false;
 
@@ -30,8 +64,6 @@ export class PostComponent implements OnInit{
     'INAPPROPRIATE_CONTENT': 0,
 
   }; // Variable to hold the most frequent reason
-
-  constructor(private reportService: ReportService) {}
 
   ngOnInit(): void {
     if (this.isReportedPostsPage) {
@@ -80,6 +112,7 @@ export class PostComponent implements OnInit{
   
   showPostDetail(event: any) {
     this.visible = event;
+    this.location.replaceState('/post/' + this.post.id);
   }
 
   showReportModal() {
@@ -109,4 +142,11 @@ export class PostComponent implements OnInit{
   deleteReport(): void {
       this.deleteReportsEvent.emit(this.post.id);
   }
+
+  async copyLink() {
+    await this.textUtils.copyToClipboard(window.location.href + 'post/' + this.post.id);
+    this.toastService.showSuccess('Success', 'Link copied to clipboard');
+  }
+
+
 }

@@ -1,18 +1,17 @@
 package online.syncio.backend.user;
 
 import jakarta.validation.Valid;
-import online.syncio.backend.exception.ReferencedException;
-import online.syncio.backend.exception.ReferencedWarning;
+
+import online.syncio.backend.auth.responses.LoginResponse;
+import online.syncio.backend.auth.responses.ResponseObject;
+import online.syncio.backend.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/users")
@@ -24,10 +23,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers () {
-        return ResponseEntity.ok(userService.findAll());
-    }
+//    @GetMapping
+//    public ResponseEntity<List<UserDTO>> getAllUsers () {
+//        return ResponseEntity.ok(userService.findAll());
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUser (@PathVariable(name = "id") final UUID id) {
@@ -58,8 +57,22 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UUID> createUser (@RequestBody @Valid final UserDTO userDTO) {
-        final UUID createdId = userService.create(userDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+        List<UserDTO> users = userService.findAll(Optional.empty());
+
+        for (UserDTO user : users) {
+            if (user.getUsername().equals(userDTO.getUsername())) {
+                throw new AppException(HttpStatus.BAD_REQUEST, "Username already exists!", null);
+            }
+        }
+
+        for (UserDTO user : users) {
+            if (user.getEmail().equals(userDTO.getEmail())) {
+                throw new AppException(HttpStatus.BAD_REQUEST, "Email already exists!", null);
+            }
+        }
+
+        userService.create(userDTO);
+        return ResponseEntity.ok(userDTO.getId());
     }
 
 
@@ -69,6 +82,21 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UUID> updateUser (@PathVariable(name = "id") final UUID id,
                                             @RequestBody final UserDTO userDTO) {
+
+        List<UserDTO> users = userService.findAll(Optional.empty());
+
+        // index of id in users
+        int currentIndex = users.indexOf(users.stream().filter(u -> u.getId().equals(id)).findFirst().get());
+        System.out.println(currentIndex);
+
+        if (users.stream().anyMatch(u -> u.getUsername().equals(userDTO.getUsername()) && users.indexOf(u) != currentIndex)) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Username already exists!", null);
+        }
+
+        if (users.stream().anyMatch(u -> u.getEmail().equals(userDTO.getEmail()) && users.indexOf(u) != currentIndex)) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Email already exists!", null);
+        }
+
         userService.update(id, userDTO);
         return ResponseEntity.ok(id);
     }
@@ -97,5 +125,19 @@ public class UserController {
     @GetMapping("/outstanding")
     public ResponseEntity<List<UserDTO>> getOutstandingUsers() {
         return ResponseEntity.ok(userService.getOutstandingUsers());
+    }
+
+    @PostMapping("/remove-close-friend/{friendId}")
+    public ResponseEntity<?> removeCloseFriend(@PathVariable UUID friendId) {
+        try {
+            boolean isRemoved = userService.removeCloseFriend(friendId);
+            if (isRemoved) {
+                return ResponseEntity.ok(isRemoved);
+            } else {
+                return ResponseEntity.badRequest().body(isRemoved);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("An error occurred: " + e.getMessage());
+        }
     }
 }

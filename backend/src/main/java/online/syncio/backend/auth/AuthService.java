@@ -2,6 +2,7 @@ package online.syncio.backend.auth;
 
 import lombok.RequiredArgsConstructor;
 
+import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.DataNotFoundException;
 import online.syncio.backend.exception.ExpiredTokenException;
 import online.syncio.backend.exception.InvalidParamException;
@@ -20,6 +21,9 @@ import online.syncio.backend.utils.JwtTokenUtils;
 import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -66,10 +70,16 @@ public class AuthService {
     public User createUser(RegisterDTO userDTO) throws Exception {
         // Check if the email already exists
         String email = userDTO.getEmail();
-        if(!email.isBlank() && userRepository.existsByEmail(email)) {
-            throw new DataIntegrityViolationException("Email đã tồn tại");
+        if( userRepository.existsByEmail(email)) {
+            throw new AppException(HttpStatus.BAD_REQUEST,"Email đã tồn tại",null);
         }
-
+        String username = userDTO.getUsername();
+        if( userRepository.existsByUsername(username)) {
+            throw new AppException(HttpStatus.BAD_REQUEST,"username đã tồn tại",null);
+        }
+        if (!userDTO.getPassword().equals(userDTO.getRetypePassword())) {
+            throw new AppException(HttpStatus.BAD_REQUEST,"Mật khẩu không khớp",null);
+        }
 
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
         User newUser = User.builder()
@@ -122,7 +132,7 @@ public class AuthService {
         }
 
         if(!optionalUser.get().getStatus().equals(StatusEnum.ACTIVE)) {
-            throw new DataNotFoundException(ConstantsMessage.USER_IS_LOCKED);
+            throw new DataNotFoundException(ConstantsMessage.NEED_VERIFY_USER_IN_EMAIL);
         }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 subject, password,
@@ -138,7 +148,7 @@ public class AuthService {
         if(jwtTokenUtil.isTokenExpired(token)) {
             throw new ExpiredTokenException("Token is expired");
         }
-        System.out.println("Token: " + token);
+
         String email = jwtTokenUtil.extractEmail(token);
         Optional<User> user = userRepository.findByEmail(email);
 

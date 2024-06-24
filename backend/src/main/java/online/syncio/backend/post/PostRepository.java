@@ -26,4 +26,20 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
 
     @Query("SELECT p FROM Post p WHERE p.createdDate >= :startDate")
     List<Post> findAllPostsSince(@Param("startDate") LocalDateTime startDate);
+    /**
+     * This method is used to get the caption of a post by its id.
+     * @param id the post id
+     * @return the caption of the post
+     */
+    @Query(value = "SELECT caption FROM post WHERE id = :id", nativeQuery = true)
+    String getCaptionById(UUID id);
+
+    /**
+     * This method is used to get the first photo of a post by its id.
+     * @param postId the post id
+     * @return the first photo of the post
+     */
+    @Query(value = "SELECT photos FROM post_photos WHERE post_id = :postId LIMIT 1", nativeQuery = true)
+    String findFirstPhotoIdByPostId(UUID postId);
+
 }

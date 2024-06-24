@@ -7,4 +7,5 @@ export interface Comment {
   parentCommentId?: string;
   replies?: Comment[];
   repliesCount?: number;
+  likesCount?: number;
 }

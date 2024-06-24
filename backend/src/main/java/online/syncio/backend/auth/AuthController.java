@@ -65,40 +65,6 @@ public class AuthController {
     ) throws Exception {
 
 
-        if (result.hasErrors()) {
-            List<String> errorMessages = result.getFieldErrors()
-                    .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .toList();
-
-
-            return ResponseEntity.badRequest().body(ResponseObject.builder()
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .message(errorMessages.toString())
-                    .build());
-        }
-        if(registerDTO.getEmail() == null || registerDTO.getEmail().trim().isBlank()) {
-            return ResponseEntity.badRequest().body(ResponseObject.builder()
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .message(ConstantsMessage.EMAIL_REQUIRED)
-                    .build());
-        }
-
-        if (!registerDTO.getPassword().equals(registerDTO.getRetypePassword())) {
-
-
-            return ResponseEntity.badRequest().body(ResponseObject.builder()
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .message(ConstantsMessage.PASSWORD_NOT_MATCH)
-                    .build());
-        } else{
-            if(!ValidationUtils.isValidEmail(registerDTO.getEmail())){
-                throw new Exception("Email không hợp lệ");
-            }
-        }
         User user = authService.createUser(registerDTO);
 
 //        rabbitMQService.sendMessage("New user registered: " + user.getEmail());
@@ -176,7 +142,6 @@ public class AuthController {
         try {
             String extractedToken = authorizationHeader.substring(7);
             User user = authService.getUserDetailsFromToken(extractedToken);
-            System.out.println(user);
             return ResponseEntity.ok(AuthResponse.fromUser(user));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

@@ -3,6 +3,8 @@ package online.syncio.backend.user;
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.comment.Comment;
 import online.syncio.backend.comment.CommentRepository;
+import online.syncio.backend.exception.AppException;
+import online.syncio.backend.exception.DataNotFoundException;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.exception.ReferencedWarning;
 import online.syncio.backend.like.Like;
@@ -19,15 +21,19 @@ import online.syncio.backend.report.ReportRepository;
 import online.syncio.backend.storyview.StoryViewRepository;
 import online.syncio.backend.utils.AuthUtils;
 import org.springframework.data.domain.Sort;
+import online.syncio.backend.utils.ConstantsMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,14 +48,25 @@ public class UserService {
     private final PostRepository postRepository;
     private final StoryViewRepository storyViewRepository;
     private final AuthUtils authUtils;
+    private final PasswordEncoder passwordEncoder;
 
     //    CRUD
-    public List<UserDTO> findAll () {
-        final List<User> users = userRepository.findAll(Sort.by("createdDate").descending());
+    public List<UserDTO> findAll (Optional<String> username) {
+//        final List<User> users = userRepository.findAll(Sort.by("createdDate").descending());
+//        return users.stream()
+//                    .map(user -> mapToDTO(user, new UserDTO()))
+//                    .toList();
+        List<User> users;
+        if (username.isPresent()) {
+            users = userRepository.findByUsernameContaining(username.get());
+        } else {
+            users = userRepository.findAll(Sort.by("createdDate").descending());
+        }
         return users.stream()
-                    .map(user -> mapToDTO(user, new UserDTO()))
-                    .toList();
+                .map(user -> mapToDTO(user,  new UserDTO()))
+                .toList();
     }
+
 
     public UserDTO get (final UUID id) {
         return userRepository.findById(id)
@@ -85,6 +102,10 @@ public class UserService {
     }
 
     public UUID create(final UserDTO userDTO) {
+        // encode password
+        String encodePassword = passwordEncoder.encode(userDTO.getPassword());
+        userDTO.setPassword(encodePassword);
+
         final User user = new User();
         mapToEntity(userDTO, user);
         return userRepository.save(user).getId();
@@ -93,6 +114,9 @@ public class UserService {
     public void update (final UUID id, final UserDTO userDTO) {
         final User user = userRepository.findById(id)
                                         .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+        String encodePassword = passwordEncoder.encode(userDTO.getPassword());
+        userDTO.setPassword(encodePassword);
+
         mapToEntity(userDTO, user);
         userRepository.save(user);
     }
@@ -241,5 +265,24 @@ public class UserService {
         return recentPosts >= InteractionCriteria.MIN_POSTS &&
                 recentLikes >= InteractionCriteria.MIN_LIKES &&
                 recentComments >= InteractionCriteria.MIN_COMMENTS;
+    }
+
+    public boolean removeCloseFriend(UUID friendId) throws DataNotFoundException {
+        Optional<User> friendOpt = userRepository.findById(friendId);
+        if (!friendOpt.isPresent()) {
+            throw new DataNotFoundException(ConstantsMessage.USER_NOT_FOUND);
+        }
+
+        User friend = friendOpt.get();
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        User currentUser = userRepository.findById(currentUserId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (currentUser.getCloseFriends().contains(friend)) {
+            currentUser.getCloseFriends().remove(friend);
+            userRepository.save(currentUser);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

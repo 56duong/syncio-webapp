@@ -41,7 +41,14 @@ export class UserService {
   register(registerDTO: RegisterDTO): Observable<any> {
     return this.http.post(this.apiRegister, registerDTO, this.apiConfig);
   }
-
+   // Create user using User Controller
+  createUserInAdmin(user: User): Observable<any> {
+    return this.http.post(this.apiURL, user, this.apiConfig);
+  }
+  // Update user using User Controller
+  updateUserInAdmin(user: User): Observable<any> {
+    return this.http.put(`${this.apiURL}/${user.id}`, user, this.apiConfig);
+  }
   confirmUserRegister(token: string): Observable<any> {
     const params = new HttpParams().set('token', token);
     return this.http.post(this.apiConfirmUserRegister, {}, { params });
@@ -122,8 +129,9 @@ export class UserService {
    *    }
    *  })
    */
-  getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiURL);
+  getUsers(username?: string): Observable<User[]> {
+    const url = username ? `${this.apiURL}?username=${username}` : this.apiURL;
+    return this.http.get<User[]>(url);
   }
 
   /**
@@ -145,6 +153,40 @@ export class UserService {
     return this.http.get<User>(url);
   }
 
+  /**
+   * Get User Profile By Id.
+   * @param userId - The userId to search if exists.
+   * @returns Object users.
+   */
+  getUserProfile(userId: any): Observable<User> {
+    const url = `${this.apiURL}/profile/${userId}`;
+    return this.http.get<User>(url);
+  }
+
+  updateUser(user: User, userId: any): Observable<User> {
+    const url = `${this.apiURL}/update-profile/${userId}`;
+    return this.http.put<User>(url, user);
+  }
+
+  followUser(targetId: string): Observable<any> {
+    const url = `${this.apiURL}/follow/${targetId}`;
+    return this.http.post(url, {});
+  }
+
+  unfollowUser(targetId: string): Observable<any> {
+    const url = `${this.apiURL}/unfollow/${targetId}`;
+    return this.http.post(url, {});
+  }
+
+  addCloseFriends(friendId: string): Observable<any> {
+    const url = `${this.apiURL}/add-close-friend/${friendId}`;
+    return this.http.post(url, {});
+  }
+
+  removeCloseFriends(friendId: string): Observable<any> {
+    const url = `${this.apiURL}/remove-close-friend/${friendId}`;
+    return this.http.post(url, {});
+  }
   /**
    * Get username by id.
    * @param userId 
@@ -184,18 +226,6 @@ export class UserService {
     return this.http.get<UserStory[]>(url);
   }
   
-  // getNewUsersLast30Days(): Observable<any> {
-  //   const url = `${this.apiURL}/last30days`;
-  //   return this.http.get<any>(url);
-  // }
-  // getNewUsersLast7Days(): Observable<any> {
-  //   const url = `${this.apiURL}/last7days`;
-  //   return this.http.get<any>(url);
-  // }
-  // getNewUsersLast100Days(): Observable<any> {
-  //   const url = `${this.apiURL}/last100days`;
-  //   return this.http.get<any>(url);
-  // }
   
   getNewUsersLastNDays(days: number): Observable<any> {
     return this.http.get(`${this.apiURL}/last/${days}`);

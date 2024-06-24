@@ -1,8 +1,10 @@
 <div class="main left-menu w-full" [ngClass]="{'hide-menu-label': isHideMenuLabel}">
   <nav class="h-full p-4 md:px-2">
-    <ul class="flex flex-column align-items-center lg:align-items-start xl:align-items-start gap-6 h-full pl-0 m-0 list-none">
+    <ul
+      class="flex flex-column align-items-center lg:align-items-start xl:align-items-start gap-4 h-full pl-0 m-0 list-none"
+    >
       <!-- Logo -->
-      <div class="mobile-hidden">
+      <div class="mobile-hidden logo">
         <li class="p-fluid">
           <p-button class="desktop-show" styleClass="shadow-none" size="large" label="SYNCIO" [link]="true" [plain]="true" />
           <p-button class="desktop-hidden" styleClass="shadow-none" size="large" label="S" [link]="true" [plain]="true" />
@@ -10,9 +12,19 @@
       </div>
       <div class="menu w-full flex flex-column align-items-center lg:align-items-start xl:align-items-start gap-2 pl-0 list-none">
         <li *ngFor="let menu of menus" class="p-fluid w-full">
-          <p-button [id]="menu.id" class="text-left" styleClass="shadow-none" 
-            routerLinkActive="menu-active" [routerLink]="menu.routerLink" [routerLinkActiveOptions]="{exact: true}" 
-            [label]="menu.label" [icon]="menu.icon" [text]="true" [plain]="true" />
+          <p-button
+            [id]="menu.id"
+            class="text-left"
+            styleClass="shadow-none"
+            routerLinkActive="menu-active"
+            [routerLink]="menu.routerLink"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="menu.id === 'SearchButton' ? toggleSearch() : menu.id === 'NotificationsButton' ? toggleNotifications() : null"
+            [label]="menu.label"
+            [icon]="menu.icon"
+            [text]="true"
+            [plain]="true"
+          />
         </li>
         <!-- Create -->
         <li class="p-fluid w-full">
@@ -21,36 +33,62 @@
               <ng-container *ngIf="item.route; else withoutRoute">
                 <a [routerLink]="item.route" [href]="item.href" class="p-menuitem-link">
                   <span [class]="item.icon + ' p-menuitem-icon'"></span>
-                  <span class="ml-2 p-menuitem-text">{{ item.label }}</span>
+                  <span class="p-menuitem-text">{{ item.label }}</span>
                 </a>
               </ng-container>
               <ng-template #withoutRoute>
                 <ng-container *ngIf="item.url; else withoutUrl">
                   <a [href]="item.url" [target]="item.target" class="p-menuitem-link">
                     <span [class]="item.icon + ' p-menuitem-icon'"></span>
-                    <span class="ml-2 p-menuitem-text">{{ item.label }}</span>
-                    <span *ngIf="hasSubmenu" class="pi pi-angle-right ml-auto"></span>
+                    <span class="p-menuitem-text">{{ item.label }}</span>
+                    <span
+                      *ngIf="hasSubmenu"
+                      class="pi pi-angle-right ml-auto"
+                    ></span>
                   </a>
                 </ng-container>
                 <ng-template #withoutUrl>
                   <a class="p-menuitem-link">
                     <span [class]="item.icon + ' p-menuitem-icon'"></span>
-                    <span class="ml-2 p-menuitem-text">{{ item.label }}</span>
-                    <span *ngIf="hasSubmenu" class="pi pi-angle-right ml-auto"></span>
+                    <span class="p-menuitem-text">{{ item.label }}</span>
+                    <span
+                      *ngIf="hasSubmenu"
+                      class="pi pi-angle-right ml-auto"
+                    ></span>
                   </a>
                 </ng-template>
               </ng-template>
             </ng-template>
           </p-tieredMenu>
         </li>
+        <!-- Profile -->
+
+        <li class="p-fluid w-full">
+          <!-- Not logged in -->
+          <p-button *ngIf="!currentUserId" 
+            [id]="'ProfileButton'" class="text-left" styleClass="shadow-none" [text]="true" [plain]="true"
+            [icon]="'pi pi-user'" label="Log in"
+            [routerLink]="['login']" />
+          <!-- Logged in -->
+          <div>
+            <p-button *ngIf="currentUserId" 
+              [id]="'ProfileButton'" class="text-left" styleClass="shadow-none" [text]="true" [plain]="true"
+              routerLinkActive="menu-active"
+              [routerLink]="['profile', currentUserId]"
+              [label]="(currentUserId | userIdToName | async) ?? ''">
+              <img src="/assets/images/avatar.jpg" style="width: 28px; margin-right: 0.5rem; border-radius: 50%;"/>
+            </p-button>
+          </div>
+        </li>
+
       </div>
       <!-- Setting -->
       <div class="p-fluid w-full sm:mt-auto mt-0 mobile-hidden">
         <p-button class="text-left" label="Setting" icon="pi pi-cog" [text]="true" [plain]="true" />
       </div>
     </ul>
-
-    <app-create-post></app-create-post>
-
   </nav>
+
+  <app-create-post></app-create-post>
+
 </div>
