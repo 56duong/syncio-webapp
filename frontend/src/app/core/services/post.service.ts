@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Post } from '../interfaces/post';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
+import { EngagementMetricsDTO } from '../interfaces/engagement-metrics';
 
 @Injectable({
   providedIn: 'root',
@@ -47,6 +48,7 @@ export class PostService {
       .get<any>(this.apiURL, { params: param })
       .pipe(map((response) => response.content));
   }
+
   getTotalPostsCount(): Observable<number> {
     // Assuming the API provides total post count in the response
     return this.http.get<any>(this.apiURL, { params: { pageNumber: '1', pageSize: '1' } })
@@ -65,6 +67,7 @@ export class PostService {
       .get<any>(url, { params: param })
       .pipe(map((response) => response.content));
   }
+
   getTotalPostReported(): Observable<number> {
     const url = this.apiURL + '/reported';
     return this.http.get<any>(url, { params: { pageNumber: '1', pageSize: '1' } })
@@ -123,5 +126,9 @@ export class PostService {
    */
   setNewPostCreated(post: Post) {
     this.newPostCreated.next(post);
+  }
+
+  getEngagementMetrics(days: number): Observable<EngagementMetricsDTO> {
+    return this.http.get<EngagementMetricsDTO>(`${this.apiURL}/engagement-metrics?days=${days}`);
   }
 }

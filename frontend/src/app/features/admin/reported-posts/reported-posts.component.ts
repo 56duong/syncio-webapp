@@ -1,8 +1,10 @@
 import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import { Dialog } from 'primeng/dialog';
 import { Subscription } from 'rxjs';
 import { Post } from 'src/app/core/interfaces/post';
 import { PostService } from 'src/app/core/services/post.service';
+import { ReportService } from 'src/app/core/services/report.service';
 
 @Component({
   selector: 'app-reported-posts',
@@ -21,8 +23,7 @@ export class ReportedPostsComponent {
 
   private newPostCreatedSubscription!: Subscription;
   
-
-  constructor(private postService: PostService,private router : Router) {}
+  constructor(private postService: PostService,private reportService : ReportService,private router : Router) {}
 
   ngOnInit() {
     this.getPosts();
@@ -105,5 +106,21 @@ export class ReportedPostsComponent {
         console.error('Error setting flag to true', error);
       }
     );
+  
+  }
+
+  deleteReports(postId: string): void {
+    console.log('PostId:', postId);
+    
+    debugger;
+      this.reportService.deleteReportsByPostId(postId).subscribe(
+        () => {
+          console.log('Reports deleted successfully');
+          this.posts = this.posts.filter(post => post.id !== postId);
+        },
+        error => {
+          console.error('Error deleting reports', error);
+        }
+      );
   }
 }

@@ -3,6 +3,7 @@ package online.syncio.backend.post;
 import jakarta.validation.Valid;
 import online.syncio.backend.exception.ReferencedException;
 import online.syncio.backend.exception.ReferencedWarning;
+import online.syncio.backend.user.EngagementMetricsDTO;
 import online.syncio.backend.user.User;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
@@ -41,7 +42,6 @@ public class PostController {
     public Page<PostDTO> getPosts(@RequestParam(defaultValue = "0") int pageNumber,
                                @RequestParam(defaultValue = "10") int pageSize) {
         return postService.getPosts(PageRequest.of(pageNumber, pageSize));
-
     }
 
     @GetMapping("/reported")
@@ -135,5 +135,11 @@ public class PostController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @GetMapping("/engagement-metrics")
+    public ResponseEntity<EngagementMetricsDTO> getEngagementMetrics(@RequestParam int days) {
+        EngagementMetricsDTO metricsDTO = postService.getEngagementMetrics(days);
+        return ResponseEntity.ok(metricsDTO);
     }
 }

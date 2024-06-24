@@ -184,18 +184,18 @@ export class UserService {
     return this.http.get<UserStory[]>(url);
   }
   
-  getNewUsersLast30Days(): Observable<any> {
-    const url = `${this.apiURL}/last30days`;
-    return this.http.get<any>(url);
-  }
-  getNewUsersLast7Days(): Observable<any> {
-    const url = `${this.apiURL}/last7days`;
-    return this.http.get<any>(url);
-  }
-  getNewUsersLast100Days(): Observable<any> {
-    const url = `${this.apiURL}/last100days`;
-    return this.http.get<any>(url);
-  }
+  // getNewUsersLast30Days(): Observable<any> {
+  //   const url = `${this.apiURL}/last30days`;
+  //   return this.http.get<any>(url);
+  // }
+  // getNewUsersLast7Days(): Observable<any> {
+  //   const url = `${this.apiURL}/last7days`;
+  //   return this.http.get<any>(url);
+  // }
+  // getNewUsersLast100Days(): Observable<any> {
+  //   const url = `${this.apiURL}/last100days`;
+  //   return this.http.get<any>(url);
+  // }
   
   getNewUsersLastNDays(days: number): Observable<any> {
     return this.http.get(`${this.apiURL}/last/${days}`);

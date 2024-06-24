@@ -27,7 +27,8 @@ export class PostComponent implements OnInit{
     'SPAM': 0,
     'HARASSMENT': 0,
     'VIOLENCE': 0,
-    'INAPPROPRIATE_CONTENT': 0
+    'INAPPROPRIATE_CONTENT': 0,
+
   }; // Variable to hold the most frequent reason
 
   constructor(private reportService: ReportService) {}
@@ -106,8 +107,6 @@ export class PostComponent implements OnInit{
   }
 
   deleteReport(): void {
-    if (confirm('Are you sure you want to delete all reports for this post?')) {
       this.deleteReportsEvent.emit(this.post.id);
-    }
   }
 }

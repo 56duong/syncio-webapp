@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -22,4 +23,7 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
     List<Post> findByCreatedBy_IdOrderByCreatedDateDesc (UUID id);
 
     long countByCreatedByAndCreatedDateAfter(User user, LocalDateTime date);
+
+    @Query("SELECT p FROM Post p WHERE p.createdDate >= :startDate")
+    List<Post> findAllPostsSince(@Param("startDate") LocalDateTime startDate);
 }

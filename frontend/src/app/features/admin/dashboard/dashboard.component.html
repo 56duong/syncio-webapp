@@ -26,6 +26,10 @@
   <div class="grid mx-2">
     <div class="chart-section col-8 p-2" >
       <canvas id="newUsersChart"></canvas>
+      <p-button (click)="exportChartAsImage()" class="btn-chart flex-none flex align-items-center justify-content-center">Export Chart as Image</p-button>
+      <div>
+        <canvas id="engagementChart"></canvas>
+      </div>
     </div>
     <div class="outstanding-users-section col-4  align-items-center justify-content-between border-round border-1" >
       <h3 class="px-3">Top Users Interation</h3>
