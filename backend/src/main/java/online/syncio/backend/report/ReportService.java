@@ -1,10 +1,13 @@
 package online.syncio.backend.report;
 
+import online.syncio.backend.config.RabbitMQConfig;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.post.Post;
 import online.syncio.backend.post.PostRepository;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
+import org.apache.coyote.BadRequestException;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +20,17 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final RabbitTemplate rabbitTemplate;
 
-    public ReportService(ReportRepository reportRepository, PostRepository postRepository, UserRepository userRepository) {
+    private final RabbitMQConfig config;
+
+    public ReportService(ReportRepository reportRepository, PostRepository postRepository, UserRepository userRepository,RabbitTemplate rabbitTemplate, RabbitMQConfig config) {
         this.reportRepository = reportRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.rabbitTemplate = rabbitTemplate;
+        this.config = config;
+
     }
 
 //    CRUD
@@ -43,7 +52,24 @@ public class ReportService {
 
         Report savedReport = reportRepository.save(report);
 
+
+        if(reportDTO.getReason().equals(ReasonEnum.HARASSMENT)){
+            UUID postId = post.getId();
+            post.getPhotos().forEach(photo -> sendImageForVerification(photo, postId));
+        }
         return mapToDTO(savedReport, new ReportDTO());
+    }
+    public void sendImageForVerification(String imageUrl, UUID postId) {
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+
+
+            String fullImageUrl = "http://localhost:8080/api/v1/posts/images/" + imageUrl + "?postId=" + postId;
+            try {
+                rabbitTemplate.convertAndSend(config.EXCHANGE, config.ROUTING_KEY, fullImageUrl);
+            } catch (Exception e) {
+                System.out.println("Failed to send image for verification: " + e.getMessage());
+            }
+        }
     }
 
     public void update(final UUID postId, final UUID userId, final ReportDTO reportDTO) {
