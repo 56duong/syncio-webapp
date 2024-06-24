@@ -15,12 +15,26 @@
           alt="" />
       </div>
       <div class="flex align-items-center gap-1">
+        <small *ngIf="post.createdBy" class="font-bold">{{
+          post.createdBy | userIdToName | async
+          }}</small>
+        <small class="text-gray-500">•</small>
+        <small class="text-gray-500">{{
+          post.createdDate | date : "HH:mm:ss dd/MM/yyyy"
+          }}</small>
+=======
+        <img class="w-full object-cover"
+          src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
+          alt="" />
+      </div>
+      <div class="flex align-items-center gap-1">
         <small *ngIf="post.createdBy" class="font-bold">
           {{ post.createdBy | userIdToName | async }}
         </small>
         <small class="text-gray-500">•</small>
         <small class="text-gray-500">
           {{ post.createdDate | date : "HH:mm:ss dd/MM/yyyy" }}</small>
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
       </div>
     </div>
     <span *ngIf="!isReportedPostsPage && !isHiddenPostsPage" class="pi pi-ellipsis-h cursor-pointer" (click)="showReportModal()"></span>
