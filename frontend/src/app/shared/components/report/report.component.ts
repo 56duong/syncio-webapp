@@ -34,6 +34,7 @@ export class ReportComponent implements OnInit {
 
     this.reasons = [
       { label: 'SPAM', value: 'SPAM' },
+      { label: 'NUDE', value: 'NUDE' },
       { label: 'HARASSMENT', value: 'HARASSMENT' },
       { label: 'VIOLENCE', value: 'VIOLENCE' },
       { label: 'INAPPROPRIATE CONTENT', value: 'INAPPROPRIATE_CONTENT' },
