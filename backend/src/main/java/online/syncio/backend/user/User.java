@@ -7,6 +7,7 @@ import online.syncio.backend.comment.Comment;
 import online.syncio.backend.like.Like;
 import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messageroommember.MessageRoomMember;
+import online.syncio.backend.notification.Notification;
 import online.syncio.backend.post.Post;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.story.Story;
@@ -89,6 +90,15 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "followers")
     private Set<User> following;
 
+    // Close Friends
+    @ManyToMany
+    @JoinTable(
+            name = "user_close_friends",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "close_friend_id")
+    )
+    private Set<User> closeFriends;
+
     //    Like
     @OneToMany(mappedBy = "user")
     private Set<Like> likes;
@@ -116,6 +126,18 @@ public class User implements UserDetails {
 //    StoryView
     @OneToMany(mappedBy = "user")
     private Set<StoryView> viewedStories;
+
+
+//    Notification
+    @OneToMany(mappedBy = "actor")
+    private Set<Notification> notifications;
+
+//    Notification
+    @OneToMany(mappedBy = "recipient")
+    private Set<Notification> receivedNotifications;
+
+    @Column(name = "username_last_modified")
+    private LocalDateTime usernameLastModified;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -145,5 +167,16 @@ public class User implements UserDetails {
         return true;
     }
 
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        User user = (User) o;
+//        return Objects.equals(id, user.id);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(id);}
 
 }

@@ -32,4 +32,12 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
 
     @Query("SELECT COUNT(c) FROM Comment c WHERE c.post IN :posts")
     long countCommentsForPosts(@Param("posts") List<Post> posts);
+    /**
+     * Count how many different users have commented on a specified post
+     * @param postId
+     * @return
+     */
+    @Query("SELECT COUNT(DISTINCT c.user) FROM Comment c WHERE c.post.id = :postId")
+    Long countDistinctUsersByPostId(UUID postId);
+
 }

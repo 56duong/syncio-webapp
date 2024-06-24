@@ -80,7 +80,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/refreshToken", apiPrefix), "POST"),
 
-                // Post
+                Pair.of(String.format("%s/users/confirm-user-register", apiPrefix), "POST"),
+                Pair.of(String.format("%s/users/reset_password", apiPrefix), "POST"),
+
                 Pair.of(String.format("%s/posts/images/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/posts/engagement-metrics", apiPrefix), "GET"),
                 Pair.of(String.format("%s/posts", apiPrefix), "GET"),
@@ -108,11 +110,23 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/users/**/username", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/search/**", apiPrefix), "GET"),
 
+                // Label
+                Pair.of(String.format("%s/labels/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/labels/", apiPrefix), "GET"),
+
                 // Story
                 Pair.of(String.format("%s/stories/images/**", apiPrefix), "GET"),
 
                 // WebSocket
-                Pair.of("/live/**", "GET")
+                Pair.of("/live/**", "GET"),
+                Pair.of("/live/**", "GET"),
+                Pair.of("/uploads/**", "GET"),
+
+                // Global images view
+                Pair.of(String.format("%s/images/**", apiPrefix), "GET"),
+
+                // Payment
+                Pair.of(String.format("%s/payment/vnpay-callback", apiPrefix), "GET")
         );
 
         String requestPath = request.getServletPath();

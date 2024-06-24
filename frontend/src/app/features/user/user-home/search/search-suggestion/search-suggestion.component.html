@@ -1,0 +1,19 @@
+<a href="{{ '/profile/' + suggestion.id }}" class="search-result-a px-3">
+  <div class="search-result-row">
+    <div class="search-result-photo">
+      <canvas height="42" width="42"></canvas>
+      <span>
+        <img alt=" profile pic'" src="{{ suggestion.avtURL }}"
+          onerror="this.src='/assets/images/avatar.jpg'"  />
+      </span>
+    </div>
+    <div class="search-result-label">
+      <div class="search-result-userid">
+        <span>{{ suggestion.username }}</span>
+      </div>
+      <span class="search-result-username"
+        >{{ suggestion.followerCount }} follwers</span
+      >
+    </div>
+  </div>
+</a>

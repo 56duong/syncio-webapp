@@ -1,0 +1,247 @@
+<div class="main mt-3 mr-3">
+  <!-- card -->
+  <div class="card">
+    <p-toolbar styleClass="mb-4 gap-2">
+      <ng-template pTemplate="left">
+        <!-- nut them moi -->
+        <button
+          pButton
+          pRipple
+          label="New"
+          icon="pi pi-plus"
+          class="p-button-success mr-2"
+          (click)="openNew()"
+        ></button>
+      </ng-template>
+      <!-- nut import, export file -->
+      <ng-template pTemplate="right">
+        <p-fileUpload
+          mode="basic"
+          accept="image/*"
+          [maxFileSize]="1000000"
+          label="Import"
+          chooseLabel="Import"
+          class="mr-2 inline-block"
+        ></p-fileUpload>
+        <button
+          pButton
+          pRipple
+          label="Export"
+          icon="pi pi-upload"
+          class="p-button-help"
+        ></button>
+      </ng-template>
+    </p-toolbar>
+
+    <!-- Bang du lieu Labels -->
+    <p-table
+      #dt
+      [value]="labels"
+      [rows]="6"
+      [paginator]="true"
+      [globalFilterFields]="[
+        'name',
+        'country.name',
+        'representative.name',
+        'status'
+      ]"
+      [tableStyle]="{ 'min-width': '75rem' }"
+      [(selection)]="selectedLabels"
+      [rowHover]="true"
+      dataKey="id"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [showCurrentPageReport]="true"
+    >
+      <ng-template pTemplate="caption">
+        <div class="flex align-items-center justify-content-between">
+          <h5 class="m-0">Manage Labels</h5>
+          <!-- Search -->
+          <!-- <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input 
+                        pInputText 
+                        type="text" 
+                        (input)="dt.filterGlobal($event.target.value, 'contains')" 
+                        placeholder="Search..." 
+                    />
+                </span> -->
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 4rem">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th pSortableColumn="name" style="min-width: 8rem">
+            Name <p-sortIcon field="name"></p-sortIcon>
+          </th>
+          <th pSortableColumn="price" style="min-width: 8rem">
+            Price (VND) <p-sortIcon field="price"></p-sortIcon>
+          </th>
+          <th pSortableColumn="description" style="min-width: 12rem">
+            Description <p-sortIcon field="description"></p-sortIcon>
+          </th>
+          <th pSortableColumn="url" style="min-width: 6rem">
+            Image
+          </th>
+          
+          <th pSortableColumn="createDate">Date Create <p-sortIcon field="createDate"></p-sortIcon></th>
+          <th pSortableColumn="createdBy">Created By <p-sortIcon field="createdBy"></p-sortIcon></th>
+          <th pSortableColumn="status" style="min-width:4rem">Status <p-sortIcon field="status"></p-sortIcon></th>
+          <th pSortableColumn="action" style="min-width: 4rem">Action</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-label>
+        <tr>
+          <td>
+            <p-tableCheckbox [value]="label"></p-tableCheckbox>
+          </td>
+          
+          <td>{{ label.name }}</td>
+          <td>{{ label.price }}</td>
+          <td>{{ label.description }}</td>
+
+          <td>
+            <div *ngIf="label.labelURL && label.labelURL.length > 0">
+              <img src="{{label.labelURL + '?view=' + dateNow}}" width="50" height="50" style="object-fit: contain" />
+            </div>
+          </td>
+        
+          <td>{{ label.createdDate | date:'HH:mm:ss dd/MM/yyyy' }}</td>
+          <td>{{ label.createdBy | userIdToName | async  }}</td>
+          <td>
+            <p-tag [value]="label.status" [severity]="getSeverity(label.status)"></p-tag>
+        </td>
+          <td>
+            <button
+              pButton
+              pRipple
+              icon="pi pi-pencil"
+              class="p-button-rounded p-button-success mr-2"
+              (click)="editLabel(label)"
+            ></button>
+            <!-- <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteUser(user)"></button> -->
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="summary">
+        <div class="flex align-items-center justify-content-between">
+          In total there are {{ labels ? labels.length : 0 }} labels.
+        </div>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Dialog -->
+  <p-dialog
+    [(visible)]="labelDialog"
+    [style]="{ width: '450px' }"
+    header="Label Details"
+    [modal]="true"
+    styleClass="p-fluid"
+  >
+    <ng-template pTemplate="content">
+      <!-- Label name -->
+      <div class="field">
+        <label for="name">Name</label>
+        <input
+          type="text"
+          pInputText
+          id="name"
+          [(ngModel)]="label.name"
+          required
+          autofocus
+        />
+        <small class="p-error" *ngIf="submitted && !label.name"
+          >Name is required.</small
+        >
+      </div>
+
+      <!-- Price -->
+      <div class="field">
+        <label for="price">Price</label>
+        <p-inputNumber id="price" [(ngModel)]="label.price" inputId="currency-vn" mode="currency" currency="VND" locale="vi-VN"> </p-inputNumber>
+        <small class="p-error" *ngIf="submitted && !label.price"
+          >Price is required.</small
+        >
+      </div>
+
+      <!-- Status -->
+      <div class="field" *ngIf="label">
+        <label for="status">Status</label>
+        <p-dropdown [(ngModel)]="label.status" inputId="status" [options]="statuses">
+            <ng-template pTemplate="selectedItem">
+                <p-tag *ngIf="label.status" [value]="label.status" [severity]="getSeverity(label.status)"></p-tag>
+            </ng-template>
+            <ng-template let-option pTemplate="item">
+                <p-tag [value]="option.label" [severity]="getSeverity(option.label)"></p-tag>
+            </ng-template>
+        </p-dropdown>
+    </div>
+
+      <!-- Decsription -->
+      <div class="field">
+        <label for="description">Description</label>
+        <input
+          type="text"
+          pInputText
+          id="description"
+          [(ngModel)]="label.description"
+        />
+      </div>
+
+      <div class="card flex justify-content-center">
+        <p-fileUpload
+          #fileUploader
+          name="photo[]"
+          mode="basic"
+          chooseLabel="Choose"
+          chooseIcon="pi pi-upload"
+          (onSelect)="onLabelSelected($event)"
+          [multiple]="false"
+          accept="image/*"
+        >
+        </p-fileUpload>
+      </div>
+
+      <div *ngFor="let label of selectedLabels" style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+        <div style="display: flex; justify-content: center; width: 100%;">
+          <img
+          [src]="label"
+          alt="Selected label"
+          width="200" height="200" style="object-fit: contain"
+          class="file-image"
+        />
+        </div>
+        
+          <ul style="list-style-type: none; padding: 0;">
+            <li *ngFor="let file of selectedLabelFile">{{ file.name }} - {{ file.size }} bytes</li>
+          </ul>
+      </div>
+      
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <!-- nut an -->
+      <button
+        pButton
+        pRipple
+        label="Cancel"
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="hideDialog()"
+      ></button>
+
+      <!-- nut save -->
+      <button
+        pButton
+        pRipple
+        label="Save"
+        icon="pi pi-check"
+        class="p-button-text"
+        (click)="saveLabel()"
+      ></button>
+    </ng-template>
+  </p-dialog>
+</div>

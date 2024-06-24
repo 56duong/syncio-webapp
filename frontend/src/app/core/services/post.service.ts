@@ -97,6 +97,16 @@ export class PostService {
   }
 
   /**
+   * Get a post by id.
+   * @param id - The id of the post.
+   * @returns the post object. 
+   */
+  getPostById(id: string): Observable<Post> {
+    const url = `${this.apiURL}/${id}`;
+    return this.http.get<Post>(url);
+  }
+
+  /**
    * Create a new post.
    * @param post
    * @returns id of the created post.

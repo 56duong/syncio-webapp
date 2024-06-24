@@ -11,7 +11,7 @@
   border-right-style: solid;
   border-color: var(--gray-300);
   background-color: var(--surface-0);
-  z-index: 999;
+  z-index: 1102;
 
   @media screen and (min-width: 992px) {
     min-width: 250px;
@@ -64,12 +64,13 @@
   }
 }
 
-::ng-deep .left-menu .p-button {
+.left-menu nav ::ng-deep .p-button {
   text-align: left;
   padding: 1rem;
+  height: 45px;
 }
 
-::ng-deep .left-menu .menu .p-button.p-button-text:not(:disabled) { 
+.left-menu ::ng-deep .menu .p-button.p-button-text:not(:disabled) { 
   .p-button-label,
   .p-button-icon {
     font-weight: 500;
@@ -159,5 +160,21 @@
 
   .desktop-hidden {
     display: block !important;
+  }
+}
+
+p-tieredMenu ::ng-deep {
+  .p-menuitem-text {
+    font-size: 14px;
+  }
+
+  .p-tieredmenu .p-menuitem:not(.p-highlight):not(.p-disabled) > .p-menuitem-content {
+    border-radius: 8px;
+  }
+}
+
+.logo ::ng-deep {
+  .p-button-label {
+    font-size: 1.5rem;
   }
 }

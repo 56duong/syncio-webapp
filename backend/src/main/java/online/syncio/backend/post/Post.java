@@ -55,6 +55,10 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private Set<Report> reports;
 
+//   Visibility
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PostEnum visibility;
     @Override
     public int hashCode() {
         return Objects.hash(id);

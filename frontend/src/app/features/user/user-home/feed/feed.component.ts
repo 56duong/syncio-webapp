@@ -30,13 +30,10 @@ export class FeedComponent {
     this.getPosts();
 
     // Subscribe to the new post created event to add the new post to the top of the feed.
-    this.postService.getNewPostCreated().subscribe({
-      next: (post) => {
-        if (post) {
-          // Add the new post to the top of the feed
-          this.posts.unshift(post);
-        }
-      },
+    this.newPostCreatedSubscription = this.postService.getNewPostCreated().subscribe((post) => {
+      if (post) {
+        this.posts.push(post);
+      }
     });
   }
 
@@ -88,7 +85,7 @@ export class FeedComponent {
   }
   @HostListener('window:scroll', ['$event'])
   onScroll(event: any) {
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight * 0.95) {
       this.getPosts();
     }
   }

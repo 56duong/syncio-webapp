@@ -141,12 +141,11 @@ public class PostService {
                 filenames.add(filename);
             }
         }
-
+        post.setVisibility(postDTO.getVisibility());
         post.setCaption(postDTO.getCaption());
         post.setFlag(postDTO.getFlag());
         post.setPhotos(filenames);
         post.setCreatedBy(user);
-
         Post savedPost = postRepository.save(post);
         return ResponseEntity.ok(savedPost.getId());
     }
@@ -286,6 +285,7 @@ public class PostService {
         try {
             Post post = postRepository.findById(postId)
                                       .orElseThrow(() -> new NotFoundException(Post.class, "id", postId.toString()));
+
             User user = userRepository.findById(userId)
                                       .orElseThrow(() -> new NotFoundException(User.class, "id", userId.toString()));
 
