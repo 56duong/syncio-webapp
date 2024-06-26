@@ -1,6 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ActionEnum } from 'src/app/core/interfaces/notification';
 import { User } from 'src/app/core/interfaces/user';
+import { NotificationService } from 'src/app/core/services/notification.service';
 
 import { UserService } from 'src/app/core/services/user.service';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
@@ -30,6 +32,7 @@ export class ProfileComponent implements OnInit {
     this.userService.getUserResponseFromLocalStorage();
   public loginUser: string = this.userResponse?.id || '';
   constructor(
+    private notificationService: NotificationService,
     private userService: UserService,
     private route: ActivatedRoute,
     private router: Router
@@ -41,7 +44,15 @@ export class ProfileComponent implements OnInit {
       id = params['userId'];
       // this.checkFollowStatus(id);
       this.loadUserProfile(id);
+
+      if(this.loginUser) {
+        this.notificationService.connectWebSocket(this.loginUser);
+      }
     });
+  }
+
+  ngOnDestroy() {
+    if(this.loginUser) this.notificationService.disconnect();
   }
 
   private loadUserProfile(userId: string): void {
@@ -93,6 +104,15 @@ export class ProfileComponent implements OnInit {
         this.isFollowing = true;
         if (this.userProfile && this.userProfile.followerCount !== undefined) {
           this.userProfile.followerCount += 1;
+
+          // send notification to followed user
+          this.notificationService.sendNotification({
+            targetId: targetId,
+            actorId: this.userResponse?.id,
+            actionType: ActionEnum.FOLLOW,
+            redirectURL: `/profile/${this.loginUser}`,
+            recipientId: targetId,
+          });
         }
       },
       error: (error) => {

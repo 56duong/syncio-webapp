@@ -1,0 +1,35 @@
+.notifications__outside {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+.notifications_section {
+  position: fixed;
+  top: 0;
+  left: -20em;
+  z-index: 1101;
+  width: 350px;
+  height: 100vh;
+  opacity: 0;
+  border-radius: 0 10px 10px 0;
+  border-right: 1px solid #cccccc;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s ease;
+}
+
+.notifications_section.show {
+  left: 16.6em;
+  opacity: 1 !important;
+  transition: all 0.5s ease;
+}
+
+@media screen and (max-width: 992px) {
+  .notifications_section.show {
+    left: 5.4em !important;
+  }
+}

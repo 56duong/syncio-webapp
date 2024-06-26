@@ -9,6 +9,8 @@ import java.util.UUID;
 public class BillingDTO {
     private UUID labelId;
     private UUID userId;
+    private String orderNo;
     private Double amount;
+    private StatusEnum status;
     private LocalDateTime createdDate;
 }
