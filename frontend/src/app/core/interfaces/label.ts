@@ -4,6 +4,12 @@ export interface Label {
   price?: number;
   description?: string;
   labelURL?: string;
-  // createdBy?: string;
   createdDate?: string;
+  createdBy?: string;
+  status?: StatusEnum;
+}
+
+export enum StatusEnum {
+  ENABLED = 'ENABLED',
+  DISABLED = 'DISABLED',
 }

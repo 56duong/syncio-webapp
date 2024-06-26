@@ -3,6 +3,7 @@ import { Visibility } from 'src/app/core/interfaces/Visibility';
 import { Post } from 'src/app/core/interfaces/post';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { PostService } from 'src/app/core/services/post.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
 
@@ -26,7 +27,7 @@ export class CreatePostComponent {
     private userService: UserService,
     private cdr: ChangeDetectorRef,
     private tokenService: TokenService,
-    private notificationService: NotificationService
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -69,9 +70,7 @@ export class CreatePostComponent {
       visibility: this.selectedVisibility,
     };
     if (!post.caption && this.selectedPhotoFile.length === 0) {
-      this.notificationService.showError(
-        'A post must have either a caption or at least one image.'
-      );
+      this.toastService.showError('Error', 'A post must have either a caption or at least one image.');
       return; // Stop execution if validation fails
     }
     formData.append(

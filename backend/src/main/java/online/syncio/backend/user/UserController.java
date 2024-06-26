@@ -3,10 +3,7 @@ package online.syncio.backend.user;
 import jakarta.validation.Valid;
 import online.syncio.backend.auth.responses.LoginResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
-import online.syncio.backend.exception.DataNotFoundException;
-import online.syncio.backend.exception.NotFoundException;
-import online.syncio.backend.exception.ReferencedException;
-import online.syncio.backend.exception.ReferencedWarning;
+import online.syncio.backend.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -64,13 +61,42 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UUID> createUser (@RequestBody @Valid final UserDTO userDTO) {
-        final UUID createdId = userService.create(userDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+        List<UserDTO> users = userService.findAll(Optional.empty());
+
+        for (UserDTO user : users) {
+            if (user.getUsername().equals(userDTO.getUsername())) {
+                throw new AppException(HttpStatus.BAD_REQUEST, "Username already exists!", null);
+            }
+        }
+
+        for (UserDTO user : users) {
+            if (user.getEmail().equals(userDTO.getEmail())) {
+                throw new AppException(HttpStatus.BAD_REQUEST, "Email already exists!", null);
+            }
+        }
+
+        userService.create(userDTO);
+        return ResponseEntity.ok(userDTO.getId());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UUID> updateUser (@PathVariable(name = "id") final UUID id,
                                             @RequestBody final UserDTO userDTO) {
+
+        List<UserDTO> users = userService.findAll(Optional.empty());
+
+        // index of id in users
+        int currentIndex = users.indexOf(users.stream().filter(u -> u.getId().equals(id)).findFirst().get());
+        System.out.println(currentIndex);
+
+        if (users.stream().anyMatch(u -> u.getUsername().equals(userDTO.getUsername()) && users.indexOf(u) != currentIndex)) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Username already exists!", null);
+        }
+        
+        if (users.stream().anyMatch(u -> u.getEmail().equals(userDTO.getEmail()) && users.indexOf(u) != currentIndex)) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Email already exists!", null);
+        }
+
         userService.update(id, userDTO);
         return ResponseEntity.ok(id);
     }

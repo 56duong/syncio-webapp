@@ -27,6 +27,12 @@ public class LabelController {
         return ResponseEntity.ok(labelService.findAll());
     }
 
+    @GetMapping("/buy")
+    public ResponseEntity<List<LabelResponseDTO>> getLabelsWithPurchaseStatus(@RequestParam final UUID user_id) {
+        List<LabelResponseDTO> labels =  labelService.getAllLabelWithPurcharseStatus(user_id);
+        return ResponseEntity.ok(labels);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<LabelDTO> getLabel(@PathVariable(name = "id") final UUID id) {
         return ResponseEntity.ok(labelService.get(id));
@@ -37,7 +43,6 @@ public class LabelController {
             @Validated
             @RequestPart("file") final MultipartFile file,
             @RequestPart final LabelDTO labelDTO) throws IOException {
-
         LabelUploadRequest labelUploadRequest = new LabelUploadRequest(file, labelDTO);
         return ResponseEntity.ok(labelService.create(labelUploadRequest));
     }
@@ -51,11 +56,5 @@ public class LabelController {
         LabelUploadRequest labelUploadRequest = new LabelUploadRequest(file, labelDTO);
 
         return ResponseEntity.ok(labelService.update(id, labelUploadRequest));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLabel(@PathVariable(name = "id") final UUID id) {
-        labelService.delete(id);
-        return ResponseEntity.noContent().build();
     }
 }

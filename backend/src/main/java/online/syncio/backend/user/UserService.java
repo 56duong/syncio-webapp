@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.comment.Comment;
 import online.syncio.backend.comment.CommentRepository;
+import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.DataNotFoundException;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.exception.ReferencedWarning;
@@ -26,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -132,6 +134,7 @@ public class UserService {
     }
 
     public UUID create(final UserDTO userDTO) {
+
         // encode password
         String encodePassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(encodePassword);
@@ -144,7 +147,7 @@ public class UserService {
     public void update (final UUID id, final UserDTO userDTO) {
         final User user = userRepository.findById(id)
                                         .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
-            
+
         String encodePassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(encodePassword);
 

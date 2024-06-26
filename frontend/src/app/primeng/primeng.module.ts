@@ -29,6 +29,8 @@ import { DataViewModule } from 'primeng/dataview';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ImageModule } from 'primeng/image';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { CardModule } from 'primeng/card';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @NgModule({
   declarations: [],
@@ -63,6 +65,8 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     ConfirmDialogModule,
     RadioButtonModule,
     DataViewModule,
+    CardModule,
+    InputNumberModule
   ],
 })
 export class PrimengModule {}
