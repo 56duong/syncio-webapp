@@ -19,7 +19,7 @@ public class Token {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "token", length = 1024)
+    @Column(name = "token", length = 255)
     private String token;
 
     @Column(name = "refresh_token", length = 255)

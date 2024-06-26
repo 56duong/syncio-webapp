@@ -69,6 +69,7 @@ public class TokenService {
                 .expired(false)
                 .tokenType("Bearer")
                 .expirationDate(expirationDateTime)
+
                 .build();
 
         newToken.setRefreshToken(UUID.randomUUID().toString());
