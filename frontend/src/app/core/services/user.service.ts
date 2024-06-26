@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../interfaces/user';
 import { RegisterDTO } from 'src/app/features/authentication/register/register.dto';
@@ -41,18 +41,14 @@ export class UserService {
   register(registerDTO: RegisterDTO): Observable<any> {
     return this.http.post(this.apiRegister, registerDTO, this.apiConfig);
   }
-
-  // Create user using User Controller
+   // Create user using User Controller
   createUserInAdmin(user: User): Observable<any> {
     return this.http.post(this.apiURL, user, this.apiConfig);
-
   }
-
   // Update user using User Controller
   updateUserInAdmin(user: User): Observable<any> {
     return this.http.put(`${this.apiURL}/${user.id}`, user, this.apiConfig);
   }
-
   confirmUserRegister(token: string): Observable<any> {
     const params = new HttpParams().set('token', token);
     return this.http.post(this.apiConfirmUserRegister, {}, { params });
@@ -78,7 +74,7 @@ export class UserService {
     return this.http.post(this.apiUserDetail, {}, { headers: headers });
   }
 
-  saveUserResponseToLocalStorage(userResponse?: UserResponse | null) {
+  saveUserResponseToLocalStorage(userResponse?: UserResponse) {
     try {
       if (userResponse == null || !userResponse) {
         return;
@@ -137,10 +133,6 @@ export class UserService {
     const url = username ? `${this.apiURL}?username=${username}` : this.apiURL;
     return this.http.get<User[]>(url);
   }
-  isFollowing(userId: string, targetId: string): Observable<any> {
-    const url = `${this.apiURL}/${userId}/is-following/${targetId}`;
-    return this.http.get(url);
-  }
 
   /**
    * Get a user by id.
@@ -197,7 +189,7 @@ export class UserService {
   }
   /**
    * Get username by id.
-   * @param userId
+   * @param userId 
    * @returns response object containing the username.
    * @example
    * this.userService.getUsernameById(userId).subscribe({
@@ -233,9 +225,20 @@ export class UserService {
     const url = `${this.apiURL}/stories`;
     return this.http.get<UserStory[]>(url);
   }
+  
+  
+  getNewUsersLastNDays(days: number): Observable<any> {
+    return this.http.get(`${this.apiURL}/last/${days}`);
+  }
 
-  changeAvatar(formData: FormData): Observable<string> {
-    const url = `${this.apiURL}/avatar`;
-    return this.http.post<string>(url, formData);
+  getUserCount(): Observable<number> {
+    return this.getUsers().pipe(
+      map(users => users.length)
+    );
+  }
+
+  getOutstandingUsers(): Observable<User[]> {
+    const url = `${this.apiURL}/outstanding`;
+    return this.http.get<User[]>(url);
   }
 }

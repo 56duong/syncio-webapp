@@ -25,6 +25,4 @@ public class CommentDTO {
     private UUID parentCommentId;
 
     private Long repliesCount;
-
-    private Long likesCount;
 }

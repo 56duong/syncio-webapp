@@ -21,6 +21,7 @@ import online.syncio.backend.utils.JwtTokenUtils;
 import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -30,11 +31,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -181,12 +179,12 @@ public class AuthService {
     public String updateResetPasswordToken(String email) throws Exception {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("User not found"));;
 
-            String token = RandomString.make(30);
+        String token = RandomString.make(30);
 
-            user.setResetPasswordToken(token);
-            userRepository.save(user);
+        user.setResetPasswordToken(token);
+        userRepository.save(user);
 
-            return token;
+        return token;
 
     }
 
@@ -202,9 +200,6 @@ public class AuthService {
         CustomerRegisterUtil.encodePassword(customer, passwordEncoder);
 
         userRepository.save(customer);
-    }
-    public void updateAvatar(MultipartFile file) throws DataNotFoundException {
-        //      Upload S3 AWS
     }
 
 }

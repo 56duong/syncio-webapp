@@ -4,7 +4,6 @@ import { Post } from 'src/app/core/interfaces/post';
 import { PostService } from 'src/app/core/services/post.service';
 import { TokenService } from 'src/app/core/services/token.service';
 
-
 @Component({
   selector: 'app-feed',
   templateUrl: './feed.component.html',
@@ -39,7 +38,9 @@ export class FeedComponent {
   }
 
   ngOnDestroy() {
-    this.newPostCreatedSubscription.unsubscribe();
+    if (this.newPostCreatedSubscription) {
+      this.newPostCreatedSubscription.unsubscribe();
+    }
   }
 
   getPosts() {

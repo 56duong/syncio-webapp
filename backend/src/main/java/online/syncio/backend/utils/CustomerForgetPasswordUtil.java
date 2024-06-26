@@ -80,8 +80,6 @@ public class CustomerForgetPasswordUtil {
 
         helper.setText(content, true);
 
-
-
         mailSender.send(message);
     }
 }

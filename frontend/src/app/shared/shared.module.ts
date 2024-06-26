@@ -8,9 +8,9 @@ import { PrimengModule } from '../primeng/primeng.module';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportComponent } from './components/report/report.component';
-import { ResizableDraggableComponent } from './components/resizable-draggable/resizable-draggable.component';
-import { StickerPickerComponent } from './components/sticker-picker/sticker-picker.component';
 import { GlobalDialogComponent } from './components/global-dialog/global-dialog.component';
+// import { ResizableDraggableComponent } from './components/resizable-draggable/resizable-draggable.component';
+// import { StickerPickerComponent } from './components/sticker-picker/sticker-picker.component';
 
 @NgModule({
   declarations: [
@@ -18,8 +18,8 @@ import { GlobalDialogComponent } from './components/global-dialog/global-dialog.
     LikeComponent, 
     PostDetailComponent,
     ReportComponent,
-    ResizableDraggableComponent,
-    StickerPickerComponent,
+    // ResizableDraggableComponent,
+    // StickerPickerComponent,
     GlobalDialogComponent
   ],
   imports: [
@@ -30,10 +30,6 @@ import { GlobalDialogComponent } from './components/global-dialog/global-dialog.
     FormsModule,
     ReactiveFormsModule
   ],
-  exports: [
-    PostComponent,
-    ResizableDraggableComponent,
-    StickerPickerComponent
-  ],
+  exports: [PostComponent],
 })
 export class SharedModule {}

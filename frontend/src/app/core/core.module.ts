@@ -3,18 +3,10 @@ import { CommonModule } from '@angular/common';
 import { UserIdToNamePipe } from './pipes/user-id-to-name.pipe';
 import { FormsModule } from '@angular/forms';
 import { RemoveMyUsernamePipe } from './pipes/remove-my-username.pipe';
-import { DateAgoPipePipe } from './pipes/date-ago-pipe.pipe';
-import { UrlifyPipe } from './pipes/urlify.pipe';
 
 @NgModule({
-  declarations: [UserIdToNamePipe, RemoveMyUsernamePipe, DateAgoPipePipe, UrlifyPipe],
+  declarations: [UserIdToNamePipe, RemoveMyUsernamePipe],
   imports: [CommonModule, FormsModule],
-  exports: [
-    UserIdToNamePipe, 
-    RemoveMyUsernamePipe, 
-    DateAgoPipePipe,
-    UrlifyPipe
-  ],
+  exports: [UserIdToNamePipe, RemoveMyUsernamePipe],
 })
-
 export class CoreModule {}

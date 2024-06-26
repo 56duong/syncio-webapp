@@ -18,212 +18,114 @@
               <!-- Background Color -->
               <div class="flex align-items-center justify-content-between gap-1">
                 <p>Background Color</p>
-                <!-- Background -->
-                <div class="col-6 p-0">
-                  <input pInputText 
-                    [(colorPicker)]="backgroundColor"
-                    [style.background]="backgroundColor"
-                    [value]="backgroundColor"
+                <div class="col-6 flex justify-content-center align-items-center gap-1 surface-200 px-2 border-round-sm">
+                  <p-colorPicker 
+                    [(ngModel)]="backgroundColor"
+                    [appendTo]="'body'" 
+                    [style]="{'width':'100%'}"></p-colorPicker>
+                  <input [(ngModel)]="backgroundColor" 
+                    (ngModelChange)="backgroundColor = '#'+(backgroundColor+'').replaceAll('#', '')" 
+                    pInputText id="backgroundColor" [pKeyFilter]="'hex'"
+                    [maxlength]="7"
                     class="w-full"
-                    style="font-size: 0.9rem; padding: 0.4rem; height: 32px;"/>
+                    style="font-size: 0.9rem; padding: 0.4rem; background-color: transparent; border: none; box-shadow: none;" />
                 </div>
               </div>
 
-              <p-divider [styleClass]="'my-0'"></p-divider>
+              <p-divider></p-divider>
 
-              <p-tabView [activeIndex]="activeIndexTabView">
-                <!-- Text -->
-                <p-tabPanel header="Text" *ngIf="selectedObject">
-                  <div class="flex flex-column gap-3" *ngIf="selectedObject.type === 'text'">
-                    <!-- Text -->
-                    <span class="p-float-label">
-                      <textarea [(ngModel)]="selectedObject['text']" id="float-input" rows="5" cols="29" pInputTextarea [autoResize]="true"></textarea>
-                      <label for="float-input">Text</label>
-                      <div style="position: absolute; bottom: 10px; right: 10px;">
-                        <i (click)="isEmojiPickerVisible = !isEmojiPickerVisible"
-                          class="cursor-pointer fa-regular fa-face-smile text-xl"></i>
-                        <emoji-mart *ngIf="isEmojiPickerVisible"
-                          [set]="'twitter'"
-                          [showPreview]="false" 
-                          (emojiSelect)="addEmoji($event)"
-                          [enableSearch]="false"
-                          [style]="{ position: 'absolute', top: '20px', right: '-10.5px', width: '250px', zIndex: 9 }"></emoji-mart>
-                      </div>
-                    </span>
+              <!-- Text -->
+              <span class="p-float-label">
+                <textarea [(ngModel)]="selectedText['text']" id="float-input" rows="5" cols="29" pInputTextarea [autoResize]="true"></textarea>
+                <label for="float-input">Text</label>
+                <div style="position: absolute; bottom: 10px; right: 10px;">
+                  <i (click)="isEmojiPickerVisible = !isEmojiPickerVisible"
+                    class="cursor-pointer fa-regular fa-face-smile text-xl"></i>
+                  <emoji-mart *ngIf="isEmojiPickerVisible"
+                    [set]="'twitter'"
+                    [showPreview]="false" 
+                    (emojiSelect)="addEmoji($event)"
+                    [enableSearch]="false"
+                    [style]="{ position: 'absolute', left: '35px' }"></emoji-mart>
+                </div>
+              </span>
 
-                    <!-- Font-family -->
-                    <div class="flex align-items-center justify-content-between gap-1">
-                      <p>Font family</p>
-                      <p-dropdown 
-                        [options]="['Arial', 'Cursive', 'Fantasy', 'Monospace', 'Sans-serif', 'Serif']"
-                        [(ngModel)]="selectedObject['style']['font-family']"
-                        [editable]="true" 
-                        [appendTo]="'body'"
-                        class="col-6 surface-200 border-round-sm p-0">
-                      </p-dropdown>
-                    </div>
+              <div>
+                <div class="relative">
+                </div>
+              </div>
 
-                    <!-- Text color -->
-                    <div class="flex align-items-center justify-content-between gap-1">
-                      <p>Text Color</p>
-                      <div class="col-6 p-0">
-                        <input pInputText 
-                          [(colorPicker)]="selectedObject['style']['color']"
-                          [style.background]="selectedObject['style']['color']"
-                          [value]="selectedObject['style']['color']"
-                          class="w-full"
-                          style="font-size: 0.9rem; padding: 0.4rem; height: 32px;"/>
-                      </div>
-                    </div>
+              <!-- Font-family -->
+              <div class="flex align-items-center justify-content-between gap-1">
+                <p>Font family</p>
+                <p-dropdown 
+                  [options]="['Arial', 'Cursive', 'Fantasy', 'Monospace', 'Sans-serif', 'Serif']"
+                  [(ngModel)]="selectedText['style']['font-family']"
+                  [editable]="true" 
+                  [appendTo]="'body'"
+                  class="col-6 surface-200 border-round-sm p-0">
+                </p-dropdown>
+              </div>
 
-                    <!-- Background -->
-                    <div class="flex align-items-center justify-content-between gap-1">
-                      <p>Background</p>
-                      <div class="col-6 p-0">
-                        <input pInputText 
-                          [(colorPicker)]="selectedObject['style']['background-color']"
-                          [style.background]="selectedObject['style']['background-color']"
-                          [value]="selectedObject['style']['background-color']"
-                          class="w-full"
-                          style="font-size: 0.9rem; padding: 0.4rem; height: 32px;"/>
-                      </div>
-                    </div>
+              <!-- Text color -->
+              <div class="flex align-items-center justify-content-between gap-1">
+                <p>Text Color</p>
+                <div class="col-6 flex justify-content-center align-items-center gap-1 surface-200 px-2 border-round-sm">
+                  <p-colorPicker 
+                    [(ngModel)]="selectedText['style']['color']"
+                    [appendTo]="'body'" 
+                    [style]="{'width':'100%'}"></p-colorPicker>
+                  <input [(ngModel)]="selectedText['style']['color']" 
+                    (ngModelChange)="selectedText['style']['color'] = '#'+(selectedText['style']['color']+'').replaceAll('#', '')" 
+                    pInputText id="textColor" [pKeyFilter]="'hex'"
+                    [maxlength]="7"
+                    class="w-full"
+                    style="font-size: 0.9rem; padding: 0.4rem; background-color: transparent; border: none; box-shadow: none;" />
+                </div>
+              </div>
 
-                    <!-- Font-size -->
-                    <div class="flex align-items-center justify-content-between gap-1">
-                      <p>Font size</p>
-                      <p-dropdown 
-                        [options]="['4px', '5px', '6px', '7px', '8px', '9px', '10px', '11px', '12px', '13px', '14px', '15px', '16px', '17px', '18px', '19px', '20px', '21px', '22px', '23px', '24px', '25px', '26px', '27px', '28px', '29px', '30px', '31px', '32px', '33px', '34px', '35px', '36px', '37px', '38px', '39px', '40px', '41px', '42px', '43px', '44px', '45px', '46px', '47px', '48px', '49px', '50px', '51px', '52px', '53px', '54px', '55px', '56px', '57px', '58px', '59px', '60px', '61px', '62px', '63px', '64px']"
-                        [(ngModel)]="selectedObject['style']['font-size']"
-                        [editable]="true" 
-                        [appendTo]="'body'"
-                        class="col-6 surface-200 border-round-sm p-0">
-                      </p-dropdown>
-                    </div>
+              <!-- Font-size -->
+              <div class="flex align-items-center justify-content-between gap-1">
+                <p>Font size</p>
+                <p-dropdown 
+                  [options]="['4px', '5px', '6px', '7px', '8px', '9px', '10px', '11px', '12px', '13px', '14px', '15px', '16px', '17px', '18px', '19px', '20px', '21px', '22px', '23px', '24px', '25px', '26px', '27px', '28px', '29px', '30px', '31px', '32px', '33px', '34px', '35px', '36px', '37px', '38px', '39px', '40px']"
+                  [(ngModel)]="selectedText['style']['font-size']"
+                  [editable]="true" 
+                  [appendTo]="'body'"
+                  class="col-6 surface-200 border-round-sm p-0">
+                </p-dropdown>
+              </div>
 
-                    <!-- Bold/Italic/Underline/ -->
-                    <div class="flex justify-content-between gap-4">
-                      <p>Font style</p>
-                      <div class="font-style flex justify-content-end flex-1 gap-2">
-                        <!-- Bold -->
-                        <p-toggleButton 
-                          [ngModel]="selectedObject['style']['font-weight'] == '900'"
-                          (ngModelChange)="selectedObject['style']['font-weight'] = selectedObject['style']['font-weight'] == '700' ? '900' : selectedObject['style']['font-weight'] == '900' ? '400' : '700'"
-                          onLabel="B" offLabel="B"
-                          class="bold"
-                          [style.font-weight]="selectedObject['style']['font-weight']">
-                        </p-toggleButton>
-                        <!-- Italic -->
-                        <p-toggleButton 
-                          [ngModel]="selectedObject['style']['font-style'] == 'italic'"
-                          (ngModelChange)="selectedObject['style']['font-style'] = $event ? 'italic' : 'normal'"
-                          onLabel="I" offLabel="I" class="italic"></p-toggleButton>
-                        <!-- Underline -->
-                        <p-toggleButton [ngModel]="selectedObject['style']['text-decoration'] == 'underline'"
-                          (ngModelChange)="selectedObject['style']['text-decoration'] = $event ? 'underline' : 'none'" 
-                          onLabel="U" offLabel="U" class="underline"></p-toggleButton>
-                      </div>
-                    </div>
+              <!-- Bold/Italic/Underline/ -->
+              <div class="flex justify-content-between gap-4">
+                <p>Font style</p>
+                <div class="font-style flex justify-content-end flex-1 gap-2">
+                  <!-- Bold -->
+                  <p-toggleButton 
+                    [ngModel]="selectedText['style']['font-weight'] == 'bold'"
+                    (ngModelChange)="selectedText['style']['font-weight'] = $event ? 'bold' : 'normal'"
+                    onLabel="B" offLabel="B" class="bold"></p-toggleButton>
+                  <!-- Italic -->
+                  <p-toggleButton 
+                    [ngModel]="selectedText['style']['font-style'] == 'italic'"
+                    (ngModelChange)="selectedText['style']['font-style'] = $event ? 'italic' : 'normal'"
+                    onLabel="I" offLabel="I" class="italic"></p-toggleButton>
+                  <!-- Underline -->
+                  <p-toggleButton [ngModel]="selectedText['style']['text-decoration'] == 'underline'"
+                    (ngModelChange)="selectedText['style']['text-decoration'] = $event ? 'underline' : 'none'" 
+                    onLabel="U" offLabel="U" class="underline"></p-toggleButton>
+                </div>
+              </div>
 
-                    <!-- Button -->
-                    <div class="flex gap-2">
-                      <!-- Delete Text -->
-                      <div class="p-fluid flex-2">
-                        <p-button (click)="deleteSelectedObject()" label="Delete" severity="danger"></p-button>
-                      </div>
-                      <!-- Add Text -->
-                      <div class="p-fluid flex-1">
-                        <p-button (click)="addText()" label="Add" [disabled]="!(selectedObject['text'].length > 0)"></p-button>
-                      </div>
-                    </div>
-                  </div>
-                </p-tabPanel>
-
-                <!-- Image -->
-                <p-tabPanel header="Image" click>
-                  <div class="flex flex-column gap-3">
-                    <!-- Add Image -->
-                    <div class="flex align-items-center justify-content-between gap-1">
-                      <p>Add image</p>
-                      <div class="col-6">
-                        <p-fileUpload #imageUpload
-                          mode="basic" 
-                          chooseLabel="Upload" 
-                          chooseIcon="pi pi-upload"
-                          name="demo[]" 
-                          accept="image/*" 
-                          [maxFileSize]="5000000" 
-                          (onSelect)="onSelectImageUpload($event, imageUpload)" />
-                      </div>
-                    </div>
-                    <!-- Delete Image -->
-                    <div *ngIf="selectedObject?.type === 'image'" class="flex align-items-center justify-content-between gap-1">
-                      <p>Or Delete</p>
-                      <p-button (click)="deleteSelectedObject()" label="Delete" severity="danger" icon="pi pi-trash" class="col-6" styleClass="w-full"></p-button>
-                    </div>
-
-                    <div *ngIf="selectedObject?.type === 'image'" 
-                      (click)="$event.stopPropagation()"
-                      class="flex flex-column gap-3">
-                      <!-- Rotate -->
-                      <div class="mb-3">
-                        <p>Rotate</p>
-                        <p-slider 
-                          [ngModel]="selectedObject['style']['rotate'].replaceAll('deg', '')"
-                          (ngModelChange)="selectedObject['style']['rotate'] = $event+'deg'"  />
-                      </div>
-                      <!-- Border radius -->
-                      <div class="flex align-items-center justify-content-between gap-1">
-                        <p>Border radius</p>
-                        <div class="col-6 flex justify-content-center align-items-center gap-1 surface-200 px-2 border-round-sm">
-                          <input [ngModel]="selectedObject['style']['border-radius']" 
-                            (ngModelChange)="selectedObject['style']['border-radius'] = ($event+'').replaceAll('px', '')+'px'" 
-                            pInputText id="borderRadius" [pKeyFilter]="'num'"
-                            maxlength="5"
-                            class="w-full"
-                            style="font-size: 0.9rem; padding: 0.4rem; background-color: transparent; border: none; box-shadow: none;" />
-                        </div>
-                      </div>
-                      <!-- Filter -->
-                      <div>
-                        <p class="col-12">Filter</p>
-                        <img (click)="selectedObject['style']['filter'] = 'none'"
-                          src="https://www.w3schools.com/cssref/pineapple.jpg" alt="Pineapple" class="col-6">
-                        <img class="blur" (click)="selectedObject['style']['filter'] = 'blur(4px)'"
-                          src="https://www.w3schools.com/cssref/pineapple.jpg" alt="Pineapple" class="col-6"
-                          style="filter: blur(4px);">
-                        <img class="brightness" (click)="selectedObject['style']['filter'] = 'brightness(0.30)'"
-                          src="https://www.w3schools.com/cssref/pineapple.jpg" alt="Pineapple" class="col-6"
-                          style="filter: brightness(0.30);">
-                        <img class="contrast" (click)="selectedObject['style']['filter'] = 'contrast(180%)'"
-                          src="https://www.w3schools.com/cssref/pineapple.jpg" alt="Pineapple" class="col-6"
-                          style="filter: contrast(180%);">
-                        <img class="grayscale" (click)="selectedObject['style']['filter'] = 'grayscale(100%)'"
-                          src="https://www.w3schools.com/cssref/pineapple.jpg" alt="Pineapple" class="col-6"
-                          style="filter: grayscale(100%);">
-                        <img class="huerotate" (click)="selectedObject['style']['filter'] = 'hue-rotate(180deg)'"
-                          src="https://www.w3schools.com/cssref/pineapple.jpg" alt="Pineapple" class="col-6"
-                          style="filter: hue-rotate(180deg);">
-                        <img class="invert" (click)="selectedObject['style']['filter'] = 'invert(100%)'"
-                          src="https://www.w3schools.com/cssref/pineapple.jpg" alt="Pineapple" class="col-6"
-                          style="filter: invert(100%);">
-                        <img class="opacity" (click)="selectedObject['style']['filter'] = 'opacity(50%)'"
-                          src="https://www.w3schools.com/cssref/pineapple.jpg" alt="Pineapple" class="col-6"
-                          style="filter: opacity(50%);">
-                        <img class="saturate" (click)="selectedObject['style']['filter'] = 'saturate(7)'"
-                          src="https://www.w3schools.com/cssref/pineapple.jpg" alt="Pineapple" class="col-6"
-                          style="filter: saturate(7);">
-                        <img class="sepia" (click)="selectedObject['style']['filter'] = 'sepia(100%)'"
-                          src="https://www.w3schools.com/cssref/pineapple.jpg" alt="Pineapple" class="col-6"
-                          style="filter: sepia(100%);">
-                        <img class="shadow" (click)="selectedObject['style']['filter'] = 'drop-shadow(8px 8px 10px black)'"
-                          src="https://www.w3schools.com/cssref/pineapple.jpg" alt="Pineapple" class="col-6"
-                          style="filter: drop-shadow(8px 8px 10px black);">
-                      </div>
-                    </div>
-                  </div>
-                </p-tabPanel>
-              </p-tabView>
+              <!-- Button -->
+              <div class="flex gap-2">
+                <div class="p-fluid flex-2">
+                  <p-button (click)="resetSelectedText()" label="Reset" [outlined]="true"></p-button>
+                </div>
+                <div class="p-fluid flex-1">
+                  <p-button (click)="addText()" label="Add" [disabled]="!(selectedText['text'].length > 0)"></p-button>
+                </div>
+              </div>
 
               <p-divider></p-divider>
 
@@ -233,9 +135,10 @@
                   <p-button (click)="cancel()" label="Cancel" severity="danger" [outlined]="true"></p-button>
                 </div>
                 <div class="p-fluid flex-1">
-                  <p-button (click)="share()" label="Share to story"></p-button>
+                  <p-button (click)="share()" label="Share to story" [disabled]="!(selectedText['text'].length > 0)"></p-button>
                 </div>
               </div>
+
             </div>
         </div>
       </ng-template>
@@ -245,31 +148,15 @@
   <!-- Preview -->
   <div class="container flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="shadow-2 overflow-hidden" style="border-radius: 8px;">
-      <div class="story relative" style="width: 390px; height: 694px;"
-        (click)="resetSelectedObject($event)"
-        id="story"
+      <div class="story" style="width: 390px; height: 694px;"
         [ngStyle]="{'background-color': backgroundColor}">
-        <!-- List of objects -->
-        <ng-container *ngFor="let obj of objectList">
-          <!-- Image (use app-resizable-draggable-component to resize and drag the image) -->
-          <app-resizable-draggable-component 
-            *ngIf="!obj.text && obj.url" 
-            dragBoundary="#story"
-            (isSelected)="isSelected($event, obj)"
-            (click)="selectedObject = obj; activeIndexTabView = 1">
-            <img [src]="obj.url" [ngStyle]="obj.style" alt="">
-          </app-resizable-draggable-component>
-          <!-- Text (use cdkDrag to drag the text) -->
-          <div *ngIf="obj.text && !obj.url"
-            cdkDragBoundary=".story" cdkDrag
-            (cdkDragStarted)="selectedObject = obj; activeIndexTabView = 0"
-            (click)="selectedObject = obj"
-            [ngStyle]="obj.style"
-            class="w-fit cursor-move"
-            [style.border]="obj.id == selectedObject?.id ? '1px solid #0099ff' : ''">
-            {{obj.text}}
-          </div>
-        </ng-container>
+        <div *ngFor="let text of textList" 
+          cdkDragBoundary=".story" cdkDrag
+          (cdkDragReleased)="selectedText = text"
+          [ngStyle]="text.style"
+          class="w-fit cursor-move">
+          {{text.text}}
+        </div>
       </div>
     </div>
   </div>

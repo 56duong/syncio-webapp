@@ -29,12 +29,16 @@ public class ReportController {
         return new ResponseEntity<>(createdReport , HttpStatus.CREATED);
     }
 
+    // get reports by post id
+    @GetMapping("/{postId}")
+    public ResponseEntity<List<ReportDTO>> getReportsByPostId(@PathVariable(name = "postId") final UUID postId) {
+        return ResponseEntity.ok(reportService.getByPostId(postId));
+    }
 
     // delete report
-    @DeleteMapping("/{postId}/{userId}")
-    public ResponseEntity<Void> deleteReport(@PathVariable(name = "postId") final UUID postId,
-                                            @PathVariable(name = "userId") final UUID userId) {
-        reportService.delete(postId, userId);
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deleteReport(@PathVariable(name = "postId") final UUID postId) {
+        reportService.deleteAllByPostId(postId);
         return ResponseEntity.noContent().build();
     }
 
