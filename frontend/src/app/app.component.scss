@@ -1,2 +1,14 @@
-@import '~primeng/resources/themes/saga-blue/theme.css';
-@import '~primeng/resources/primeng.min.css';
+.profile-form {
+    max-width: 500px;
+    margin: auto;
+  
+    mat-form-field {
+      width: 100%;
+      margin-bottom: 16px;
+    }
+  
+    button {
+      width: 100%;
+    }
+  }
+  

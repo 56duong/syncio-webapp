@@ -8,6 +8,9 @@ import { CoreModule } from 'src/app/core/core.module';
 import { CreateStoryComponent } from './create-story/create-story.component';
 import { StoryComponent } from './story.component';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { FormsModule } from '@angular/forms';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 @NgModule({
   declarations: [
@@ -20,7 +23,10 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
     CommonModule,
     StoryRoutingModule,
     PrimengModule,
-    PickerModule
+    PickerModule,
+    SharedModule,
+    FormsModule,
+    ColorPickerModule
   ]
 })
 export class StoryModule { }

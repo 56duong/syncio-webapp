@@ -4,6 +4,7 @@ package online.syncio.backend.user;
 import jakarta.persistence.*;
 import lombok.*;
 import online.syncio.backend.comment.Comment;
+import online.syncio.backend.commentlike.CommentLike;
 import online.syncio.backend.like.Like;
 import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messageroommember.MessageRoomMember;
@@ -72,13 +73,13 @@ public class User implements UserDetails {
     @Column(name = "reset_password_token", length = 30)
     private String resetPasswordToken;
 
-    //    @CreatedBy
+//    @CreatedBy
 //    private String createdBy;
 //    Post
-    @OneToMany(mappedBy = "createdBy")
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
     private Set<Post> posts;
 
-    //    Follow
+//    Follow
     @ManyToMany
     @JoinTable(
             name = "user_followers",
@@ -99,23 +100,27 @@ public class User implements UserDetails {
     )
     private Set<User> closeFriends;
 
-    //    Like
+//    Like
     @OneToMany(mappedBy = "user")
     private Set<Like> likes;
 
-    //    Comment
+//    Comment
     @OneToMany(mappedBy = "user")
     private Set<Comment> comments;
 
-    //    Report
+//    CommentLike
+    @OneToMany(mappedBy = "user")
+    private Set<CommentLike> commentLikes;
+
+//    Report
     @OneToMany(mappedBy = "user")
     private Set<Report> reports;
 
-    //    MessageRoomMember
+//    MessageRoomMember
     @OneToMany(mappedBy = "user")
     private Set<MessageRoomMember> messageRoomMembers;
 
-    //    MessageContent
+//    MessageContent
     @OneToMany(mappedBy = "user")
     private Set<MessageContent> messageContents;
 
@@ -127,7 +132,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private Set<StoryView> viewedStories;
 
-
 //    Notification
     @OneToMany(mappedBy = "actor")
     private Set<Notification> notifications;
@@ -138,7 +142,6 @@ public class User implements UserDetails {
 
     @Column(name = "username_last_modified")
     private LocalDateTime usernameLastModified;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();

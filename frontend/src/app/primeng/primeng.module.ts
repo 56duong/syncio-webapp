@@ -7,14 +7,11 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { EditorModule } from 'primeng/editor';
 import { CarouselModule } from 'primeng/carousel';
 import { AvatarModule } from 'primeng/avatar';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { FileUploadModule } from 'primeng/fileupload';
-import { ListboxModule } from 'primeng/listbox';
-=======
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SidebarModule } from 'primeng/sidebar';
 import { DropdownModule } from 'primeng/dropdown';
-import { ColorPickerModule } from 'primeng/colorpicker';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
@@ -38,11 +35,16 @@ import { InputNumberModule } from 'primeng/inputnumber';
 @NgModule({
   declarations: [],
   exports: [
+    InputSwitchModule,
+    ImageModule,
+    OverlayPanelModule,
+    SliderModule,
+    TabViewModule,
+    ContextMenuModule,
     TieredMenuModule,
     ScrollPanelModule,
     ToggleButtonModule,
     KeyFilterModule,
-    ColorPickerModule,
     DropdownModule,
     AutoCompleteModule,
     FormsModule,
@@ -54,13 +56,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
     DialogModule,
     ButtonModule,
     AvatarModule,
-    InputTextModule,
     FileUploadModule,
-<<<<<<< HEAD
-    DropdownModule,
-    ListboxModule,
-    ReactiveFormsModule,
-=======
     SidebarModule,
     TableModule,
     ToastModule,

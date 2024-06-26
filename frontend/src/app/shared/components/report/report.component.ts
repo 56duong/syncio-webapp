@@ -5,7 +5,6 @@ import { Post } from 'src/app/core/interfaces/post';
 import { Report } from 'src/app/core/interfaces/report';
 import { PostService } from 'src/app/core/services/post.service';
 import { ReportService } from 'src/app/core/services/report.service';
-import { ToastService } from 'src/app/core/services/toast.service';
 import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
@@ -24,14 +23,13 @@ export class ReportComponent implements OnInit {
   constructor(
     private userService: UserService,
     private reportService: ReportService, 
-    private fb: FormBuilder,
-    private toastService: ToastService
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
     this.reportForm = this.fb.group({
       reason: [null, Validators.required],
-      description: [],
+      description: ['', Validators.required],
     });
 
     this.reasons = [
@@ -39,7 +37,6 @@ export class ReportComponent implements OnInit {
       { label: 'HARASSMENT', value: 'HARASSMENT' },
       { label: 'VIOLENCE', value: 'VIOLENCE' },
       { label: 'INAPPROPRIATE CONTENT', value: 'INAPPROPRIATE_CONTENT' },
-      // { label: 'NUDE', value : 'NUDE'}
     ];
   }
 
@@ -52,15 +49,13 @@ export class ReportComponent implements OnInit {
     if (this.reportForm?.valid) {
       const report: Report = {
         postId: this.post.id,
-        // userId: this.userService.getUserResponseFromLocalStorage()?.id,
-        userId : "5f8dfe06-774f-484b-90cf-ceed1f705b70",
+        userId: this.userService.getUserResponseFromLocalStorage()?.id,
         reason: this.reportForm?.value.reason.value,
         description: this.reportForm?.value.description,
       };
 
       this.reportService.createReport(report).subscribe(
         (response) => {
-          this.toastService.showSuccess('success', 'Thank you for your feedback');
           console.log('Report submitted successfully:', report);
           // reset the form and close the modal after successful submission
           this.reportForm?.reset();
@@ -74,5 +69,4 @@ export class ReportComponent implements OnInit {
       this.closeModal();
     }
   }
-  
 }

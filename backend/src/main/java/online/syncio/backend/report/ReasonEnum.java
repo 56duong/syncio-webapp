@@ -4,6 +4,5 @@ public enum ReasonEnum {
     SPAM,
     HARASSMENT,
     VIOLENCE,
-    INAPPROPRIATE_CONTENT,
-    NUDE
+    INAPPROPRIATE_CONTENT
 }
