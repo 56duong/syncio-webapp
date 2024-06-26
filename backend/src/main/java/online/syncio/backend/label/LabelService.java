@@ -48,7 +48,6 @@ public class LabelService {
         labelDTO.setName(label.getName());
         labelDTO.setDescription(label.getDescription());
         labelDTO.setPrice(label.getPrice());
-        labelDTO.setLabelURL(label.getLabelURL());
         labelDTO.setCreatedDate(label.getCreatedDate());
         labelDTO.setCreatedBy(label.getCreatedBy() == null ? null : label.getCreatedBy().getId());
         labelDTO.setStatus(label.getStatus());
@@ -60,14 +59,13 @@ public class LabelService {
         label.setName(labelDTO.getName());
         label.setDescription(labelDTO.getDescription());
         label.setPrice(labelDTO.getPrice());
-        label.setLabelURL(labelDTO.getLabelURL());
         label.setCreatedDate(labelDTO.getCreatedDate());
+
         label.setStatus(labelDTO.getStatus());
 
         final User user = labelDTO.getCreatedBy() == null ? null : userRepository.findById(labelDTO.getCreatedBy())
                 .orElseThrow(() -> new NotFoundException(User.class, "id", labelDTO.getCreatedBy().toString()));
         label.setCreatedBy(user);
-
         return label;
     }
 
@@ -156,6 +154,7 @@ public class LabelService {
                 .map(label -> mapToDTO(label, new LabelDTO()))
                 .orElseThrow(() -> new NotFoundException(Label.class, "id", id.toString()));
     }
+
 
     public LabelDTO update (final UUID id, final LabelUploadRequest labelUploadRequest) throws IOException {
         User user = userRepository.findById(authUtils.getCurrentLoggedInUserId())

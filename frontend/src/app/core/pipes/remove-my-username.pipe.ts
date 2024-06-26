@@ -21,7 +21,7 @@ export class RemoveMyUsernamePipe implements PipeTransform {
     
     if (filteredNames.length > 1) {
       // (Room) If there are more than one names left after removing the username
-      return 'You, ' + filteredNames.join(', ');
+      return 'You, ' + filteredNames.slice(1).join(', ');
     }
     else {
       // 2 users

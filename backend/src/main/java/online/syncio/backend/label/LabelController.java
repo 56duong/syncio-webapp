@@ -1,5 +1,6 @@
 package online.syncio.backend.label;
 
+
 import jakarta.validation.Valid;
 import org.hibernate.validator.cfg.defs.UUIDDef;
 import org.springframework.http.MediaType;

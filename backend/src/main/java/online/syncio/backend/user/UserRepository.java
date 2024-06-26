@@ -20,6 +20,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     boolean existsByUsername(String username);
 
     Optional<User>findByEmail(String email);
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     Optional<User>findByUsername(String username);
     List<User> findByUsernameContaining(String username);
@@ -32,14 +33,12 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("UPDATE User u SET u.status = 'ACTIVE' WHERE u.id = :id")
     void enableUser(UUID id);
 
-
-    @Query("SELECT u FROM User u LEFT JOIN FETCH u.posts WHERE u.id = :id")
-    Optional<User> findByIdWithPosts(@Param("id") UUID id);
-
     @Query("SELECT u FROM User u JOIN u.stories s WHERE s.createdDate > :createdDate")
     List<User> findAllUsersWithAtLeastOneStoryAfterCreatedDate(LocalDateTime createdDate);
 
-    @Query("SELECT u.username FROM User u WHERE u.id = :id")
-    String findUsernameById(UUID id);
-
+    @Query("SELECT DATE(u.createdDate) as date, COUNT(u) as count " +
+            "FROM User u " +
+            "WHERE u.createdDate >= :startDate " +
+            "GROUP BY DATE(u.createdDate)")
+    List<Object[]> countNewUsersSince(@Param("startDate") LocalDateTime startDate);
 }

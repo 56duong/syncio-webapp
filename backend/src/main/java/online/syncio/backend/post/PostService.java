@@ -12,6 +12,7 @@ import online.syncio.backend.like.Like;
 import online.syncio.backend.like.LikeRepository;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.report.ReportRepository;
+import online.syncio.backend.user.EngagementMetricsDTO;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
 import org.springframework.data.domain.*;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,8 +44,10 @@ public class PostService {
     public List<PostDTO> findAll () {
         final List<Post> posts = postRepository.findAll(Sort.by("createdDate").descending());
         return posts.stream()
-                    .map(post -> mapToDTO(post, new PostDTO()))
-                    .toList();
+                .filter(post -> post.getFlag())
+                .map(post -> mapToDTO(post, new PostDTO()))
+                .toList();
+
     }
 
     // load post theo page
@@ -54,13 +58,50 @@ public class PostService {
 
         // map từ entity sang DTO -> trả về List<PostDTO>
         List<PostDTO> postsDTO = posts.stream()
-                                      .map(post -> mapToDTO(post, new PostDTO()))
-                                      .collect(Collectors.toList());
+                .filter(post -> post.getFlag() == true)
+                .map(post -> mapToDTO(post, new PostDTO()))
+                .collect(Collectors.toList());
 
         // trả về Page<PostDTO>
         return new PageImpl<>(postsDTO, pageable, posts.getTotalElements());
     }
 
+    // get post have report != null and flag = true
+    public Page<PostDTO> getPostReported(Pageable pageable) {
+        Pageable sortedByCreatedDateDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdDate").descending());
+        Page<Post> posts = postRepository.findByReportsIsNotNullAndFlagTrue(sortedByCreatedDateDesc);
+        List<PostDTO> postsDTO = posts.stream()
+                .map(post -> mapToDTO(post, new PostDTO()))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(postsDTO, pageable, posts.getTotalElements());
+    }
+
+    // get post have report = null and flag = false
+    public Page<PostDTO> getPostUnFlagged(Pageable pageable) {
+        Pageable sortedByCreatedDateDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdDate").descending());
+        Page<Post> posts = postRepository.findByReportsIsNotNullAndFlagFalse(sortedByCreatedDateDesc);
+        List<PostDTO> postsDTO = posts.stream()
+                .map(post -> mapToDTO(post, new PostDTO()))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(postsDTO, pageable, posts.getTotalElements());
+    }
+    // set flag = true for post
+    public void setFlag(UUID postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(Post.class, "id", postId.toString()));
+        post.setFlag(false);
+        postRepository.save(post);
+    }
+
+    // set flag = false for post
+    public void setUnFlag(UUID postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(Post.class, "id", postId.toString()));
+        post.setFlag(true);
+        postRepository.save(post);
+    }
 
     public PostDTO get (final UUID id) {
         return postRepository.findById(id)
@@ -154,9 +195,8 @@ public class PostService {
                     .collect(Collectors.toList());
     }
 
-
     //    MAPPER
-    private PostDTO mapToDTO (final Post post, final PostDTO postDTO) {
+    private PostDTO mapToDTO(final Post post, final PostDTO postDTO)    {
         postDTO.setId(post.getId());
         postDTO.setCaption(post.getCaption());
         postDTO.setPhotos(post.getPhotos());
@@ -166,7 +206,7 @@ public class PostService {
         return postDTO;
     }
 
-    private Post mapToEntity (final PostDTO postDTO, final Post post) {
+    private Post mapToEntity(final PostDTO postDTO, final Post post) {
         post.setCaption(postDTO.getCaption());
         post.setPhotos(postDTO.getPhotos());
         post.setCreatedDate(postDTO.getCreatedDate());
@@ -174,12 +214,14 @@ public class PostService {
         final User user = postDTO.getCreatedBy() == null ? null : userRepository.findById(postDTO.getCreatedBy())
                                                                                 .orElseThrow(() -> new NotFoundException(User.class, "id", postDTO.getCreatedBy().toString()));
         post.setCreatedBy(user);
+
         return post;
     }
 
 
     //    REFERENCED
-    public ReferencedWarning getReferencedWarning (final UUID id) {
+    public ReferencedWarning getReferencedWarning(final UUID id) {
+
         final ReferencedWarning referencedWarning = new ReferencedWarning();
         final Post post = postRepository.findById(id)
                                         .orElseThrow(() -> new NotFoundException(Post.class, "id", id.toString()));
@@ -284,5 +326,17 @@ public class PostService {
         }
     }
 
+    public EngagementMetricsDTO getEngagementMetrics (int days) {
+        LocalDateTime startDate = LocalDateTime.now().minusDays(days);
+        List<Post> posts = postRepository.findAllPostsSince(startDate);
 
+        long totalLikes = likeRepository.countLikesForPosts(posts);
+        long totalComments = commentRepository.countCommentsForPosts(posts);
+
+        EngagementMetricsDTO metrics = new EngagementMetricsDTO();
+        metrics.setLikes(totalLikes);
+        metrics.setComments(totalComments);
+
+        return metrics;
+    }
 }

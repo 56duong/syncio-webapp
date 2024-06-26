@@ -3,29 +3,31 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.scss']
+  styleUrls: ['./admin.component.scss'],
 })
 export class AdminComponent {
   menus = [
     {
       name: 'Dashboard',
-      link: ''
+      link: '',
     },
+
     {
       name: 'Users Management',
-      link: 'users-management'
+      link: 'users-management',
     },
+
     {
       name: 'Posts Management',
-      link: 'posts-management'
+      link: 'posts-management',
     },
     {
-      name: 'Labels Management',
-      link: 'labels-management'
+      name: 'Reported Posts',
+      link: 'reported-posts',
     },
     {
-      name: 'Sticker Management',
-      link: 'sticker-management'
-    }
-  ]
+      name: 'Hidden Posts',
+      link: 'hidden-posts',
+    },
+  ];
 }

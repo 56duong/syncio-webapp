@@ -1,8 +1,5 @@
 package online.syncio.backend.auth;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.auth.request.ForgotPasswordForm;
 import online.syncio.backend.auth.request.RefreshTokenDTO;
@@ -14,12 +11,19 @@ import online.syncio.backend.auth.responses.RegisterResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
 
 import online.syncio.backend.exception.DataNotFoundException;
-import online.syncio.backend.post.AvatarUpdateDTO;
+import online.syncio.backend.exception.ExpiredTokenException;
+import online.syncio.backend.exception.InvalidParamException;
+
 import online.syncio.backend.setting.SettingService;
+import online.syncio.backend.user.RoleEnum;
+import online.syncio.backend.user.StatusEnum;
 import online.syncio.backend.user.User;
-import online.syncio.backend.auth.responses.RegisterResponse;
+import online.syncio.backend.user.UserRepository;
+import online.syncio.backend.auth.request.RegisterDTO;
 import online.syncio.backend.utils.ConstantsMessage;
 import online.syncio.backend.utils.CustomerForgetPasswordUtil;
+import online.syncio.backend.utils.CustomerRegisterUtil;
+import online.syncio.backend.utils.JwtTokenUtils;
 
 
 
@@ -29,31 +33,26 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-@RestController
-@RequestMapping("${api.prefix}/users")
 @RequiredArgsConstructor
-public class AuthController {
+@Service
+public class AuthService {
+    private final UserRepository userRepository;
 
-    private final AuthService authService;
-    private final TokenService tokenService;
     private final TokenRepository tokenRepository;
-
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenUtils jwtTokenUtil;
+    private final AuthenticationManager authenticationManager;
+    private final  TokenService tokenService;
     private final SettingService settingService;
-    @Value("${apiPrefix.client}")
-    private String apiPrefix;
-
-
     @Value("${url.frontend}")
     private String urlFE;
 //    private final RabbitTemplate rabbitTemplate;
@@ -70,6 +69,7 @@ public class AuthController {
             BindingResult result
     ) throws Exception {
 
+
         User user = authService.createUser(registerDTO);
 
 //        rabbitMQService.sendMessage("New user registered: " + user.getEmail());
@@ -80,44 +80,45 @@ public class AuthController {
                 .build());
     }
 
+    @Transactional
+    public User createUser(RegisterDTO userDTO) throws Exception {
+        // Check if the email already exists
+        String email = userDTO.getEmail();
+        if(!email.isBlank() && userRepository.existsByEmail(email)) {
+            throw new DataIntegrityViolationException("Email đã tồn tại");
+        }
 
 
-    @PostMapping("/login")
-    public ResponseEntity<ResponseObject> login(
-            @Valid @RequestBody UserLoginDTO userLoginDTO,
-            HttpServletRequest request
-    ) throws Exception {
-        // Kiểm tra thông tin đăng nhập và sinh token
-        String token = authService.login(
-                userLoginDTO.getEmail(),
-                userLoginDTO.getPassword()
-        );
-
-        String userAgent = request.getHeader("User-Agent");
-        User userDetail = authService.getUserDetailsFromToken(token);
-        Token jwtToken = tokenService.addToken(userDetail, token, isMobileDevice(userAgent));
-
-        LoginResponse loginResponse = LoginResponse
-                .builder()
-                .message("Login successfully")
-                .token(jwtToken.getToken())
-                .bio(userDetail.getBio())
-                .tokenType(jwtToken.getTokenType())
-                .refreshToken(jwtToken.getRefreshToken())
-                .username(userDetail.getUsername())
-                .roles(userDetail.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
-                .id(userDetail.getId())
+        String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
+        User newUser = User.builder()
+                .email(userDTO.getEmail())
+                .password(encodedPassword)
+                .username(userDTO.getUsername())
+                .status(StatusEnum.DISABLED)
+                .role(RoleEnum.USER)
                 .build();
-        return ResponseEntity.ok().body(ResponseObject.builder()
-                .message("Login successfully")
-                .data(loginResponse)
-                .status(HttpStatus.OK)
-                .build());
+
+        newUser = userRepository.save(newUser);
+
+        String token = UUID.randomUUID().toString();
+        Token confirmationToken = Token.builder()
+                .token(token)
+                .user(newUser)
+                .expirationDate(LocalDateTime.now().plusMinutes(30)) //30 minutes
+                .revoked(false)
+                .build();
+
+        tokenRepository.save(confirmationToken);
+        String link = urlFE + "/confirm-user-register?token=" + token;
+        CustomerForgetPasswordUtil.sendEmailTokenRegister(link, email, settingService);
+        return newUser;
     }
-    
-    @PostMapping("/refreshToken")
-    public ResponseEntity<ResponseObject> refreshToken(
-            @Valid @RequestBody RefreshTokenDTO refreshTokenDTO
+
+
+
+    public String login(
+            String email,
+            String password
     ) throws Exception {
         User userDetail = authService.getUserDetailsFromRefreshToken(refreshTokenDTO.getRefreshToken());
         Token jwtToken = tokenService.refreshToken(refreshTokenDTO.getRefreshToken(), userDetail);
@@ -152,48 +153,43 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
-    }
 
-
-    @PostMapping(value = "/forgot_password")
-    public ResponseEntity<?> forgotPassword(HttpServletRequest request,@Valid @RequestBody ForgotPasswordForm forgotPasswordForm) throws Exception {
-
-
-        if (!authService.existsByEmail(forgotPasswordForm.getEmail())) {
-            return new ResponseEntity<>(new DataNotFoundException("User not exist"), HttpStatus.BAD_REQUEST);
+        if(optionalUser.isEmpty()) {
+            throw new DataNotFoundException(ConstantsMessage.USER_NOT_FOUND);
         }
-        String token = authService.updateResetPasswordToken(forgotPasswordForm.getEmail());
-        String link = urlFE + "/reset_password?token=" + token;
 
-        CustomerForgetPasswordUtil.sendEmail(link, forgotPasswordForm.getEmail(), settingService);
+        User existingUser = optionalUser.get();
 
 
-        return  ResponseEntity.ok(ResponseObject.builder()
-                .message("Reset password link has been sent to your email")
-                .data("")
-                .status(HttpStatus.OK)
-                .build());
-    }
+        if(!passwordEncoder.matches(password, existingUser.getPassword())) {
+            throw new BadCredentialsException(ConstantsMessage.PASSWORD_NOT_MATCH);
 
-    @PostMapping(value = "/reset_password")
-    public ResponseEntity<?> processResetPassword(@RequestParam(value = "token", required = true) String token,
-                                                  @RequestParam(value = "password", required = true) String password) throws Exception {
+        }
 
-        authService.updatePassword(token, password);
-
-        return  ResponseEntity.ok(
-                ResponseObject.builder()
-                        .message("Password updated successfully")
-                        .data("")
-                        .status(HttpStatus.OK)
-                        .build()
+        if(!optionalUser.get().getStatus().equals(StatusEnum.ACTIVE)) {
+            throw new DataNotFoundException(ConstantsMessage.USER_IS_LOCKED);
+        }
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                subject, password,
+                existingUser.getAuthorities()
         );
+
+        //authenticate with Java Spring security
+        authenticationManager.authenticate(authenticationToken);
+        return jwtTokenUtil.generateToken(existingUser);
     }
 
+    public User getUserDetailsFromToken(String token) throws Exception {
+        if(jwtTokenUtil.isTokenExpired(token)) {
+            throw new ExpiredTokenException("Token is expired");
+        }
+        System.out.println("Token: " + token);
+        String email = jwtTokenUtil.extractEmail(token);
+        Optional<User> user = userRepository.findByEmail(email);
 
     @PostMapping("/confirm-user-register")
     public ResponseEntity<?> confirm(@RequestParam("token") String token) {
-                tokenService.confirmToken(token);
+        tokenService.confirmToken(token);
         return  ResponseEntity.ok(
                 ResponseObject.builder()
                         .message("User confirmed successfully")
@@ -201,43 +197,32 @@ public class AuthController {
                         .status(HttpStatus.OK)
                         .build())  ;
 
-
+    public User getUserDetailsFromRefreshToken(String refreshToken) throws Exception {
+        Token existingToken = tokenRepository.findByRefreshToken(refreshToken);
+        return getUserDetailsFromToken(existingToken.getToken());
     }
+    @Transactional
+    public void resetPassword(UUID userId, String newPassword) throws InvalidParamException,DataNotFoundException {
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request) {
-        final String authHeader = request.getHeader("Authorization");
+        existingUser.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(existingUser);
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-
-            return ResponseEntity.badRequest().body("Invalid Authorization header format.");
+        List<Token> tokens = tokenRepository.findByUser(existingUser);
+        for(Token token : tokens) {
+            tokenRepository.delete(token);
         }
-
-
-        final String jwt = authHeader.substring(7);
-
-        var storedToken = tokenRepository.findByToken(jwt);
-
-        if (storedToken != null) {
-            storedToken.setExpired(true);
-            storedToken.setRevoked(true);
-            tokenRepository.save(storedToken);
-
-            SecurityContextHolder.clearContext();
-
-            return ResponseEntity.ok().body("Logged out successfully.");
-        }
-
-        return ResponseEntity.notFound().build();
     }
+    public String updateResetPasswordToken(String email) throws Exception {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("User not found"));;
 
-    @PutMapping("/avatar")
-    public ResponseEntity<?> updateAvatar(@RequestParam("file") MultipartFile file) {
-        try {
-            authService.updateAvatar(file);
-            return ResponseEntity.ok("Success");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        String token = RandomString.make(30);
+
+        user.setResetPasswordToken(token);
+        userRepository.save(user);
+
+        return token;
+
     }
 }

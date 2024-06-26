@@ -88,7 +88,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                     .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                     .authorizeHttpRequests(requests -> {
                         requests
-                        .anyRequest().permitAll()
+                                .anyRequest().permitAll()
                         ;
                     })
 
@@ -118,3 +118,4 @@ public class SecurityConfig implements WebMvcConfigurer {
 
 
 }
+

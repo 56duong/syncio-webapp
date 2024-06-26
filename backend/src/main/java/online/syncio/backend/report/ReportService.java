@@ -1,5 +1,6 @@
 package online.syncio.backend.report;
 
+import jakarta.transaction.Transactional;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.post.Post;
 import online.syncio.backend.post.PostRepository;
@@ -24,9 +25,16 @@ public class ReportService {
         this.userRepository = userRepository;
     }
 
-//    CRUD
+    //    CRUD
     public List<ReportDTO> findAll() {
         final List<Report> reports = reportRepository.findAll(Sort.by("createdDate"));
+        return reports.stream()
+                .map(report -> mapToDTO(report, new ReportDTO()))
+                .toList();
+    }
+
+    public List<ReportDTO> getByPostId(UUID postId) {
+        List<Report> reports = reportRepository.findByPostId(postId);
         return reports.stream()
                 .map(report -> mapToDTO(report, new ReportDTO()))
                 .toList();
@@ -38,7 +46,6 @@ public class ReportService {
 
         // set flag of post to false
         Post post = report.getPost();
-        post.setFlag(false);
         postRepository.save(post);
 
         Report savedReport = reportRepository.save(report);
@@ -53,15 +60,16 @@ public class ReportService {
         reportRepository.save(report);
     }
 
-    public void delete(final UUID postId, final UUID userId) {
-        final Report report = reportRepository.findByPostIdAndUserId(postId, userId)
-                .orElseThrow(() -> new NotFoundException(Report.class, "postId", postId.toString(), "userId", userId.toString()));
-        reportRepository.delete(report);
+    // delete all reports of a postId
+    @Transactional
+    public void deleteAllByPostId(UUID postId) {
+        if (postRepository.findById(postId).isEmpty()) {
+            throw new NotFoundException(Post.class, "id", postId.toString());
+        }
+        reportRepository.deleteByPostId(postId);
     }
 
-
-
-//    MAPPER
+    //    MAPPER
     private ReportDTO mapToDTO(final Report report, final ReportDTO reportDTO) {
         reportDTO.setPostId(report.getPost().getId());
         reportDTO.setUserId(report.getUser().getId());
@@ -83,4 +91,5 @@ public class ReportService {
         report.setDescription(reportDTO.getDescription());
         return report;
     }
+
 }

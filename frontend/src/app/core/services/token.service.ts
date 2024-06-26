@@ -43,7 +43,7 @@ export class TokenService {
 
     /**
      * Extract the user id from the token. Return an empty string if the token is expired or not found.
-     * @returns the user id, or null if the token is expired or not found.
+     * @returns the user id.
      */
     extractUserIdFromToken(): any {
         const token = this.getToken();

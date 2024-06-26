@@ -1,8 +1,28 @@
 <div class="post flex flex-column m-auto gap-3 border-bottom-1 border-gray-300 pb-4 mt-4">
-  <!-- header -->
+  <!-- Most Frequent Reason -->
+  <!-- <div *ngIf="isReportedPostsPage && mostFrequentReason" class="flex align-items-center gap-2">
+    <small >Most reports: <span class="font-bold">{{ mostFrequentReason }}</span></small>
+  </div> -->
+  <div class="flex justify-content-between align-items-center">
+    <!-- Existing content -->
+    <p-button *ngIf="isReportedPostsPage" label="View Report Reasons" icon="pi pi-info-circle" (click)="showReasonCountsDialog()"></p-button>
+  </div>
   <div class="flex justify-content-between align-items-center">
     <div class="flex align-items-center gap-2">
       <div class="avt">
+        <img class="w-full object-cover"
+          src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
+          alt="" />
+      </div>
+      <div class="flex align-items-center gap-1">
+        <small *ngIf="post.createdBy" class="font-bold">{{
+          post.createdBy | userIdToName | async
+          }}</small>
+        <small class="text-gray-500">•</small>
+        <small class="text-gray-500">{{
+          post.createdDate | date : "HH:mm:ss dd/MM/yyyy"
+          }}</small>
+=======
         <img class="w-full object-cover"
           src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
           alt="" />
@@ -12,13 +32,14 @@
           {{ post.createdBy | userIdToName | async }}
         </small>
         <small class="text-gray-500">•</small>
-        <small class="text-gray-500" [title]="post.createdDate | date: 'HH:mm:ss dd/MM/yyyy'">
-          {{ post.createdDate | dateAgoPipe }}
-        </small>
+        <small class="text-gray-500">
+          {{ post.createdDate | date : "HH:mm:ss dd/MM/yyyy" }}</small>
+>>>>>>> 24ed730fc84260aeb60a474282a3d62222fd8f63
       </div>
     </div>
-    <!-- 3 dots -->
-    <span class="pi pi-ellipsis-h cursor-pointer" (click)="dialogVisible = !dialogVisible"></span>
+    <span *ngIf="!isReportedPostsPage && !isHiddenPostsPage" class="pi pi-ellipsis-h cursor-pointer" (click)="showReportModal()"></span>
+    <p-button *ngIf="isReportedPostsPage" label="Hide" severity="danger" (click)="onHidePost()"></p-button>
+    <p-button *ngIf="isHiddenPostsPage" label="Active" severity="primary" (click)="onActivePost()"></p-button>
   </div>
 
   <!-- photo -->
@@ -67,8 +88,16 @@
   (visibleChange)="handleReportModalVisibility($event)">
 </app-report>
 
-<app-global-dialog
-  [display]="dialogVisible"
-  [items]="dialogItems"
-  (displayChange)="hideDialog()">
-</app-global-dialog>
+<!-- Reason Counts -->
+<p-dialog header="Report Reasons Count" [(visible)]="reasonDialogVisible" [modal]="true" [style]="{width: '300px'}" (onHide)="hideReasonCountsDialog()">
+  <ul style="list-style-type: none; padding: 0;">
+    <li class="pt-3" *ngFor="let reason of reasonKeys()">
+      {{ reason }}: {{ reasonCounts[reason] }}
+    </li>
+  </ul>
+  <div class="flex justify-content-end gap-2 mt-2">
+    <button pButton label="Delete Report" icon="pi pi-trash" class="p-button-danger" (click)="deleteReport()"></button>
+    <button pButton label="Close" icon="pi pi-times" (click)="hideReasonCountsDialog()"></button>
+  </div>
+</p-dialog>
+

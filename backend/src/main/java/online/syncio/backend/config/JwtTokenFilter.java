@@ -74,29 +74,37 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private boolean isBypassToken(@NonNull HttpServletRequest request) {
         final List<Pair<String, String>> bypassTokens = Arrays.asList(
 
-             
 
-//
-//                Pair.of(String.format("%s/healthcheck/health", apiPrefix), "GET"),
-//                Pair.of(String.format("%s/actuator/**", apiPrefix), "GET"),
-//
                 Pair.of(String.format("%s/roles**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/register", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/refreshToken", apiPrefix), "POST"),
+
                 Pair.of(String.format("%s/users/confirm-user-register", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/reset_password", apiPrefix), "POST"),
+
                 Pair.of(String.format("%s/posts/images/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/posts/engagement-metrics", apiPrefix), "GET"),
                 Pair.of(String.format("%s/posts", apiPrefix), "GET"),
+                Pair.of(String.format("%s/posts", apiPrefix), "POST"),
+                Pair.of(String.format("%s/posts/reported", apiPrefix), "GET"),
+                Pair.of(String.format("%s/posts/flagged", apiPrefix), "GET"),
+                Pair.of(String.format("%s/posts/**", apiPrefix), "PUT"),
+                Pair.of(String.format("%s/posts/**", apiPrefix), "DELETE"),
+
+                // Report
+                Pair.of(String.format("%s/reports", apiPrefix), "GET"),
+                Pair.of(String.format("%s/reports/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/reports", apiPrefix), "POST"),
+                Pair.of(String.format("%s/reports/**", apiPrefix), "DELETE"),
+                Pair.of(String.format("%s/users", apiPrefix), "GET"),
+                Pair.of(String.format("%s/users/**", apiPrefix), "GET"),
 
                 // Like
                 Pair.of(String.format("%s/likes/count/**", apiPrefix), "GET"),
 
                 // Comment
                 Pair.of(String.format("%s/comments/**", apiPrefix), "GET"),
-
-                // CommentLike
-                Pair.of(String.format("%s/commentlikes/count/**", apiPrefix), "GET"),
 
                 // User
                 Pair.of(String.format("%s/users/**/username", apiPrefix), "GET"),
@@ -110,6 +118,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/stories/images/**", apiPrefix), "GET"),
 
                 // WebSocket
+                Pair.of("/live/**", "GET"),
                 Pair.of("/live/**", "GET"),
                 Pair.of("/uploads/**", "GET"),
 
