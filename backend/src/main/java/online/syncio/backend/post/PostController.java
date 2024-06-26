@@ -3,7 +3,6 @@ package online.syncio.backend.post;
 import jakarta.validation.Valid;
 import online.syncio.backend.exception.ReferencedException;
 import online.syncio.backend.exception.ReferencedWarning;
-import online.syncio.backend.user.EngagementMetricsDTO;
 import online.syncio.backend.user.User;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
@@ -40,22 +39,10 @@ public class PostController {
     // new - get 10 post/page
     @GetMapping
     public Page<PostDTO> getPosts(@RequestParam(defaultValue = "0") int pageNumber,
-                                  @RequestParam(defaultValue = "10") int pageSize) {
+                               @RequestParam(defaultValue = "10") int pageSize) {
         return postService.getPosts(PageRequest.of(pageNumber, pageSize));
-    }
 
-    @GetMapping("/reported")
-    public Page<PostDTO> getPostReport(@RequestParam(defaultValue = "0") int pageNumber,
-                                  @RequestParam(defaultValue = "10") int pageSize) {
-        return postService.getPostReported(PageRequest.of(pageNumber, pageSize));
     }
-
-    @GetMapping("/flagged")
-    public Page<PostDTO> getPostFlagged(@RequestParam(defaultValue = "0") int pageNumber,
-                                  @RequestParam(defaultValue = "10") int pageSize) {
-        return postService.getPostUnFlagged(PageRequest.of(pageNumber, pageSize));
-    }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<PostDTO> getPost(@PathVariable(name = "id") final UUID id) {
@@ -91,7 +78,7 @@ public class PostController {
     }
     @PostMapping("/{id}/{userId}/like")
     public ResponseEntity<?> likePost(@PathVariable(name = "id") final UUID id,
-                                      @PathVariable(name = "userId") final UUID userId) {
+                                           @PathVariable(name = "userId") final UUID userId) {
         return postService.toggleLike(id, userId);
 
     }
@@ -114,32 +101,5 @@ public class PostController {
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
-    }
-
-    // change flag of post
-    @PutMapping("/{postId}/flag")
-    public ResponseEntity<Void> flagPost(@PathVariable(name = "postId") final UUID postId) {
-        try {
-            postService.setFlag(postId);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @PutMapping("/{postId}/unflag")
-    public ResponseEntity<Void> unFlagPost(@PathVariable(name = "postId") final UUID postId) {
-        try {
-            postService.setUnFlag(postId);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @GetMapping("/engagement-metrics")
-    public ResponseEntity<EngagementMetricsDTO> getEngagementMetrics(@RequestParam int days) {
-        EngagementMetricsDTO metricsDTO = postService.getEngagementMetrics(days);
-        return ResponseEntity.ok(metricsDTO);
     }
 }

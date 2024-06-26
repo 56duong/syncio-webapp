@@ -1,5 +1,6 @@
 package online.syncio.backend.user;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.comment.Comment;
 import online.syncio.backend.comment.CommentRepository;
@@ -13,14 +14,14 @@ import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messagecontent.MessageContentRepository;
 import online.syncio.backend.messageroommember.MessageRoomMember;
 import online.syncio.backend.messageroommember.MessageRoomMemberRepository;
+import online.syncio.backend.post.Post;
+
 import online.syncio.backend.post.PostDTO;
-import online.syncio.backend.post.PostRepository;
 import online.syncio.backend.post.PostService;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.report.ReportRepository;
 import online.syncio.backend.storyview.StoryViewRepository;
 import online.syncio.backend.utils.AuthUtils;
-import org.springframework.data.domain.Sort;
 import online.syncio.backend.utils.ConstantsMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,9 +32,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,10 +48,10 @@ public class UserService {
     private final MessageRoomMemberRepository messageRoomMemberRepository;
     private final MessageContentRepository messageContentRepository;
     private final PostService postService;
-    private final PostRepository postRepository;
     private final StoryViewRepository storyViewRepository;
     private final AuthUtils authUtils;
     private final PasswordEncoder passwordEncoder;
+
 
     //    CRUD
     public List<UserDTO> findAll (Optional<String> username) {
@@ -67,17 +70,48 @@ public class UserService {
                 .toList();
     }
 
-
     public UserDTO get (final UUID id) {
         return userRepository.findById(id)
                              .map(user -> mapToDTO(user, new UserDTO()))
                              .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
     }
 
-    public UserProfile getUserProfile (final UUID id) {
-        return userRepository.findById(id)
-                .map(user -> mapToUserProfile(user, new UserProfile()))
+    public UserProfile getUserProfile (final UUID id)  {
+        return userRepository.findByIdWithPosts(id)
+                             .map(user -> {
+                                 try {
+                                     return mapToUserProfile(user, new UserProfile());
+                                 } catch (DataNotFoundException e) {
+                                     throw new RuntimeException(e);
+                                 }
+                             })
+                             .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+    }
+    @jakarta.transaction.Transactional
+    public User updateProfile(final UUID id,UpdateProfileDTO updatedUser) throws Exception {
+        final User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+
+        if (!existingUser.getUsername().equals(updatedUser.getUsername())) {
+            if (existingUser.getUsernameLastModified() != null &&
+                    ChronoUnit.DAYS.between(existingUser.getUsernameLastModified(), LocalDateTime.now()) < 60) {
+                throw new Exception("Username can only be changed once every 60 days.");
+            }
+            existingUser.setUsername(updatedUser.getUsername());
+            existingUser.setUsernameLastModified(LocalDateTime.now());
+        }
+
+        if (updatedUser.getEmail() != null) {
+            existingUser.setEmail(updatedUser.getEmail());
+        }
+
+        if (updatedUser.getBio() != null) {
+            existingUser.setBio(updatedUser.getBio());
+        }
+
+
+        return userRepository.save(existingUser);
+
     }
 
     public List<UserDTO> findTop20ByUsernameContainingOrEmailContaining (final String username, final String email) {
@@ -88,9 +122,7 @@ public class UserService {
     }
 
     public String getUsernameById(final UUID id) {
-        return userRepository.findById(id)
-                .map(User::getUsername)
-                .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+        return userRepository.findUsernameById(id);
     }
 
     public List<UserStoryDTO> findAllUsersWithAtLeastOneStoryAfterCreatedDate(final LocalDateTime createdDate) {
@@ -102,10 +134,11 @@ public class UserService {
     }
 
     public UUID create(final UserDTO userDTO) {
+
         // encode password
         String encodePassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(encodePassword);
-
+        
         final User user = new User();
         mapToEntity(userDTO, user);
         return userRepository.save(user).getId();
@@ -114,6 +147,7 @@ public class UserService {
     public void update (final UUID id, final UserDTO userDTO) {
         final User user = userRepository.findById(id)
                                         .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+
         String encodePassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(encodePassword);
 
@@ -140,24 +174,60 @@ public class UserService {
         userDTO.setCreatedDate(user.getCreatedDate());
         userDTO.setRole(user.getRole());
         userDTO.setStatus(user.getStatus());
+        userDTO.setFollowerCount(user.getFollowers().size());
         return userDTO;
     }
 
-    private UserProfile mapToUserProfile (final User user, final UserProfile userProfile) {
+    private UserProfile mapToUserProfile (final User user, final UserProfile userProfile) throws DataNotFoundException {
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        User currentUser  = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new DataNotFoundException("Current user not found"));
+
+        boolean isCloseFriend = currentUser.getCloseFriends().contains(user);
+        userProfile.setCloseFriend(isCloseFriend);
+        boolean isFollowing = currentUser.getFollowing().contains(user);
+        userProfile.setFollowing(isFollowing);
         userProfile.setId(user.getId());
         userProfile.setUsername(user.getUsername());
         userProfile.setAvtURL(user.getAvtURL());
         userProfile.setBio(user.getBio());
-
+        userProfile.setPosts(user.getPosts().stream()
+                .map(this::convertToPostDTO)
+                .collect(Collectors.toSet()));
         userProfile.setFollowerCount(user.getFollowers().size());
         userProfile.setFollowingCount(user.getFollowing().size());
 
-        List<PostDTO> userPosts = postService.findByUserId(user.getId());
-        userProfile.setPostDTOList(userPosts);
-        userProfile.setPostCount(userPosts.size());
 
         return userProfile;
     }
+
+
+    private PostDTO convertToPostDTO(Post post) {
+        PostDTO postDTO = new PostDTO();
+
+        // Set fields from Post entity to PostDTO
+        postDTO.setId(post.getId());
+        postDTO.setCaption(post.getCaption());
+
+        // Assuming photos is a list of photo identifiers or filenames
+        if (post.getPhotos() != null) {
+            List<String> photoUrls = post.getPhotos().stream()
+                    .map(photo -> photo)
+                    .collect(Collectors.toList());
+            postDTO.setPhotos(photoUrls);
+        }
+
+        postDTO.setCreatedDate(post.getCreatedDate());
+        postDTO.setFlag(post.getFlag());
+
+        // Set the createdBy field to the ID of the user who created the post
+        if (post.getCreatedBy() != null) {
+            postDTO.setCreatedBy(post.getCreatedBy().getId());
+        }
+
+        return postDTO;
+    }
+
 
     private UserStoryDTO mapToUserStoryDTO (final User user, final UserStoryDTO userStoryDTO, final UUID currentUserId) {
         userStoryDTO.setId(user.getId());
@@ -166,6 +236,8 @@ public class UserService {
         userStoryDTO.setHasUnseenStory(storyViewRepository.hasUnseenStoriesFromCreatorSinceDate(user.getId(), currentUserId, LocalDateTime.now().minusDays(1)));
         return userStoryDTO;
     }
+
+
 
     private User mapToEntity (final UserDTO userDTO, final User user) {
         user.setEmail(userDTO.getEmail());
@@ -234,37 +306,69 @@ public class UserService {
         userRepository.enableUser(id);
     }
 
-    // get new users count in last N days
-    public Map<String, Long> getNewUsersLastNDays(int days) {
-        LocalDateTime startDate = LocalDateTime.now().minusDays(days);
-        List<Object[]> results = userRepository.countNewUsersSince(startDate);
+    @Transactional
+    public boolean followUser(UUID targetId) throws DataNotFoundException {
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        User user = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new DataNotFoundException("Current user not found"));
+        User target = userRepository.findById(targetId)
+                .orElseThrow(() -> new DataNotFoundException("Target user not found"));
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        Map<String, Long> newUsersCount = new HashMap<>();
-        for (Object[] result : results) {
-            newUsersCount.put(result[0].toString(), (Long) result[1]);
+        // Check if already following
+        if (!user.getFollowing().contains(target)) {
+            user.getFollowing().add(target);
+            target.getFollowers().add(user);  // Ensure consistency
+
+            userRepository.save(user);
+            userRepository.save(target);
+            return true;  // Successfully followed
         }
-        return newUsersCount;
+        return false;  // Already following
     }
 
-    public List<UserDTO> getOutstandingUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
-                .filter(this::hasOutstandingInteractions)
-                .map(user -> mapToDTO(user, new UserDTO()))
-                .toList();
+    public boolean unfollowUser( UUID targetId) {
+
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        User user = userRepository.findById(currentUserId).orElseThrow(() -> new RuntimeException("User not found"));
+        User target = userRepository.findById(targetId).orElseThrow(() -> new RuntimeException("Target user not found"));
+
+        if (user.getFollowing().contains(target)) {
+            user.getFollowing().remove(target);
+            target.getFollowers().remove(user); // Also remove the user from target's followers set
+
+            userRepository.save(user);
+            userRepository.save(target); // Save the target as well to persist changes
+            return true;
+        }
+        return false;
     }
 
-    private boolean hasOutstandingInteractions(User user) {
-        LocalDateTime sevenDaysAgo = LocalDateTime.now().minus(InteractionCriteria.TIME_PERIOD);
+    public boolean isFollowing(UUID userId, UUID targetId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        User target = userRepository.findById(targetId)
+                .orElseThrow(() -> new RuntimeException("Target user not found"));
 
-        long recentPosts = postRepository.countByCreatedByAndCreatedDateAfter(user, sevenDaysAgo);
-        long recentLikes = likeRepository.countByUserAndPostCreatedDateAfter(user, sevenDaysAgo);
-        long recentComments = commentRepository.countByUserAndCreatedDateAfter(user, sevenDaysAgo);
+        return user.getFollowing().contains(target);
+    }
 
-        return recentPosts >= InteractionCriteria.MIN_POSTS &&
-                recentLikes >= InteractionCriteria.MIN_LIKES &&
-                recentComments >= InteractionCriteria.MIN_COMMENTS;
+    public boolean addCloseFriend( UUID friendId) {
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        User user = userRepository.findById(currentUserId).orElseThrow(() -> new RuntimeException("User not found"));
+        Optional<User> friendOpt = userRepository.findById(friendId);
+
+        if (!friendOpt.isPresent()) {
+            throw new RuntimeException("User not found.");
+        }
+        User friend = friendOpt.get();
+
+        if (user.getFollowing().contains(friend)) {
+            user.getCloseFriends().add(friend);
+            userRepository.save(user);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean removeCloseFriend(UUID friendId) throws DataNotFoundException {

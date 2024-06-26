@@ -42,4 +42,3 @@ public class Story {
     @OneToMany(mappedBy = "story")
     private Set<StoryView> views;
 }
-

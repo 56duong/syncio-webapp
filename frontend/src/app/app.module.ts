@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
@@ -15,6 +15,11 @@ import { AuthTokenInterceptorService } from './core/interceptors/auth-token-inte
 import { MessageService } from 'primeng/api';
 import { DatePipe } from '@angular/common';
 
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CustomReuseStrategy } from './core/strategies/custom-reuse-strategy';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -30,15 +35,18 @@ import { RouteReuseStrategy } from '@angular/router';
     MessagesModule,
     MessageModule,
     ToastModule,
+    FormsModule,
     ReactiveFormsModule,
   ],
   providers: [
     MessageService,
+    DatePipe,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthTokenInterceptorService,
       multi: true,
     },
+    { provide: RouteReuseStrategy, useClass: CustomReuseStrategy }
   ],
   bootstrap: [AppComponent],
 })

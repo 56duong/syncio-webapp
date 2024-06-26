@@ -9,7 +9,6 @@ import { UserService } from 'src/app/core/services/user.service';
   templateUrl: './left-menu.component.html',
   styleUrls: ['./left-menu.component.scss'],
 })
-
 export class LeftMenuComponent {
   @ViewChild(CreatePostComponent) createPostComponent: any;
 

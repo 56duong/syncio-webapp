@@ -1,4 +1,7 @@
-<div class="main left-menu w-full" [ngClass]="{'hide-menu-label': isHideMenuLabel}">
+<div
+  class="main left-menu w-full"
+  [ngClass]="{ 'hide-menu-label': isHideMenuLabel }"
+>
   <nav class="h-full p-4 md:px-2">
     <ul
       class="flex flex-column align-items-center lg:align-items-start xl:align-items-start gap-4 h-full pl-0 m-0 list-none"
@@ -6,11 +9,27 @@
       <!-- Logo -->
       <div class="mobile-hidden logo">
         <li class="p-fluid">
-          <p-button class="desktop-show" styleClass="shadow-none" size="large" label="SYNCIO" [link]="true" [plain]="true" />
-          <p-button class="desktop-hidden" styleClass="shadow-none" size="large" label="S" [link]="true" [plain]="true" />
+          <p-button
+            class="desktop-show"
+            styleClass="shadow-none"
+            size="large"
+            label="SYNCIO"
+            [link]="true"
+            [plain]="true"
+          />
+          <p-button
+            class="desktop-hidden"
+            styleClass="shadow-none"
+            size="large"
+            label="S"
+            [link]="true"
+            [plain]="true"
+          />
         </li>
       </div>
-      <div class="menu w-full flex flex-column align-items-center lg:align-items-start xl:align-items-start gap-2 pl-0 list-none">
+      <div
+        class="menu w-full flex flex-column align-items-center lg:align-items-start xl:align-items-start gap-2 pl-0 list-none"
+      >
         <li *ngFor="let menu of menus" class="p-fluid w-full">
           <p-button
             [id]="menu.id"
@@ -28,17 +47,28 @@
         </li>
         <!-- Create -->
         <li class="p-fluid w-full">
-          <p-tieredMenu [model]="createSubmenuItems" styleClass="w-full border-none shadow-none">
+          <p-tieredMenu
+            [model]="createSubmenuItems"
+            styleClass="w-full border-none shadow-none"
+          >
             <ng-template pTemplate="item" let-item let-hasSubmenu="hasSubmenu">
               <ng-container *ngIf="item.route; else withoutRoute">
-                <a [routerLink]="item.route" [href]="item.href" class="p-menuitem-link">
+                <a
+                  [routerLink]="item.route"
+                  [href]="item.href"
+                  class="p-menuitem-link"
+                >
                   <span [class]="item.icon + ' p-menuitem-icon'"></span>
                   <span class="p-menuitem-text">{{ item.label }}</span>
                 </a>
               </ng-container>
               <ng-template #withoutRoute>
                 <ng-container *ngIf="item.url; else withoutUrl">
-                  <a [href]="item.url" [target]="item.target" class="p-menuitem-link">
+                  <a
+                    [href]="item.url"
+                    [target]="item.target"
+                    class="p-menuitem-link"
+                  >
                     <span [class]="item.icon + ' p-menuitem-icon'"></span>
                     <span class="p-menuitem-text">{{ item.label }}</span>
                     <span
@@ -84,7 +114,13 @@
       </div>
       <!-- Setting -->
       <div class="p-fluid w-full sm:mt-auto mt-0 mobile-hidden">
-        <p-button class="text-left" label="Setting" icon="pi pi-cog" [text]="true" [plain]="true" />
+        <p-button
+          class="text-left"
+          label="Setting"
+          icon="pi pi-cog"
+          [text]="true"
+          [plain]="true"
+        />
       </div>
     </ul>
   </nav>
