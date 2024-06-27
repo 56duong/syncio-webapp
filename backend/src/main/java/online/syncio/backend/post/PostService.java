@@ -247,9 +247,7 @@ public class PostService {
             User user = userRepository.findById(userId)
                                       .orElseThrow(() -> new NotFoundException(User.class, "id", userId.toString()));
 
-            Optional<Like> existingLike = post.getLikes().stream()
-                                              .filter(like -> like.getUser().equals(user))
-                                              .findFirst();
+            Optional<Like> existingLike = likeRepository.findLikeByPostAndUser(postId, userId);
 
             if (existingLike.isPresent()) {
                 post.getLikes().remove(existingLike.get());
