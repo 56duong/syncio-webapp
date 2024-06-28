@@ -43,18 +43,6 @@ export class FeedComponent {
   }
 
   getPosts() {
-
-    // old
-    // this.postService.getPosts().subscribe({
-    //   next: (posts) => {
-    //     this.posts = posts;
-    //   },
-    //   error: (error) => {
-    //     console.log(error);
-    //   },
-    // });
-    // old
-
     // new - load 10 posts at a time
     if (this.loading || this.endOfFeed) {
       return;

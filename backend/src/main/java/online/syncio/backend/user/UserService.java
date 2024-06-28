@@ -17,6 +17,7 @@ import online.syncio.backend.messageroommember.MessageRoomMemberRepository;
 import online.syncio.backend.post.Post;
 
 import online.syncio.backend.post.PostDTO;
+import online.syncio.backend.post.PostRepository;
 import online.syncio.backend.post.PostService;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.report.ReportRepository;
@@ -32,10 +33,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,6 +51,7 @@ public class UserService {
     private final StoryViewRepository storyViewRepository;
     private final AuthUtils authUtils;
     private final PasswordEncoder passwordEncoder;
+    private final PostRepository postRepository;
 
 
     //    CRUD
@@ -389,4 +390,38 @@ public class UserService {
             return false;
         }
     }
+
+    // get new users count in last N days
+    public Map<String, Long> getNewUsersLastNDays(int days) {
+        LocalDateTime startDate = LocalDateTime.now().minusDays(days);
+        List<Object[]> results = userRepository.countNewUsersSince(startDate);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        Map<String, Long> newUsersCount = new HashMap<>();
+        for (Object[] result : results) {
+            newUsersCount.put(result[0].toString(), (Long) result[1]);
+        }
+        return newUsersCount;
+    }
+
+    public List<UserDTO> getOutstandingUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .filter(this::hasOutstandingInteractions)
+                .map(user -> mapToDTO(user, new UserDTO()))
+                .toList();
+    }
+
+    private boolean hasOutstandingInteractions(User user) {
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minus(InteractionCriteria.TIME_PERIOD);
+
+        long recentPosts = postRepository.countByCreatedByAndCreatedDateAfter(user, sevenDaysAgo);
+        long recentLikes = likeRepository.countByUserAndPostCreatedDateAfter(user, sevenDaysAgo);
+        long recentComments = commentRepository.countByUserAndCreatedDateAfter(user, sevenDaysAgo);
+
+        return recentPosts >= InteractionCriteria.MIN_POSTS &&
+                recentLikes >= InteractionCriteria.MIN_LIKES &&
+                recentComments >= InteractionCriteria.MIN_COMMENTS;
+    }
+
 }

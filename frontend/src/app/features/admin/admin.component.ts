@@ -26,6 +26,14 @@ export class AdminComponent {
     {
       name: 'Sticker Management',
       link: 'sticker-management'
-    }
+    },
+    {
+      name: 'Reported Posts',
+      link: 'reported-posts',
+    },
+    {
+      name: 'Hidden Posts',
+      link: 'hidden-posts',
+    },
   ]
 }

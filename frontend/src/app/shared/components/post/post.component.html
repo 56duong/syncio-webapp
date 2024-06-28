@@ -1,5 +1,12 @@
 <div class="post flex flex-column m-auto gap-3 border-bottom-1 border-gray-300 pb-4 mt-4">
-  <!-- header -->
+  <!-- Most Frequent Reason -->
+  <!-- <div *ngIf="isReportedPostsPage && mostFrequentReason" class="flex align-items-center gap-2">
+    <small >Most reports: <span class="font-bold">{{ mostFrequentReason }}</span></small>
+  </div> -->
+  <div class="flex justify-content-between align-items-center">
+    <!-- Existing content -->
+    <p-button *ngIf="isReportedPostsPage" label="View Report Reasons" icon="pi pi-info-circle" (click)="showReasonCountsDialog()"></p-button>
+  </div>
   <div class="flex justify-content-between align-items-center">
     <div class="flex align-items-center gap-2">
       <div class="avt">
@@ -17,8 +24,9 @@
         </small>
       </div>
     </div>
-    <!-- 3 dots -->
-    <span class="pi pi-ellipsis-h cursor-pointer" (click)="dialogVisible = !dialogVisible"></span>
+    <span *ngIf="!isReportedPostsPage && !isHiddenPostsPage" class="pi pi-ellipsis-h cursor-pointer" (click)="showReportModal()"></span>
+    <p-button *ngIf="isReportedPostsPage" label="Hide" severity="danger" (click)="onHidePost()"></p-button>
+    <p-button *ngIf="isHiddenPostsPage" label="Active" severity="primary" (click)="onActivePost()"></p-button>
   </div>
 
   <!-- photo -->
@@ -27,8 +35,7 @@
       [numVisible]="1"
       [numScroll]="1"
       [circular]="false"
-      [style]="{ height: '100%', position: 'relative' }"
-      [ngClass]="post.photos.length == 1 ? 'hide-slide-control' : ''">
+      [style]="{ height: '100%', position: 'relative' }">
       <ng-template let-photo pTemplate="item">
         <img src="{{ photo }}"
           class="w-full h-full"
@@ -38,17 +45,16 @@
   </div>
 
   <!-- caption -->
-  <div *ngIf="post.caption">
-    <small *ngIf="post.createdBy && post.photos?.length" class="font-bold mr-1">
+  <div>
+    <small *ngIf="post.createdBy" class="font-bold">
       {{ post.createdBy | userIdToName | async }}
     </small>
     <small>{{ post.caption }}</small>
   </div>
 
   <!-- Like -->
-  <app-like *ngIf="post.id && post.createdBy"
+  <app-like *ngIf="post.id"
     [postId]="post.id"
-    [createdBy]="post.createdBy"
     (visibleChange)="showPostDetail($event)">
   </app-like>
 </div>
@@ -57,8 +63,7 @@
   *ngIf="visible"
   [post]="post"
   [visible]="visible"
-  (visibleChange)="showPostDetail($event)"
-  style="position: relative; z-index: 1102;">
+  (visibleChange)="showPostDetail($event)">
 </app-post-detail>
 
 <app-report 
@@ -67,8 +72,16 @@
   (visibleChange)="handleReportModalVisibility($event)">
 </app-report>
 
-<app-global-dialog
-  [display]="dialogVisible"
-  [items]="dialogItems"
-  (displayChange)="hideDialog()">
-</app-global-dialog>
+<!-- Reason Counts -->
+<p-dialog header="Report Reasons Count" [(visible)]="reasonDialogVisible" [modal]="true" [style]="{width: '300px'}" (onHide)="hideReasonCountsDialog()">
+  <ul style="list-style-type: none; padding: 0;">
+    <li class="pt-3" *ngFor="let reason of reasonKeys()">
+      {{ reason }}: {{ reasonCounts[reason] }}
+    </li>
+  </ul>
+  <div class="flex justify-content-end gap-2 mt-2">
+    <button pButton label="Delete Report" icon="pi pi-trash" class="p-button-danger" (click)="deleteReport()"></button>
+    <button pButton label="Close" icon="pi pi-times" (click)="hideReasonCountsDialog()"></button>
+  </div>
+</p-dialog>
+
