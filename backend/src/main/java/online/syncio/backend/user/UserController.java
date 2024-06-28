@@ -217,4 +217,15 @@ public class UserController {
             return ResponseEntity.badRequest().body("An error occurred: " + e.getMessage());
         }
     }
+
+    @GetMapping("/last/{days}")
+    public Map<String, Long> getNewUsersLastNDays(@PathVariable(name = "days") final int days) {
+        return userService.getNewUsersLastNDays(days);
+    }
+
+    @GetMapping("/outstanding")
+    public ResponseEntity<List<UserDTO>> getOutstandingUsers() {
+        return ResponseEntity.ok(userService.getOutstandingUsers());
+    }
+
 }

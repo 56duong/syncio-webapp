@@ -1,0 +1,9 @@
+<div class="main">
+  <div>
+    <app-post *ngFor="let post of posts" 
+    [post]="post"  
+    [isReportedPostsPage]="isReportedPostsPage" 
+    (deleteReportsEvent)="deleteReports($event)"
+    (hidePostEvent)="onHidePost($event)"></app-post>
+  </div>
+</div>

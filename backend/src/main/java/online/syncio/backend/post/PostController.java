@@ -3,15 +3,13 @@ package online.syncio.backend.post;
 import jakarta.validation.Valid;
 import online.syncio.backend.exception.ReferencedException;
 import online.syncio.backend.exception.ReferencedWarning;
-import online.syncio.backend.user.User;
+import online.syncio.backend.user.EngagementMetricsDTO;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -102,4 +100,44 @@ public class PostController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // change flag of post
+    @PutMapping("/{postId}/flag")
+    public ResponseEntity<Void> flagPost(@PathVariable(name = "postId") final UUID postId) {
+        try {
+            postService.setFlag(postId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("/{postId}/unflag")
+    public ResponseEntity<Void> unFlagPost(@PathVariable(name = "postId") final UUID postId) {
+        try {
+            postService.setUnFlag(postId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/engagement-metrics")
+    public ResponseEntity<EngagementMetricsDTO> getEngagementMetrics(@RequestParam int days) {
+        EngagementMetricsDTO metricsDTO = postService.getEngagementMetrics(days);
+        return ResponseEntity.ok(metricsDTO);
+    }
+
+    @GetMapping("/reported")
+    public Page<PostDTO> getPostReport(@RequestParam(defaultValue = "0") int pageNumber,
+                                       @RequestParam(defaultValue = "10") int pageSize) {
+        return postService.getPostReported(PageRequest.of(pageNumber, pageSize));
+    }
+
+    @GetMapping("/flagged")
+    public Page<PostDTO> getPostFlagged(@RequestParam(defaultValue = "0") int pageNumber,
+                                        @RequestParam(defaultValue = "10") int pageSize) {
+        return postService.getPostUnFlagged(PageRequest.of(pageNumber, pageSize));
+    }
+
 }
