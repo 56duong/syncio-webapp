@@ -33,6 +33,19 @@
       width: 0.5rem;
       border-radius: 50%;
     }
+
+    .close-friend {
+      .p-button.p-button-icon-only {
+        padding: 0.5rem;
+        border-radius: 50%;
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+
+      .p-button-icon {
+        font-size: 0.75rem;
+      }
+    }
   }
 }
 

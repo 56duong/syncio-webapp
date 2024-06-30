@@ -1,7 +1,5 @@
 import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { Visibility } from 'src/app/core/interfaces/Visibility';
-import { Post } from 'src/app/core/interfaces/post';
-import { NotificationService } from 'src/app/core/services/notification.service';
+import { Post, Visibility } from 'src/app/core/interfaces/post';
 import { PostService } from 'src/app/core/services/post.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { TokenService } from 'src/app/core/services/token.service';
@@ -12,6 +10,7 @@ import { UserService } from 'src/app/core/services/user.service';
   templateUrl: './create-post.component.html',
   styleUrls: ['./create-post.component.scss'],
 })
+
 export class CreatePostComponent {
   @ViewChild('fileUploader') fileUploader: any;
   display!: boolean;
@@ -36,14 +35,13 @@ export class CreatePostComponent {
 
   visibilityOptions = Visibility;
   selectedVisibility: Visibility = Visibility.PUBLIC;
+
   getVisibilityLabel(visibility: Visibility): string {
     switch (visibility) {
       case Visibility.PUBLIC:
-        return 'Public';
+        return 'Everyone';
       case Visibility.PRIVATE:
-        return 'Private';
-      case Visibility.FRIENDS:
-        return 'Friends';
+        return 'Only me';
       case Visibility.CLOSE_FRIENDS:
         return 'Close Friends';
       default:
@@ -56,6 +54,8 @@ export class CreatePostComponent {
   }
 
   onCancel() {
+    this.post = {}; // Reset the post object
+    this.selectedPhotos = []; // Clear selected photos display
     this.display = false;
   }
 
@@ -84,22 +84,25 @@ export class CreatePostComponent {
       formData.append(`images`, photo);
     });
 
-    post.photos = this.selectedPhotos;
+    // post.photos = this.selectedPhotos;
+    post.photos = this.selectedPhotos.map((photo) => {
+      return { url: photo };
+    });
 
     this.postService.createPost(formData).subscribe({
       next: (response: any) => {
         post.id = response.body;
         this.postService.setNewPostCreated(post);
+        
+        this.post = {}; // Reset the post object
+        this.selectedPhotos = []; // Clear selected photos display
+        this.display = false;
       },
       error: (error) => {
         console.error(error);
       },
     });
 
-    this.post = {}; // Reset the post object
-    this.selectedPhotos = []; // Clear selected photos display
-    this.selectedPhotos = [];
-    this.display = false;
   }
 
   onPhotoSelected(event: any) {
@@ -117,6 +120,7 @@ export class CreatePostComponent {
     }
     this.fileUploader.clear();
   }
+
   // show the emoji picker (icon)
   addEmoji(event: any) {
     this.post.caption = this.post.caption
@@ -128,7 +132,6 @@ export class CreatePostComponent {
   // show modal select privacy
   onShowModalPublic() {
     this.displayModal = true;
-    this.onCancel();
   }
 
   onBack() {
@@ -139,8 +142,10 @@ export class CreatePostComponent {
   setVisibility(visibility: Visibility): void {
     this.selectedVisibility = visibility;
   }
+
   saveVisibility() {
     this.displayModal = false;
     this.showDialog();
   }
+  
 }

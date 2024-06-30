@@ -117,6 +117,19 @@ public class UserController {
     public ResponseEntity<UserProfile> getUserProfile (@PathVariable(name = "id") final UUID id) {
         return ResponseEntity.ok(userService.getUserProfile(id));
     }
+
+    /**
+     * Get the profile of a user by their id.
+     * Use for case when the user already logged in.
+     * @param id
+     * @return
+     */
+    @PostMapping("/profile/{id}")
+    @ResponseBody
+    public ResponseEntity<UserProfile> getUserProfile2 (@PathVariable(name = "id") final UUID id) {
+        return ResponseEntity.ok(userService.getUserProfile(id));
+    }
+
     @PutMapping("/update-profile/{id}")
     public ResponseEntity<?> updateProfile(@PathVariable(name = "id") final UUID id, @RequestBody UpdateProfileDTO user) {
         try {

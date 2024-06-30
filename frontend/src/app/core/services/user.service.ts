@@ -171,6 +171,17 @@ export class UserService {
     return this.http.get<User>(url);
   }
 
+  /**
+   * Get User Profile By Id.
+   * Use for case when the user already logged in.
+   * @param userId 
+   * @returns 
+   */
+  getUserProfile2(userId: any): Observable<User> {
+    const url = `${this.apiURL}/profile/${userId}`;
+    return this.http.post<User>(url, {});
+  }
+
   updateUser(user: User, userId: any): Observable<User> {
     const url = `${this.apiURL}/update-profile/${userId}`;
     return this.http.put<User>(url, user);

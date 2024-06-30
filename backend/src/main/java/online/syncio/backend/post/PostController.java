@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -28,18 +29,38 @@ public class PostController {
         this.postService = postService;
     }
 
-    // old
-//    @GetMapping
-//    public ResponseEntity<List<PostDTO>> getAllPosts() {
-//        return ResponseEntity.ok(postService.findAll());
-//    }
-
     // new - get 10 post/page
     @GetMapping
     public Page<PostDTO> getPosts(@RequestParam(defaultValue = "0") int pageNumber,
                                @RequestParam(defaultValue = "10") int pageSize) {
         return postService.getPosts(PageRequest.of(pageNumber, pageSize));
 
+    }
+
+    @GetMapping("/following")
+    public Page<PostDTO> getPostsFollowing(@RequestParam(defaultValue = "0") int pageNumber,
+                                           @RequestParam(defaultValue = "10") int pageSize) {
+        return postService.getPostsFollowing(PageRequest.of(pageNumber, pageSize));
+
+    }
+
+    @PostMapping("/interests")
+    public Page<PostDTO> getPostsInterests(@RequestParam(defaultValue = "0") int pageNumber,
+                                           @RequestParam(defaultValue = "10") int pageSize,
+                                           @RequestBody Set<UUID> postIds) {
+        return postService.getPostsInterests(PageRequest.of(pageNumber, pageSize), postIds);
+    }
+
+    @PostMapping("/feed")
+    public Page<PostDTO> getPostsFeed(@RequestParam(defaultValue = "0") int pageNumber,
+                                      @RequestParam(defaultValue = "10") int pageSize,
+                                      @RequestBody Set<UUID> postIds) {
+        return postService.getPostsFeed(PageRequest.of(pageNumber, pageSize), postIds);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Boolean> isPostCreatedByUserIFollow(@PathVariable(name = "userId") final UUID userId) {
+        return ResponseEntity.ok(postService.isPostCreatedByUserIFollow(userId));
     }
 
     @GetMapping("/{id}")

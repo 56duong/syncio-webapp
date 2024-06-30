@@ -79,6 +79,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
     private Set<Post> posts;
 
+    @Column(length = 1000)
+    private String interestKeywords;
+
 //    Follow
     @ManyToMany
     @JoinTable(

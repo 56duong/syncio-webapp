@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.comment.Comment;
 import online.syncio.backend.comment.CommentRepository;
-import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.DataNotFoundException;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.exception.ReferencedWarning;
@@ -14,21 +13,14 @@ import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messagecontent.MessageContentRepository;
 import online.syncio.backend.messageroommember.MessageRoomMember;
 import online.syncio.backend.messageroommember.MessageRoomMemberRepository;
-import online.syncio.backend.post.Post;
-
-import online.syncio.backend.post.PostDTO;
-import online.syncio.backend.post.PostRepository;
-import online.syncio.backend.post.PostService;
+import online.syncio.backend.post.*;
+import online.syncio.backend.post.photo.PhotoDTO;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.report.ReportRepository;
 import online.syncio.backend.storyview.StoryViewRepository;
 import online.syncio.backend.utils.AuthUtils;
 import online.syncio.backend.utils.ConstantsMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -181,25 +173,48 @@ public class UserService {
 
     private UserProfile mapToUserProfile (final User user, final UserProfile userProfile) throws DataNotFoundException {
         final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
-        User currentUser  = userRepository.findById(currentUserId)
-                .orElseThrow(() -> new DataNotFoundException("Current user not found"));
+        if(currentUserId != null) {
+            User currentUser = userRepository.findById(currentUserId)
+                    .orElseThrow(() -> new NotFoundException(User.class, "id", currentUserId.toString()));
+            boolean isCloseFriend = currentUser.getCloseFriends().contains(user);
+            userProfile.setCloseFriend(isCloseFriend);
+            boolean isFollowing = currentUser.getFollowing().contains(user);
+            userProfile.setFollowing(isFollowing);
+        }
 
-        boolean isCloseFriend = currentUser.getCloseFriends().contains(user);
-        userProfile.setCloseFriend(isCloseFriend);
-        boolean isFollowing = currentUser.getFollowing().contains(user);
-        userProfile.setFollowing(isFollowing);
         userProfile.setId(user.getId());
         userProfile.setUsername(user.getUsername());
         userProfile.setAvtURL(user.getAvtURL());
         userProfile.setBio(user.getBio());
-        userProfile.setPosts(user.getPosts().stream()
+        LinkedHashSet<PostDTO> posts = user.getPosts().stream()
+                .filter(this::isUserCanSeePost)
+                .sorted(Comparator.comparing(Post::getCreatedDate).reversed())
                 .map(this::convertToPostDTO)
-                .collect(Collectors.toSet()));
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        userProfile.setPosts(posts);
         userProfile.setFollowerCount(user.getFollowers().size());
         userProfile.setFollowingCount(user.getFollowing().size());
 
-
         return userProfile;
+    }
+
+    private boolean isUserCanSeePost (final Post post) {
+        UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        User currentUser = new User();
+        if (currentUserId != null) {
+            currentUser = userRepository.findById(currentUserId)
+                    .orElseThrow(() -> new NotFoundException(User.class, "id", currentUserId.toString()));
+        }
+
+        return post.getVisibility() == PostEnum.PUBLIC
+            || (currentUserId != null
+                && (
+                    currentUser.equals(post.getCreatedBy())
+                    || currentUser.getRole().equals(RoleEnum.ADMIN)
+                    || (post.getVisibility() == PostEnum.CLOSE_FRIENDS && (post.getCreatedBy().getCloseFriends().contains(currentUser)))
+                    || (post.getVisibility() == PostEnum.PRIVATE && post.getCreatedBy().equals(currentUser))
+                )
+            );
     }
 
 
@@ -210,13 +225,17 @@ public class UserService {
         postDTO.setId(post.getId());
         postDTO.setCaption(post.getCaption());
 
-        // Assuming photos is a list of photo identifiers or filenames
-        if (post.getPhotos() != null) {
-            List<String> photoUrls = post.getPhotos().stream()
-                    .map(photo -> photo)
-                    .collect(Collectors.toList());
-            postDTO.setPhotos(photoUrls);
-        }
+        List<PhotoDTO> photos = post.getPhotos().stream()
+                .map(photo -> {
+                    PhotoDTO photoDTO = new PhotoDTO();
+                    photoDTO.setId(photo.getId());
+                    photoDTO.setUrl(photo.getUrl());
+                    photoDTO.setAltText(photo.getAltText());
+                    photoDTO.setPostId(photo.getPost().getId());
+                    return photoDTO;
+                })
+                .collect(Collectors.toList());
+        postDTO.setPhotos(photos);
 
         postDTO.setCreatedDate(post.getCreatedDate());
         postDTO.setFlag(post.getFlag());

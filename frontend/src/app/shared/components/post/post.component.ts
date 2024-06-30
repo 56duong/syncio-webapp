@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { tap } from 'rxjs';
-import { Post } from 'src/app/core/interfaces/post';
+import { Post, Visibility } from 'src/app/core/interfaces/post';
 import { Report } from 'src/app/core/interfaces/report';
 import { ReportService } from 'src/app/core/services/report.service';
 import { ToastService } from 'src/app/core/services/toast.service';
@@ -54,6 +54,10 @@ export class PostComponent {
     'NUDE': 0
   };
 
+  isViewMore: boolean = false;
+
+  Visibility = Visibility
+
   constructor(
     private location: Location,
     private textUtils: TextUtils,
@@ -64,6 +68,7 @@ export class PostComponent {
   hideDialog() {
     this.dialogVisible = false;
   }
+  
   ngOnInit(): void {
     if (this.isReportedPostsPage) {
       this.getReports();
@@ -99,6 +104,9 @@ export class PostComponent {
     this.reportVisible = event; // Update reportVisible based on the event emitted from ReportComponent
   }
 
+  /**
+   * Copy the link of the post to the clipboard
+   */
   async copyLink() {
     await this.textUtils.copyToClipboard(window.location.href + 'post/' + this.post.id);
     this.toastService.showSuccess('Success', 'Link copied to clipboard');

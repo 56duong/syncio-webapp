@@ -119,7 +119,7 @@
     display: none;
   }
 
-  ::ng-deep .left-menu .p-button.p-button-text:not(:disabled) {
+  ::ng-deep .left-menu nav .p-button.p-button-text:not(:disabled) {
     .p-button-label {
       display: none;
     }
@@ -176,5 +176,11 @@ p-tieredMenu ::ng-deep {
 .logo ::ng-deep {
   .p-button-label {
     font-size: 1.5rem;
+  }
+}
+
+.main ::ng-deep .has-unseen-notifications {
+  .p-button-icon {
+    color: red !important;
   }
 }
