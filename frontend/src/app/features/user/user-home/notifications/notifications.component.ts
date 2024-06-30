@@ -11,7 +11,7 @@ import { TokenService } from 'src/app/core/services/token.service';
 })
 
 export class NotificationsComponent {
-  @Input() showNotifications: boolean = true;
+  @Input() showNotifications: boolean = false;
   @Output() onClose = new EventEmitter<void>(); 
   
   currentUserId: string = ''; // The id of the current logged-in user
@@ -37,11 +37,12 @@ export class NotificationsComponent {
   ngOnChanges(changes: SimpleChanges) {
     if(changes['showNotifications']) {
       //if there are unseen notifications when opening the notifications
-      if(this.showNotifications && this.notifications.some(notification => notification.state === StateEnum.UNSEEN)) {
+      if(this.showNotifications && this.isHasUnseenNotifications()) {
         // mark all notifications as seen
         this.notifications.map(notification => 
           notification.state = notification.state === StateEnum.UNSEEN ? StateEnum.SEEN_BUT_UNREAD : notification.state
         );
+        this.toggleUnseenNotifications(false);
       }
     }
   }
@@ -65,7 +66,7 @@ export class NotificationsComponent {
         // unshift the new notification to the beginning of the array
         this.notifications.unshift({ ...notification, createdDate: 'Just now' });
         this.defaultNotifications.unshift({ ...notification, createdDate: 'Just now' });
-        console.log('New notification:', notification);
+        this.toggleUnseenNotifications(true);
       },
       error: (error) => {
         console.log(error);
@@ -79,11 +80,27 @@ export class NotificationsComponent {
         this.notifications = [...response];
         // deep copy the response array to the defaultNotifications array
         this.defaultNotifications = response.map(object => ({ ...object }));
+        if(this.isHasUnseenNotifications()) {
+          this.toggleUnseenNotifications(true);
+        }
       },
       error: (error) => {
         console.error('Error getting notifications:', error);
       },
     });
+  }
+
+  toggleUnseenNotifications(isUnseen: boolean) {
+    if(isUnseen) {
+      document.getElementById('NotificationsButton')?.classList.add('has-unseen-notifications');
+    }
+    else {
+      document.getElementById('NotificationsButton')?.classList.remove('has-unseen-notifications');
+    }
+  }
+
+  isHasUnseenNotifications(): boolean {
+    return this.notifications.some(notification => notification.state === StateEnum.UNSEEN)
   }
 
   /**

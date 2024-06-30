@@ -17,27 +17,8 @@ export class PostService {
   private postReported = new BehaviorSubject<any>(null); // Observable to notify the FeedComponent to add the new post to the top of the feed.
   constructor(private http: HttpClient) {}
 
-  /**
-   * Get all posts.
-   * @returns array of posts.
-   * @example
-   * this.postService.getPosts().subscribe({
-   *    next: (posts) => {
-   *      this.posts = posts;
-   *    },
-   *    error: (error) => {
-   *      console.log(error);
-   *    }
-   *  })
-   */
-  // old
-  // getPosts(): Observable<Post[]> {
-  //   return this.http.get<Post[]>(this.apiURL);
-  // }
-  // old
-
   // new - load 10 posts at a time
-getPosts(pageNumber: number, pageSize: number): Observable<Post[]> {
+  getPosts(pageNumber: number, pageSize: number): Observable<Post[]> {
     const param = {
       pageNumber: pageNumber.toString(),
       pageSize: pageSize.toString(),
@@ -45,6 +26,71 @@ getPosts(pageNumber: number, pageSize: number): Observable<Post[]> {
     // gọi api lấy danh sách các bài post từ csdl theo số trang và số bài post trên 1 trang
     // dùng pipe.map để lấy mảng các bài post từ mục content của Page
     return this.http.get<any>(this.apiURL, { params: param }).pipe(map(response => response.content));
+  }
+
+  /**
+   * Get posts from the users that the current user is following.
+   * @param pageNumber 
+   * @param pageSize 
+   * @returns a page of posts from the users that the current user is following.
+   * @example
+   * this.postService.getPostsFollowing(1, 10).subscribe({
+   *  next: (posts) => {
+   *    this.posts = posts.content;
+   *  },
+   *  error: (error) => {
+   *    console.error(error);
+   *  }
+   * }); 
+   */
+  getPostsFollowing(pageNumber: number, pageSize: number): Observable<Post[]> {
+    const url = `${this.apiURL}/following`;
+    const param = {
+      pageNumber: pageNumber.toString(),
+      pageSize: pageSize.toString(),
+    };
+    return this.http.get<any>(url, { params: param });
+  }
+
+  /**
+   * Get posts that the current user has interacted with.
+   * @param pageNumber 
+   * @param pageSize 
+   * @param postIds 
+   * @returns a page of posts that the current user has interacted with.
+   * @example
+   * this.postService.getPostsInterests(1, 10, postIds).subscribe({
+   *  next: (posts) => {
+   *    this.posts = posts.content;
+   *  },
+   *  error: (error) => {
+   *    console.error(error);
+   *  }
+   * }); 
+   */
+  getPostsInterests(pageNumber: number, pageSize: number, postIds: string[]): Observable<Post[]> {
+    const url = `${this.apiURL}/interests`;
+    const param = {
+      pageNumber: pageNumber.toString(),
+      pageSize: pageSize.toString(),
+    };
+    return this.http.post<any>(url, postIds, { params: param });
+  }
+
+  /**
+   * Get the rest of the posts except the following and interests posts
+   * @param pageNumber 
+   * @param pageSize 
+   * @param postIds 
+   * @returns 
+   */
+  getPostsFeed(pageNumber: number, pageSize: number, postIds: string[]): Observable<any> {
+    const url = `${this.apiURL}/feed`;
+    const param = {
+      pageNumber: pageNumber.toString(),
+      pageSize: pageSize.toString(),
+    };
+    return this.http.post<any>(url, postIds, { params: param });
   }
 
   /**
@@ -148,5 +194,9 @@ getPosts(pageNumber: number, pageSize: number): Observable<Post[]> {
     return this.postReported.asObservable();
   }
 
+  isPostCreatedByUserIFollow(userId: string): Observable<boolean> {
+    const url = `${this.apiURL}/user/${userId}`;
+    return this.http.get<boolean>(url);
+  }
 
 }

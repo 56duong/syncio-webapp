@@ -3,10 +3,10 @@
   <!-- <div *ngIf="isReportedPostsPage && mostFrequentReason" class="flex align-items-center gap-2">
     <small >Most reports: <span class="font-bold">{{ mostFrequentReason }}</span></small>
   </div> -->
-  <div class="flex justify-content-between align-items-center">
-    <!-- Existing content -->
-    <p-button *ngIf="isReportedPostsPage" label="View Report Reasons" icon="pi pi-info-circle" (click)="showReasonCountsDialog()"></p-button>
+  <div *ngIf="isReportedPostsPage" class="flex justify-content-between align-items-center">
+    <p-button label="View Report Reasons" icon="pi pi-info-circle" (click)="showReasonCountsDialog()"></p-button>
   </div>
+
   <div class="flex justify-content-between align-items-center">
     <div class="flex align-items-center gap-2">
       <div class="avt">
@@ -24,9 +24,18 @@
         </small>
       </div>
     </div>
-    <span *ngIf="!isReportedPostsPage && !isHiddenPostsPage" class="pi pi-ellipsis-h cursor-pointer" (click)="showReportModal()"></span>
+
     <p-button *ngIf="isReportedPostsPage" label="Hide" severity="danger" (click)="onHidePost()"></p-button>
     <p-button *ngIf="isHiddenPostsPage" label="Active" severity="primary" (click)="onActivePost()"></p-button>
+
+    <!-- Visibility -->
+    <div class="flex align-items-center gap-2">
+      <p-button *ngIf="post.visibility === Visibility.PRIVATE" class="close-friend" icon="pi pi-lock" severity="secondary" size="small" />
+      <p-button *ngIf="post.visibility === Visibility.CLOSE_FRIENDS" class="close-friend" icon="pi pi-star-fill" severity="success" size="small" />
+      <!-- 3 dots -->
+      <span *ngIf="!isReportedPostsPage && !isHiddenPostsPage" class="pi pi-ellipsis-h cursor-pointer" (click)="dialogVisible = !dialogVisible"></span>
+    </div>
+
   </div>
 
   <!-- photo -->
@@ -35,21 +44,28 @@
       [numVisible]="1"
       [numScroll]="1"
       [circular]="false"
-      [style]="{ height: '100%', position: 'relative' }">
+      [style]="{ height: '100%', position: 'relative' }"
+      [ngClass]="post.photos.length == 1 ? 'hide-slide-control' : ''">
       <ng-template let-photo pTemplate="item">
-        <img src="{{ photo }}"
+        <img src="{{ photo.url }}" 
+          alt="{{ photo.altText }}"
           class="w-full h-full"
-          style="object-fit: contain" />
+          style="object-fit: cover" />
       </ng-template>
     </p-carousel>
   </div>
 
   <!-- caption -->
-  <div>
-    <small *ngIf="post.createdBy" class="font-bold">
+  <div *ngIf="post.caption" class="line-clamp"
+    [ngStyle]="{ '-webkit-line-clamp': isViewMore ? 'unset' : '3'}">
+    <small *ngIf="post.createdBy && post.photos?.length" class="font-bold mr-1">
       {{ post.createdBy | userIdToName | async }}
     </small>
-    <small>{{ post.caption }}</small>
+    <p class="inline m-0"
+      (click)="isViewMore = !isViewMore" 
+      [title]="isViewMore ? 'View less' : 'View more'">
+      {{ post.caption }}
+    </p>
   </div>
 
   <!-- Like -->
@@ -84,4 +100,10 @@
     <button pButton label="Close" icon="pi pi-times" (click)="hideReasonCountsDialog()"></button>
   </div>
 </p-dialog>
+
+<app-global-dialog
+  [display]="dialogVisible"
+  [items]="dialogItems"
+  (displayChange)="hideDialog()">
+</app-global-dialog>
 

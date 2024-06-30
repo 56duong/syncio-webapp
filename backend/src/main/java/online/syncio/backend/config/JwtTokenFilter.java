@@ -86,8 +86,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/users/refreshToken", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/confirm-user-register", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/reset_password", apiPrefix), "POST"),
+
+                // Post
                 Pair.of(String.format("%s/posts/images/**", apiPrefix), "GET"),
-                Pair.of(String.format("%s/posts", apiPrefix), "GET"),
+                Pair.of(String.format("%s/posts/", apiPrefix), "GET"),
+                Pair.of(String.format("%s/posts/feed", apiPrefix), "POST"),
 
                 // Like
                 Pair.of(String.format("%s/likes/count/**", apiPrefix), "GET"),
@@ -101,6 +104,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 // User
                 Pair.of(String.format("%s/users/**/username", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/search/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/users/profile/**", apiPrefix), "GET"),
 
                 // Label
                 Pair.of(String.format("%s/labels/**", apiPrefix), "GET"),

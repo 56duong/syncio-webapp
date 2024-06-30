@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import online.syncio.backend.comment.Comment;
 import online.syncio.backend.like.Like;
+import online.syncio.backend.post.photo.Photo;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.user.User;
 import org.hibernate.annotations.GenericGenerator;
@@ -30,9 +31,6 @@ public class Post {
     @Column(columnDefinition = "text")
     private String caption;
 
-    @ElementCollection
-    private List<String> photos;
-
     @Column
     @CreatedDate
     private LocalDateTime createdDate;
@@ -43,6 +41,12 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User createdBy;
+
+    private String keywords; // comma separated
+
+//    Photo
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Photo> photos;
 
 //    Like
     @OneToMany(mappedBy = "post")
