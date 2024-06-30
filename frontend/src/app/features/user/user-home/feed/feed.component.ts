@@ -71,9 +71,8 @@ export class FeedComponent {
         }
       });
     });
-    if (this.endOfFeed) {
-      this.observer.observe(this.endOfFeedElement.nativeElement);
-    }
+    
+    this.observer.observe(this.endOfFeedElement.nativeElement);
   }
 
   ngOnDestroy() {
@@ -133,7 +132,7 @@ export class FeedComponent {
     // if the last page is reached, reset the pageNumber to 0 and get all the post ids
     if(postsPage.last) {
       this.pageNumber = 0;
-      this.postIds = this.posts.map(post => post.id || '');
+      this.postIds = this.posts.map(post => post.id || '').concat(this.suggestedPosts.map(post => post.id || ''));
       switch(endOf) {
         case 'FOLLOWING':
           this.endOfFollowing = true;
@@ -145,6 +144,7 @@ export class FeedComponent {
           break;
         case 'FEED':
           this.endOfFeed = true;
+          this.observer?.unobserve(this.endOfFeedElement.nativeElement);
           break;
       }
     }
