@@ -99,6 +99,11 @@
     color: #6c757d;
 }
 
+.main .setting ::ng-deep .p-tieredmenu .p-menuitem-active>p-tieredmenusub>.p-submenu-list {
+  top: auto;
+  bottom: 0;
+}
+
 // Logo
 ::ng-deep .left-menu .p-button.p-button-link:not(:disabled)  {
   :hover .p-button-label {
