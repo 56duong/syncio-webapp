@@ -66,7 +66,6 @@ export class CreatePostComponent {
       caption: this.post.caption,
       createdDate: new Date().toISOString(),
       flag: true,
-      createdBy: this.userService.getUserResponseFromLocalStorage()?.id,
       visibility: this.selectedVisibility,
     };
     if (!post.caption && this.selectedPhotoFile.length === 0) {
@@ -82,11 +81,6 @@ export class CreatePostComponent {
 
     this.selectedPhotoFile.forEach((photo: File, index) => {
       formData.append(`images`, photo);
-    });
-
-    // post.photos = this.selectedPhotos;
-    post.photos = this.selectedPhotos.map((photo) => {
-      return { url: photo };
     });
 
     this.postService.createPost(formData).subscribe({

@@ -9,8 +9,7 @@ import online.syncio.backend.comment.CommentRepository;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.exception.ReferencedWarning;
-import online.syncio.backend.imagecaption.CaptionDTO;
-import online.syncio.backend.imagecaption.ImageCaptionService;
+import online.syncio.backend.huggingfacenlp.HfInference;
 import online.syncio.backend.keyword.KeywordResponseDTO;
 import online.syncio.backend.keyword.KeywordService;
 import online.syncio.backend.like.Like;
@@ -19,6 +18,7 @@ import online.syncio.backend.post.photo.Photo;
 import online.syncio.backend.post.photo.PhotoDTO;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.report.ReportRepository;
+import online.syncio.backend.setting.SettingService;
 import online.syncio.backend.user.EngagementMetricsDTO;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
@@ -49,7 +49,7 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final ReportRepository reportRepository;
     private final KeywordService keywordService;
-    private final ImageCaptionService imageCaptionService;
+    private final SettingService settingService;
     private final AuthUtils authUtils;
 
     //    CRUD
@@ -83,8 +83,6 @@ public class PostService {
     }
 
     public ResponseEntity<?> create (final CreatePostDTO postDTO) throws IOException {
-        User user = userRepository.findById(postDTO.getCreatedBy())
-                                  .orElseThrow(() -> new NotFoundException(User.class, "id", postDTO.getCreatedBy().toString()));
         Post post = new Post();
 
         //Upload image
@@ -118,29 +116,38 @@ public class PostService {
         post.setCaption(postDTO.getCaption());
         post.setFlag(postDTO.getFlag());
 
+        // Initialize the Hugging Face Inference object
+        HfInference hfInference;
+        String token = settingService.getHuggingFaceToken();
+        if(token != null) hfInference = new HfInference(token);
+        else hfInference = null;
+
         post.setPhotos(filenames.stream()
                 .map(filename -> {
                     Photo photo = new Photo();
                     photo.setUrl(filename);
-                    photo.setAltText(postDTO.getCaption());
                     photo.setPost(post);
-                    // Generate alt text for the image
-                    CaptionDTO captionDTO = imageCaptionService.generateCaption(photo.getImageUrl());
-                    if(captionDTO != null) photo.setAltText(captionDTO.getGeneratedText());
+
+                    if(hfInference != null) {
+                        // Generate alt text for the image
+                        String altTexts = hfInference.imageToText(photo.getImageUrl());
+                        if (altTexts != null) {
+                            photo.setAltText(altTexts);
+                        }
+                    }
+
                     return photo;
                 })
                 .collect(Collectors.toList()));
-        post.setCreatedBy(user);
 
+        // Get keywords from the caption
         Set<String> keywords = new HashSet<>();
-
         if(postDTO.getCaption() != null) {
             KeywordResponseDTO keywordsFromCaption = keywordService.extractKeywords(postDTO.getCaption());
             if(keywordsFromCaption != null) {
                 keywords = keywordService.getKeywordsByOrderAndLimit(keywordsFromCaption);
             }
         }
-
         // Set keywords for the post
         if(!keywords.isEmpty()) {
             post.setKeywords(String.join(", ", keywords));
