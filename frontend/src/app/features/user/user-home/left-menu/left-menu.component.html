@@ -10,7 +10,7 @@
       <div class="mobile-hidden logo">
         <li class="p-fluid">
           <p-button
-            class="desktop-show"
+            class="logo-big"
             styleClass="shadow-none"
             size="large"
             label="SYNCIO"
@@ -18,7 +18,7 @@
             [plain]="true"
           />
           <p-button
-            class="desktop-hidden"
+            class="logo-small hidden"
             styleClass="shadow-none"
             size="large"
             label="S"
@@ -27,9 +27,7 @@
           />
         </li>
       </div>
-      <div
-        class="menu w-full flex flex-column align-items-center lg:align-items-start xl:align-items-start gap-2 pl-0 list-none"
-      >
+      <div class="menu w-full flex flex-column align-items-center lg:align-items-start xl:align-items-start gap-2 pl-0 list-none">
         <li *ngFor="let menu of menus" class="p-fluid w-full">
           <p-button
             [id]="menu.id"

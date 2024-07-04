@@ -6,14 +6,16 @@ import { MessageRoom } from 'src/app/core/interfaces/message-room';
 import { Sticker } from 'src/app/core/interfaces/sticker';
 import { User } from 'src/app/core/interfaces/user';
 import { MessageContentService } from 'src/app/core/services/message-content.service';
+import { MessageRoomMemberService } from 'src/app/core/services/message-room-member.service';
+import { MessageRoomService } from 'src/app/core/services/message-room.service';
 
 @Component({
-  selector: 'app-message-content',
-  templateUrl: './message-content.component.html',
-  styleUrls: ['./message-content.component.scss']
+  selector: 'app-message-content-list',
+  templateUrl: './message-content-list.component.html',
+  styleUrls: ['./message-content-list.component.scss']
 })
 
-export class MessageContentComponent {
+export class MessageContentListComponent {
   @Input() messageRoom: MessageRoom = {}; // current message room
   @Input() currentUser!: User; // Current user logged in.
   @Output() sendMessageEvent = new EventEmitter<void>();
@@ -42,8 +44,11 @@ export class MessageContentComponent {
   @ViewChild('imageUploader') imageUploader: any; // Image uploader component use to upload and send images
   MessageContentTypeEnum = MessageContentTypeEnum;
 
+  isShowDetails: boolean = false; // Indicates if the message room details are shown
+
   constructor(
     private messageContentService: MessageContentService,
+    private messageRoomMemberService: MessageRoomMemberService,
   ) { }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -61,6 +66,9 @@ export class MessageContentComponent {
       this.messageContentService.connectWebSocket(this.messageRoom.id);
       this.getMessageContentsObservable();
       this.getMessageContent();
+      this.getMessageRoomMembers();
+
+      this.isShowDetails = false;
     }
   }
 
@@ -111,6 +119,24 @@ export class MessageContentComponent {
       }
     });
   }
+
+  /**
+   * Get all the members in the message room.
+   */
+  getMessageRoomMembers() {
+    if(!this.messageRoom.id) return;
+    this.messageRoomMemberService.getMessageRoomMembersByRoomId(this.messageRoom.id).subscribe({
+      next: (messageRoomMembers) => {
+        this.messageRoom = {
+          ...this.messageRoom,
+          members: messageRoomMembers
+        };
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
   
   addEmoji(event: any) {
     this.messageContent.message = `${this.messageContent.message || ''}${event.emoji.native}`;
@@ -131,7 +157,7 @@ export class MessageContentComponent {
   /**
    * Send a message.
    */
-  sendMessage(type: 'TEXT' | 'STICKER' | 'IMAGE') {
+  sendMessage(type: MessageContentTypeEnum) {
     if(type === 'TEXT' && this.plainComment.trim() === '') return;
 
     let date = new Date();
@@ -143,11 +169,7 @@ export class MessageContentComponent {
       },
       messageRoomId: this.messageRoom.id,
       dateSent: new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString(),
-      type: type === 'TEXT' 
-              ? MessageContentTypeEnum.TEXT 
-              : type === 'STICKER' 
-                ? MessageContentTypeEnum.STICKER 
-                : MessageContentTypeEnum.IMAGE,
+      type: type,
     };
 
     this.messageContentService.sendMessageContent(this.messageContent);
@@ -167,6 +189,7 @@ export class MessageContentComponent {
   /* ------------------------------ REPLY SECTION ----------------------------- */
 
   onContextMenu(event: any, messageContent: MessageContent) {
+    if(messageContent.type?.startsWith('NOTIFICATION')) return; // Do not allow replying to notification messages
     this.replyingTo = messageContent;
     this.contextMenu.show(event);
   }
@@ -179,7 +202,7 @@ export class MessageContentComponent {
    */
   sendSticker(sticker: Sticker) {
     this.messageContent.message = sticker.imageUrl;
-    this.sendMessage('STICKER');
+    this.sendMessage(MessageContentTypeEnum.STICKER);
   }
 
   /**
@@ -198,7 +221,7 @@ export class MessageContentComponent {
       next: (response) => {
         // output: ['image1.jpg','image2.jpg','image3.jpg', ...]
         this.messageContent.message = response.toString();
-        this.sendMessage('IMAGE');
+        this.sendMessage(MessageContentTypeEnum.IMAGE);
       },
       error: (error) => {
         console.log(error);
@@ -206,6 +229,23 @@ export class MessageContentComponent {
     });
 
     this.imageUploader.clear();
+  }
+
+  showDetails() {
+    this.isShowDetails = !this.isShowDetails;
+  }
+
+  /**
+   * Add a notification message to the message content.
+   * @param type 
+   * @param message 
+   */
+  addMessageContentNotification(type: MessageContentTypeEnum, message: string) {
+    this.messageContent = {
+      ...this.messageContent,
+      message: message,
+    };
+    this.sendMessage(type);
   }
 
 }

@@ -20,9 +20,9 @@ export class DateAgoPipePipe implements PipeTransform {
    * {{ post.createdDate | dateAgoPipe }}
    * {{ messageContent.createdDate | dateAgoPipe: 'day' }}
    */
-  transform(value: any, type?: 'day' | 'week' | 'month' | 'year'): unknown {
+  transform(value: any, type?: 'h'| 'd' | 'w' | 'mth' | 'y'): unknown {
     if (value) {
-      if(!type) type = 'week';
+      if(!type) type = 'w';
       // Calculate the difference between the current date and the given date in seconds.
       const seconds = Math.floor((+new Date() - +new Date(value)) / 1000);
 

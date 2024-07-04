@@ -34,7 +34,8 @@ import { GlobalDialogComponent } from './components/global-dialog/global-dialog.
     PostComponent,
     ResizableDraggableComponent,
     StickerPickerComponent,
-    PostDetailComponent
+    PostDetailComponent,
+    GlobalDialogComponent
   ],
 })
 export class SharedModule {}

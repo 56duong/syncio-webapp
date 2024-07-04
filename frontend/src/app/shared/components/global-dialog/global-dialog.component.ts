@@ -9,6 +9,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class GlobalDialogComponent {
   @Input() display: boolean = false;
   @Input() items: any[] = [];
+  @Input() title: string = '';
+  @Input() description: string = '';
   @Output() displayChange = new EventEmitter<void>();
 
   onItemClick(item: DialogItem) {
@@ -23,9 +25,10 @@ export class GlobalDialogComponent {
   }
 }
 
-interface DialogItem {
+export interface DialogItem {
   label?: string;
   icon?: string;
   color?: string;
+  bold?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
   action?: () => void;
 }

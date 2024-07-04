@@ -15,7 +15,7 @@ export class FeedComponent {
   suggestedPosts: Post[] | undefined;
 
   pageNumber: number = 0;
-  pageSize: number = 3; // set số bài viết cần lấy trên 1 trang
+  pageSize: number = 10; // set số bài viết cần lấy trên 1 trang
   loading: boolean = false;
 
   endOfFollowing: boolean = false; // Indicates if the end of the posts from the users that the current user is following has been reached.
