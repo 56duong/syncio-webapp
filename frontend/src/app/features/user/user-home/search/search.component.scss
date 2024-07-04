@@ -112,3 +112,7 @@ $white : white;
         left: 5.4em !important;
     }
 }
+
+.search__wrap::ng-deep .p-divider.p-divider-horizontal {
+    margin: 1.25rem 0;
+}

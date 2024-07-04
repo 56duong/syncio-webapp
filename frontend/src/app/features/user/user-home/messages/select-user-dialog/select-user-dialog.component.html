@@ -1,0 +1,32 @@
+<p-dialog [header]="dialogTitle" 
+  [(visible)]="isDialogVisible" 
+  [style]="{ width: '40vw' }"
+  [modal]="true" 
+  [dismissableMask]="true"
+  [draggable]="false" 
+  [resizable]="false"
+  (onHide)="hide()">
+
+  <p-divider></p-divider>
+
+  <!-- Input -->
+  <span class="p-fluid pt-0">
+    <p-autoComplete [(ngModel)]="selectedUsers" 
+      appendTo="body"
+      [suggestions]="searchedUsers" 
+      field="username"
+      (completeMethod)="search($event)" 
+      [multiple]="true"
+      [placeholder]="dialogDescription"
+      styleClass="p-3">
+    </p-autoComplete> 
+  </span>
+
+  <p-divider></p-divider>
+  
+  <!-- Button -->
+  <div class="p-fluid p-3">
+    <p-button [label]="dialogSubmitLabel" (click)="submit()"></p-button>
+  </div>
+
+</p-dialog>

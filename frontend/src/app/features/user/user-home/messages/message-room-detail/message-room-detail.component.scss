@@ -1,0 +1,25 @@
+p-dialog ::ng-deep {
+  .p-dialog-header {
+    padding: 0.75rem 1rem;
+    justify-content: center;
+    position: relative;
+  }
+
+  .p-dialog-title {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .p-dialog-header-close {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+  }
+
+  .p-dialog-content {
+    padding: 0;
+    overflow: unset;
+  }
+
+}
