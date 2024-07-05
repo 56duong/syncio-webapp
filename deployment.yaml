@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: DockerfileAI
+    ports:
+      - "8111:8111"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8111
+      DOMAIN: example.com
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq
+      EXCHANGE: imageVerificationExchange
+      QUEUE_IMAGE_VERIFY: imageVerificationQueue
+    depends_on:
+      - rabbitmq
+    container_name: ai_check_image_container
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "15672:15672" # Management interface
+      - "5672:5672"   # RabbitMQ service
+    container_name: rabbitmq_container
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+    
+# run docker-compose
+#docker-compose -f ./deployment.yaml up -d app
+
+# remove docker-compose
+#docker-compose -f ./deployment.yaml down
+
+# build docker file
+#docker-compose -f ./deployment.yaml build
+
+
+# check error logs
+#docker logs ai_check_image_container

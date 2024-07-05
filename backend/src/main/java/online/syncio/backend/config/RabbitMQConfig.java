@@ -22,6 +22,7 @@ public class RabbitMQConfig implements RabbitListenerConfigurer {
     public static final String EXCHANGE = "imageVerificationExchange";
     public static final String ROUTING_KEY = "imageVerify";
     public static final String QUEUE_NAME = "imageVerificationQueue";
+    public static final String QUEUE_IMAGE_VERIFICATION = "image_verification_response_queue_spring";
 
     @Bean
     Queue queue() {
@@ -30,7 +31,7 @@ public class RabbitMQConfig implements RabbitListenerConfigurer {
 
     @Bean
     Queue responseQueue() {
-        return new Queue("image_verification_response_queue_spring", true);
+        return new Queue(QUEUE_IMAGE_VERIFICATION, true);
     }
 
     @Bean
