@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import online.syncio.backend.config.RabbitMQConfig;
 import online.syncio.backend.post.Post;
 import online.syncio.backend.post.PostService;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,8 @@ import java.util.UUID;
 public class RabbitMQListener {
 
     private final PostService postService;
+
+    @RabbitHandler
     @RabbitListener(queues = "image_verification_response_queue_spring")
     public void receiveMessageFromFastAPI(Map<String, Object> message) {
         Boolean nudity = (Boolean) message.get("nudity");
