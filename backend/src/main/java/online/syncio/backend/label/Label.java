@@ -34,7 +34,7 @@ public class Label {
 
     @Column
     @Min(value = 0, message = "Price should not be less than 0")
-    private Double price;
+    private Long price;
 
     @Column
     private String labelURL;
@@ -47,6 +47,7 @@ public class Label {
     @JoinColumn(name = "user_id", nullable = false)
     @CreatedBy
     private User createdBy;
+
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

@@ -7,6 +7,7 @@ import { PaymentService } from 'src/app/core/services/payment.service';
 import { VNPay } from 'src/app/core/interfaces/vnpay';
 import { HttpParams } from '@angular/common/http';
 import { LabelResponse } from 'src/app/core/interfaces/label-response';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 
 
@@ -17,7 +18,8 @@ import { LabelResponse } from 'src/app/core/interfaces/label-response';
 })
 
 export class LabelsShopComponent {
-
+    labelDialog: boolean = false;
+    submitted: boolean = false;
     labels!: LabelResponse[];
     label!: LabelResponse;
     vnpay!: VNPay;
@@ -29,6 +31,7 @@ export class LabelsShopComponent {
     constructor(
       private labelService: LabelService,
       private userService: UserService,
+      private toastService: ToastService,
       private paymentService: PaymentService,
     ) {}
 
@@ -40,22 +43,28 @@ export class LabelsShopComponent {
               this.labels = data;
               this.dateNow = Date.now();
               this.labels.forEach((label) => label.type = label.labelURL?.split('.').pop()?.toLocaleUpperCase());
-              console.log(this.label.type);
           },
           error: (error) => {
               console.error('Error fetching labels', error);
           },
         });
       }
-
-     
     }
 
+  hideDialog() {
+      //this.selectedLabels = []; // xoá label đã chọn -> khi mở dialog lên sẽ không hiển thị label đã chọn
+      this.labelDialog = false;
+      this.submitted = false;
+  }
+
   buyNow(label: Label) {
-    if (label.id && label.price) {
+    this.submitted = true;
+
+    if (label.id) {
       let params = new HttpParams()
       .set('labelID', label.id)
-      .set('amount', label.price);
+
+      console.log("params: " + params.toString());
 
       this.paymentService.createVNPayPayment(params).subscribe({
         next: (data)  => {
@@ -68,9 +77,49 @@ export class LabelsShopComponent {
         },
         
         error: (error) => {
-          console.error('Error creating payment', error);
+          this.toastService.showError('Error', error.error.message);
         }
       });
     }
   }
+
+
+  gift(label: Label) {
+    this.label = { ...label };
+    this.labelDialog = true;
+  }
+
+  sendGift() {
+    this.submitted = true;
+
+    if (this.label.owner == null || this.label.owner == "") {
+      this.toastService.showError('Error','Please enter username you want to send a gift');
+      return;
+    }
+
+    if (this.label.id) {
+      let params = new HttpParams()
+      .set('labelID', this.label.id)
+
+      if (this.label.owner) {
+        params = params.set('owner', this.label.owner);
+      }
+
+      this.paymentService.createVNPayPayment(params).subscribe({
+        next: (data)  => {
+          this.vnpay = data;
+          console.log(data);
+
+          if (this.vnpay.paymentURL) {
+            window.location.href = this.vnpay.paymentURL;
+          }
+        },
+        
+        error: (error) => {
+          this.toastService.showError('Error', error.error.message);
+        }
+      });
+    }
+  }
+
 }
