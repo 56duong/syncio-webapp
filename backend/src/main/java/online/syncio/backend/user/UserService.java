@@ -237,7 +237,7 @@ public class UserService {
                 .collect(Collectors.toList());
         postDTO.setPhotos(photos);
 
-        postDTO.setCreatedDate(post.getCreatedDate());
+//        postDTO.setCreatedDate(post.getCreatedDate());
         postDTO.setFlag(post.getFlag());
 
         // Set the createdBy field to the ID of the user who created the post
