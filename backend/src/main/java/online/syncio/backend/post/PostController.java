@@ -1,5 +1,6 @@
 package online.syncio.backend.post;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import online.syncio.backend.exception.ReferencedException;
 import online.syncio.backend.exception.ReferencedWarning;
@@ -22,18 +23,33 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "/api/v1/posts")
 public class PostController {
-
+    private final IPostRedisService postRedisService;
     private final PostService postService;
 
-    public PostController(final PostService postService) {
+    public PostController(final PostService postService, final IPostRedisService postRedisService) {
         this.postService = postService;
+        this.postRedisService = postRedisService;
     }
 
     // new - get 10 post/page
     @GetMapping
     public Page<PostDTO> getPosts(@RequestParam(defaultValue = "0") int pageNumber,
-                               @RequestParam(defaultValue = "10") int pageSize) {
-        return postService.getPosts(PageRequest.of(pageNumber, pageSize));
+                               @RequestParam(defaultValue = "10") int pageSize) throws JsonProcessingException {
+        String cacheKey = "posts_page_" + pageNumber + "_" + pageSize;
+//        postRedisService.clear();
+        // Try to get cached data
+        Page<PostDTO> cachedPosts = postRedisService.findAllPostsInCache(cacheKey);
+        if (cachedPosts != null) {
+            return cachedPosts; // Return cached data if available
+        }
+
+        // If not in cache, fetch from the database
+        Page<PostDTO> posts = postService.getPosts(PageRequest.of(pageNumber, pageSize));
+
+        // Cache the result
+        postRedisService.cachePosts(cacheKey, posts);
+
+        return posts;
 
     }
 

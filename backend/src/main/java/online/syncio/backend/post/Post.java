@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Table(name = "post")
 @Entity
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners({AuditingEntityListener.class, PostListener.class})
 @Data
 public class Post {
     @Id
