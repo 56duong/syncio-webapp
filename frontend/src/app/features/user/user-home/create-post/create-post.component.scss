@@ -114,3 +114,32 @@ p-carousel.hide-slide-control ::ng-deep {
     padding: 7px;
   }
 
+
+.visibility-dialog ::ng-deep {
+  .p-dialog-header {
+    justify-content: center;
+    padding: 0.5rem 0;
+  }
+
+  .p-dialog .p-dialog-header .p-dialog-title {
+    font-size: 1rem;
+  }
+
+  .field-checkbox {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+  }
+
+  .close-friend {
+    .p-button.p-button-icon-only {
+      padding: 0.5rem;
+      border-radius: 50%;
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .p-button-icon {
+      font-size: 0.75rem;
+    }
+  }
+}

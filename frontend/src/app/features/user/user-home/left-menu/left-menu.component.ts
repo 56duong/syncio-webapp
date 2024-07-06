@@ -76,6 +76,20 @@ export class LeftMenuComponent {
     },
   ]; // Submenu of the create button
 
+  settingSubmenuItems = [
+    {
+      label: 'Settings',
+      icon: 'pi pi-cog',
+      items: [
+        {
+          label: 'Help',
+          icon: 'pi pi-question-circle',
+          route: '/help',
+        }
+      ],
+    },
+  ]; // Submenu of the Settings button
+
   constructor(
     private router: Router,
     private tokenService: TokenService,

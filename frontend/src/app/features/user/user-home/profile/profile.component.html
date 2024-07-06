@@ -25,15 +25,11 @@
         <div class="profile-setting dark-off">
           <h1>{{ userProfile.username }}</h1>
 
-          <a>
-            <button
-              *ngIf="loginUser !== userProfile.id && !isFollowing"
-              type="button"
-              (click)="handleFollowUser(userProfile.id)"
-              style="background-color: rgba(0, 0, 0, 0.1)"
-            >
-              Folllow
-            </button>
+          <a *ngIf="loginUser !== userProfile.id && !isFollowing">
+            <p-button
+              (click)="handleFollowUser(userProfile.id)" 
+              label="Folllow" severity="my-custom-primary">
+            </p-button>
           </a>
 
           <!-- <a>
@@ -47,18 +43,9 @@
             </button>
           </a> -->
 
-          <a
-            class="dropdown"
-            *ngIf="loginUser !== userProfile.id && isFollowing"
-          >
-            <button
-              class="btn btn-secondary dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Following
-            </button>
+          <a class="dropdown"
+            *ngIf="loginUser !== userProfile.id && isFollowing">
+            <p-button label="Following" severity="my-custom-primary" data-bs-toggle="dropdown" aria-expanded="false"></p-button>
             <ul class="dropdown-menu">
               <li>
                 <a
@@ -92,13 +79,7 @@
             <p-button label="Messages" severity="my-custom-primary"></p-button>
           </a>
           <a *ngIf="loginUser === userProfile.id" href="/edit-profile">
-            <button
-              type="button"
-              (click)="handleEditProfile()"
-              style="background-color: rgba(0, 0, 0, 0.1)"
-            >
-              Edit Profile
-            </button>
+            <p-button (click)="handleEditProfile()" label="Edit Profile" severity="my-custom-primary"></p-button>
           </a>
 
           <div *ngIf="loginUser === userProfile.id" class="setting-icon">
@@ -161,10 +142,11 @@
         <ng-container *ngFor="let post of userProfile.posts">
           <div *ngIf="post.photos && post.photos.length > 0" 
             style="aspect-ratio: 1/1; cursor: pointer;"
-            [routerLink]="['/post', post.id]">
+            (click)="handleShowPostDetail(true, post)">
             <img height="100%"
               width="100%"
-              [src]="post.photos[0]"
+              [src]="post.photos[0].url"
+              [alt]="post.photos[0].altText"
               style="object-fit: cover"
             />
           </div>
@@ -174,3 +156,12 @@
     </div>
   </div>
 </main>
+
+<!-- Post Detail popup -->
+<app-post-detail
+  *ngIf="visible"
+  [post]="post"
+  [visible]="visible"
+  (visibleChange)="showPostDetail($event)"
+  style="position: relative; z-index: 1102;">
+</app-post-detail>

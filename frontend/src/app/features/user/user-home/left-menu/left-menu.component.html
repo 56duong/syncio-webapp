@@ -10,7 +10,7 @@
       <div class="mobile-hidden logo">
         <li class="p-fluid">
           <p-button
-            class="desktop-show"
+            class="logo-big"
             styleClass="shadow-none"
             size="large"
             label="SYNCIO"
@@ -18,7 +18,7 @@
             [plain]="true"
           />
           <p-button
-            class="desktop-hidden"
+            class="logo-small hidden"
             styleClass="shadow-none"
             size="large"
             label="S"
@@ -27,9 +27,7 @@
           />
         </li>
       </div>
-      <div
-        class="menu w-full flex flex-column align-items-center lg:align-items-start xl:align-items-start gap-2 pl-0 list-none"
-      >
+      <div class="menu w-full flex flex-column align-items-center lg:align-items-start xl:align-items-start gap-2 pl-0 list-none">
         <li *ngFor="let menu of menus" class="p-fluid w-full">
           <p-button
             [id]="menu.id"
@@ -47,28 +45,22 @@
         </li>
         <!-- Create -->
         <li class="p-fluid w-full">
-          <p-tieredMenu
-            [model]="createSubmenuItems"
-            styleClass="w-full border-none shadow-none"
-          >
+          <p-tieredMenu [model]="createSubmenuItems"
+            styleClass="w-full border-none shadow-none">
             <ng-template pTemplate="item" let-item let-hasSubmenu="hasSubmenu">
               <ng-container *ngIf="item.route; else withoutRoute">
-                <a
-                  [routerLink]="item.route"
+                <a [routerLink]="item.route"
                   [href]="item.href"
-                  class="p-menuitem-link"
-                >
+                  class="p-menuitem-link">
                   <span [class]="item.icon + ' p-menuitem-icon'"></span>
                   <span class="p-menuitem-text">{{ item.label }}</span>
                 </a>
               </ng-container>
               <ng-template #withoutRoute>
                 <ng-container *ngIf="item.url; else withoutUrl">
-                  <a
-                    [href]="item.url"
+                  <a [href]="item.url"
                     [target]="item.target"
-                    class="p-menuitem-link"
-                  >
+                    class="p-menuitem-link">
                     <span [class]="item.icon + ' p-menuitem-icon'"></span>
                     <span class="p-menuitem-text">{{ item.label }}</span>
                     <span
@@ -113,14 +105,44 @@
 
       </div>
       <!-- Setting -->
-      <div class="p-fluid w-full sm:mt-auto mt-0 mobile-hidden">
-        <p-button
-          class="text-left"
-          label="Setting"
-          icon="pi pi-cog"
-          [text]="true"
-          [plain]="true"
-        />
+      <div class="setting p-fluid w-full sm:mt-auto mt-0 mobile-hidden">
+        <p-tieredMenu [model]="settingSubmenuItems"
+            styleClass="w-full border-none shadow-none">
+            <ng-template pTemplate="item" let-item let-hasSubmenu="hasSubmenu">
+              <ng-container *ngIf="item.route; else withoutRoute">
+                <a [routerLink]="item.route"
+                  [href]="item.href"
+                  class="p-menuitem-link">
+                  <span [class]="item.icon + ' p-menuitem-icon'"></span>
+                  <span class="p-menuitem-text">{{ item.label }}</span>
+                </a>
+              </ng-container>
+              <ng-template #withoutRoute>
+                <ng-container *ngIf="item.url; else withoutUrl">
+                  <a [href]="item.url"
+                    [target]="item.target"
+                    class="p-menuitem-link">
+                    <span [class]="item.icon + ' p-menuitem-icon'"></span>
+                    <span class="p-menuitem-text">{{ item.label }}</span>
+                    <span
+                      *ngIf="hasSubmenu"
+                      class="pi pi-angle-right ml-auto"
+                    ></span>
+                  </a>
+                </ng-container>
+                <ng-template #withoutUrl>
+                  <a class="p-menuitem-link">
+                    <span [class]="item.icon + ' p-menuitem-icon'"></span>
+                    <span class="p-menuitem-text">{{ item.label }}</span>
+                    <span
+                      *ngIf="hasSubmenu"
+                      class="pi pi-angle-right ml-auto"
+                    ></span>
+                  </a>
+                </ng-template>
+              </ng-template>
+            </ng-template>
+          </p-tieredMenu>
       </div>
     </ul>
   </nav>

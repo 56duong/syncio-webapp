@@ -23,5 +23,11 @@ public class SettingService {
         }
     }
 
-
+    public String getHuggingFaceToken() {
+        Setting setting = settingRepo.findBySettingKey("HUGGING_FACE_TOKEN");
+        if (setting == null) {
+            return null;
+        }
+        return setting.getSettingValue();
+    }
 }
