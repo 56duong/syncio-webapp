@@ -1,9 +1,9 @@
 <div class="message-container flex">
 
   <!-- Left  -->
-  <div class="left col-3 p-0">
+  <div class="left col-3 p-0 flex flex-column">
     <!-- Username Header -->
-    <div class="flex justify-content-between align-items-center pr-2 pb-2">
+    <div class="flex justify-content-between align-items-center p-2">
       <div class="flex justify-content-between align-items-center gap-2">
         <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
         <h3>{{currentUser?.username}}</h3>
@@ -14,24 +14,31 @@
     <p-divider></p-divider>
 
     <!-- Message Room List -->
-    <div>
-      <h4>Messages</h4>
-      <div *ngFor="let messageroom of messageRooms"
-        (click)="selectMessageRoom(messageroom)"
-        [routerLink]="['inbox', messageroom.id]"
-        routerLinkActive="active"
-        class="message-item py-3">
-        <div class="flex align-items-center gap-2">
-          <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
-          <div>
-            <p *ngIf="currentUser.username" class="my-1">{{messageroom.name ?? '' | removeMyUsername:currentUser.username}}</p>
-            <div class="flex align-items-center gap-1 text-gray-500">
-              <!-- <small>{{messageroom.lastMessage}}</small>
-              <small>·</small>
-              <small>{{messageroom.time}}</small> -->
+    <div class="flex-1 overflow-hidden flex flex-column">
+      <h4 class="px-2">Messages</h4>
+      <div class="flex-1 primary-scrollbar overflow-y-scroll">
+        <div *ngFor="let messageroom of messageRooms"
+          (click)="selectMessageRoom(messageroom)"
+          [routerLink]="['inbox', messageroom.id]"
+          routerLinkActive="active"
+          class="message-item py-3 px-2">
+          <div class="flex align-items-center gap-2">
+            <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
+            <div>
+              <p *ngIf="currentUser.username"
+                title="{{messageroom.name}}"
+                class="my-1 line-clamp"
+                style="word-break: break-word;">
+                {{messageroom.name}}
+              </p>
+              <div class="flex align-items-center gap-1 text-gray-500">
+                <!-- <small>{{messageroom.lastMessage}}</small>
+                <small>·</small>
+                <small>{{messageroom.time}}</small> -->
+              </div>
             </div>
           </div>
-        </div>
+        </div>  
       </div>
     </div>
   </div>
@@ -41,34 +48,23 @@
   <!-- Message Content -->
   <div class="right col-9 message-content p-0">
     <!-- <router-outlet></router-outlet> -->
-    <app-message-content *ngIf="selectedMessageRoom" 
+    <app-message-content-list *ngIf="selectedMessageRoom" 
       [messageRoom]="selectedMessageRoom"
       [currentUser]="currentUser"
-      (sendMessageEvent)="sendMessageEvent()"></app-message-content>
+      (sendMessageEvent)="sendMessageEvent()">
+    </app-message-content-list>
   </div>
 </div>
 
 
 
 <!-- New message dialog -->
-<p-dialog header="New message" 
-  [(visible)]="isDialogVisible" 
-  [style]="{ width: '50vw' }"
-  [modal]="true" 
-  [dismissableMask]="true"
-  [draggable]="false" 
-  [resizable]="false">
-  <span class="p-fluid">
-    <p-autoComplete [(ngModel)]="selectedUserMembers" 
-      appendTo="body"
-      [suggestions]="searchedUsers" 
-      field="username"
-      (completeMethod)="search($event)" 
-      [multiple]="true"
-      placeholder="To:...">
-    </p-autoComplete> 
-  </span>
-  <div class="p-fluid mt-4">
-    <p-button label="Chat" (click)="chat()"></p-button>
-  </div>
-</p-dialog>
+<app-select-user-dialog *ngIf="currentUser && currentUser.id"
+  [expectedUsers]="[currentUser.id]"
+  [isDialogVisible]="isDialogVisible"
+  dialogTitle="New message"
+  dialogDescription="To..."
+  dialogSubmitLabel="Chat"
+  (selectedUsersEvent)="chat($event)"
+  (visibleHide)="isDialogVisible = false">
+</app-select-user-dialog>

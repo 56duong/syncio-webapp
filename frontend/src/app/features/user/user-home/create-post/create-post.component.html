@@ -79,15 +79,9 @@
       <div class="p-fluid">
         <div class="field">
 
-          <div
-            class="inline-flex align-items-center justify-content-center gap-2"
-          >
-            <p-avatar
-              image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
-              shape="circle"
-            />
-            <span class="font-bold white-space-nowrap"> Amy Elsner </span>
-
+          <div class="inline-flex align-items-center justify-content-center gap-2">
+            <p-avatar shape="circle" image="/assets/images/avatar.jpg" />
+            <span class="font-semibold white-space-nowrap">{{currentUsername}}</span>
             <button
               pButton
               pRipple
@@ -106,7 +100,8 @@
             [(ngModel)]="post.caption"
             [autoResize]="true"
             placeholder="Write a caption..."
-            class="border-0 outline-none p-0"
+            class="border-0 outline-none p-0 shadow-none"
+            style="max-height: 154px;"
           ></textarea>
         </div>
         <div class="field">
@@ -131,37 +126,36 @@
     </div>
   </div>
 </p-dialog>
+
+<!-- Visibility modal -->
 <p-dialog
-  header="
-  Subject of the article"
+  class="visibility-dialog"
+  header="Audience"
   [modal]="true"
   [(visible)]="displayModal"
-  [style]="{ width: '25rem' }"
-  [closable]="false"
->
-  <button
-    pButton
-    type="button"
-    icon="pi pi-chevron-left"
-    (click)="onBack()"
-    class="round-button"
-  ></button>
-  <div class="modal-content">
-    <span class="p-text-secondary block mb-5">Who can see your posts?</span>
-    <div *ngFor="let visibility of visibilityOptions | keyvalue">
-      <input
-        type="radio"
-        [id]="visibility.value"
-        name="visibility"
-        [(ngModel)]="selectedVisibility"
-        [value]="visibility.value"
-        (change)="setVisibility(visibility.value)"
-      />
-      <label [for]="visibility.value">{{ visibility.value }}</label>
+  [style]="{ width: '23.5rem' }"
+  [closable]="false">
+
+  <p-divider></p-divider>
+  
+  <div class="modal-content p-2">
+    <span class="block text-center mb-3 mt-2 font-semibold">Who would you like to share your post with?</span>
+
+    <div *ngFor="let visibility of visibilityOptions | keyvalue" class="field-checkbox mb-3">
+      <p-radioButton 
+        [inputId]="visibility.key"
+        name="visibility" 
+        [value]="visibility.value" 
+        [(ngModel)]="selectedVisibility" />
+      <label [for]="visibility.key" class="gap-2 flex align-items-center">
+        <p-button *ngIf="visibility.value == visibilityOptions.PRIVATE" class="close-friend" icon="pi pi-lock" severity="secondary" size="small" />
+        <p-button *ngIf="visibility.value === visibilityOptions.CLOSE_FRIENDS" class="close-friend" icon="pi pi-star-fill" severity="success" size="small" />
+        <p-button *ngIf="visibility.value === visibilityOptions.PUBLIC" class="close-friend" icon="pi pi-users" severity="success" size="small" />
+        {{ getVisibilityLabel(visibility.value) }}
+      </label>
     </div>
   </div>
-
-  <div class="modal-footer">
+  <div class="modal-footer p-2">
     <p-button label="Save" severity="success" (click)="saveVisibility()" />
   </div>
 </p-dialog>

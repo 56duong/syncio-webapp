@@ -18,6 +18,22 @@ p-dialog ::ng-deep {
     max-width: 400px;
   }
 
+  .dialog-content {
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .dialog-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .dialog-description {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+  }
+
   .dialog-item {
     min-height: 48px;
     padding: 4px 8px;
@@ -31,10 +47,15 @@ p-dialog ::ng-deep {
     justify-content: center;
     align-items: center;
     gap: 4px;
+    background-color: var(--surface-0);
   }
 
   .dialog-item:first-child {
     border-top: 0;
   }
 
+}
+
+button {
+  font-family: inherit;
 }

@@ -42,4 +42,18 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("SELECT u.username FROM User u WHERE u.id = :id")
     String findUsernameById(UUID id);
 
+    @Query("SELECT DATE(u.createdDate) as date, COUNT(u) as count " +
+            "FROM User u " +
+            "WHERE u.createdDate >= :startDate " +
+            "GROUP BY DATE(u.createdDate)")
+    List<Object[]> countNewUsersSince(@Param("startDate") LocalDateTime startDate);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE User u SET u.interestKeywords = :keywords WHERE u.id = :id")
+    void updateInterestKeywords(@Param("id") UUID id, @Param("keywords") String keywords);
+
+    @Query("SELECT COUNT(u) > 0 FROM User u JOIN u.following f WHERE u.id = :currentUserId AND f.id = :targetUserId")
+    boolean isFollowing(@Param("currentUserId") UUID currentUserId, @Param("targetUserId") UUID targetUserId);
+
 }

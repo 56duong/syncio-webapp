@@ -1,6 +1,6 @@
 
 html {
-  font-size: 15px;
+  font-size: 16px;
 }
 
 /* You can add global styles to this file, and also import other style files */
@@ -118,6 +118,17 @@ body {
 
 .p-button-my-custom-primary:hover {
   background-color: var(--gray-300);
+}
+
+.p-inputtext {
+  padding: 0.5rem 0.75rem;
+}
+
+.line-clamp {
+  display: -webkit-inline-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
 }
 
 .line-clamp-2 {

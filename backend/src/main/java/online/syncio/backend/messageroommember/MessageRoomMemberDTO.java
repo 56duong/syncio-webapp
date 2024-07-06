@@ -13,4 +13,6 @@ public class MessageRoomMemberDTO {
 
     private LocalDateTime dateJoined;
 
+    private boolean isAdmin;
+
 }

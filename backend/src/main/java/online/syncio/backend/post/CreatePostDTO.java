@@ -25,6 +25,5 @@ public class CreatePostDTO {
     @NotNull
     private Boolean flag;
 
-    @NotNull
     private UUID createdBy;
 }
