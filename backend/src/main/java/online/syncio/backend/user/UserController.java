@@ -61,18 +61,12 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UUID> createUser (@RequestBody @Valid final UserDTO userDTO) {
-        List<UserDTO> users = userService.findAll(Optional.empty());
-
-        for (UserDTO user : users) {
-            if (user.getUsername().equals(userDTO.getUsername())) {
-                throw new AppException(HttpStatus.BAD_REQUEST, "Username already exists!", null);
-            }
+        if (userService.existsByUsername(userDTO.getUsername())) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Username already exists!", null);
         }
 
-        for (UserDTO user : users) {
-            if (user.getEmail().equals(userDTO.getEmail())) {
-                throw new AppException(HttpStatus.BAD_REQUEST, "Email already exists!", null);
-            }
+        if (userService.existsByEmail(userDTO.getEmail())) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Email already exists!", null);
         }
 
         userService.create(userDTO);

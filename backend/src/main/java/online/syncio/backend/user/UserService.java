@@ -118,6 +118,12 @@ public class UserService {
         return userRepository.findUsernameById(id);
     }
 
+    public UserDTO getUserByUsername (String username) {
+        return userRepository.findByUsername(username)
+                .map(user -> mapToDTO(user, new UserDTO()))
+                .orElseThrow(() -> new NotFoundException(User.class, "username", username));
+    }
+
     public List<UserStoryDTO> findAllUsersWithAtLeastOneStoryAfterCreatedDate(final LocalDateTime createdDate) {
         final List<User> users = userRepository.findAllUsersWithAtLeastOneStoryAfterCreatedDate(createdDate);
         final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
@@ -408,6 +414,14 @@ public class UserService {
         } else {
             return false;
         }
+    }
+
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
     }
 
     // get new users count in last N days

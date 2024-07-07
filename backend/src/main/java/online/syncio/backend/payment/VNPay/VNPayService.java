@@ -8,10 +8,15 @@ import online.syncio.backend.billing.BillingDTO;
 import online.syncio.backend.billing.BillingService;
 import online.syncio.backend.billing.StatusEnum;
 import online.syncio.backend.exception.AppException;
+import online.syncio.backend.label.LabelDTO;
+import online.syncio.backend.label.LabelService;
+import online.syncio.backend.user.UserDTO;
+import online.syncio.backend.user.UserService;
 import online.syncio.backend.userlabelinfo.UserLabelInfo;
 import online.syncio.backend.userlabelinfo.UserLabelInfoDTO;
 import online.syncio.backend.userlabelinfo.UserLabelInfoService;
 import online.syncio.backend.utils.AuthUtils;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +31,21 @@ public class VNPayService {
     private final BillingService billingService;
     private final UserLabelInfoService userLabelInfoService;
     private final AuthUtils authUtils;
+    private final LabelService labelService;
+    private final UserService userService;
+
     public VNPayDTO.VNPayResponse createVNPayPayment(HttpServletRequest request) {
-        long amount = Integer.parseInt(request.getParameter("amount"))*100L;
+        UUID labelId = UUID.fromString(request.getParameter("labelID"));
+        LabelDTO labelDTO = labelService.get(labelId);
+        System.out.println("labelID: " + request.getParameter("labelID"));
+
+        long amount;
+        if (labelDTO == null) {
+            throw new AppException(HttpStatus.NOT_FOUND, "Label not found", null);
+        } else {
+            amount = labelDTO.getPrice()*100L;
+        }
+
         String bankCode = request.getParameter("bankCode");
         Map<String, String> vnp_Params = vnpayConfig.getVNPayConfig();
         vnp_Params.put("vnp_Amount", String.valueOf(amount));
@@ -37,7 +55,7 @@ public class VNPayService {
             vnp_Params.put("vnp_BankCode", bankCode);
         }
 
-        //build query url
+        // build query url
         String queryUrl = VNPayUtil.getPaymentURL(vnp_Params, true);
         String hashData = VNPayUtil.getPaymentURL(vnp_Params, false);
         String vnpSecureHash = VNPayUtil.hmacSHA512(vnpayConfig.getSecretKey(), hashData);
@@ -48,19 +66,40 @@ public class VNPayService {
         String orderInfo = vnp_Params.get("vnp_OrderInfo").split(":")[1].trim();
 
         BillingDTO billingDTO = new BillingDTO();
-        UUID labelId = UUID.fromString(request.getParameter("labelID"));
-        UUID userId = authUtils.getCurrentLoggedInUserId();
 
+        UUID buyerId = authUtils.getCurrentLoggedInUserId();
         // Not logged in
-        if (userId == null) {
+        if (buyerId == null) {
             throw new AppException(HttpStatus.FORBIDDEN, "You must be logged in to buy a label", null);
         }
-        Double amountDTO = Double.parseDouble(request.getParameter("amount"));
+
+        UUID ownerId = buyerId;
+        String usernameOwner = request.getParameter("owner");
+
+        if (usernameOwner != null) {
+            UserDTO owner;
+            try {
+                owner  = userService.getUserByUsername(usernameOwner);
+                ownerId = owner.getId();
+            } catch (Exception e) {
+                throw new AppException(HttpStatus.NOT_FOUND, "The user you selected does not exist", null);
+            }
+
+            if (owner.getId().equals(authUtils.getCurrentLoggedInUserId())) {
+                throw new AppException(HttpStatus.FORBIDDEN, "You can't gift a label to yourself", null);
+            }
+
+            if (labelService.checkIfUserOwnsLabel(ownerId, labelId)) {
+                throw new AppException(HttpStatus.FORBIDDEN, "The user you selected already owns this label", null);
+            }
+
+        }
 
         billingDTO.setLabelId(labelId);
-        billingDTO.setUserId(userId);
+        billingDTO.setBuyerId(buyerId);
+        billingDTO.setOwnerId(ownerId);
         billingDTO.setOrderNo(orderInfo);
-        billingDTO.setAmount(amountDTO);
+        billingDTO.setAmount(amount/100L);
         billingDTO.setStatus(StatusEnum.PROCESSING);
 
         // luu thong tin tam thoi vao db
@@ -68,9 +107,10 @@ public class VNPayService {
 
         return VNPayDTO.VNPayResponse.builder()
                 .labelID(labelId)
-                .userID(userId)
+                .buyerID(buyerId)
+                .ownerID(ownerId)
                 .OrderNo(orderInfo)
-                .amount(amountDTO)
+                .amount(amount/100L)
                 .code("ok")
                 .message("success")
                 .paymentURL(paymentUrl).build();
@@ -98,22 +138,22 @@ public class VNPayService {
 
         if (responseCode != null && responseCode.equals("00")) {
             // update trang thai don hang
-            Billing billing = billingService.findByOrderNo(orderInfo);
-            billing.setStatus(StatusEnum.SUCCESS);
-            billingService.updateBilling(billing);
+            BillingDTO billingDTO = billingService.findByOrderNo(orderInfo);
+            billingDTO.setStatus(StatusEnum.SUCCESS);
+            billingService.updateBilling(billingDTO);
 
             // luu thong tin vao bang user_label_info
             UserLabelInfoDTO userLabelInfoDTO = new UserLabelInfoDTO();
-            userLabelInfoDTO.setLabelId(billing.getLabel().getId());
-            userLabelInfoDTO.setUserId(billing.getUser().getId());
+            userLabelInfoDTO.setLabelId(billingDTO.getLabelId());
+            userLabelInfoDTO.setUserId(billingDTO.getOwnerId());
             userLabelInfoDTO.setIsShow(false);
             userLabelInfoService.create(userLabelInfoDTO);
 
         } else {
             // that bai -> co the dua phan ra nhieu case khac nhau voi cac resCode khac nhau
-            Billing billing = billingService.findByOrderNo(orderInfo);
-            billing.setStatus(StatusEnum.FAILED);
-            billingService.updateBilling(billing);
+            BillingDTO billingDTO = billingService.findByOrderNo(orderInfo);
+            billingDTO.setStatus(StatusEnum.FAILED);
+            billingService.updateBilling(billingDTO);
         }
 
         response.sendRedirect("http://localhost:4200/payment-info?responseCode="

@@ -8,9 +8,10 @@ public abstract class VNPayDTO {
     @Builder
     public static class VNPayResponse {
         public UUID labelID;
-        public UUID userID;
+        public UUID buyerID;
+        public UUID ownerID;
         public String OrderNo;
-        public Double amount;
+        public Long amount;
         public String code;
         public String message;
         public String paymentURL;
