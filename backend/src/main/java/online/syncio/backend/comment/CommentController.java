@@ -27,7 +27,12 @@ public class CommentController {
         return ResponseEntity.ok(commentService.findAll());
     }
 
-    @GetMapping("/{postId}")
+    @GetMapping("/{id}")
+    public ResponseEntity<CommentDTO> getComment(@PathVariable final UUID id) {
+        return ResponseEntity.ok(commentService.get(id));
+    }
+
+    @GetMapping("/post/{postId}")
     public ResponseEntity<List<CommentDTO>> getCommentsByPostId(@PathVariable final UUID postId) {
         return ResponseEntity.ok(commentService.findByPostId(postId));
     }

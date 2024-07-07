@@ -1,5 +1,6 @@
 export interface Notification {
   targetId?: string;
+  actionPerformedId?: string;
   actorId?: string;
   actionType?: ActionEnum;
   redirectURL ?: string;
