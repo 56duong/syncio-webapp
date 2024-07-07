@@ -105,6 +105,11 @@ export class CommentService {
 
   /* ---------------------------- CRUD SECTION ---------------------------- */
 
+
+  getCommentById(commentId: string): Observable<Comment> {
+    const url = `${this.apiURL}/${commentId}`;
+    return this.http.get<Comment>(url);
+  }
   
   /**
    * Count the number of comments for a post.
@@ -140,7 +145,7 @@ export class CommentService {
    * })
    */
   getComments(postId: string): Observable<Comment[]> {
-    const url = `${this.apiURL}/${postId}`;
+    const url = `${this.apiURL}/post/${postId}`;
     return this.http.get<Comment[]>(url);
   }
 

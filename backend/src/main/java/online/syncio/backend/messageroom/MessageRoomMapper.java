@@ -1,8 +1,11 @@
 package online.syncio.backend.messageroom;
 
 import lombok.AllArgsConstructor;
+import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.messageroommember.MessageRoomMember;
 import online.syncio.backend.messageroommember.MessageRoomMemberRepository;
+import online.syncio.backend.user.User;
+import online.syncio.backend.user.UserRepository;
 import online.syncio.backend.utils.AuthUtils;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +20,7 @@ public class MessageRoomMapper {
 
     public final MessageRoomMemberRepository messageRoomMemberRepository;
     public final AuthUtils authUtils;
+    private final UserRepository userRepository;
 
 
     public MessageRoomDTO mapToDTO(final MessageRoom messageRoom, final MessageRoomDTO messageRoomDTO) {
@@ -60,7 +64,12 @@ public class MessageRoomMapper {
     }
 
 
-    private MessageRoom mapToEntity(final MessageRoomDTO messageRoomDTO, final MessageRoom messageRoom) {
+    public MessageRoom mapToEntity(final MessageRoomDTO messageRoomDTO, final MessageRoom messageRoom) {
+        messageRoom.setName(messageRoomDTO.getName());
+        messageRoom.setGroup(messageRoomDTO.isGroup());
+        final User user = messageRoomDTO.getCreatedBy() == null ? null : userRepository.findById(messageRoomDTO.getCreatedBy())
+                .orElseThrow(() -> new NotFoundException(User.class, "id", messageRoomDTO.getCreatedBy().toString()));
+        messageRoom.setCreatedBy(user);
         messageRoom.setCreatedDate(messageRoomDTO.getCreatedDate());
         return messageRoom;
     }

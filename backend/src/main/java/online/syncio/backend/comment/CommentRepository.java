@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -40,5 +41,8 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
 
     @Query("SELECT COUNT(c) FROM Comment c WHERE c.post IN :posts")
     long countCommentsForPosts(@Param("posts") List<Post> posts);
+
+    @Query("SELECT c.text FROM Comment c WHERE c.id = :id")
+    Optional<String> getTextById(UUID id);
 
 }

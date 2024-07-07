@@ -11,6 +11,7 @@ import { ReportComponent } from './components/report/report.component';
 import { ResizableDraggableComponent } from './components/resizable-draggable/resizable-draggable.component';
 import { StickerPickerComponent } from './components/sticker-picker/sticker-picker.component';
 import { GlobalDialogComponent } from './components/global-dialog/global-dialog.component';
+import { CommentListComponent } from './components/post-detail/comment-list/comment-list.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { GlobalDialogComponent } from './components/global-dialog/global-dialog.
     ReportComponent,
     ResizableDraggableComponent,
     StickerPickerComponent,
-    GlobalDialogComponent
+    GlobalDialogComponent,
+    CommentListComponent
   ],
   imports: [
     PickerComponent,
