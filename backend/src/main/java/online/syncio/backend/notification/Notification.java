@@ -18,10 +18,15 @@ import java.util.UUID;
 public class Notification {
 
     /**
-     * The entity (post or user) that the action was performed on.
+     * The entity (post or user) that the action was performed on. Example: when a user comments on a post, the targetId will be the id of the post.
      */
     @Id
     private UUID targetId;
+
+    /**
+     * The id of the action that was performed. Example: when a user comments on a post, the relatedEntityId will be the id of the comment.
+     */
+    private UUID actionPerformedId;
 
     /**
      * The latest user who performed the action.

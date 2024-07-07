@@ -8,4 +8,6 @@ export interface Comment {
   replies?: Comment[];
   repliesCount?: number;
   likesCount?: number;
+
+  isShowReplies?: boolean;
 }

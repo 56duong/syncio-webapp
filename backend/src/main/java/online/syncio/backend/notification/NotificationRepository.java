@@ -13,9 +13,6 @@ import java.util.UUID;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, PkTargetActionType> {
-    List<Notification> findByRecipientId (final UUID id);
-
-    List<Notification> findByTargetIdAndActionType (final UUID id, final ActionEnum actionType);
 
     List<Notification> findByRecipientIdAndCreatedDateAfterOrderByCreatedDateDesc (final UUID id, final LocalDateTime createdDate);
 

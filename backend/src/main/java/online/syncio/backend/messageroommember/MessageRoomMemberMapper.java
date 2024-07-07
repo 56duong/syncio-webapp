@@ -26,9 +26,9 @@ public class MessageRoomMemberMapper {
 
 
     public MessageRoomMember mapToEntity(final MessageRoomMemberDTO messageRoomMemberDTO, final MessageRoomMember messageRoomMember) {
-        final MessageRoom post = messageRoomMemberDTO.getMessageRoomId() == null ? null : messageRoomRepository.findById(messageRoomMemberDTO.getMessageRoomId())
+        final MessageRoom messageRoom = messageRoomMemberDTO.getMessageRoomId() == null ? null : messageRoomRepository.findById(messageRoomMemberDTO.getMessageRoomId())
                 .orElseThrow(() -> new NotFoundException(MessageRoom.class, "id", messageRoomMemberDTO.getMessageRoomId().toString()));
-        messageRoomMember.setMessageRoom(post);
+        messageRoomMember.setMessageRoom(messageRoom);
         final User user = messageRoomMemberDTO.getUserId() == null ? null : userRepository.findById(messageRoomMemberDTO.getUserId())
                 .orElseThrow(() -> new NotFoundException(User.class, "id", messageRoomMemberDTO.getUserId().toString()));
         messageRoomMember.setUser(user);
