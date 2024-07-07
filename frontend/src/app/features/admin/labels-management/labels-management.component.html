@@ -10,8 +10,8 @@
           label="New"
           icon="pi pi-plus"
           class="p-button-success mr-2"
-          (click)="openNew()"
-        ></button>
+          (click)="openNew()">
+        </button>
       </ng-template>
 
       <!-- export file -->
@@ -21,8 +21,8 @@
           pRipple
           label="Export"
           icon="pi pi-upload"
-          class="p-button-help"
-        ></button>
+          class="p-button-help">
+        </button>
       </ng-template>
     </p-toolbar>
 
@@ -43,8 +43,7 @@
       [rowHover]="true"
       dataKey="id"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      [showCurrentPageReport]="true"
-    >
+      [showCurrentPageReport]="true">
       <ng-template pTemplate="caption">
         <div class="flex align-items-center justify-content-between">
           <h5 class="m-0">Manage Labels</h5>
@@ -88,15 +87,15 @@
           <td>{{ label.createdBy | userIdToName | async  }}</td>
           <td>
             <p-tag [value]="label.status" [severity]="getSeverity(label.status)"></p-tag>
-        </td>
+          </td>
           <td>
             <button
               pButton
               pRipple
               icon="pi pi-pencil"
               class="p-button-rounded p-button-success mr-2"
-              (click)="editLabel(label)"
-            ></button>
+              (click)="editLabel(label)">
+            </button>
           </td>
         </tr>
       </ng-template>
@@ -114,8 +113,7 @@
     [style]="{ width: '450px' }"
     header="Label Details"
     [modal]="true"
-    styleClass="p-fluid"
-  >
+    styleClass="p-fluid">
     <ng-template pTemplate="content">
       <!-- Label name -->
       <div class="field">
@@ -128,18 +126,14 @@
           required
           autofocus
         />
-        <small class="p-error" *ngIf="submitted && !label.name"
-          >Name is required.</small
-        >
+        <small class="p-error" *ngIf="submitted && !label.name">Name is required.</small>
       </div>
 
       <!-- Price -->
       <div class="field">
         <label for="price">Price</label>
-        <p-inputNumber id="price" [(ngModel)]="label.price" inputId="currency-vn" mode="currency" currency="VND" locale="vi-VN"> </p-inputNumber>
-        <small class="p-error" *ngIf="submitted && !label.price"
-          >Price is required.</small
-        >
+        <p-inputNumber id="price" [(ngModel)]="label.price" inputId="currency-vn" mode="currency" currency="VND" locale="vi-VN"></p-inputNumber>
+        <small class="p-error" *ngIf="submitted && !label.price">Price is required.</small>
       </div>
 
       <!-- Status -->
@@ -153,7 +147,7 @@
                 <p-tag [value]="option.label" [severity]="getSeverity(option.label)"></p-tag>
             </ng-template>
         </p-dropdown>
-    </div>
+      </div>
 
       <!-- Decsription -->
       <div class="field">
@@ -175,8 +169,7 @@
           chooseIcon="pi pi-upload"
           (onSelect)="onLabelSelected($event)"
           [multiple]="false"
-          accept="image/*"
-        >
+          accept="image/*">
         </p-fileUpload>
       </div>
 
@@ -186,15 +179,12 @@
           [src]="label"
           alt="Selected label"
           width="200" height="200" style="object-fit: contain"
-          class="file-image"
-        />
+          class="file-image"/>
         </div>
-        
-          <ul style="list-style-type: none; padding: 0;">
-            <li *ngFor="let file of selectedLabelFile">{{ file.name }} - {{ file.size }} bytes</li>
-          </ul>
+        <ul style="list-style-type: none; padding: 0;">
+          <li *ngFor="let file of selectedLabelFile">{{ file.name }} - {{ file.size }} bytes</li>
+        </ul>
       </div>
-      
     </ng-template>
 
     <ng-template pTemplate="footer">
@@ -205,8 +195,8 @@
         label="Cancel"
         icon="pi pi-times"
         class="p-button-text"
-        (click)="hideDialog()"
-      ></button>
+        (click)="hideDialog()">
+      </button>
 
       <!-- nut save -->
       <button
@@ -215,8 +205,8 @@
         label="Save"
         icon="pi pi-check"
         class="p-button-text"
-        (click)="saveLabel()"
-      ></button>
+        (click)="saveLabel()">
+      </button>
     </ng-template>
   </p-dialog>
 </div>
