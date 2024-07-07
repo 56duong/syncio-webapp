@@ -14,14 +14,21 @@
         </p-toolbar>
 
         <!-- Bang du lieu Users -->
-        <p-table #dt [value]="users" [rows]="10" [paginator]="true" [globalFilterFields]="[
-        'name',
-        'country.name',
-        'representative.name',
-        'status'
-      ]" [tableStyle]="{ 'max-width': '75rem' }" [rowHover]="true" dataKey="id"
+        <p-table 
+            #dt [value]="users"
+            [rows]="10" 
+            [paginator]="true" 
+            [globalFilterFields]="[
+                'name',
+                'country.name',
+                'representative.name',
+                'status']" 
+            [tableStyle]="{ 'min-width': '75rem' }" 
+            [rowHover]="true" dataKey="id"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-            [showCurrentPageReport]="true" selectionMode="single" (onRowSelect)="onRowSelect($event)">
+            [showCurrentPageReport]="true" 
+            selectionMode="single" 
+            (onRowSelect)="onRowSelect($event)">
             <ng-template pTemplate="caption">
                 <div class="flex align-items-center justify-content-between">
                     <h5 class="m-0">Manage Users</h5>
@@ -30,22 +37,22 @@
 
             <ng-template pTemplate="header">
                 <tr>
-                    <th pSortableColumn="username" style="min-width: 18rem">
+                    <th pSortableColumn="username" style="min-width: 14rem">
                         Username <p-sortIcon field="username"></p-sortIcon>
                     </th>
-                    <th pSortableColumn="email" style="min-width: 21rem">
+                    <th pSortableColumn="email" style="min-width: 16rem">
                         Email <p-sortIcon field="email"></p-sortIcon>
                     </th>
-                    <th pSortableColumn="createDate" style="min-width: 18rem">
+                    <th pSortableColumn="createDate" style="min-width: 16rem">
                         Date Create <p-sortIcon field="createDate"></p-sortIcon>
                     </th>
-                    <th pSortableColumn="role" style="min-width: 11rem">
+                    <th pSortableColumn="role" style="max-width: 11rem">
                         Role <p-sortIcon field="role"></p-sortIcon>
                     </th>
-                    <th pSortableColumn="status" style="min-width: 11rem">
+                    <th pSortableColumn="status" style="max-width: 11rem">
                         Status <p-sortIcon field="status"></p-sortIcon>
                     </th>
-                    <th pSortableColumn="action" style="min-width: 6rem">Action</th>
+                    <th pSortableColumn="action" style="max-width: 6rem">Action</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-user>
@@ -72,7 +79,11 @@
     </div>
 
     <!-- Dialog -->
-    <p-dialog [(visible)]="userDialog" [style]="{ width: '450px' }" header="User Details" [modal]="true"
+    <p-dialog 
+        [(visible)]="userDialog" 
+        [style]="{ width: '450px' }" 
+        header="User Details" 
+        [modal]="true"
         styleClass="p-fluid">
         <ng-template pTemplate="content">
             <!-- Username -->
@@ -127,14 +138,27 @@
             <!-- Bio -->
             <div class="field">
                 <label for="bio">Bio</label>
-                <textarea id="bio" pInputTextarea [(ngModel)]="user.bio" required rows="3" cols="20"></textarea>
+                <textarea 
+                    id="bio" 
+                    pInputTextarea 
+                    [(ngModel)]="user.bio" 
+                    required 
+                    rows="3" 
+                    cols="20">
+                </textarea>
             </div>
         </ng-template>
 
         <ng-template pTemplate="footer">
             <!-- nut an -->
-            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
-                (click)="hideDialog()"></button>
+            <button 
+                pButton 
+                pRipple 
+                label="Cancel" 
+                icon="pi pi-times" 
+                class="p-button-text"
+                (click)="hideDialog()">
+            </button>
 
             <!-- nut save -->
             <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveUser()"></button>
@@ -142,7 +166,11 @@
     </p-dialog>
 
     <!-- Post of User Selection Dialog -->
-    <p-dialog [(visible)]="postOfUserDialog" [style]="{ width: '1250px' }" header="List Post of User" [modal]="true"
+    <p-dialog 
+        [(visible)]="postOfUserDialog" 
+        [style]="{ width: '1250px' }" 
+        header="List Post of User" 
+        [modal]="true"
         styleClass="p-fluid">
         <ng-template pTemplate="content">
             <div class="main">
