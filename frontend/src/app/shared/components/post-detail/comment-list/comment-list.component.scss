@@ -1,0 +1,55 @@
+.avt {
+  width: 36px;
+  border: 1px solid var(--gray-200);
+  border-radius: 50%;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+}
+
+::ng-deep .post-detail-dialog {
+  .p-dialog .p-dialog-content,
+  .p-scrollpanel-content {
+    padding: 0;
+  }
+  
+  .p-divider {
+    margin: 0;
+  }
+  
+  .p-button {
+    padding: 0;
+    .p-button-label {
+      font-weight: 600;
+    }
+  }
+
+  .comment-text,
+  .comment-text p {
+    margin: 0;
+    font-size: 0.875rem;
+  }
+
+  .comment-text p:first-child {
+    display: inline;
+  }
+
+}
+
+.highlight {
+  animation: highlight 2s 1;
+  animation-delay: 0.5s;
+}
+
+@keyframes highlight {
+  0%, 40% {
+    background-color: rgb(59 130 246 / 15%);
+  }
+  100% {
+    background-color: var(--surface-0);
+  }
+}
