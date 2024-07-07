@@ -13,16 +13,9 @@
           (click)="openNew()"
         ></button>
       </ng-template>
-      <!-- nut import, export file -->
+
+      <!-- export file -->
       <ng-template pTemplate="right">
-        <p-fileUpload
-          mode="basic"
-          accept="image/*"
-          [maxFileSize]="1000000"
-          label="Import"
-          chooseLabel="Import"
-          class="mr-2 inline-block"
-        ></p-fileUpload>
         <button
           pButton
           pRipple
@@ -55,24 +48,11 @@
       <ng-template pTemplate="caption">
         <div class="flex align-items-center justify-content-between">
           <h5 class="m-0">Manage Labels</h5>
-          <!-- Search -->
-          <!-- <span class="p-input-icon-left">
-                    <i class="pi pi-search"></i>
-                    <input 
-                        pInputText 
-                        type="text" 
-                        (input)="dt.filterGlobal($event.target.value, 'contains')" 
-                        placeholder="Search..." 
-                    />
-                </span> -->
         </div>
       </ng-template>
 
       <ng-template pTemplate="header">
         <tr>
-          <th style="width: 4rem">
-            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-          </th>
           <th pSortableColumn="name" style="min-width: 8rem">
             Name <p-sortIcon field="name"></p-sortIcon>
           </th>
@@ -93,11 +73,7 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-label>
-        <tr>
-          <td>
-            <p-tableCheckbox [value]="label"></p-tableCheckbox>
-          </td>
-          
+        <tr>          
           <td>{{ label.name }}</td>
           <td>{{ label.price }}</td>
           <td>{{ label.description }}</td>
@@ -121,7 +97,6 @@
               class="p-button-rounded p-button-success mr-2"
               (click)="editLabel(label)"
             ></button>
-            <!-- <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteUser(user)"></button> -->
           </td>
         </tr>
       </ng-template>

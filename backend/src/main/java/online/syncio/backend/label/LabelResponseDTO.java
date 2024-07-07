@@ -9,7 +9,7 @@ import java.util.UUID;
 public class LabelResponseDTO {
     private UUID id;
     private String name;
-    private Double price;
+    private Long price;
     private String labelURL;
     private StatusEnum status;
     private boolean isPurcharse;

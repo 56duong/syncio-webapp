@@ -3,6 +3,7 @@ package online.syncio.backend.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import online.syncio.backend.billing.Billing;
 import online.syncio.backend.comment.Comment;
 import online.syncio.backend.commentlike.CommentLike;
 import online.syncio.backend.like.Like;
@@ -142,6 +143,12 @@ public class User implements UserDetails {
 //    Notification
     @OneToMany(mappedBy = "recipient")
     private Set<Notification> receivedNotifications;
+
+    @OneToMany(mappedBy = "buyer")
+    private Set<Billing> boughtItems;
+
+    @OneToMany(mappedBy = "owner")
+    private Set<Billing> ownedItems;
 
     @Column(name = "username_last_modified")
     private LocalDateTime usernameLastModified;
