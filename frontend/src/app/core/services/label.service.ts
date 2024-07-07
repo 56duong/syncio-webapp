@@ -3,11 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Label } from '../interfaces/label';
-import { RegisterDTO } from 'src/app/features/authentication/register/register.dto';
 import { HttpUtilService } from './http.util.service';
-import { LoginDTO } from 'src/app/features/authentication/login/login.dto';
-import { UserResponse } from 'src/app/features/authentication/login/user.response';
-import { FogotPasswordDTO } from 'src/app/features/authentication/forgotpassword/forgotpassword.dto';
 import { LabelResponse } from '../interfaces/label-response';
 @Injectable({
     providedIn: 'root',

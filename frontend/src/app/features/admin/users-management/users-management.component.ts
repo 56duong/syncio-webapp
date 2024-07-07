@@ -1,7 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { RoleEnum, StatusEnum, User } from 'src/app/core/interfaces/user';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { UserService } from 'src/app/core/services/user.service';
+import { Post } from 'src/app/core/interfaces/post';
+import { PostService } from 'src/app/core/services/post.service';
+import { lastValueFrom, Subscription } from 'rxjs';
+import { TokenService } from 'src/app/core/services/token.service';
 
 @Component({
     selector: 'app-users-management',
@@ -12,22 +16,28 @@ import { UserService } from 'src/app/core/services/user.service';
 export class UsersManagementComponent implements OnInit {
     userDialog: boolean = false;
 
+    postOfUserDialog: boolean = false;
+
     users!: User[];
 
     user!: User;
 
-    selectedUsers!: User[] | null;
+    posts!: Post[] | undefined;
 
     submitted: boolean = false;
 
     statuses!: any[];
 
     roles!: any[];
+    
+    @ViewChild('endOfFeed') endOfFeedElement: any;
 
     constructor(
         private userService: UserService,
         private toastService: ToastService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private postService: PostService,
+        private tokenService: TokenService
     ) { }
 
     ngOnInit() {
@@ -161,6 +171,22 @@ export class UsersManagementComponent implements OnInit {
                 return 'danger';
             default:
                 return 'info';
+        }
+    }
+
+    onRowSelect(event: any) {
+        console.log(event.data.id);
+        this.getPosts(event.data.id);
+    }
+
+    async getPosts(userId: string) {
+        try {
+            const response = await lastValueFrom(this.userService.getUserProfile(userId));
+            this.posts = response.posts;
+            console.log(this.posts);
+            this.postOfUserDialog = true;
+        } catch (error) {
+            console.error('Failed to fetch posts:', error);
         }
     }
 }
