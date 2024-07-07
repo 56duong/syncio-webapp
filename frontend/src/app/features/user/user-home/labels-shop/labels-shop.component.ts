@@ -8,7 +8,8 @@ import { VNPay } from 'src/app/core/interfaces/vnpay';
 import { HttpParams } from '@angular/common/http';
 import { LabelResponse } from 'src/app/core/interfaces/label-response';
 import { ToastService } from 'src/app/core/services/toast.service';
-
+import { BillingService } from 'src/app/core/services/billing.service';
+import { Billing } from 'src/app/core/interfaces/billing';
 
 
 @Component({
@@ -19,6 +20,7 @@ import { ToastService } from 'src/app/core/services/toast.service';
 
 export class LabelsShopComponent {
     labelDialog: boolean = false;
+    billOfUserDialog: boolean = false;
     submitted: boolean = false;
     labels!: LabelResponse[];
     label!: LabelResponse;
@@ -27,12 +29,14 @@ export class LabelsShopComponent {
     statuses?: any[];
     dateNow: any = null;
     user?: UserResponse | null = this.userService.getUserResponseFromLocalStorage();
+    bills!: Billing[];
 
     constructor(
       private labelService: LabelService,
       private userService: UserService,
       private toastService: ToastService,
       private paymentService: PaymentService,
+      private billingService: BillingService
     ) {}
 
     ngOnInit() {
@@ -121,5 +125,31 @@ export class LabelsShopComponent {
       });
     }
   }
+
+  openPurchaseHistory() {
+    this.billOfUserDialog = true;
+    this.billingService.getAllBillOfCurrentUser(this.user?.id || '').subscribe({
+      next: (data) => {
+        console.log(data);
+        this.bills = data;
+      },
+      error: (error) => {
+        console.error('Error fetching bills', error);
+      },
+    });
+  }
+
+  getSeverity(status: string) {
+    switch (status) {
+        case 'SUCCESS':
+            return 'success';
+        case 'PROCESSING':
+            return 'warning';
+        case 'FAILED':
+            return 'danger';
+        default:
+            return 'info';
+    }
+}
 
 }
