@@ -29,7 +29,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,7 +37,6 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -51,6 +49,7 @@ public class PostService {
     private final KeywordService keywordService;
     private final SettingService settingService;
     private final AuthUtils authUtils;
+
 
     //    CRUD
     public List<PostDTO> findAll () {
@@ -444,14 +443,23 @@ public class PostService {
                                                        .build());
             }
         } catch (Exception e) {
-            System.err.println("Failed to toggle like: " + e.getMessage());
-
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                                                                   .status(HttpStatus.BAD_REQUEST)
                                                                   .data(null)
                                                                   .message("Failed to toggle like.")
                                                                   .build());
         }
+    }
+
+
+    @Transactional
+    public Optional<Post> blockPost(UUID postId) {
+        Optional<Post> postOptional = postRepository.findById(postId);
+        postOptional.ifPresent(post -> {
+            post.setVisibility(PostEnum.BLOCKED);
+            postRepository.save(post);
+        });
+        return postOptional;
     }
 
     // get post have report != null and flag = true
@@ -504,5 +512,6 @@ public class PostService {
 
         return metrics;
     }
+
 
 }
