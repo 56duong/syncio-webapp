@@ -29,6 +29,7 @@ export interface User {
 
   isFollowing?: boolean;
   isCloseFriend?: boolean;
+  commonFriendsCount?: number;
 }
 
 export enum StatusEnum {
