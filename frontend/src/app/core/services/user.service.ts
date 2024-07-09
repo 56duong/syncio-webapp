@@ -23,6 +23,7 @@ export class UserService {
     environment.apiUrl + 'api/v1/users/forgot_password';
   private apiLogin = environment.apiUrl + 'api/v1/users/login';
   private apiUserDetail = environment.apiUrl + 'api/v1/users/details';
+  private apiPython = environment.apiPythonUrl;
   private apiConfig = {
     headers: this.httpUtilService.createHeaders(),
   };
@@ -45,7 +46,6 @@ export class UserService {
   // Create user using User Controller
   createUserInAdmin(user: User): Observable<any> {
     return this.http.post(this.apiURL, user, this.apiConfig);
-
   }
 
   // Update user using User Controller
@@ -137,6 +137,14 @@ export class UserService {
     const url = username ? `${this.apiURL}?username=${username}` : this.apiURL;
     return this.http.get<User[]>(url);
   }
+
+  getUsersRecommend(username?: string): Observable<User[]> {
+    const url = username
+      ? `${this.apiPython}recommend?username=${username}`
+      : this.apiURL;
+    return this.http.get<User[]>(url);
+  }
+
   isFollowing(userId: string, targetId: string): Observable<any> {
     const url = `${this.apiURL}/${userId}/is-following/${targetId}`;
     return this.http.get(url);
@@ -174,8 +182,8 @@ export class UserService {
   /**
    * Get User Profile By Id.
    * Use for case when the user already logged in.
-   * @param userId 
-   * @returns 
+   * @param userId
+   * @returns
    */
   getUserProfile2(userId: any): Observable<User> {
     const url = `${this.apiURL}/profile/${userId}`;
@@ -264,7 +272,7 @@ export class UserService {
     const url = `${this.apiURL}/last100days`;
     return this.http.get<any>(url);
   }
-  
+
   getNewUsersLastNDays(days: number): Observable<any> {
     return this.http.get(`${this.apiURL}/last/${days}`);
   }
@@ -275,9 +283,6 @@ export class UserService {
   }
 
   getUserCount(): Observable<number> {
-    return this.getUsers().pipe(
-      map(users => users.length)
-    );
+    return this.getUsers().pipe(map((users) => users.length));
   }
-  
 }
