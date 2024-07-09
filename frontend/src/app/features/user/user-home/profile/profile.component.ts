@@ -53,7 +53,6 @@ export class ProfileComponent implements OnInit {
         this.userService.getUserProfile2(id).subscribe({
           next: (response) => {
             this.userProfile = response;
-            console.log('User is ', response);
             this.isFollowing = response.isFollowing;
             this.isCloseFriend = response.isCloseFriend;
           },
