@@ -37,6 +37,7 @@ export class ProfileFormComponent {
       ]),
       bio: new FormControl(`${this.userResponse?.bio || ''}`),
     });
+    console.log('this.userResponse', this.userResponse);
   }
   showError(message: string) {
     this.messageService.add({
@@ -51,16 +52,14 @@ export class ProfileFormComponent {
     });
   }
   updateProfile(): void {
-    if (this.profileForm.valid) {
+    if (this.profileForm) {
       this.userService
         .updateUser(this.profileForm.value, this.userResponse?.id)
         .subscribe({
           next: (response: any) => {
-
             this.userResponse = {
               ...response.data,
             };
-            console.log('this.userResponse', this.userResponse);
             this.userService.saveUserResponseToLocalStorage(this.userResponse);
             this.showSuccess('Profile updated successfully');
           },
