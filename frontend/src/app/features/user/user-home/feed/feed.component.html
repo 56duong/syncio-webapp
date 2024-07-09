@@ -1,8 +1,35 @@
 <div class="main">
+  
+  <!-- New post notification -->
+  <a *ngIf="isReceivedNewPost" 
+    (click)="resetComponent()"
+    class="newpost">
+    <span></span>
+    <small>New post</small>
+  </a>
+
+  <!-- Story list -->
   <div *ngIf="isLogged">
     <app-story-list></app-story-list>
   </div>
+
+  <!-- Post list -->
   <div>
+    <!-- Post from close friends and following -->
     <app-post *ngFor="let post of posts" [post]="post"></app-post>
+    
+    <div *ngIf="endOfFollowing" class="text-gray-500" style="width: min(470px, 100vw - 1rem); margin: 2rem auto;">
+      <p>Suggested for you</p>
+    </div>
+    
+    <!-- Suggested posts -->
+    <app-post *ngFor="let post of suggestedPosts" [post]="post"></app-post>
+
+    <!-- End of feed -->
+    <div #endOfFeed class="text-gray-500 text-center" style="width: min(470px, 100vw - 1rem); margin: 2rem auto;">
+      <small *ngIf="endOfFeed">You have reached the end of the feed!</small> 
+    </div>
+
   </div>
+  
 </div>

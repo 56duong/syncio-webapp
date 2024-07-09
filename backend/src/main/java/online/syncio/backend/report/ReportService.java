@@ -1,6 +1,8 @@
 package online.syncio.backend.report;
 
+
 import online.syncio.backend.config.RabbitMQConfig;
+import jakarta.transaction.Transactional;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.post.Post;
 import online.syncio.backend.post.PostRepository;
@@ -48,15 +50,14 @@ public class ReportService {
 
         // set flag of post to false
         Post post = report.getPost();
-        post.setFlag(false);
         postRepository.save(post);
 
         Report savedReport = reportRepository.save(report);
 
 
-        if(reportDTO.getReason().equals(ReasonEnum.HARASSMENT)){
+        if(reportDTO.getReason().equals(ReasonEnum.NUDE)){
             UUID postId = post.getId();
-            post.getPhotos().forEach(photo -> sendImageForVerification(photo, postId));
+            post.getPhotos().forEach(photo -> sendImageForVerification(String.valueOf(photo.getUrl()), postId));
         }
         return mapToDTO(savedReport, new ReportDTO());
     }
@@ -64,6 +65,7 @@ public class ReportService {
         if (imageUrl != null && !imageUrl.isEmpty()) {
             String fullImageUrl = "http://localhost:8080/api/v1/posts/images/" + imageUrl + "?postId=" + postId;
             try {
+                System.out.println("Sending image for verification: " + fullImageUrl);
                 rabbitTemplate.convertAndSend(JobQueue.EXCHANGE_CHECKIMAGE_AI, JobQueue.ROUTING_KEY_CHECKIMAGE_AI, fullImageUrl);
             } catch (Exception e) {
                 System.out.println("Failed to send image for verification: " + e.getMessage());
@@ -78,12 +80,13 @@ public class ReportService {
         reportRepository.save(report);
     }
 
-    public void delete(final UUID postId, final UUID userId) {
-        final Report report = reportRepository.findByPostIdAndUserId(postId, userId)
-                .orElseThrow(() -> new NotFoundException(Report.class, "postId", postId.toString(), "userId", userId.toString()));
-        reportRepository.delete(report);
+    @Transactional
+    public void deleteAllByPostId(UUID postId) {
+        if (postRepository.findById(postId).isEmpty()) {
+            throw new NotFoundException(Post.class, "id", postId.toString());
+        }
+        reportRepository.deleteByPostId(postId);
     }
-
 
 
 //    MAPPER
@@ -107,5 +110,12 @@ public class ReportService {
         report.setReason(reportDTO.getReason());
         report.setDescription(reportDTO.getDescription());
         return report;
+    }
+
+    public List<ReportDTO> getByPostId(UUID postId) {
+        List<Report> reports = reportRepository.findByPostId(postId);
+        return reports.stream()
+                .map(report -> mapToDTO(report, new ReportDTO()))
+                .toList();
     }
 }

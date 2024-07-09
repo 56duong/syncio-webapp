@@ -6,14 +6,23 @@ import online.syncio.backend.auth.responses.RegisterResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
 import online.syncio.backend.comment.Comment;
 import online.syncio.backend.comment.CommentRepository;
+import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.exception.ReferencedWarning;
+import online.syncio.backend.huggingfacenlp.HfInference;
+import online.syncio.backend.keyword.KeywordResponseDTO;
+import online.syncio.backend.keyword.KeywordService;
 import online.syncio.backend.like.Like;
 import online.syncio.backend.like.LikeRepository;
+import online.syncio.backend.post.photo.Photo;
+import online.syncio.backend.post.photo.PhotoDTO;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.report.ReportRepository;
+import online.syncio.backend.setting.SettingService;
+import online.syncio.backend.user.EngagementMetricsDTO;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
+import online.syncio.backend.utils.AuthUtils;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +31,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 @Service
@@ -35,6 +46,9 @@ public class PostService {
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
     private final ReportRepository reportRepository;
+    private final KeywordService keywordService;
+    private final SettingService settingService;
+    private final AuthUtils authUtils;
 
 
     //    CRUD
@@ -53,8 +67,8 @@ public class PostService {
 
         // map từ entity sang DTO -> trả về List<PostDTO>
         List<PostDTO> postsDTO = posts.stream()
-                                      .map(post -> mapToDTO(post, new PostDTO()))
-                                      .collect(Collectors.toList());
+                .map(post -> mapToDTO(post, new PostDTO()))
+                .collect(Collectors.toList());
 
         // trả về Page<PostDTO>
         return new PageImpl<>(postsDTO, pageable, posts.getTotalElements());
@@ -68,8 +82,6 @@ public class PostService {
     }
 
     public ResponseEntity<?> create (final CreatePostDTO postDTO) throws IOException {
-        User user = userRepository.findById(postDTO.getCreatedBy())
-                                  .orElseThrow(() -> new NotFoundException(User.class, "id", postDTO.getCreatedBy().toString()));
         Post post = new Post();
 
         //Upload image
@@ -102,8 +114,44 @@ public class PostService {
         post.setVisibility(postDTO.getVisibility());
         post.setCaption(postDTO.getCaption());
         post.setFlag(postDTO.getFlag());
-        post.setPhotos(filenames);
-        post.setCreatedBy(user);
+
+        // Initialize the Hugging Face Inference object
+        HfInference hfInference;
+        String token = settingService.getHuggingFaceToken();
+        if(token != null) hfInference = new HfInference(token);
+        else hfInference = null;
+
+        post.setPhotos(filenames.stream()
+                .map(filename -> {
+                    Photo photo = new Photo();
+                    photo.setUrl(filename);
+                    photo.setPost(post);
+
+                    if(hfInference != null) {
+                        // Generate alt text for the image
+                        String altTexts = hfInference.imageToText(photo.getImageUrl());
+                        if (altTexts != null) {
+                            photo.setAltText(altTexts);
+                        }
+                    }
+
+                    return photo;
+                })
+                .collect(Collectors.toList()));
+
+        // Get keywords from the caption
+        Set<String> keywords = new HashSet<>();
+        if(postDTO.getCaption() != null) {
+            KeywordResponseDTO keywordsFromCaption = keywordService.extractKeywords(postDTO.getCaption());
+            if(keywordsFromCaption != null) {
+                keywords = keywordService.getKeywordsByOrderAndLimit(keywordsFromCaption);
+            }
+        }
+        // Set keywords for the post
+        if(!keywords.isEmpty()) {
+            post.setKeywords(String.join(", ", keywords));
+        }
+
         Post savedPost = postRepository.save(post);
         return ResponseEntity.ok(savedPost.getId());
     }
@@ -121,13 +169,13 @@ public class PostService {
         // Thêm UUID vào trước tên file để đảm bảo tên file là duy nhất
         String uniqueFilename = UUID.randomUUID() + "_" + filename;
         // Đường dẫn đến thư mục mà bạn muốn lưu file
-        java.nio.file.Path uploadDir = Paths.get(UPLOADS_FOLDER);
+        Path uploadDir = Paths.get(UPLOADS_FOLDER);
         // Kiểm tra và tạo thư mục nếu nó không tồn tại
         if (!Files.exists(uploadDir)) {
             Files.createDirectories(uploadDir);
         }
         // Đường dẫn đầy đủ đến file
-        java.nio.file.Path destination = Paths.get(uploadDir.toString(), uniqueFilename);
+        Path destination = Paths.get(uploadDir.toString(), uniqueFilename);
         // Sao chép file vào thư mục đích
         Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
         return uniqueFilename;
@@ -153,26 +201,146 @@ public class PostService {
                     .collect(Collectors.toList());
     }
 
+    public User getCurrentUser() {
+        UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        if(currentUserId == null) {
+            throw new AppException(HttpStatus.FORBIDDEN, "You must be logged in.", null);
+        }
+        return userRepository.findById(currentUserId)
+                .orElseThrow(() -> new NotFoundException(User.class, "id", currentUserId.toString()));
+    }
+
+    public Page<PostDTO> convertToPostDTOPage(Page<Post> posts, Pageable pageable) {
+        List<PostDTO> postsDTO = posts.stream()
+                .map(post -> mapToDTO(post, new PostDTO()))
+                .collect(Collectors.toList());
+        return new PageImpl<>(postsDTO, pageable, posts.getTotalElements());
+    }
+
+    public Page<PostDTO> getPostsFollowing(Pageable pageable) {
+        User user = getCurrentUser();
+        Set<UUID> following = user.getFollowing().stream()
+            .map(User::getId)
+            .collect(Collectors.toSet());
+        following.add(user.getId()); // Include the current user
+        Page<Post> posts = postRepository.findPostsByUserFollowing(pageable, user.getId(), following, LocalDateTime.now().minusDays(1));
+        return convertToPostDTOPage(posts, pageable);
+    }
+
+    public Page<PostDTO> getPostsInterests(Pageable pageable, Set<UUID> postIds) {
+        User user = getCurrentUser();
+        if (user.getInterestKeywords() == null) {
+            return Page.empty();
+        }
+        Pageable page = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+        Page<Post> posts = getPostsByUserInterests(user, postIds, page);
+        return convertToPostDTOPage(posts, pageable);
+    }
+
+    public Page<Post> getPostsByUserInterests(User user, Set<UUID> postIds, Pageable pageable) {
+        String keywords = Arrays.stream(user.getInterestKeywords().split(", "))
+                .map(String::trim)
+                .collect(Collectors.joining("|"));
+        Set<UUID> following = user.getFollowing().stream()
+                .map(User::getId)
+                .collect(Collectors.toSet());
+        following.add(user.getId()); // Include the current user
+        return postRepository.findPostsByUserInterests(pageable, following, postIds, keywords.isBlank() ? null : keywords);
+    }
+
+    public Page<PostDTO> getPostsFeed(Pageable pageable, Set<UUID> postIds) {
+        Pageable page = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+        Page<Post> posts = postRepository.findPostsFeed(postIds, page);
+        return convertToPostDTOPage(posts, pageable);
+    }
+
+    public boolean isPostCreatedByUserIFollow(UUID userId) {
+        User user = getCurrentUser();
+        return userRepository.isFollowing(user.getId(), userId);
+    }
+
+    /**
+     * Generate a set of keywords based on the user's interest keywords and the post's keywords.
+     * If the user already has the maximum number of keywords, the last keyword is removed.
+     * @param post
+     * @param user
+     * @return
+     */
+    private static Set<String> generateUpdateKeywords(Post post, User user) {
+        String[] postKeywords;
+        String[] userKeywords;
+        LinkedList<String> updatedKeywords = new LinkedList<>();
+
+        // Get the user's interest keywords
+        if(user.getInterestKeywords() != null && !user.getInterestKeywords().isBlank()) {
+            userKeywords = user.getInterestKeywords().split(", ");
+            updatedKeywords = new LinkedList<>(Arrays.asList(userKeywords));
+        }
+
+        // Get the post's keywords
+        if(post.getKeywords() != null && !post.getKeywords().isBlank()) {
+            postKeywords = post.getKeywords().split(", ");
+
+            // Add the post's keywords to the user's keywords
+            for (String keyword : postKeywords) {
+                // If the user already has the maximum number of keywords, remove the last keyword
+                if (updatedKeywords.size() >= 30) {
+                    updatedKeywords.removeLast();
+                }
+                // Add the new keyword at the beginning of the list
+                updatedKeywords.addFirst(keyword);
+            }
+        }
+
+        return new HashSet<>(updatedKeywords);
+    }
+
 
     //    MAPPER
     private PostDTO mapToDTO (final Post post, final PostDTO postDTO) {
         postDTO.setId(post.getId());
         postDTO.setCaption(post.getCaption());
-        postDTO.setPhotos(post.getPhotos());
+
+        List<PhotoDTO> photos = post.getPhotos().stream()
+                .map(photo -> {
+                    PhotoDTO photoDTO = new PhotoDTO();
+                    photoDTO.setId(photo.getId());
+                    photoDTO.setUrl(photo.getUrl());
+                    photoDTO.setAltText(photo.getAltText());
+                    photoDTO.setPostId(photo.getPost().getId());
+                    return photoDTO;
+                })
+                .collect(Collectors.toList());
+        postDTO.setPhotos(photos);
+
         postDTO.setCreatedDate(post.getCreatedDate());
         postDTO.setFlag(post.getFlag());
         postDTO.setCreatedBy(post.getCreatedBy().getId());
+        postDTO.setVisibility(post.getVisibility());
         return postDTO;
     }
 
     private Post mapToEntity (final PostDTO postDTO, final Post post) {
         post.setCaption(postDTO.getCaption());
-        post.setPhotos(postDTO.getPhotos());
+
+        List<Photo> photos = postDTO.getPhotos().stream()
+                .map(photoDTO -> {
+                    Photo photo = new Photo();
+                    photo.setId(photoDTO.getId());
+                    photo.setUrl(photoDTO.getUrl());
+                    photo.setAltText(photoDTO.getAltText());
+                    photo.setPost(post);
+                    return photo;
+                })
+                .collect(Collectors.toList());
+        post.setPhotos(photos);
+
         post.setCreatedDate(postDTO.getCreatedDate());
         post.setFlag(postDTO.getFlag());
         final User user = postDTO.getCreatedBy() == null ? null : userRepository.findById(postDTO.getCreatedBy())
                                                                                 .orElseThrow(() -> new NotFoundException(User.class, "id", postDTO.getCreatedBy().toString()));
         post.setCreatedBy(user);
+        post.setVisibility(postDTO.getVisibility());
         return post;
     }
 
@@ -242,12 +410,11 @@ public class PostService {
         try {
             Post post = postRepository.findById(postId)
                                       .orElseThrow(() -> new NotFoundException(Post.class, "id", postId.toString()));
+
             User user = userRepository.findById(userId)
                                       .orElseThrow(() -> new NotFoundException(User.class, "id", userId.toString()));
 
-            Optional<Like> existingLike = post.getLikes().stream()
-                                              .filter(like -> like.getUser().equals(user))
-                                              .findFirst();
+            Optional<Like> existingLike = likeRepository.findLikeByPostAndUser(postId, userId);
 
             if (existingLike.isPresent()) {
                 post.getLikes().remove(existingLike.get());
@@ -264,6 +431,11 @@ public class PostService {
                 newLike.setUser(user);
                 likeRepository.save(newLike);
 
+                // Extract keywords from the post
+                Set<String> updatedKeywords = generateUpdateKeywords(post, user);
+                // Update the user's interested keywords
+                userRepository.updateInterestKeywords(userId, String.join(", ", updatedKeywords));
+
                 return ResponseEntity.ok(ResponseObject.builder()
                                                        .status(HttpStatus.CREATED)
                                                        .data(RegisterResponse.fromUser(user))
@@ -279,6 +451,7 @@ public class PostService {
         }
     }
 
+
     @Transactional
     public Optional<Post> blockPost(UUID postId) {
         Optional<Post> postOptional = postRepository.findById(postId);
@@ -288,4 +461,57 @@ public class PostService {
         });
         return postOptional;
     }
+
+    // get post have report != null and flag = true
+    public Page<PostDTO> getPostReported(Pageable pageable) {
+        Pageable sortedByCreatedDateDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdDate").descending());
+        Page<Post> posts = postRepository.findByReportsIsNotNullAndFlagTrue(sortedByCreatedDateDesc);
+        List<PostDTO> postsDTO = posts.stream()
+                .map(post -> mapToDTO(post, new PostDTO()))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(postsDTO, pageable, posts.getTotalElements());
+    }
+
+    // get post have report = null and flag = false
+    public Page<PostDTO> getPostUnFlagged(Pageable pageable) {
+        Pageable sortedByCreatedDateDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdDate").descending());
+        Page<Post> posts = postRepository.findByReportsIsNotNullAndFlagFalse(sortedByCreatedDateDesc);
+        List<PostDTO> postsDTO = posts.stream()
+                .map(post -> mapToDTO(post, new PostDTO()))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(postsDTO, pageable, posts.getTotalElements());
+    }
+    // set flag = true for post
+    public void setFlag(UUID postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(Post.class, "id", postId.toString()));
+        post.setFlag(false);
+        postRepository.save(post);
+    }
+
+    // set flag = false for post
+    public void setUnFlag(UUID postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(Post.class, "id", postId.toString()));
+        post.setFlag(true);
+        postRepository.save(post);
+    }
+
+    public EngagementMetricsDTO getEngagementMetrics (int days) {
+        LocalDateTime startDate = LocalDateTime.now().minusDays(days);
+        List<Post> posts = postRepository.findAllPostsSince(startDate);
+
+        long totalLikes = likeRepository.countLikesForPosts(posts);
+        long totalComments = commentRepository.countCommentsForPosts(posts);
+
+        EngagementMetricsDTO metrics = new EngagementMetricsDTO();
+        metrics.setLikes(totalLikes);
+        metrics.setComments(totalComments);
+
+        return metrics;
+    }
+
+
 }

@@ -3,8 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { FeedComponent } from './feed/feed.component';
 import { ProfileComponent } from './profile/profile.component';
 import { MessagesComponent } from './messages/messages.component';
-import { SearchComponent } from './search/search.component';
 import { CreatePostComponent } from './create-post/create-post.component';
+import { LabelsShopComponent } from './labels-shop/labels-shop.component';
+import { PaymentInfoComponent } from './payment-info/payment-info.component';
+import { PostDetailComponent } from 'src/app/shared/components/post-detail/post-detail.component';
 
 const routes: Routes = [
   {
@@ -26,6 +28,18 @@ const routes: Routes = [
     path: 'create-post',
     component: CreatePostComponent,
   },
+  {
+    path: 'post/:id',
+    component: PostDetailComponent,
+  },
+  {
+    path: 'labels-shop',
+    component: LabelsShopComponent
+  },
+  {
+    path: 'payment-info',
+    component: PaymentInfoComponent
+  }
 ];
 
 @NgModule({

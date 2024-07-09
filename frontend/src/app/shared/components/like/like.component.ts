@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
+import { ActionEnum } from 'src/app/core/interfaces/notification';
 import { CommentService } from 'src/app/core/services/comment.service';
 import { LikeService } from 'src/app/core/services/like.service';
+import { NotificationService } from 'src/app/core/services/notification.service';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
@@ -12,6 +15,7 @@ import { UserResponse } from 'src/app/features/authentication/login/user.respons
 })
 export class LikeComponent {
   @Input() postId!: string;
+  @Input() createdBy!: string; // The id of the user who created the post
   @Output() visibleChange = new EventEmitter<boolean>();
   @Input() isOnPostDetails: boolean = false;
   likeCount: number = 0;
@@ -24,19 +28,39 @@ export class LikeComponent {
   constructor(
     private likeService: LikeService,
     private commentService: CommentService,
-    private userService: UserService
+    private userService: UserService,
+    private notificationService: NotificationService,
   ) {}
 
   ngOnInit() {
     this.countLikes();
     this.countComments();
+    if(this.userResponse?.id) {
+      this.notificationService.connectWebSocket(this.userResponse?.id);
+    }
+  }
+
+  ngOnDestroy() {
+    if(this.userResponse?.id) this.notificationService.disconnect();
   }
 
   likePost() {
+    console.log('likePost');
     this.likeService.toggleLikes(this.postId, this.userResponse?.id).subscribe({
       next: () => {
         this.isLiked = !this.isLiked;
         this.countLikes();
+
+        // send notification
+        if (this.createdBy != this.userResponse?.id && this.isLiked) {
+          this.notificationService.sendNotification({
+            targetId: this.postId,
+            actorId: this.userResponse?.id,
+            actionType: ActionEnum.LIKE_POST,
+            redirectURL: `/post/${this.postId}`,
+            recipientId: this.createdBy,
+          });
+        }
       },
       error: (error: any) => {},
     });

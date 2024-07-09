@@ -11,13 +11,15 @@ import { TopMenuComponent } from './top-menu/top-menu.component';
 import { CoreModule } from 'src/app/core/core.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ProfileComponent } from './profile/profile.component';
-import { MessagesComponent } from './messages/messages.component';
 import { SearchComponent } from './search/search.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
-import { MessageContentComponent } from './messages/message-content/message-content.component';
 import { StoryListComponent } from '../story/story-list/story-list.component';
 import { ViewStoryComponent } from '../story/view-story/view-story.component';
 import { SearchSuggestionComponent } from './search/search-suggestion/search-suggestion.component';
+import { LabelsShopComponent } from './labels-shop/labels-shop.component';
+import { PaymentInfoComponent } from './payment-info/payment-info.component';
+import { NotificationsComponent } from './notifications/notifications.component';
+import { NotificationsItemComponent } from './notifications/notifications-item/notifications-item.component';
 
 @NgModule({
   declarations: [
@@ -27,13 +29,14 @@ import { SearchSuggestionComponent } from './search/search-suggestion/search-sug
     LeftMenuComponent,
     TopMenuComponent,
     ProfileComponent,
-    MessagesComponent,
     SearchComponent,
-    MessageContentComponent,
     StoryListComponent,
     ViewStoryComponent,
-    SearchSuggestionComponent
-
+    SearchSuggestionComponent,
+    LabelsShopComponent,
+    PaymentInfoComponent,
+    NotificationsComponent,
+    NotificationsItemComponent
   ],
   imports: [
     CommonModule,

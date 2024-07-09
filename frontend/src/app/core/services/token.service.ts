@@ -43,7 +43,7 @@ export class TokenService {
 
     /**
      * Extract the user id from the token. Return an empty string if the token is expired or not found.
-     * @returns the user id.
+     * @returns the user id, or null if the token is expired or not found.
      */
     extractUserIdFromToken(): any {
         const token = this.getToken();
@@ -53,6 +53,20 @@ export class TokenService {
 
         let userObject = this.jwtHelperService.decodeToken(token);
         return 'userId' in userObject ? userObject['userId'] : '';
+    }
+
+    /**
+     * Extract the username from the token. Return an empty string if the token is expired or not found.
+     * @returns the username, or null if the token is expired or not found.
+     */
+    extractUsernameFromToken(): any {
+        const token = this.getToken();
+        if (!token || this.jwtHelperService.isTokenExpired(token)) {
+            return null;
+        }
+
+        let userObject = this.jwtHelperService.decodeToken(token);
+        return 'username' in userObject ? userObject['username'] : '';
     }
 
     /**

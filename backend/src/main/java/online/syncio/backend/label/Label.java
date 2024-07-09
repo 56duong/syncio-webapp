@@ -1,6 +1,7 @@
 package online.syncio.backend.label;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 import online.syncio.backend.billing.Billing;
 import online.syncio.backend.user.User;
@@ -32,7 +33,11 @@ public class Label {
     private String description;
 
     @Column
+    @Min(value = 0, message = "Price should not be less than 0")
     private Double price;
+
+    @Column
+    private String labelURL;
 
     @Column
     @CreatedDate
@@ -42,6 +47,10 @@ public class Label {
     @JoinColumn(name = "user_id", nullable = false)
     @CreatedBy
     private User createdBy;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatusEnum status;
 
     // Billing
     @OneToMany(mappedBy = "label")

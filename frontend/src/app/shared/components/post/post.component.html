@@ -1,5 +1,12 @@
 <div class="post flex flex-column m-auto gap-3 border-bottom-1 border-gray-300 pb-4 mt-4">
-  <!-- header -->
+  <!-- Most Frequent Reason -->
+  <!-- <div *ngIf="isReportedPostsPage && mostFrequentReason" class="flex align-items-center gap-2">
+    <small >Most reports: <span class="font-bold">{{ mostFrequentReason }}</span></small>
+  </div> -->
+  <div *ngIf="isReportedPostsPage" class="flex justify-content-between align-items-center">
+    <p-button label="View Report Reasons" icon="pi pi-info-circle" (click)="showReasonCountsDialog()"></p-button>
+  </div>
+
   <div class="flex justify-content-between align-items-center">
     <div class="flex align-items-center gap-2">
       <div class="avt">
@@ -12,11 +19,23 @@
           {{ post.createdBy | userIdToName | async }}
         </small>
         <small class="text-gray-500">•</small>
-        <small class="text-gray-500">
-          {{ post.createdDate | date : "HH:mm:ss dd/MM/yyyy" }}</small>
+        <small class="text-gray-500" [title]="post.createdDate | date: 'HH:mm:ss dd/MM/yyyy'">
+          {{ post.createdDate | dateAgoPipe }}
+        </small>
       </div>
     </div>
-    <span class="pi pi-ellipsis-h cursor-pointer" (click)="showReportModal()"></span>
+
+    <p-button *ngIf="isReportedPostsPage" label="Hide" severity="danger" (click)="onHidePost()"></p-button>
+    <p-button *ngIf="isHiddenPostsPage" label="Active" severity="primary" (click)="onActivePost()"></p-button>
+
+    <!-- Visibility -->
+    <div class="flex align-items-center gap-2">
+      <p-button *ngIf="post.visibility === Visibility.PRIVATE" class="close-friend" icon="pi pi-lock" severity="secondary" size="small" />
+      <p-button *ngIf="post.visibility === Visibility.CLOSE_FRIENDS" class="close-friend" icon="pi pi-star-fill" severity="success" size="small" />
+      <!-- 3 dots -->
+      <span *ngIf="!isReportedPostsPage && !isHiddenPostsPage" class="pi pi-ellipsis-h cursor-pointer" (click)="dialogVisible = !dialogVisible"></span>
+    </div>
+
   </div>
 
   <!-- photo -->
@@ -25,21 +44,28 @@
       [numVisible]="1"
       [numScroll]="1"
       [circular]="false"
-      [style]="{ height: '100%', position: 'relative' }">
+      [style]="{ height: '100%', position: 'relative' }"
+      [ngClass]="post.photos.length == 1 ? 'hide-slide-control' : ''">
       <ng-template let-photo pTemplate="item">
-        <img src="{{ photo }}"
+        <img src="{{ photo.url }}" 
+          alt="{{ photo.altText }}"
           class="w-full h-full"
-          style="object-fit: contain" />
+          style="object-fit: cover" />
       </ng-template>
     </p-carousel>
   </div>
 
   <!-- caption -->
-  <div>
-    <small *ngIf="post.createdBy" class="font-bold">
+  <div *ngIf="post.caption" class="line-clamp"
+    [ngStyle]="{ '-webkit-line-clamp': isViewMore ? 'unset' : '3'}">
+    <small *ngIf="post.createdBy && post.photos?.length" class="font-bold mr-1">
       {{ post.createdBy | userIdToName | async }}
     </small>
-    <small>{{ post.caption }}</small>
+    <p class="inline m-0"
+      (click)="isViewMore = !isViewMore" 
+      [title]="isViewMore ? 'View less' : 'View more'">
+      {{ post.caption }}
+    </p>
   </div>
 
   <!-- Like -->
@@ -53,7 +79,8 @@
   *ngIf="visible"
   [post]="post"
   [visible]="visible"
-  (visibleChange)="showPostDetail($event)">
+  (visibleChange)="showPostDetail($event)"
+  style="z-index: 1102;">
 </app-post-detail>
 
 <app-report 
@@ -61,3 +88,23 @@
   [display]="reportVisible" 
   (visibleChange)="handleReportModalVisibility($event)">
 </app-report>
+
+<!-- Reason Counts -->
+<p-dialog header="Report Reasons Count" [(visible)]="reasonDialogVisible" [modal]="true" [style]="{width: '300px'}" (onHide)="hideReasonCountsDialog()">
+  <ul style="list-style-type: none; padding: 0;">
+    <li class="pt-3" *ngFor="let reason of reasonKeys()">
+      {{ reason }}: {{ reasonCounts[reason] }}
+    </li>
+  </ul>
+  <div class="flex justify-content-end gap-2 mt-2">
+    <button pButton label="Delete Report" icon="pi pi-trash" class="p-button-danger" (click)="deleteReport()"></button>
+    <button pButton label="Close" icon="pi pi-times" (click)="hideReasonCountsDialog()"></button>
+  </div>
+</p-dialog>
+
+<app-global-dialog
+  [display]="dialogVisible"
+  [items]="dialogItems"
+  (displayChange)="hideDialog()">
+</app-global-dialog>
+

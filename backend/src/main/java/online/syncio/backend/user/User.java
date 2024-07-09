@@ -4,9 +4,11 @@ package online.syncio.backend.user;
 import jakarta.persistence.*;
 import lombok.*;
 import online.syncio.backend.comment.Comment;
+import online.syncio.backend.commentlike.CommentLike;
 import online.syncio.backend.like.Like;
 import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messageroommember.MessageRoomMember;
+import online.syncio.backend.notification.Notification;
 import online.syncio.backend.post.Post;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.story.Story;
@@ -77,6 +79,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
     private Set<Post> posts;
 
+    @Column(length = 1000)
+    private String interestKeywords;
+
 //    Follow
     @ManyToMany
     @JoinTable(
@@ -106,6 +111,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private Set<Comment> comments;
 
+//    CommentLike
+    @OneToMany(mappedBy = "user")
+    private Set<CommentLike> commentLikes;
+
 //    Report
     @OneToMany(mappedBy = "user")
     private Set<Report> reports;
@@ -125,6 +134,14 @@ public class User implements UserDetails {
 //    StoryView
     @OneToMany(mappedBy = "user")
     private Set<StoryView> viewedStories;
+
+//    Notification
+    @OneToMany(mappedBy = "actor")
+    private Set<Notification> notifications;
+
+//    Notification
+    @OneToMany(mappedBy = "recipient")
+    private Set<Notification> receivedNotifications;
 
     @Column(name = "username_last_modified")
     private LocalDateTime usernameLastModified;
@@ -156,6 +173,15 @@ public class User implements UserDetails {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

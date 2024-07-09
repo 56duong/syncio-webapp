@@ -4,6 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { UsersManagementComponent } from './users-management/users-management.component';
 import { PostsManagementComponent } from './posts-management/posts-management.component';
+import { LabelsManagementComponent } from './labels-management/labels-management.component';
+import { StickerManagementComponent } from './sticker-management/sticker-management.component';
+import { ReportedPostsComponent } from './reported-posts/reported-posts.component';
+import { HiddenPostsComponent } from './hidden-posts/hidden-posts.component';
 
 const routes: Routes = [
   {
@@ -17,7 +21,23 @@ const routes: Routes = [
   {
     path: 'posts-management',
     component: PostsManagementComponent
-  }
+  },
+  {
+    path: 'labels-management',
+    component: LabelsManagementComponent
+  },
+  {
+    path: 'sticker-management',
+    component: StickerManagementComponent
+  },
+  {
+    path: 'reported-posts',
+    component: ReportedPostsComponent,
+  },
+  {
+    path: 'hidden-posts',
+    component: HiddenPostsComponent,
+  },
 ];
 
 @NgModule({

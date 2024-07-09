@@ -17,6 +17,7 @@ export class MessageContentService {
   private webSocketURL = environment.apiUrl + 'live'; // WebSocket URL with 'live' is the endpoint for the WebSocket configuration in the backend. In WebSocketConfig.java, the endpoint is '/live'.
   private stompClient: CompatClient = {} as CompatClient;
   private messageContentSubject: BehaviorSubject<MessageContent> = new BehaviorSubject<MessageContent>({}); // BehaviorSubject of MessageContent type. You can know when a new messageContent is received.
+  private subscription: any;
 
   constructor(private http: HttpClient) {}
 
@@ -42,7 +43,7 @@ export class MessageContentService {
     this.stompClient = Stomp.over(socket);
 
     this.stompClient.connect({}, () => {
-      this.stompClient.subscribe(`/topic/messagecontent/${messageRoomId}/${localStorage.getItem('access_token')}`, (messageContent: IMessage) => {
+      this.subscription = this.stompClient.subscribe(`/topic/messagecontent/${messageRoomId}`, (messageContent: IMessage) => {
         this.messageContentSubject.next(JSON.parse(messageContent.body));
       });
     });
@@ -75,12 +76,13 @@ export class MessageContentService {
 
   /**
    * Disconnect from the WebSocket.
-   * @param messageRoomId - The id of the post.
    */
-  disconnect(messageRoomId: string) {
-    this.stompClient.unsubscribe(`/topic/messagecontent/${messageRoomId}/${localStorage.getItem('access_token')}`);
-    this.stompClient.deactivate();
-    this.stompClient.disconnect();
+  disconnect() {
+    if(this.subscription) this.subscription.unsubscribe();
+    if(Object.keys(this.stompClient).length) {
+      this.stompClient.deactivate();
+      this.stompClient.disconnect();
+    }
   }
 
   /**
@@ -90,7 +92,10 @@ export class MessageContentService {
    */
   sendMessageContent(messageContent: MessageContent) {
     this.stompClient.publish({ 
-      destination: `/app/messagecontent/${messageContent.messageRoomId}/${localStorage.getItem('access_token')}`, 
+      headers: {
+        'token': localStorage.getItem('access_token') || '', // Send the token in the header to authenticate the user.
+      },
+      destination: `/app/messagecontent/${messageContent.messageRoomId}`, 
       body: JSON.stringify(messageContent)
     });
   }
@@ -117,6 +122,15 @@ export class MessageContentService {
   getMessageContentByRoomId(roomId: string): Observable<MessageContent[]> {
     const url = `${this.apiURL}/${roomId}`;
     return this.http.get<MessageContent[]>(url);
+  }
+
+  /**
+   * Upload photos with FormData containing the 'photos' key with the value of the photos.
+   * @param formData - The FormData object containing the photos.
+   * @returns array of photo URLs.
+   */
+  uploadPhotos(formData: FormData): Observable<string[]> {
+    return this.http.post<string[]>(`${this.apiURL}/upload`, formData);
   }
 
 }

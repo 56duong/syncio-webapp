@@ -1,0 +1,61 @@
+p-dialog ::ng-deep {
+  
+  .p-dialog-mask {
+    z-index: 1102 !important;
+  }
+
+  .p-dialog .p-dialog-header {
+    display: none;
+  }
+
+  .p-dialog .p-dialog-content {
+    border-radius: 8px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    width: calc(100vw - 88px);
+    min-width: 260px;
+    max-width: 400px;
+  }
+
+  .dialog-content {
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .dialog-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .dialog-description {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+  }
+
+  .dialog-item {
+    min-height: 48px;
+    padding: 4px 8px;
+    text-align: center;
+    cursor: pointer;
+    line-height: 1.5;
+    border: 0;
+    outline: none;
+    border-top: 1px solid var(--gray-300);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    background-color: var(--surface-0);
+  }
+
+  .dialog-item:first-child {
+    border-top: 0;
+  }
+
+}
+
+button {
+  font-family: inherit;
+}

@@ -1,6 +1,10 @@
+import { Location } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ActionEnum } from 'src/app/core/interfaces/notification';
+import { Post } from 'src/app/core/interfaces/post';
 import { User } from 'src/app/core/interfaces/user';
+import { NotificationService } from 'src/app/core/services/notification.service';
 
 import { UserService } from 'src/app/core/services/user.service';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
@@ -29,23 +33,46 @@ export class ProfileComponent implements OnInit {
   userResponse?: UserResponse | null =
     this.userService.getUserResponseFromLocalStorage();
   public loginUser: string = this.userResponse?.id || '';
+
+  post: Post = {};
+  visible: boolean = false; // Used to show/hide the post detail modal
+
   constructor(
+    private notificationService: NotificationService,
     private userService: UserService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
-    let id;
     this.route.params.subscribe((params) => {
-      id = params['userId'];
-      // this.checkFollowStatus(id);
-      this.loadUserProfile(id);
+      const id = params['userId'];
+
+      if (this.loginUser) {
+        this.userService.getUserProfile2(id).subscribe({
+          next: (response) => {
+            this.userProfile = response;
+            console.log('User is ', response);
+            this.isFollowing = response.isFollowing;
+            this.isCloseFriend = response.isCloseFriend;
+          },
+          error: (error) => {
+            console.error('Error getting user profile', error);
+          },
+        });
+        this.notificationService.connectWebSocket(this.loginUser);
+      } else {
+        this.loadUserProfile(id);
+      }
     });
   }
 
+  ngOnDestroy() {
+    if (this.loginUser) this.notificationService.disconnect();
+  }
+
   private loadUserProfile(userId: string): void {
-    // this.checkFollowStatus(userId);
     this.userService.getUserProfile(userId).subscribe((response) => {
       this.userProfile.id = response.id;
       this.userProfile.username = response.username;
@@ -58,15 +85,7 @@ export class ProfileComponent implements OnInit {
       this.isCloseFriend = response.isCloseFriend;
     });
   }
-  // private checkFollowStatus(targetId: string): void {
-  //   if (this.loginUser !== targetId) {
-  //     this.userService
-  //       .isFollowing(this.loginUser, targetId)
-  //       .subscribe((response: any) => {
-  //         this.isFollowing = response;
-  //       });
-  //   }
-  // }
+
   public handleEditProfile(): void {
     this.router.navigate(['/edit-profile']);
   }
@@ -93,6 +112,14 @@ export class ProfileComponent implements OnInit {
         this.isFollowing = true;
         if (this.userProfile && this.userProfile.followerCount !== undefined) {
           this.userProfile.followerCount += 1;
+
+          this.notificationService.sendNotification({
+            targetId: targetId,
+            actorId: this.userResponse?.id,
+            actionType: ActionEnum.FOLLOW,
+            redirectURL: `/profile/${this.loginUser}`,
+            recipientId: targetId,
+          });
         }
       },
       error: (error) => {
@@ -100,6 +127,7 @@ export class ProfileComponent implements OnInit {
       },
     });
   }
+
   public handleUnFollowUser(targetId: any): void {
     this.userService.unfollowUser(targetId).subscribe({
       next: (response) => {
@@ -124,6 +152,7 @@ export class ProfileComponent implements OnInit {
       },
     });
   }
+
   public handleRemoveCloseFriends(targetId: any): void {
     this.userService.removeCloseFriends(targetId).subscribe({
       next: (response: any) => {
@@ -133,5 +162,16 @@ export class ProfileComponent implements OnInit {
         console.error('Error removing close friends', error);
       },
     });
+  }
+
+  showPostDetail(event: any) {
+    this.visible = event;
+    this.location.replaceState('/post/' + this.post.id);
+  }
+
+  handleShowPostDetail(visible: any, post: Post) {
+    this.post = post;
+    this.visible = visible;
+    this.location.replaceState('/post/' + this.post.id);
   }
 }

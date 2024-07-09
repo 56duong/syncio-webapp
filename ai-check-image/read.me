@@ -1,2 +1,13 @@
 python main.py 
 http://localhost:8111/verify-image/?image_url=https://example.com/image.jpg
+
+docker
+
+{
+    "host": "localhost",
+    "port": 8111,
+    "domain": "example.com",
+    "rabbitmq_url": "amqp://guest:guest@rabbitmq",
+    "exchange": "imageVerificationExchange",
+    "queu_image_verify": "imageVerificationQueue"
+}
