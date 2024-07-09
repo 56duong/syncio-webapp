@@ -2,21 +2,18 @@
   <div class="card">
     <p-toolbar styleClass="m-2 gap-2">
       <ng-template pTemplate="left">
-        <div class="card flex flex-wrap justify-content-center gap-3">
-          <span class="p-input-icon-left">
-            <i class="pi pi-search"></i>
-            <input type="text" pInputText />
-          </span>
-        </div>
+        <div class="flex flex-column md:flex-row md:justify-content-between">
+          <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By Price" (onChange)="onSortChange($event)" styleClass="mb-2 md:mb-0"></p-dropdown>
+      </div>
       </ng-template>
 
-      <!-- export file -->
+      <!-- Purchase History -->
       <ng-template pTemplate="right">
         <button pButton pRipple label="Purchase History" icon="pi pi-history" class="p-button-help"
           (click)="openPurchaseHistory()"></button>
       </ng-template>
     </p-toolbar>
-    <p-dataView #dv [value]="labels" [layout]="'grid'" [rows]="8" [paginator]="false" paginatorPosition="top">
+    <p-dataView #dv [value]="labels" [layout]="'grid'" [rows]="8" [paginator]="false" paginatorPosition="top" [sortField]="sortField" [sortOrder]="sortOrder" >
       <ng-template let-label pTemplate="gridItem">
         <div class="col-12 sm:col-6 lg:col-12 xl:col-3 p-2">
           <div class="p-4 border-1 surface-border surface-card border-round">
