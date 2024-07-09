@@ -71,4 +71,24 @@ export class MessageRoomService {
     return this.http.get<MessageRoom>(url, { params: { userIds: userIds } });
   }
 
+  /**
+   * Update the message room name.
+   * @param messageRoomId 
+   * @param name 
+   * @returns the object containing the name.
+   * @example
+   * this.messageRoomService.updateMessageRoomName(this.messageRoom.id, this.newMessageRoomName).subscribe({
+   *  next: (messageRoomName) => {
+   *    this.messageRoom.name = messageRoomName['name'];
+   *  },
+   *  error: (error) => {
+   *    console.log(error);
+   *  }
+   * });
+   */
+  updateMessageRoomName(messageRoomId: string, name: string): Observable<any> {
+    const url = `${this.apiURL}/update-name/${messageRoomId}`;
+    return this.http.post<any>(url, { name: name });
+  }
+ 
 }

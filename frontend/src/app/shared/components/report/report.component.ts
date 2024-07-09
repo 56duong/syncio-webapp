@@ -29,7 +29,7 @@ export class ReportComponent implements OnInit {
   ngOnInit(): void {
     this.reportForm = this.fb.group({
       reason: [null, Validators.required],
-      description: ['', Validators.required],
+      description: [],
     });
 
     this.reasons = [
@@ -38,6 +38,7 @@ export class ReportComponent implements OnInit {
       { label: 'HARASSMENT', value: 'HARASSMENT' },
       { label: 'VIOLENCE', value: 'VIOLENCE' },
       { label: 'INAPPROPRIATE CONTENT', value: 'INAPPROPRIATE_CONTENT' },
+      { label: 'NUDE', value: 'NUDE' },
     ];
   }
 

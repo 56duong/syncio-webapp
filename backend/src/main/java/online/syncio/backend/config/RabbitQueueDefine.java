@@ -47,11 +47,11 @@ public class RabbitQueueDefine {
         }
     }
 
-//    @Bean
-//    public Queue responseQueue() {
-//        Queue queue = new Queue("image_verification_response_queue_spring", true, false, false, null);
-//        rabbitAdminMain.declareQueue(queue);
-//        return null;
-//    }
+    @Bean
+    public Queue responseQueue() {
+        Queue queue = new Queue("image_verification_response_queue_springboot", true, false, false, null);
+        rabbitAdminMain.declareQueue(queue);
+        return queue;
+    }
 
 }

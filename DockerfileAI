@@ -10,7 +10,7 @@ COPY ./ai-check-image /app/ai-check-image
 WORKDIR /app/ai-check-image
 
 RUN pip install --upgrade pip && \
-    pip install nudenet aio_pika fastapi uvicorn requests Pillow
+    pip install nudenet aio_pika fastapi uvicorn requests Pillow aiohttp
 
 EXPOSE 8111
 # Define environment variable

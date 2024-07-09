@@ -16,4 +16,6 @@ public class MessageRoomDTO {
 
     private boolean isGroup;
 
+    private UUID createdBy;
+
 }

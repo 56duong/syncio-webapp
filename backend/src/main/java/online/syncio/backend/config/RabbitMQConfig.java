@@ -65,6 +65,8 @@ public class RabbitMQConfig implements RabbitListenerConfigurer {
     @Primary
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(jsonMessageConverter());
         return new RabbitTemplate(connectionFactory);
     }
 

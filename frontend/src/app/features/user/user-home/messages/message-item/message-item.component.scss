@@ -1,0 +1,43 @@
+.message-content-item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  width: 66.66%;
+  align-self: start;
+}
+
+.my-message.message-content-item {
+  flex-direction: row-reverse;
+  align-self: end;
+}
+
+.my-message.message-content-item ::ng-deep .message-content {
+  background-color: var(--gray-200);
+  border-color: var(--gray-200);
+  align-items: end;
+}
+
+.my-message.message-content-item ::ng-deep .message-content.message-content-sticker
+.my-message.message-content-item ::ng-deep .message-content.message-content-image {
+  align-items: end;
+}
+
+.response-message {
+  flex-direction: row;
+}
+
+.my-message img.avatar {
+  display: none;
+}
+
+.my-reply {
+  border-right: 3px solid var(--gray-300);
+  padding-right: 0.5rem;
+}
+
+.other-reply {
+  border-left: 3px solid var(--gray-300);
+  padding-left: 0.5rem;
+}

@@ -1,96 +1,83 @@
 package online.syncio.backend.messagecontent;
 
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.messageroom.MessageRoom;
-import online.syncio.backend.messageroom.MessageRoomRepository;
 import online.syncio.backend.user.User;
-import online.syncio.backend.user.UserDTO;
 import online.syncio.backend.user.UserRepository;
+import online.syncio.backend.utils.FIleUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class MessageContentService {
+
     private final MessageContentRepository messageContentRepository;
-    private final MessageRoomRepository messageRoomRepository;
+    private final MessageContentMapper messageContentMapper;
     private final UserRepository userRepository;
 
-    public MessageContentService(MessageContentRepository messageContentRepository, MessageRoomRepository messageRoomRepository, UserRepository userRepository) {
-        this.messageContentRepository = messageContentRepository;
-        this.messageRoomRepository = messageRoomRepository;
-        this.userRepository = userRepository;
-    }
 
-
-
-//    CRUD
     public List<MessageContentDTO> findAll() {
         final List<MessageContent> messageContents = messageContentRepository.findAll(Sort.by("createdDate"));
         return messageContents.stream()
-                .map(messageContent -> mapToDTO(messageContent, new MessageContentDTO()))
+                .map(messageContent -> messageContentMapper.mapToDTO(messageContent, new MessageContentDTO()))
                 .toList();
     }
 
-    public MessageContentDTO get(final UUID id) {
-        return messageContentRepository.findById(id)
-                .map(messageContent -> mapToDTO(messageContent, new MessageContentDTO()))
-                .orElseThrow(() -> new NotFoundException(MessageContent.class, "id", id.toString()));
-    }
 
     public List<MessageContentDTO> findByMessageRoomId(final UUID messageRoomId) {
         return messageContentRepository.findByMessageRoomIdOrderByDateSentAsc(messageRoomId)
                 .stream()
-                .map(messageContent -> mapToDTO(messageContent, new MessageContentDTO()))
+                .map(messageContent -> messageContentMapper.mapToDTO(messageContent, new MessageContentDTO()))
                 .toList();
     }
 
+
     public UUID create(final MessageContentDTO messageContentDTO) {
         final MessageContent messageContent = new MessageContent();
-        mapToEntity(messageContentDTO, messageContent);
+        messageContentMapper.mapToEntity(messageContentDTO, messageContent);
         return messageContentRepository.save(messageContent).getId();
     }
 
-    public void update(final UUID id, final MessageContentDTO messageContentDTO) {
-        final MessageContent messageContent = messageContentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(MessageContent.class, "id", id.toString()));
-        mapToEntity(messageContentDTO, messageContent);
-        messageContentRepository.save(messageContent);
+
+    @Transactional
+    public List<String> uploadPhotos(final List<MultipartFile> photos) {
+        return photos.stream()
+                .map(photo -> {
+                    try {
+                        return FIleUtils.storeFile(photo);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Could not save photo: " + photo.getOriginalFilename());
+                    }
+                })
+                .toList();
     }
 
-    public void delete(final UUID id) {
-        final MessageContent messageContent = messageContentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(MessageContent.class, "id", id.toString()));
-        messageContentRepository.delete(messageContent);
-    }
 
-
-
-//    MAPPER
-    private MessageContentDTO mapToDTO(final MessageContent messageContent, final MessageContentDTO messageContentDTO) {
-        messageContentDTO.setId(messageContent.getId());
-        messageContentDTO.setMessageRoomId(messageContent.getMessageRoom().getId());
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(messageContent.getUser().getId());
-        userDTO.setUsername(messageContent.getUser().getUsername());
-        userDTO.setAvtURL(messageContent.getUser().getAvtURL());
-        messageContentDTO.setUser(userDTO);
-        messageContentDTO.setMessage(messageContent.getMessage());
-        messageContentDTO.setDateSent(messageContent.getDateSent());
-        return messageContentDTO;
-    }
-
-    private MessageContent mapToEntity(final MessageContentDTO messageContentDTO, final MessageContent messageContent) {
-        final MessageRoom messageRoom = messageContentDTO.getMessageRoomId() == null ? null : messageRoomRepository.findById(messageContentDTO.getMessageRoomId())
-                .orElseThrow(() -> new NotFoundException(MessageRoom.class, "id", messageContentDTO.getMessageRoomId().toString()));
+    /**
+     * Send a notification to a specific message room
+     * @param messageRoom
+     * @param userId
+     * @param type
+     * @param message
+     * @return
+     */
+    public boolean sendNotification(final MessageRoom messageRoom, final UUID userId, TypeEnum type, String message) {
+        MessageContent messageContent = new MessageContent();
         messageContent.setMessageRoom(messageRoom);
-        final User user = messageContentDTO.getMessageRoomId() == null ? null : userRepository.findById(messageContentDTO.getUser().getId())
-                .orElseThrow(() -> new NotFoundException(User.class, "id", messageContentDTO.getUser().getId().toString()));
-        messageContent.setUser(user);
-        messageContent.setMessage(messageContentDTO.getMessage());
-        messageContent.setDateSent(messageContentDTO.getDateSent());
-        return messageContent;
+        messageContent.setUser(userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(User.class, "id", userId.toString())));
+        messageContent.setType(type);
+        messageContent.setMessage(message);
+        messageContentRepository.save(messageContent);
+        return true;
     }
+
 }

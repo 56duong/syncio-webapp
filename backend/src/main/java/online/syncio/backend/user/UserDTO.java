@@ -1,6 +1,7 @@
 package online.syncio.backend.user;
 
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -15,6 +16,7 @@ public class UserDTO {
 
     @NotNull
     @Size(max = 89)
+    @Email(message = "Email should be valid")
     private String email;
 
     @NotNull

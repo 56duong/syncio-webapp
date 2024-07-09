@@ -28,7 +28,14 @@ public class Billing {
     private User user;
 
     @Column
+    private String orderNo;
+
+    @Column
     private Double amount;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private StatusEnum status;
 
     @Column
     @CreatedDate

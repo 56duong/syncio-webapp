@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../interfaces/user';
 import { RegisterDTO } from 'src/app/features/authentication/register/register.dto';
@@ -40,6 +40,17 @@ export class UserService {
   }
   register(registerDTO: RegisterDTO): Observable<any> {
     return this.http.post(this.apiRegister, registerDTO, this.apiConfig);
+  }
+
+  // Create user using User Controller
+  createUserInAdmin(user: User): Observable<any> {
+    return this.http.post(this.apiURL, user, this.apiConfig);
+
+  }
+
+  // Update user using User Controller
+  updateUserInAdmin(user: User): Observable<any> {
+    return this.http.put(`${this.apiURL}/${user.id}`, user, this.apiConfig);
   }
 
   confirmUserRegister(token: string): Observable<any> {
@@ -160,6 +171,17 @@ export class UserService {
     return this.http.get<User>(url);
   }
 
+  /**
+   * Get User Profile By Id.
+   * Use for case when the user already logged in.
+   * @param userId 
+   * @returns 
+   */
+  getUserProfile2(userId: any): Observable<User> {
+    const url = `${this.apiURL}/profile/${userId}`;
+    return this.http.post<User>(url, {});
+  }
+
   updateUser(user: User, userId: any): Observable<User> {
     const url = `${this.apiURL}/update-profile/${userId}`;
     return this.http.put<User>(url, user);
@@ -227,4 +249,35 @@ export class UserService {
     const url = `${this.apiURL}/avatar`;
     return this.http.post<string>(url, formData);
   }
+
+  getNewUsersLast30Days(): Observable<any> {
+    const url = `${this.apiURL}/last30days`;
+    return this.http.get<any>(url);
+  }
+
+  getNewUsersLast7Days(): Observable<any> {
+    const url = `${this.apiURL}/last7days`;
+    return this.http.get<any>(url);
+  }
+
+  getNewUsersLast100Days(): Observable<any> {
+    const url = `${this.apiURL}/last100days`;
+    return this.http.get<any>(url);
+  }
+  
+  getNewUsersLastNDays(days: number): Observable<any> {
+    return this.http.get(`${this.apiURL}/last/${days}`);
+  }
+
+  getOutstandingUsers(): Observable<User[]> {
+    const url = `${this.apiURL}/outstanding`;
+    return this.http.get<User[]>(url);
+  }
+
+  getUserCount(): Observable<number> {
+    return this.getUsers().pipe(
+      map(users => users.length)
+    );
+  }
+  
 }

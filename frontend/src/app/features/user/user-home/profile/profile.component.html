@@ -12,24 +12,24 @@
               (change)="onFileSelected($event)"
             />
             <button title="" (click)="fileInput.click()">
-              <img alt="" [src]="userProfile.avtURL" />
+              <img
+                alt=""
+                [src]="userProfile.avtURL"
+                onerror="this.src='/assets/images/avatar.jpg'"
+              />
             </button>
           </div>
         </div>
       </div>
       <section>
         <div class="profile-setting dark-off">
-          <h2>{{ userProfile.username }}</h2>
+          <h1>{{ userProfile.username }}</h1>
 
-          <a>
-            <button
-              *ngIf="loginUser !== userProfile.id && !isFollowing"
-              type="button"
-              (click)="handleFollowUser(userProfile.id)"
-              style="background-color: rgba(0, 0, 0, 0.1)"
-            >
-              Folllow
-            </button>
+          <a *ngIf="loginUser !== userProfile.id && !isFollowing">
+            <p-button
+              (click)="handleFollowUser(userProfile.id)" 
+              label="Folllow" severity="my-custom-primary">
+            </p-button>
           </a>
 
           <!-- <a>
@@ -43,18 +43,9 @@
             </button>
           </a> -->
 
-          <a
-            class="dropdown"
-            *ngIf="loginUser !== userProfile.id && isFollowing"
-          >
-            <button
-              class="btn btn-secondary dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Following
-            </button>
+          <a class="dropdown"
+            *ngIf="loginUser !== userProfile.id && isFollowing">
+            <p-button label="Following" severity="my-custom-primary" data-bs-toggle="dropdown" aria-expanded="false"></p-button>
             <ul class="dropdown-menu">
               <li>
                 <a
@@ -64,7 +55,7 @@
                   <span>Unfollow</span>
                 </a>
               </li>
-              <li *ngIf="loginUser !== userProfile.id && !isCloseFriend">
+              <li *ngIf="!isCloseFriend">
                 <a
                   class="dropdown-item"
                   (click)="handleAddCloseFriends(userProfile.id)"
@@ -73,7 +64,7 @@
                 </a>
               </li>
 
-              <li *ngIf="loginUser !== userProfile.id && isCloseFriend">
+              <li *ngIf="isCloseFriend">
                 <a
                   class="dropdown-item"
                   (click)="handleRemoveCloseFriends(userProfile.id)"
@@ -85,18 +76,10 @@
           </a>
 
           <a *ngIf="loginUser !== userProfile.id" href="/messages">
-            <button type="button" style="background-color: rgba(0, 0, 0, 0.1)">
-              Messages
-            </button>
+            <p-button label="Messages" severity="my-custom-primary"></p-button>
           </a>
           <a *ngIf="loginUser === userProfile.id" href="/edit-profile">
-            <button
-              type="button"
-              (click)="handleEditProfile()"
-              style="background-color: rgba(0, 0, 0, 0.1)"
-            >
-              Edit Profile
-            </button>
+            <p-button (click)="handleEditProfile()" label="Edit Profile" severity="my-custom-primary"></p-button>
           </a>
 
           <div *ngIf="loginUser === userProfile.id" class="setting-icon">
@@ -138,7 +121,6 @@
           </li>
         </ul>
         <div class="intro">
-          <h3>{{ userProfile.username }}</h3>
           <br />
           <span>{{ userProfile.bio }}</span>
           <a href="http://{{ userProfile.bio }}">{{ userProfile.bio }}</a>
@@ -154,19 +136,32 @@
     </div>
     <div class="content">
       <article>
-        <div class="row-container">
-          <div class="content-row" *ngFor="let post of userProfile.posts">
-            <div class="photo" *ngFor="let photoUrl of post.photos">
-              <img
-                alt="Post Image"
-                height="100%"
-                width="100%"
-                [src]="photoUrl"
-              />
-            </div>
+        <div
+          style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px"
+        >
+        <ng-container *ngFor="let post of userProfile.posts">
+          <div *ngIf="post.photos && post.photos.length > 0" 
+            style="aspect-ratio: 1/1; cursor: pointer;"
+            (click)="handleShowPostDetail(true, post)">
+            <img height="100%"
+              width="100%"
+              [src]="post.photos[0].url"
+              [alt]="post.photos[0].altText"
+              style="object-fit: cover"
+            />
           </div>
+        </ng-container>
         </div>
       </article>
     </div>
   </div>
 </main>
+
+<!-- Post Detail popup -->
+<app-post-detail
+  *ngIf="visible"
+  [post]="post"
+  [visible]="visible"
+  (visibleChange)="showPostDetail($event)"
+  style="position: relative; z-index: 1102;">
+</app-post-detail>

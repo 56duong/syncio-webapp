@@ -6,5 +6,4 @@ public enum ReasonEnum {
     VIOLENCE,
     INAPPROPRIATE_CONTENT,
     NUDE,
-
 }

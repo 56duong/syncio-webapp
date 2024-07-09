@@ -33,6 +33,19 @@
       width: 0.5rem;
       border-radius: 50%;
     }
+
+    .close-friend {
+      .p-button.p-button-icon-only {
+        padding: 0.5rem;
+        border-radius: 50%;
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+
+      .p-button-icon {
+        font-size: 0.75rem;
+      }
+    }
   }
 }
 
@@ -47,5 +60,17 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
+  }
+}
+
+// hide slide control when 1 photo
+p-carousel.hide-slide-control ::ng-deep {
+  .p-carousel .p-carousel-content .p-carousel-prev, 
+  .p-carousel .p-carousel-content .p-carousel-next {
+    display: none;
+  }
+
+  .p-carousel .p-carousel-indicators {
+    display: none;
   }
 }

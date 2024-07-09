@@ -150,7 +150,7 @@ public class AuthService {
         if(jwtTokenUtil.isTokenExpired(token)) {
             throw new ExpiredTokenException("Token is expired");
         }
-        System.out.println("Token: " + token);
+
         String email = jwtTokenUtil.extractEmail(token);
         Optional<User> user = userRepository.findByEmail(email);
 

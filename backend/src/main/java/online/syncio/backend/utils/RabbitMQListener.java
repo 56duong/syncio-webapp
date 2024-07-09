@@ -22,7 +22,7 @@ public class RabbitMQListener {
     private final PostService postService;
 
     @RabbitHandler
-    @RabbitListener(queues = "image_verification_response_queue_spring")
+    @RabbitListener(queues = "image_verification_response_queue_springboot")
     public void receiveMessageFromFastAPI(Map<String, Object> message) {
         Boolean nudity = (Boolean) message.get("nudity");
         String postIdString = (String) message.get("postId");

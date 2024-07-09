@@ -1,28 +1,23 @@
 package online.syncio.backend.post;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
+import online.syncio.backend.post.photo.PhotoDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Data
 public class PostDTO {
 
     private UUID id;
 
+    @Max(2000)
     private String caption;
 
-    private List<String> photos;
-
-    public List<String> getPhotos() {
-        return photos.stream()
-                .map(photo -> "http://localhost:8080/api/v1/posts/images/" + photo)
-                .collect(Collectors.toList());
-    }
+    private List<PhotoDTO> photos;
 
     private LocalDateTime createdDate;
 
@@ -31,4 +26,6 @@ public class PostDTO {
 
     @NotNull
     private UUID createdBy;
+
+    private PostEnum visibility;
 }

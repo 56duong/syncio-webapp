@@ -1,8 +1,8 @@
-version: '3.8'
+version: "3.8"
 
 services:
   app:
-    build: 
+    build:
       context: .
       dockerfile: DockerfileAI
     ports:
@@ -24,7 +24,7 @@ services:
     image: "rabbitmq:3-management"
     ports:
       - "15672:15672" # Management interface
-      - "5672:5672"   # RabbitMQ service
+      - "5672:5672" # RabbitMQ service
     container_name: rabbitmq_container
     networks:
       - app-network
@@ -32,17 +32,14 @@ services:
 networks:
   app-network:
     driver: bridge
+# build docker file
+#docker-compose -f ./deployment.yaml build
 
-    
 # run docker-compose
 #docker-compose -f ./deployment.yaml up -d app
 
 # remove docker-compose
 #docker-compose -f ./deployment.yaml down
-
-# build docker file
-#docker-compose -f ./deployment.yaml build
-
 
 # check error logs
 #docker logs ai_check_image_container
