@@ -58,7 +58,7 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
      */
     @Query(value = "SELECT p.*, ucf.user_id AS ucf_user_id " +
         "FROM Post p " +
-            "LEFT JOIN user_close_friends ucf ON p.user_id = ucf.user_id " +
+            "LEFT JOIN user_close_friend ucf ON p.user_id = ucf.user_id " +
             "WHERE p.flag = true " +
                 "AND p.user_id IN (:users) " +
                 "AND p.created_date >= :daysAgo " +

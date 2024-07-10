@@ -57,7 +57,8 @@
       [rowHover]="true"
       dataKey="id"
       [showCurrentPageReport]="true"
-      styleClass="p-0">
+      styleClass="p-0"
+      class="stickers">
       <ng-template pTemplate="caption">
         <div class="flex align-items-center justify-content-between">
           <!-- Search -->
@@ -75,8 +76,8 @@
         <!-- Header title -->
         <tr>
           <th pSortableColumn="name" style="min-width:10rem">Name<p-sortIcon field="name" /></th>
-          <th>Image</th>
-          <th>Flag</th>
+          <th style="width: 6rem;">Image</th>
+          <th style="width: 5rem;">Flag</th>
           <th>Created By</th>
           <th pSortableColumn="createdDate">Created Date <p-sortIcon field="createdDate" /></th>
         </tr>
@@ -93,13 +94,13 @@
       <ng-template pTemplate="body" let-sticker>
         <tr (dblclick)="onStickerSelect(sticker)">
           <td>{{ sticker.name }}</td>
-          <td>
+          <td style="width: 6rem;">
             <img [src]="sticker.imageUrl" 
               [alt]="sticker.name" 
               width="50" 
               class="shadow-4" />
           </td>
-          <td>
+          <td style="width: 5rem;">
             <i class="pi" [ngClass]="{ 'text-green-500 pi-check-circle': sticker.flag, 'text-red-500 pi-times-circle': !sticker.flag }"></i>
           </td>
           <td>{{ sticker.createdBy | userIdToName | async }}</td>

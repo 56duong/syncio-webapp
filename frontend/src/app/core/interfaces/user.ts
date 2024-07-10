@@ -20,16 +20,6 @@ export interface User {
   role?: RoleEnum;
 
   status?: StatusEnum;
-
-  posts?: Post[];
-
-  followerCount?: number;
-
-  followingCount?: number;
-
-  isFollowing?: boolean;
-  isCloseFriend?: boolean;
-  commonFriendsCount?: number;
 }
 
 export enum StatusEnum {

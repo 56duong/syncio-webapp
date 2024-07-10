@@ -161,4 +161,9 @@ public class PostController {
         return postService.getPostUnFlagged(PageRequest.of(pageNumber, pageSize));
     }
 
+    @GetMapping("/{id}/posts")
+    public ResponseEntity<List<PostDTO>> getPostsByUserId(@PathVariable(name = "id") final UUID id) {
+        return ResponseEntity.ok(postService.getPostsByUserId(id));
+    }
+
 }

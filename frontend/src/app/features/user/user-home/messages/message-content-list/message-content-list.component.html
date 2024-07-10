@@ -5,7 +5,7 @@
     <div class="flex justify-content-between align-items-center p-2">
       <div class="flex justify-content-between align-items-center gap-2">
         <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
-        <h3 *ngIf="currentUser.username">{{messageRoom.name}}</h3>
+        <h3 class="text-base font-semibold">{{messageRoom.name}}</h3>
       </div>
       <span (click)="showDetails()" class="pi pi-info-circle cursor-pointer" style="font-size: 1.5rem"></span>
     </div>
@@ -20,7 +20,7 @@
         <h2 *ngIf="currentUser.username" class="text-3xl mt-1 mb-0 p-2 text-center" style="font-weight: 500;">{{messageRoom.name}}</h2>
         <p-button *ngIf="!messageRoom.group && messageRoom.members" 
           [routerLink]="['/profile', messageRoom.members[0].userId]" 
-          label="View profile" severity="my-custom-primary"
+          label="View profile" severity="my-custom-secondary"
           class="mt-3"></p-button>
       </div>
   

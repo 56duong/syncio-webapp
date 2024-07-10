@@ -1,0 +1,33 @@
+<p-dialog header="Following" 
+  [modal]="true"
+  [dismissableMask]="true" 
+  [(visible)]="isVisibleFollowing" 
+  [style]="{ width: '25rem' }"
+  (onHide)="onHide.emit()">
+  <div class="flex flex-column gap-2 p-2">
+    <!-- userfollow list -->
+    <div *ngFor="let userFollow of userFollowing" class="flex justify-content-between align-items-center">
+      <div class="flex gap-2">
+        <!-- avatar -->
+        <img (click)="navigateToProfile(userFollow.targetId)" 
+          alt=""
+          src="/assets/images/avatar.jpg"
+          style="object-fit: cover; width: 44px; height: 44px; cursor: pointer;" />
+        
+        <div class="flex gap-1 align-items-center">
+          <!-- username -->
+          <span (click)="navigateToProfile(userFollow.targetId)" class="font-semibold cursor-pointer">{{ userFollow.targetUsername }}</span>
+        </div>
+      </div>
+      <!-- Follow/Unfollow button -->
+      <p-button *ngIf="currentUserId != userFollow.targetId && !userFollow.following" (click)="addFollow(userFollow)" label="Follow" severity="my-custom-primary"></p-button>
+      <p-button *ngIf="currentUserId != userFollow.targetId && userFollow.following" (click)="unFollow(userFollow)" label="Unfollow" severity="my-custom-secondary"></p-button>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="!endOfFollowing" class="mx-auto w-fit my-2">
+      <i #loading class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+    </div>
+
+  </div>
+</p-dialog>

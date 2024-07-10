@@ -24,18 +24,14 @@ public class UserProfile {
 
     private String bio;
 
-    private Set<PostDTO> posts;
     @JsonProperty("isCloseFriend")
-
     private boolean isCloseFriend;
-    @JsonProperty("isFollowing")
 
+    @JsonProperty("isFollowing")
     private boolean isFollowing;
 
     private long followerCount;
 
     private long followingCount;
-
-    private List<PostDTO> postDTOList;
 
 }

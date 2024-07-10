@@ -1,162 +1,108 @@
-<main id="my-profile" class="profile-page dark-off">
-  <div class="profile-page-inner">
-    <header>
-      <div class="profile-photo">
-        <div class="profile-photo-inner">
-          <div class="profile-photo-content">
-            <input
-              type="file"
-              #fileInput
-              style="display: none"
-              accept="image/*"
-              (change)="onFileSelected($event)"
-            />
-            <button title="" (click)="fileInput.click()">
-              <img
-                alt=""
-                [src]="userProfile.avtURL"
-                onerror="this.src='/assets/images/avatar.jpg'"
-              />
-            </button>
-          </div>
-        </div>
-      </div>
-      <section>
-        <div class="profile-setting dark-off">
-          <h1>{{ userProfile.username }}</h1>
-          <!-- insert label after username -->
-
-          <a *ngIf="loginUser !== userProfile.id && !isFollowing">
-            <p-button
-              (click)="handleFollowUser(userProfile.id)" 
-              label="Folllow" severity="my-custom-primary">
-            </p-button>
-          </a>
-
-          <!-- <a>
-            <button
-              *ngIf="loginUser !== userProfile.id && isFollowing"
-              type="button"
-              (click)="handleUnFollowUser(userProfile.id)"
-              style="background-color: rgba(0, 0, 0, 0.1)"
-            >
-              Folllowing
-            </button>
-          </a> -->
-
-          <a class="dropdown"
-            *ngIf="loginUser !== userProfile.id && isFollowing">
-            <p-button label="Following" severity="my-custom-primary" data-bs-toggle="dropdown" aria-expanded="false"></p-button>
-            <ul class="dropdown-menu">
-              <li>
-                <a
-                  class="dropdown-item"
-                  (click)="handleUnFollowUser(userProfile.id)"
-                >
-                  <span>Unfollow</span>
-                </a>
-              </li>
-              <li *ngIf="!isCloseFriend">
-                <a
-                  class="dropdown-item"
-                  (click)="handleAddCloseFriends(userProfile.id)"
-                >
-                  <span>Close friends</span>
-                </a>
-              </li>
-
-              <li *ngIf="isCloseFriend">
-                <a
-                  class="dropdown-item"
-                  (click)="handleRemoveCloseFriends(userProfile.id)"
-                >
-                  <span>Remove Close friends</span>
-                </a>
-              </li>
-            </ul>
-          </a>
-
-          <a *ngIf="loginUser !== userProfile.id" href="/messages">
-            <p-button label="Messages" severity="my-custom-primary"></p-button>
-          </a>
-          <a *ngIf="loginUser === userProfile.id" href="/edit-profile">
-            <p-button (click)="handleEditProfile()" label="Edit Profile" severity="my-custom-primary"></p-button>
-          </a>
-
-          <div *ngIf="loginUser === userProfile.id" class="setting-icon">
-            <button type="button">
-              <svg
-                aria-label="Options"
-                fill="#262626"
-                height="24"
-                viewBox="0 0 48 48"
-                width="24"
-              >
-                <path
-                  clipRule="evenodd"
-                  [attr.d]="settingIcon"
-                  fillRule="evenodd"
-                ></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <ul>
-          <li>
-            <span>
-              <span>{{ userProfile.posts?.length }} </span>
-              posts
-            </span>
-          </li>
-          <li>
-            <a href="/sarojsh01/followers/">
-              <span>{{ userProfile.followerCount }} </span>
-              followers
-            </a>
-          </li>
-          <li>
-            <a href="/sarojsh01/followers/">
-              <span>{{ userProfile.followingCount }} </span>
-              following
-            </a>
-          </li>
-        </ul>
-        <div class="intro">
-          <br />
-          <span>{{ userProfile.bio }}</span>
-          <a href="http://{{ userProfile.bio }}">{{ userProfile.bio }}</a>
-        </div>
-      </section>
-    </header>
-    <!-- Show Story  -->
-    <!-- <div class="highlight"></div> -->
-    <div class="menu">
-      <a class="current" href="/{{ userProfile.id }}/"> posts </a>
-      <a href="/{{ userProfile.id }}/saved">saved</a>
-      <a href="/{{ userProfile.id }}/tagged">tagged</a>
+<main>
+  <header class="flex align-items-center gap-6 ml-6">
+    <!-- Avatar -->
+    <div style="width: 150px; height: 150px;">
+      <input
+        #fileInput
+        type="file"
+        style="display: none"
+        accept="image/*"
+        (change)="onFileSelected($event)" />
+      <button (click)="fileInput.click()" class="border-none p-0 outline-none">
+        <img alt=""
+          [src]="userProfile.avtURL"
+          onerror="this.src='/assets/images/avatar.jpg'"
+          class="w-full h-full block"
+          style="object-fit: cover;" />
+      </button>
     </div>
-    <div class="content">
-      <article>
-        <div
-          style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px"
-        >
-        <ng-container *ngFor="let post of userProfile.posts">
-          <div *ngIf="post.photos && post.photos.length > 0" 
-            style="aspect-ratio: 1/1; cursor: pointer;"
-            (click)="handleShowPostDetail(true, post)">
-            <img height="100%"
-              width="100%"
-              [src]="post.photos[0].url"
-              [alt]="post.photos[0].altText"
-              style="object-fit: cover"
-            />
-          </div>
+
+    <!-- Right side -->
+    <section class="flex flex-column gap-3">
+      <div class="flex align-items-center gap-3">
+        <!-- Username -->
+        <h1 class="font-normal text-2xl my-0 mr-3">{{ userProfile.username }}</h1>
+        <!-- Follow button -->
+        <p-button *ngIf="!isOwnerProfile && !userProfile.isFollowing"
+          (click)="toggleFollow(userProfile.id)" 
+          label="Follow" severity="my-custom-primary">
+        </p-button>
+        <!-- Unfollow button -->
+        <p-button *ngIf="!isOwnerProfile && userProfile.isFollowing"
+          (click)="dialogVisible = !dialogVisible" 
+          icon="pi pi-angle-down" iconPos="right"
+          label="Unfollow" severity="my-custom-secondary">
+        </p-button>
+        <!-- Message -->
+        <a *ngIf="!isOwnerProfile" href="/messages">
+          <p-button label="Messages" severity="my-custom-secondary"></p-button>
+        </a>
+        <!-- Edit profile/ Setting -->
+        <ng-container *ngIf="isOwnerProfile">
+          <!-- Edit profile -->
+          <a *ngIf="isOwnerProfile" href="/edit-profile">
+            <p-button (click)="handleEditProfile()" label="Edit Profile" severity="my-custom-secondary"></p-button>
+          </a>
+          <!-- Setting -->
+          <i *ngIf="isOwnerProfile" class="pi pi-cog cursor-pointer" style="font-size: 1.5rem"></i>
         </ng-container>
-        </div>
-      </article>
+      </div>
+
+      <!-- Count section -->
+      <ul class="flex align-items-center gap-4 list-none pl-0">
+        <!-- posts -->
+        <li><span class="font-semibold">{{ !userProfile.posts ? 0 : userProfile.posts.length }}</span> posts</li>
+        <!-- followers -->
+        <li (click)="currentUserId && userProfile.followerCount > 0 ? isVisibleFollowers = true : ''"
+          [ngClass]="currentUserId && userProfile.followerCount > 0 ? 'cursor-pointer' : ''">
+          <span class="font-semibold">{{ userProfile.followerCount }}</span> followers
+        </li>
+        <!-- following -->
+        <li (click)="currentUserId && userProfile.followingCount > 0 ? isVisibleFollowing = true: ''"
+          [ngClass]="currentUserId && userProfile.followingCount > 0 ? 'cursor-pointer' : ''">
+          <span class="font-semibold">{{ userProfile.followingCount }}</span> following
+        </li>
+      </ul>
+
+      <!-- Bio -->
+      <div *ngIf="userProfile.bio" class="intro">
+        <span>{{ userProfile.bio }}</span>
+      </div>
+    </section>
+  </header>
+
+  
+  <div class="mt-6 border-top-1 border-gray-300 flex justify-content-center align-items-center">
+    <div class="py-3 border-top-1 flex justify-content-center align-items-center">
+      <i class="pi pi-table mr-2" style="font-size: 1rem"></i>
+      <span class="text-xs font-semibold">POSTS</span>
     </div>
   </div>
+
+  <!-- Post list -->
+  <div class="content">
+    <article style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px">
+      <ng-container *ngFor="let post of userProfile.posts">
+        <div *ngIf="post.photos && post.photos.length > 0" 
+          style="aspect-ratio: 1/1; cursor: pointer;"
+          (click)="handleShowPostDetail(true, post)">
+          <img height="100%"
+            width="100%"
+            [src]="post.photos[0].url"
+            [alt]="post.photos[0].altText"
+            style="object-fit: cover" />
+        </div>
+      </ng-container>
+    </article>
+  </div>
 </main>
+
+<!-- Unfollow dialog -->
+<app-global-dialog
+  [display]="dialogVisible"
+  [items]="dialogItems"
+  (displayChange)="dialogVisible = false">
+</app-global-dialog>
 
 <!-- Post Detail popup -->
 <app-post-detail
@@ -166,3 +112,22 @@
   (visibleChange)="showPostDetail($event)"
   style="position: relative; z-index: 1102;">
 </app-post-detail>
+
+<!-- Follower dialog -->
+<app-follower-dialog
+  [userProfile]="userProfile"
+  [isVisibleFollowers]="isVisibleFollowers"
+  (onHide)="isVisibleFollowers = false"
+  (onFollow)="sendFollowNotification($event)"
+  (updateFollowerCount)="userProfile.followerCount = $event"
+  (updateFollowingCount)="userProfile.followingCount = $event">
+</app-follower-dialog>
+
+<!-- Following dialog -->
+<app-following-dialog
+  [userProfile]="userProfile"
+  [isVisibleFollowing]="isVisibleFollowing"
+  (onHide)="isVisibleFollowing = false"
+  (onFollow)="sendFollowNotification($event)"
+  (updateFollowingCount)="userProfile.followingCount = $event">
+</app-following-dialog>

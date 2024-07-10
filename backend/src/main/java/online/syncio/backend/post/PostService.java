@@ -20,8 +20,12 @@ import online.syncio.backend.report.Report;
 import online.syncio.backend.report.ReportRepository;
 import online.syncio.backend.setting.SettingService;
 import online.syncio.backend.user.EngagementMetricsDTO;
+import online.syncio.backend.user.RoleEnum;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
+import online.syncio.backend.userclosefriend.UserCloseFriendRepository;
+import online.syncio.backend.userfollow.UserFollow;
+import online.syncio.backend.userfollow.UserFollowRepository;
 import online.syncio.backend.utils.AuthUtils;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -49,6 +53,8 @@ public class PostService {
     private final KeywordService keywordService;
     private final SettingService settingService;
     private final AuthUtils authUtils;
+    private final UserFollowRepository userFollowRepository;
+    private final UserCloseFriendRepository userCloseFriendRepository;
 
 
     //    CRUD
@@ -219,9 +225,9 @@ public class PostService {
 
     public Page<PostDTO> getPostsFollowing(Pageable pageable) {
         User user = getCurrentUser();
-        Set<UUID> following = user.getFollowing().stream()
-            .map(User::getId)
-            .collect(Collectors.toSet());
+        Set<UUID> following = userFollowRepository.findAllByActorId(user.getId()).stream()
+                        .map(userFollow -> userFollow.getTarget().getId())
+                        .collect(Collectors.toSet());
         following.add(user.getId()); // Include the current user
         Page<Post> posts = postRepository.findPostsByUserFollowing(pageable, user.getId(), following, LocalDateTime.now().minusDays(1));
         return convertToPostDTOPage(posts, pageable);
@@ -241,8 +247,8 @@ public class PostService {
         String keywords = Arrays.stream(user.getInterestKeywords().split(", "))
                 .map(String::trim)
                 .collect(Collectors.joining("|"));
-        Set<UUID> following = user.getFollowing().stream()
-                .map(User::getId)
+        Set<UUID> following = userFollowRepository.findAllByActorId(user.getId()).stream()
+                .map(userFollow -> userFollow.getTarget().getId())
                 .collect(Collectors.toSet());
         following.add(user.getId()); // Include the current user
         return postRepository.findPostsByUserInterests(pageable, following, postIds, keywords.isBlank() ? null : keywords);
@@ -293,6 +299,33 @@ public class PostService {
         }
 
         return new HashSet<>(updatedKeywords);
+    }
+
+    public List<PostDTO> getPostsByUserId(UUID userId) {
+        List<Post> posts = postRepository.findByCreatedBy_IdOrderByCreatedDateDesc(userId);
+        return posts.stream()
+                .filter(this::isUserCanSeePost)
+                .map(post -> mapToDTO(post, new PostDTO()))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isUserCanSeePost (final Post post) {
+        UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        User currentUser = new User();
+        if (currentUserId != null) {
+            currentUser = userRepository.findById(currentUserId)
+                    .orElseThrow(() -> new NotFoundException(User.class, "id", currentUserId.toString()));
+        }
+
+        return post.getVisibility() == PostEnum.PUBLIC
+                || (currentUserId != null
+                && (
+                    currentUser.equals(post.getCreatedBy())
+                    || currentUser.getRole().equals(RoleEnum.ADMIN)
+                    || (post.getVisibility() == PostEnum.CLOSE_FRIENDS && (userCloseFriendRepository.existsByTargetIdAndActorId(post.getCreatedBy().getId(), currentUserId)))
+                    || (post.getVisibility() == PostEnum.PRIVATE && post.getCreatedBy().equals(currentUser))
+                )
+        );
     }
 
 

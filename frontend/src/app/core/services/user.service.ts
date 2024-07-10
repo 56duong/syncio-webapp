@@ -9,6 +9,7 @@ import { LoginDTO } from 'src/app/features/authentication/login/login.dto';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
 import { FogotPasswordDTO } from 'src/app/features/authentication/forgotpassword/forgotpassword.dto';
 import { UserStory } from '../interfaces/user-story';
+import { UserProfile } from '../interfaces/user-profile';
 
 @Injectable({
   providedIn: 'root',
@@ -145,6 +146,11 @@ export class UserService {
     return this.http.get<User[]>(url);
   }
 
+  searchUsersByUsername(username?: string): Observable<UserProfile[]> {
+    const url = username ? `${this.apiURL}/search-by-username?username=${username}` : this.apiURL;
+    return this.http.get<UserProfile[]>(url);
+  }
+
   isFollowing(userId: string, targetId: string): Observable<any> {
     const url = `${this.apiURL}/${userId}/is-following/${targetId}`;
     return this.http.get(url);
@@ -174,20 +180,20 @@ export class UserService {
    * @param userId - The userId to search if exists.
    * @returns Object users.
    */
-  getUserProfile(userId: any): Observable<User> {
+  getUserProfile(userId: any): Observable<UserProfile> {
     const url = `${this.apiURL}/profile/${userId}`;
-    return this.http.get<User>(url);
+    return this.http.get<UserProfile>(url);
   }
 
   /**
    * Get User Profile By Id.
    * Use for case when the user already logged in.
-   * @param userId
-   * @returns
+   * @param userId 
+   * @returns 
    */
-  getUserProfile2(userId: any): Observable<User> {
+  getUserProfile2(userId: any): Observable<UserProfile> {
     const url = `${this.apiURL}/profile/${userId}`;
-    return this.http.post<User>(url, {});
+    return this.http.post<UserProfile>(url, {});
   }
 
   updateUser(user: User, userId: any): Observable<User> {
@@ -195,25 +201,6 @@ export class UserService {
     return this.http.put<User>(url, user);
   }
 
-  followUser(targetId: string): Observable<any> {
-    const url = `${this.apiURL}/follow/${targetId}`;
-    return this.http.post(url, {});
-  }
-
-  unfollowUser(targetId: string): Observable<any> {
-    const url = `${this.apiURL}/unfollow/${targetId}`;
-    return this.http.post(url, {});
-  }
-
-  addCloseFriends(friendId: string): Observable<any> {
-    const url = `${this.apiURL}/add-close-friend/${friendId}`;
-    return this.http.post(url, {});
-  }
-
-  removeCloseFriends(friendId: string): Observable<any> {
-    const url = `${this.apiURL}/remove-close-friend/${friendId}`;
-    return this.http.post(url, {});
-  }
   /**
    * Get username by id.
    * @param userId

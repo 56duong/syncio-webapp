@@ -1,12 +1,14 @@
-p-dialog {
-  position: relative;
-}
-
 p-dialog ::ng-deep {
+  .p-dialog {
+    max-height: 400px;
+    min-height: 200px;
+  }
+
   .p-dialog-header {
     padding: 0.75rem 1rem;
     justify-content: center;
     position: relative;
+    border-bottom: 1px solid var(--surface-300);
   }
 
   .p-dialog-title {
@@ -23,7 +25,12 @@ p-dialog ::ng-deep {
 
   .p-dialog-content {
     padding: 0;
-    overflow: unset;
+    overflow-y: scroll;
   }
+}
 
+p-divider ::ng-deep {
+  .p-divider {
+    margin: 0;
+  }
 }
