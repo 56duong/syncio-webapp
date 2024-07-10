@@ -199,4 +199,9 @@ export class PostService {
     return this.http.get<boolean>(url);
   }
 
+  getPostsByUserId(userId: string): Observable<Post[]> {
+    const url = `${this.apiURL}/${userId}/posts`;
+    return this.http.get<Post[]>(url);
+  }
+
 }

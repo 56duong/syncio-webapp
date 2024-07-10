@@ -1,0 +1,44 @@
+<p-dialog header="Followers" 
+  [modal]="true"
+  [dismissableMask]="true" 
+  [(visible)]="isVisibleFollowers" 
+  [style]="{ width: '25rem' }"
+  (onHide)="onHide.emit()">
+  <div class="flex flex-column gap-2 p-2">
+    <!-- userfollow list -->
+    <div *ngFor="let userFollow of userFollowers" class="flex justify-content-between align-items-center">
+      <div class="flex gap-2">
+        <!-- avatar -->
+        <img (click)="navigateToProfile(userFollow.actorId)"
+          alt=""
+          src="/assets/images/avatar.jpg"
+          style="object-fit: cover; width: 44px; height: 44px; cursor: pointer;" />
+        
+        <div class="flex gap-1 align-items-center">
+          <!-- username -->
+          <span (click)="navigateToProfile(userFollow.actorId)" class="font-semibold cursor-pointer">{{ userFollow.actorUsername }}</span>
+          <!-- follow button if not following and is owner profile -->
+          <ng-container *ngIf="isOwnerProfile && !userFollow.following && userFollow.actorId != currentUserId">
+            <span>·</span>
+            <span (click)="addFollow(userFollow)" style="font-size: 0.75rem;" class="text-primary font-semibold cursor-pointer">Follow</span>
+          </ng-container>
+        </div>
+      </div>
+      <!-- Remove follower -->
+      <ng-container *ngIf="isOwnerProfile">
+        <p-button (click)="removeFollower(userFollow.actorId)" label="Remove" severity="my-custom-secondary"></p-button>
+      </ng-container>
+      <!-- Follow/Unfollow button if not following and not owner profile -->
+      <ng-container *ngIf="userFollow.actorId != currentUserId && !isOwnerProfile">
+        <p-button *ngIf="!userFollow.following" (click)="addFollow(userFollow)" label="Follow" severity="my-custom-primary"></p-button>
+        <p-button *ngIf="userFollow.following" (click)="unFollow(userFollow)" label="Unfollow" severity="my-custom-secondary"></p-button>
+      </ng-container>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="!endOfFollowers" class="mx-auto w-fit my-2">
+      <i #loading class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+    </div>
+
+  </div>
+</p-dialog>

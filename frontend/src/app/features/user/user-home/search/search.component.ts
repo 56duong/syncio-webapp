@@ -75,7 +75,7 @@ export class SearchComponent implements OnInit {
   public handleKeyup(e: any) {
     this.dataFetched = false;
     this.searchKey = e.target.value;
-    this.userService.getUsers(e.target.value).subscribe((suggestions) => {
+    this.userService.searchUsersByUsername(e.target.value).subscribe((suggestions) => {
       this.dataFetched = true;
       this.suggestions;
       this.suggestions.splice(0, this.suggestions.length);
