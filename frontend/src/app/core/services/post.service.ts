@@ -204,4 +204,14 @@ export class PostService {
     return this.http.get<Post[]>(url);
   }
 
+  /**
+   * Get posts by user id for not login user
+   * @param userId 
+   * @returns 
+   */
+  getPostsByUserId2(userId: string): Observable<Post[]> {
+    const url = `${this.apiURL}/user/not-login/${userId}`;
+    return this.http.get<Post[]>(url);
+  }
+
 }

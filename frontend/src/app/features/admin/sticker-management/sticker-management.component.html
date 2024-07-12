@@ -11,7 +11,7 @@
       </div>
     </p-toolbar>
   
-    <!-- Table -->
+    <!-- Sticker group table -->
     <p-table [value]="stickerGroups" 
       selectionMode="single" 
       [(selection)]="selectedStickerGroup"
@@ -47,7 +47,7 @@
       </div>
     </p-toolbar>
   
-    <!-- Table -->
+    <!-- Stickers table -->
     <p-table *ngIf="selectedStickerGroup && selectedStickerGroup.stickers"
       #stickerTable
       [value]="selectedStickerGroup.stickers"
@@ -95,7 +95,9 @@
         <tr (dblclick)="onStickerSelect(sticker)">
           <td>{{ sticker.name }}</td>
           <td style="width: 6rem;">
-            <img [src]="sticker.imageUrl" 
+            <img *ngIf="sticker.id" [src]="sticker.imageUrl" 
+              [appFallbackSrc]="sticker.id + '.jpg'"
+              [folderName]="'stickers'"
               [alt]="sticker.name" 
               width="50" 
               class="shadow-4" />

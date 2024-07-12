@@ -129,7 +129,7 @@
             <version>4.21.0</version>
         </dependency>
 
-
+<!--        Image to text-->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
@@ -141,6 +141,12 @@
             <version>4.12.0</version>
         </dependency>
 
+<!--        Firebase-->
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>8.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>

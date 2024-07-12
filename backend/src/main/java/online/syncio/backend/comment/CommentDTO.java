@@ -16,6 +16,8 @@ public class CommentDTO {
 
     private UUID userId;
 
+    private String username;
+
     private LocalDateTime createdDate;
 
     @NotNull

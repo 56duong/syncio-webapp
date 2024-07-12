@@ -33,7 +33,7 @@
           <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
           <!-- username and is admin -->
           <div class="flex flex-column gap-2">
-            <p [title]="member.userId || '' | userIdToName | async" class="my-0 line-clamp" style="word-break: break-word;">{{member.userId || '' | userIdToName | async}}</p>
+            <p [title]="member.username" class="my-0 line-clamp" style="word-break: break-word;">{{member.username}}</p>
             <p *ngIf="member.admin" class="text-gray-500 my-0 text-sm">Admin</p>
           </div>
           <!-- 3 dots -->

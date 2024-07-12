@@ -143,3 +143,29 @@ p-carousel.hide-slide-control ::ng-deep {
     }
   }
 }
+
+p-speedDial ::ng-deep {
+  .p-speeddial-button {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.5rem 0;
+  }
+
+  .p-speeddial-action {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--surface-200);
+    color: #475569;
+  }
+
+  .p-speeddial-direction-up {
+    bottom: -20px;
+    right: 0;
+  }
+
+  .p-speeddial-button.p-button.p-button-icon-only .p-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+

@@ -21,6 +21,7 @@ public class CommentMapper {
         commentDTO.setId(comment.getId());
         commentDTO.setPostId(comment.getPost().getId());
         commentDTO.setUserId(comment.getUser().getId());
+        commentDTO.setUsername(comment.getUser().getUsername());
         commentDTO.setCreatedDate(comment.getCreatedDate());
         commentDTO.setText(comment.getText());
         // if it is a reply, set the parent comment id, if it is a comment, set the replies count.

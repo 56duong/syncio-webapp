@@ -24,6 +24,7 @@ export class LeftMenuComponent {
   hideTabs: string[] = ['messages']; // Tabs to hide
 
   currentUserId: string = '';
+  currentUsername: string = '';
 
   menus: any[] = [
     {
@@ -99,6 +100,7 @@ export class LeftMenuComponent {
 
   ngOnInit() {
     this.currentUserId = this.tokenService.extractUserIdFromToken();
+    this.currentUsername = this.tokenService.extractUsernameFromToken();
 
     // Get the current tab when routing changes
     this.router.events.subscribe(() => {

@@ -6,5 +6,6 @@ export interface MessageRoom {
   createdDate?: string;
   group?: boolean;
   createdBy?: string;
+  
   members?: MessageRoomMember[];
 }
