@@ -19,6 +19,7 @@ public class MessageRoomMemberMapper {
     public MessageRoomMemberDTO mapToDTO(final MessageRoomMember messageRoomMember, final MessageRoomMemberDTO messageRoomMemberDTO) {
         messageRoomMemberDTO.setMessageRoomId(messageRoomMember.getMessageRoom().getId());
         messageRoomMemberDTO.setUserId(messageRoomMember.getUser().getId());
+        messageRoomMemberDTO.setUsername(messageRoomMember.getUser().getUsername());
         messageRoomMemberDTO.setDateJoined(messageRoomMember.getDateJoined());
         messageRoomMemberDTO.setAdmin(messageRoomMember.isAdmin());
         return messageRoomMemberDTO;

@@ -31,10 +31,12 @@ import { ImageModule } from 'primeng/image';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { CardModule } from 'primeng/card';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { SpeedDialModule } from 'primeng/speeddial';
 
 @NgModule({
   declarations: [],
   exports: [
+    SpeedDialModule,
     InputSwitchModule,
     ImageModule,
     OverlayPanelModule,

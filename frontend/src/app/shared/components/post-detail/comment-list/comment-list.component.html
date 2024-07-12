@@ -11,7 +11,7 @@
     <div>
       <!-- username -->
       <h3 *ngIf="post.createdBy" class="inline-flex text-sm my-0 mr-1">
-        {{ post.createdBy | userIdToName | async }}
+        {{ post.username }}
       </h3>
       <!-- comment text -->
       <div class="comment-text inline" [innerHTML]="post.caption"></div>
@@ -34,7 +34,7 @@
     <div>
       <!-- username -->
       <h3 *ngIf="c.userId" class="inline-flex text-sm my-0 mr-1">
-        {{ c.userId | userIdToName | async }}
+        {{ c.username }}
       </h3>
       <!-- comment text -->
       <div class="comment-text inline" [innerHTML]="c.text"></div>
@@ -86,7 +86,7 @@
                 <!-- username -->
                 <h3 *ngIf="reply.userId"
                   class="inline-flex text-sm my-0 mr-1">
-                  {{ reply.userId | userIdToName | async }}
+                  {{ reply.username }}
                 </h3>
                 <!-- comment text -->
                 <div class="comment-text inline"

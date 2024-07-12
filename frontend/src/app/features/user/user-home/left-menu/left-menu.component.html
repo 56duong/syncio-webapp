@@ -97,7 +97,7 @@
               [id]="'ProfileButton'" class="text-left" styleClass="shadow-none" [text]="true" [plain]="true"
               routerLinkActive="menu-active"
               [routerLink]="['profile', currentUserId]"
-              [label]="(currentUserId | userIdToName | async) ?? ''">
+              [label]="currentUsername">
               <img src="/assets/images/avatar.jpg" style="width: 28px; margin-right: 0.5rem; border-radius: 50%;"/>
             </p-button>
           </div>

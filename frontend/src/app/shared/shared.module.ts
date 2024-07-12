@@ -12,6 +12,7 @@ import { ResizableDraggableComponent } from './components/resizable-draggable/re
 import { StickerPickerComponent } from './components/sticker-picker/sticker-picker.component';
 import { GlobalDialogComponent } from './components/global-dialog/global-dialog.component';
 import { CommentListComponent } from './components/post-detail/comment-list/comment-list.component';
+import { VoiceRecorderDialogComponent } from './components/voice-recorder-dialog/voice-recorder-dialog.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { CommentListComponent } from './components/post-detail/comment-list/comm
     ResizableDraggableComponent,
     StickerPickerComponent,
     GlobalDialogComponent,
-    CommentListComponent
+    CommentListComponent,
+    VoiceRecorderDialogComponent
   ],
   imports: [
     PickerComponent,
@@ -37,7 +39,8 @@ import { CommentListComponent } from './components/post-detail/comment-list/comm
     ResizableDraggableComponent,
     StickerPickerComponent,
     PostDetailComponent,
-    GlobalDialogComponent
+    GlobalDialogComponent,
+    VoiceRecorderDialogComponent
   ],
 })
 export class SharedModule {}

@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActionEnum } from 'src/app/core/interfaces/notification';
 import { Post } from 'src/app/core/interfaces/post';
@@ -90,7 +90,7 @@ export class ProfileComponent implements OnInit {
       // if user is logged in, use getUserProfile2 to get with token
       this.userService.getUserProfile2(this.profileId).subscribe({
         next: (response) => {
-          this.userProfile = {...response};
+          this.userProfile = {...this.userProfile, ...response}
           this.dialogItems[0].label = response.isCloseFriend ? 'Remove from Close Friends' : 'Add to Close Friends';
         },
         error: (error) => {
@@ -101,7 +101,7 @@ export class ProfileComponent implements OnInit {
     else {
       // if user is not logged in, use getUserProfile to get without token
       this.userService.getUserProfile(this.profileId).subscribe((response) => {
-        this.userProfile = {...response};
+        this.userProfile = {...this.userProfile, ...response}
         this.dialogItems[0].label = response.isCloseFriend ? 'Remove from Close Friends' : 'Add to Close Friends';
       });
     }
@@ -109,14 +109,26 @@ export class ProfileComponent implements OnInit {
 
 
   getPosts() {
-    this.postService.getPostsByUserId(this.profileId).subscribe({
-      next: (response) => {
-        this.userProfile.posts = response;
-      },
-      error: (error) => {
-        console.error('Error getting user posts', error);
-      }
-    });
+    if(this.currentUserId) {
+      this.postService.getPostsByUserId(this.profileId).subscribe({
+        next: (response) => {
+          this.userProfile.posts = response;
+        },
+        error: (error) => {
+          console.error('Error getting user posts', error);
+        }
+      });
+    }
+    else {
+      this.postService.getPostsByUserId2(this.profileId).subscribe({
+        next: (response) => {
+          this.userProfile.posts = response;
+        },
+        error: (error) => {
+          console.error('Error getting user posts', error);
+        }
+      });
+    }
   }
   
 
