@@ -17,6 +17,8 @@ export class MessageItemComponent {
   @Input() messageContent: any;
   @Input() currentUser: any;
   @Input() messageRoom: any;
+  /** If the message is the last seen message */
+  @Input() isLastSeen: boolean | "" | undefined = false;
 
   MessageContentTypeEnum = MessageContentTypeEnum;
   membersAddedAsString: string = ''; // String of members added to the group

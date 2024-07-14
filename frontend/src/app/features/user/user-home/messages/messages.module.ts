@@ -13,7 +13,6 @@ import { MessageItemContentComponent } from './message-item-content/message-item
 import { SelectUserDialogComponent } from './select-user-dialog/select-user-dialog.component';
 import { MessageRoomDetailComponent } from './message-room-detail/message-room-detail.component';
 
-
 @NgModule({
   declarations: [
     MessagesComponent,

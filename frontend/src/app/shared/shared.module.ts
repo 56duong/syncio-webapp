@@ -13,6 +13,8 @@ import { StickerPickerComponent } from './components/sticker-picker/sticker-pick
 import { GlobalDialogComponent } from './components/global-dialog/global-dialog.component';
 import { CommentListComponent } from './components/post-detail/comment-list/comment-list.component';
 import { VoiceRecorderDialogComponent } from './components/voice-recorder-dialog/voice-recorder-dialog.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
+import { NotAuthorizedComponent } from './components/not-authorized/not-authorized.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { VoiceRecorderDialogComponent } from './components/voice-recorder-dialog
     StickerPickerComponent,
     GlobalDialogComponent,
     CommentListComponent,
-    VoiceRecorderDialogComponent
+    VoiceRecorderDialogComponent,
+    NotFoundComponent,
+    NotAuthorizedComponent
   ],
   imports: [
     PickerComponent,

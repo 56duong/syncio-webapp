@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserService } from './user.service';
 import { Observable, of } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,7 @@ export class TokenService {
 
     constructor(
         private userService: UserService,
+        private router: Router
     ){ }
     
     //getter/setter
@@ -70,6 +72,20 @@ export class TokenService {
     }
 
     /**
+     * Extract the user role from the token. Return an empty string if the token is expired or not found.
+     * @returns the user role, or null if the token is expired or not found.
+     */
+    extractUserRoleFromToken(): any {
+        const token = this.getToken();
+        if (!token || this.jwtHelperService.isTokenExpired(token)) {
+            return null;
+        }
+
+        let userObject = this.jwtHelperService.decodeToken(token);
+        return 'role' in userObject ? userObject['role'] : '';
+    }
+
+    /**
      * Check if the token is valid.
      * @returns true if the token is valid, false otherwise.
      */
@@ -103,6 +119,24 @@ export class TokenService {
         else {
             return of(null);
         }
+    }
+
+    /**
+     * Check if the user has the required role. Use in the canActivate method of the route guard.
+     * @param requiredRole 
+     * @returns 
+     */
+    canActivate(requiredRoles: string[]): boolean {
+        let userRole = this.extractUserRoleFromToken();
+        if(!userRole) {
+            this.router.navigate(['/login']);
+            return false;
+        }
+        if (!requiredRoles.includes(userRole)) {
+            this.router.navigate(['/not-authorized']);
+            return false;
+        }
+        return true;
     }
 
 }

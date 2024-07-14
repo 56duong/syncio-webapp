@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/api/v1/stickers")
+@RequestMapping(value = "${api.prefix}/stickers")
 @AllArgsConstructor
 public class StickerController {
 

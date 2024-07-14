@@ -31,6 +31,7 @@
           [messageContent]="mc" 
           [currentUser]="currentUser" 
           [messageRoom]="messageRoom"
+          [isLastSeen]="mc.id === lastSeenMessageId"
           class="flex flex-column">
         </app-message-item>
       </div>
@@ -116,7 +117,7 @@
     <app-message-room-detail
       [messageRoom]="messageRoom"
       [currentUser]="currentUser"
-      (updateMessageRoomNameEvent)="addMessageContentNotification(MessageContentTypeEnum.NOTIFICATION_CHANGE_NAME, this.messageRoom.name || '')"
+      (updateMessageRoomNameEvent)="updateMessageRoomName(messageRoom); addMessageContentNotification(MessageContentTypeEnum.NOTIFICATION_CHANGE_NAME, this.messageRoom.name || '')"
       (addPeopleEvent)="addMessageContentNotification(MessageContentTypeEnum.NOTIFICATION_ADD_MEMBER, $event)"
       (removeMemberEvent)="addMessageContentNotification(MessageContentTypeEnum.NOTIFICATION_REMOVE_MEMBER, $event)"
       (leaveChatEvent)="addMessageContentNotification(MessageContentTypeEnum.NOTIFICATION_LEAVE_ROOM, $event)"
@@ -130,6 +131,11 @@
 
 <!-- Context menu show on right click on message content -->
 <p-contextMenu #contextMenu [model]="contextMenuItems" />
+
+<!-- scroll to unread message -->
+<div *ngIf="!alreadyScrolled && messageRoom.unSeenCount && messageRoom.unSeenCount > 0" (click)="scrollToElement('unSeenMessage')" class="unseen">
+  Unseen message <i class="pi pi-arrow-up"></i>
+</div>
 
 
 

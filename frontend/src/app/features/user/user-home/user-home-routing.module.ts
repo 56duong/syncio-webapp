@@ -7,6 +7,8 @@ import { CreatePostComponent } from './create-post/create-post.component';
 import { LabelsShopComponent } from './labels-shop/labels-shop.component';
 import { PaymentInfoComponent } from './payment-info/payment-info.component';
 import { PostDetailComponent } from 'src/app/shared/components/post-detail/post-detail.component';
+import { authGuard } from 'src/app/core/guards/auth.guard';
+import { RoleEnum } from 'src/app/core/interfaces/user';
 
 const routes: Routes = [
   {
@@ -23,10 +25,14 @@ const routes: Routes = [
     component: MessagesComponent,
     loadChildren: () =>
       import('./messages/messages.module').then((m) => m.MessagesModule),
+    canActivate: [authGuard],
+    data: { requiredRoles: [RoleEnum.USER] }
   },
   {
     path: 'create-post',
     component: CreatePostComponent,
+    canActivate: [authGuard],
+    data: { requiredRoles: [RoleEnum.USER] }
   },
   {
     path: 'post/:id',
@@ -38,7 +44,9 @@ const routes: Routes = [
   },
   {
     path: 'payment-info',
-    component: PaymentInfoComponent
+    component: PaymentInfoComponent,
+    canActivate: [authGuard],
+    data: { requiredRoles: [RoleEnum.USER] }
   }
 ];
 

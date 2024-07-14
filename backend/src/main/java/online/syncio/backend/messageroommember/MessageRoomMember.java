@@ -33,4 +33,6 @@ public class MessageRoomMember {
     @Column(nullable = false)
     private boolean isAdmin;
 
+    private LocalDateTime lastSeen;
+
 }

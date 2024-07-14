@@ -17,7 +17,7 @@ export class MessageRoomDetailComponent {
   @Input() messageRoom: MessageRoom = {}; // current message room
   @Input() currentUser!: User; // Current user logged in.
 
-  @Output() updateMessageRoomNameEvent = new EventEmitter<void>();
+  @Output() updateMessageRoomNameEvent = new EventEmitter<string>();
   @Output() addPeopleEvent = new EventEmitter<string>();
   @Output() removeMemberEvent = new EventEmitter<string>();
   @Output() leaveChatEvent = new EventEmitter<string>();
@@ -104,7 +104,7 @@ export class MessageRoomDetailComponent {
       next: (messageRoomName) => {
         this.messageRoom.name = messageRoomName['name'];
         this.isVisibleChangeGroupName = false;
-        this.updateMessageRoomNameEvent.emit();
+        this.updateMessageRoomNameEvent.emit(this.messageRoom.name);
       },
       error: (error) => {
         console.log(error);

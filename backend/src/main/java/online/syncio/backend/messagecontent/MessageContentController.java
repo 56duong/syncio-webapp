@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/api/v1/messagecontents")
+@RequestMapping(value = "${api.prefix}/messagecontents")
 @AllArgsConstructor
 public class MessageContentController {
 

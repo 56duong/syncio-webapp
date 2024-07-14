@@ -2,6 +2,9 @@ package online.syncio.backend.messageroom;
 
 import lombok.AllArgsConstructor;
 import online.syncio.backend.exception.NotFoundException;
+import online.syncio.backend.messagecontent.MessageContentDTO;
+import online.syncio.backend.messagecontent.MessageContentMapper;
+import online.syncio.backend.messagecontent.MessageContentRepository;
 import online.syncio.backend.messageroommember.MessageRoomMember;
 import online.syncio.backend.messageroommember.MessageRoomMemberRepository;
 import online.syncio.backend.user.User;
@@ -18,19 +21,22 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class MessageRoomMapper {
 
-    public final MessageRoomMemberRepository messageRoomMemberRepository;
-    public final AuthUtils authUtils;
+    private final MessageRoomMemberRepository messageRoomMemberRepository;
+    private final AuthUtils authUtils;
     private final UserRepository userRepository;
+    private final MessageContentRepository messageContentRepository;
+    private final MessageContentMapper messageContentMapper;
 
 
     public MessageRoomDTO mapToDTO(final MessageRoom messageRoom, final MessageRoomDTO messageRoomDTO) {
         messageRoomDTO.setId(messageRoom.getId());
 
-        List<MessageRoomMember> messageRoomMembers = new ArrayList<>();
+        // set name of the room
         if(messageRoom.getName() != null) {
             messageRoomDTO.setName(messageRoom.getName());
         }
         else {
+            List<MessageRoomMember> messageRoomMembers = new ArrayList<>();
             // get all members of the room and set the name
             // if the room is a group, set the name to the list of members
             // else set the name to the other member
@@ -60,6 +66,15 @@ public class MessageRoomMapper {
         messageRoomDTO.setCreatedDate(messageRoom.getCreatedDate());
         messageRoomDTO.setGroup(messageRoom.isGroup());
         messageRoomDTO.setCreatedBy(messageRoom.getCreatedBy().getId());
+        // set last seen, unseen count, last message
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        final MessageRoomMember messageRoomMember = messageRoomMemberRepository.findByMessageRoomIdAndUserId(messageRoom.getId(), currentUserId)
+                .orElseThrow(() -> new NotFoundException(MessageRoomMember.class, "messageRoomId", messageRoom.getId().toString(), "userId", currentUserId.toString()));
+        messageRoomDTO.setLastSeen(messageRoomMember.getLastSeen());
+        messageRoomDTO.setUnSeenCount(messageContentRepository.countByMessageRoomIdAndDateSentAfterAndUserIdNot(messageRoomMember.getMessageRoom().getId(), messageRoomMember.getLastSeen(), currentUserId));
+        messageRoomDTO.setLastMessage(messageContentRepository.findFirstByMessageRoomIdOrderByDateSentDesc(messageRoom.getId())
+                .map(messageContent -> messageContentMapper.mapToDTO(messageContent, new MessageContentDTO()))
+                .orElse(null));
         return messageRoomDTO;
     }
 
