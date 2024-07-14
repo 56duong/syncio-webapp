@@ -79,3 +79,9 @@ p-dialog ::ng-deep {
     }
   }
 }
+
+p-divider ::ng-deep {
+  .p-divider {
+    margin: 0;
+  }
+}

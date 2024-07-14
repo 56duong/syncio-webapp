@@ -262,8 +262,11 @@ export class CommentListComponent {
     // Check if the post ID is available
     if (!this.post.id) return;
   
-    // Fetch the replies if they have not been fetched yet
-    if(!comment.replies) {
+    if(comment.replies) {
+      comment.isShowReplies = true;
+    }
+    else {
+      // Fetch the replies if they have not been fetched yet
       try {
         const replies = await firstValueFrom(this.commentService.getReplies(this.post.id, comment.id || ''));
         comment.replies = replies;

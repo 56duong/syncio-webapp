@@ -37,7 +37,7 @@ public interface MessageRoomRepository extends JpaRepository<MessageRoom, UUID> 
      * @param userId User id to search
      * @return List of MessageRoom
      */
-    @Query("SELECT mr FROM MessageRoom mr JOIN mr.messageRoomMembers mrm JOIN mr.messageContents mc WHERE mrm.user.id = :userId GROUP BY mr HAVING COUNT(mc) > 0")
+    @Query("SELECT mr FROM MessageRoom mr JOIN mr.messageRoomMembers mrm JOIN mr.messageContents mc WHERE mrm.user.id = :userId GROUP BY mr HAVING COUNT(mc) > 0 ORDER BY MAX(mc.dateSent) DESC")
     List<MessageRoom> findAllRoomsWithContentAndUser(@Param("userId") UUID userId);
 
     @Modifying

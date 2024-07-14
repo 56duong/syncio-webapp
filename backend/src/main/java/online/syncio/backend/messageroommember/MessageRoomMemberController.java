@@ -6,11 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/api/v1/messageroommembers")
+@RequestMapping(value = "${api.prefix}/messageroommembers")
 @AllArgsConstructor
 public class MessageRoomMemberController {
 
@@ -70,6 +71,12 @@ public class MessageRoomMemberController {
                                             @PathVariable(name = "userId") final UUID userId) {
         messageRoomMemberService.updateAdmin(messageRoomId, userId, false);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @PutMapping("/user/{messageRoomId}")
+    public ResponseEntity<LocalDateTime> updateLastSeen(@PathVariable(name = "messageRoomId") final UUID messageRoomId) {
+        return ResponseEntity.ok(messageRoomMemberService.updateLastSeen(messageRoomId));
     }
 
 }

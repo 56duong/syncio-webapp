@@ -24,19 +24,48 @@
           class="message-item py-3 px-2">
           <div class="flex align-items-center gap-2">
             <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
-            <div>
+            <div class="w-full" style="max-width: calc(100% - 48px - 0.5rem)">
               <p *ngIf="currentUser.username"
                 title="{{messageroom.name}}"
                 class="my-1 line-clamp"
                 style="word-break: break-word;">
                 {{messageroom.name}}
               </p>
-              <div class="flex align-items-center gap-1 text-gray-500">
-                <!-- <small>{{messageroom.lastMessage}}</small>
+              <!-- last message -->
+              <div *ngIf="messageroom.lastMessage" class="preview-message-content flex 1 flex align-items-center gap-1 text-gray-500">
+                <!-- if type is text, show message -->
+                <small *ngIf="!messageroom.lastMessage?.type?.startsWith('NOTIFICATION') && messageroom.lastMessage?.type == MessageContentTypeEnum.TEXT" 
+                  style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
+                  class="line-clamp"
+                  [innerHTML]="messageroom.lastMessage?.message">
+                </small>
+                <!-- if type is not text, show user sent a sticker or photo -->
+                <small *ngIf="!messageroom.lastMessage?.type?.startsWith('NOTIFICATION') && messageroom.lastMessage?.type != MessageContentTypeEnum.TEXT" 
+                  style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+                  <ng-container>
+                    {{messageroom.lastMessage?.user?.username == this.currentUser.username ? 'You' : messageroom.lastMessage?.user?.username}}
+                    sent a 
+                    {{messageroom.lastMessage?.type == MessageContentTypeEnum.STICKER ? 'sticker' : 'photo'}}.
+                  </ng-container>
+                </small>
+                <!-- if type is notification, show notification -->
+                <ng-container *ngIf="messageroom.lastMessage?.type?.startsWith('NOTIFICATION')">
+                  <app-message-item class="notification flex-1" style="width: 10px;" 
+                    [messageContent]="messageroom.lastMessage"
+                    [currentUser]="currentUser"
+                    [messageRoom]="messageroom"
+                    [isLastSeen]="false">
+                  </app-message-item>
+                </ng-container>
                 <small>·</small>
-                <small>{{messageroom.time}}</small> -->
+                <!-- date sent -->
+                <small>{{messageroom.lastMessage?.dateSent | dateAgoPipe: 'd'}}</small>
               </div>
             </div>
+            <!-- unSeenCount -->
+            <span *ngIf="messageroom.unSeenCount && messageroom.unSeenCount > 0" style="min-width: 1.5rem; min-height: 1.5rem; font-size: 0.75rem;" class="ml-auto bg-red-500 border-circle text-white flex justify-content-center align-items-center">
+              {{messageroom.unSeenCount}}
+            </span>
           </div>
         </div>  
       </div>
@@ -51,7 +80,8 @@
     <app-message-content-list *ngIf="selectedMessageRoom" 
       [messageRoom]="selectedMessageRoom"
       [currentUser]="currentUser"
-      (sendMessageEvent)="sendMessageEvent()">
+      (sendFirstMessageEvent)="sendFirstMessageEvent()"
+      (updateMessageRoomNameEvent)="updateMessageRoomName($event)">
     </app-message-content-list>
   </div>
 </div>
@@ -60,7 +90,6 @@
 
 <!-- New message dialog -->
 <app-select-user-dialog *ngIf="currentUser && currentUser.id"
-  [expectedUsers]="[currentUser.id]"
   [isDialogVisible]="isDialogVisible"
   dialogTitle="New message"
   dialogDescription="To..."

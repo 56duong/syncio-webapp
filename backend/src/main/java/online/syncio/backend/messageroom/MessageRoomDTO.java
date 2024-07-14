@@ -1,6 +1,7 @@
 package online.syncio.backend.messageroom;
 
 import lombok.Data;
+import online.syncio.backend.messagecontent.MessageContentDTO;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,5 +18,11 @@ public class MessageRoomDTO {
     private boolean isGroup;
 
     private UUID createdBy;
+
+    private LocalDateTime lastSeen;
+
+    private Long unSeenCount;
+
+    private MessageContentDTO lastMessage;
 
 }

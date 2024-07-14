@@ -18,3 +18,19 @@
   margin: 0;
 }
 
+.preview-message-content ::ng-deep {
+  p {
+    margin: 0;
+    display: inline;
+  }
+
+  .notification small {
+    margin: 0;
+    font-weight: normal !important;
+    text-align: left !important;
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+    overflow: hidden;
+  }
+}
+

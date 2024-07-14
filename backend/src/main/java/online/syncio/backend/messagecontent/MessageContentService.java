@@ -5,8 +5,11 @@ import lombok.RequiredArgsConstructor;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.firebase.FirebaseStorageService;
 import online.syncio.backend.messageroom.MessageRoom;
+import online.syncio.backend.messageroommember.MessageRoomMember;
+import online.syncio.backend.messageroommember.MessageRoomMemberRepository;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
+import online.syncio.backend.utils.AuthUtils;
 import online.syncio.backend.utils.FIleUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -25,6 +28,8 @@ public class MessageContentService {
     private final MessageContentMapper messageContentMapper;
     private final UserRepository userRepository;
     private final FirebaseStorageService firebaseStorageService;
+    private final AuthUtils authUtils;
+    private final MessageRoomMemberRepository messageRoomMemberRepository;
 
     @Value("${firebase.storage.type}")
     private String storageType;
@@ -39,6 +44,9 @@ public class MessageContentService {
 
 
     public List<MessageContentDTO> findByMessageRoomId(final UUID messageRoomId) {
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        final MessageRoomMember messageRoomMember = messageRoomMemberRepository.findByMessageRoomIdAndUserId(messageRoomId, currentUserId)
+                .orElseThrow(() -> new NotFoundException(MessageRoomMember.class, "messageRoomId", messageRoomId.toString(), "userId", currentUserId.toString()));
         return messageContentRepository.findByMessageRoomIdOrderByDateSentAsc(messageRoomId)
                 .stream()
                 .map(messageContent -> messageContentMapper.mapToDTO(messageContent, new MessageContentDTO()))

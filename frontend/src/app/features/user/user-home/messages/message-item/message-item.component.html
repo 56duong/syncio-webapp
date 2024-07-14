@@ -1,3 +1,9 @@
+<!-- Unseen message section -->
+<div *ngIf="isLastSeen && messageRoom.unSeenCount > 0" class="text-center text-gray-500 my-3" id="unSeenMessage">
+  __________ Unseen messages ({{messageRoom.unSeenCount}}) __________
+</div>
+
+<!-- Message item not notification -->
 <div *ngIf="!messageContent.type?.startsWith('NOTIFICATION')" 
   [title]="messageContent.dateSent | dateAgoPipe: 'h'" 
   [ngClass]="{'my-message': isCurrentUser()}"
