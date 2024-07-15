@@ -1,0 +1,26 @@
+
+FROM python:3.12.4-slim
+
+# Đặt thư mục làm việc
+WORKDIR /app 
+
+# Sao chép các tập tin cần thiết vào container
+COPY ./ai-check-image /app/ai-check-image
+
+WORKDIR /app/ai-check-image
+
+RUN pip install --upgrade pip && \
+    pip install nudenet aio_pika fastapi uvicorn requests Pillow aiohttp
+
+EXPOSE 8111
+# Define environment variable
+ENV HOST=0.0.0.0
+ENV PORT=8111
+ENV DOMAIN=example.com
+ENV RABBITMQ_URL=amqp://guest:guest@localhost
+ENV EXCHANGE=imageVerificationExchange
+ENV QUEUE_IMAGE_VERIFY=imageVerificationQueue
+
+# Cấu hình để container chạy main.py
+CMD ["python", "/app/ai-check-image/main.py"]
+

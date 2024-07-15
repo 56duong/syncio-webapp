@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/api/v1/notifications")
+@RequestMapping(value = "${api.prefix}/notifications")
 @AllArgsConstructor
 public class NotificationController {
 

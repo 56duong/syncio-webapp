@@ -17,7 +17,9 @@ public class CreatePostDTO {
     private String caption;
 
     private List<MultipartFile> photos;
-    private List<String> photoFilenames;
+
+    private MultipartFile audio;
+
     private LocalDateTime createdDate;
 
     private PostEnum visibility;

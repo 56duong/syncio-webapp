@@ -10,6 +10,7 @@ import {
   Output,
 } from '@angular/core';
 import { Search } from 'src/app/core/interfaces/search';
+import { UserResponse } from 'src/app/features/authentication/login/user.response';
 
 @Component({
   selector: 'app-search',
@@ -18,12 +19,14 @@ import { Search } from 'src/app/core/interfaces/search';
 })
 export class SearchComponent implements OnInit {
   @Input() showSearch: boolean = true;
-  @Output() onClose = new EventEmitter<void>(); 
+  @Output() onClose = new EventEmitter<void>();
   public clickInput: boolean = false;
   public dataFetched: boolean = false;
   public searchKey: string = '';
   public imgUrl: string = '/assets/img/userdata/';
   public suggestions: Search[] = [];
+  userResponse?: UserResponse | null =
+    this.userService.getUserResponseFromLocalStorage();
 
   constructor(
     private userService: UserService,
@@ -35,7 +38,30 @@ export class SearchComponent implements OnInit {
     this.onClose.emit();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getRecommendations(this.userResponse?.username);
+  }
+
+  private getRecommendations(username: string | undefined) {
+    if (!username) {
+      console.error('Username is undefined');
+      return;
+    }
+    this.userService.getUsersRecommend(username).subscribe({
+      next: (response) => {
+        this.suggestions = response.map((item) => ({
+          id: item.id,
+          username: item.username,
+          avatar: item.avtURL,
+        }));
+        this.dataFetched = true; // Update the state to show that data has been fetched
+      },
+      error: (error) => {
+        console.error('Error fetching recommendations:', error);
+        this.dataFetched = false; // Update the state to indicate that fetching data failed
+      },
+    });
+  }
 
   public onClickInput() {
     const searchInput = document.getElementById('nav-search-input');
@@ -49,11 +75,10 @@ export class SearchComponent implements OnInit {
   public handleKeyup(e: any) {
     this.dataFetched = false;
     this.searchKey = e.target.value;
-    this.userService.getUsers(e.target.value).subscribe((suggestions) => {
+    this.userService.searchUsersByUsername(e.target.value).subscribe((suggestions) => {
       this.dataFetched = true;
       this.suggestions;
       this.suggestions.splice(0, this.suggestions.length);
-      console.log(suggestions);
       for (let i = 0; i < suggestions.length; i++) {
         this.suggestions.push({
           id: suggestions[i].id,

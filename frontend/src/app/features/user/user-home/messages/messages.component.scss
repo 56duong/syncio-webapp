@@ -12,13 +12,25 @@
 .message-container {
   min-height: calc(100vh - 1rem);
   max-height: calc(100vh - 1rem);
+}
 
-  ::ng-deep .p-divider {
+::ng-deep .p-divider {
+  margin: 0;
+}
+
+.preview-message-content ::ng-deep {
+  p {
     margin: 0;
+    display: inline;
+  }
+
+  .notification small {
+    margin: 0;
+    font-weight: normal !important;
+    text-align: left !important;
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+    overflow: hidden;
   }
 }
 
-p-dialog {
-  position: relative;
-  z-index: 1000;
-}

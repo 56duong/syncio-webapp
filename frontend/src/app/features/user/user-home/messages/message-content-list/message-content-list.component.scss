@@ -1,0 +1,59 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+// Message input
+.message-input ::ng-deep {
+  border: 1px solid var(--gray-300);
+  border-radius: 22px;
+
+  p-editor {
+    flex: 1;
+  }
+
+  .ql-editor {
+    max-height: 40px;
+    padding: 5px 15px;
+  }
+
+  .ql-toolbar.ql-snow {
+    padding: 0px;
+    border: none;
+  }
+
+  .ql-container.ql-snow {
+      border: none;
+  }
+
+  .p-button {
+    padding-right: 0px;
+  }
+
+  .p-button:focus {
+    box-shadow: none;
+  }
+}
+
+p-fileUpload ::ng-deep .p-button {
+  color: black;
+  background-color: transparent;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  width: auto;
+  span {
+    font-size: 1.25rem;
+  }
+}
+
+.unseen {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  background: var(--surface-200);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}

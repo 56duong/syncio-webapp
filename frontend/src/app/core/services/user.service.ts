@@ -9,6 +9,7 @@ import { LoginDTO } from 'src/app/features/authentication/login/login.dto';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
 import { FogotPasswordDTO } from 'src/app/features/authentication/forgotpassword/forgotpassword.dto';
 import { UserStory } from '../interfaces/user-story';
+import { UserProfile } from '../interfaces/user-profile';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,7 @@ export class UserService {
     environment.apiUrl + 'api/v1/users/forgot_password';
   private apiLogin = environment.apiUrl + 'api/v1/users/login';
   private apiUserDetail = environment.apiUrl + 'api/v1/users/details';
+  private apiPython = environment.apiPythonUrl;
   private apiConfig = {
     headers: this.httpUtilService.createHeaders(),
   };
@@ -45,7 +47,6 @@ export class UserService {
   // Create user using User Controller
   createUserInAdmin(user: User): Observable<any> {
     return this.http.post(this.apiURL, user, this.apiConfig);
-
   }
 
   // Update user using User Controller
@@ -137,6 +138,19 @@ export class UserService {
     const url = username ? `${this.apiURL}?username=${username}` : this.apiURL;
     return this.http.get<User[]>(url);
   }
+
+  getUsersRecommend(username?: string): Observable<User[]> {
+    const url = username
+      ? `${this.apiPython}recommend?username=${username}`
+      : this.apiURL;
+    return this.http.get<User[]>(url);
+  }
+
+  searchUsersByUsername(username?: string): Observable<UserProfile[]> {
+    const url = username ? `${this.apiURL}/search-by-username?username=${username}` : this.apiURL;
+    return this.http.get<UserProfile[]>(url);
+  }
+
   isFollowing(userId: string, targetId: string): Observable<any> {
     const url = `${this.apiURL}/${userId}/is-following/${targetId}`;
     return this.http.get(url);
@@ -166,9 +180,9 @@ export class UserService {
    * @param userId - The userId to search if exists.
    * @returns Object users.
    */
-  getUserProfile(userId: any): Observable<User> {
+  getUserProfile(userId: any): Observable<UserProfile> {
     const url = `${this.apiURL}/profile/${userId}`;
-    return this.http.get<User>(url);
+    return this.http.get<UserProfile>(url);
   }
 
   /**
@@ -177,9 +191,9 @@ export class UserService {
    * @param userId 
    * @returns 
    */
-  getUserProfile2(userId: any): Observable<User> {
+  getUserProfile2(userId: any): Observable<UserProfile> {
     const url = `${this.apiURL}/profile/${userId}`;
-    return this.http.post<User>(url, {});
+    return this.http.post<UserProfile>(url, {});
   }
 
   updateUser(user: User, userId: any): Observable<User> {
@@ -187,25 +201,6 @@ export class UserService {
     return this.http.put<User>(url, user);
   }
 
-  followUser(targetId: string): Observable<any> {
-    const url = `${this.apiURL}/follow/${targetId}`;
-    return this.http.post(url, {});
-  }
-
-  unfollowUser(targetId: string): Observable<any> {
-    const url = `${this.apiURL}/unfollow/${targetId}`;
-    return this.http.post(url, {});
-  }
-
-  addCloseFriends(friendId: string): Observable<any> {
-    const url = `${this.apiURL}/add-close-friend/${friendId}`;
-    return this.http.post(url, {});
-  }
-
-  removeCloseFriends(friendId: string): Observable<any> {
-    const url = `${this.apiURL}/remove-close-friend/${friendId}`;
-    return this.http.post(url, {});
-  }
   /**
    * Get username by id.
    * @param userId
@@ -245,9 +240,9 @@ export class UserService {
     return this.http.get<UserStory[]>(url);
   }
 
-  changeAvatar(formData: FormData): Observable<string> {
-    const url = `${this.apiURL}/avatar`;
-    return this.http.post<string>(url, formData);
+  changeAvatar(formData: FormData): Observable<void> {
+    const url = `${this.apiURL}/update-avatar`;
+    return this.http.post<void>(url, formData);
   }
 
   getNewUsersLast30Days(): Observable<any> {
@@ -264,7 +259,7 @@ export class UserService {
     const url = `${this.apiURL}/last100days`;
     return this.http.get<any>(url);
   }
-  
+
   getNewUsersLastNDays(days: number): Observable<any> {
     return this.http.get(`${this.apiURL}/last/${days}`);
   }
@@ -275,9 +270,6 @@ export class UserService {
   }
 
   getUserCount(): Observable<number> {
-    return this.getUsers().pipe(
-      map(users => users.length)
-    );
+    return this.getUsers().pipe(map((users) => users.length));
   }
-  
 }

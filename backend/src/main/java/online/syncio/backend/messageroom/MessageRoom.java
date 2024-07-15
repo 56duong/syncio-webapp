@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messageroommember.MessageRoomMember;
+import online.syncio.backend.user.User;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -24,9 +26,19 @@ public class MessageRoom {
     @GeneratedValue(generator = "uuid")
     private UUID id;
 
+    private String name;
+
     @Column
     @CreatedDate
     private LocalDateTime createdDate;
+
+    @Column(nullable = false, updatable = false)
+    private boolean isGroup;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @CreatedBy
+    private User createdBy;
 
 //    MessageRoomMember
     @OneToMany(mappedBy = "messageRoom")

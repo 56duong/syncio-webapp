@@ -16,10 +16,6 @@ export class AdminComponent {
       link: 'users-management'
     },
     {
-      name: 'Posts Management',
-      link: 'posts-management'
-    },
-    {
       name: 'Labels Management',
       link: 'labels-management'
     },

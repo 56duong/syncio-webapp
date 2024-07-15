@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1/stickergroups")
+@RequestMapping(value = "${api.prefix}/stickergroups")
 @AllArgsConstructor
 public class StickerGroupController {
 

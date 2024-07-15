@@ -27,7 +27,7 @@ export class PostComponent {
   dialogItems: any = [
     { 
       label: 'Report', 
-      // icon: 'pi pi-check', 
+      bold: 7,
       color: 'red', 
       action: () => this.showReportModal() 
     },

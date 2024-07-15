@@ -30,4 +30,9 @@ public class MessageRoomMember {
     @CreatedDate
     private LocalDateTime dateJoined;
 
+    @Column(nullable = false)
+    private boolean isAdmin;
+
+    private LocalDateTime lastSeen;
+
 }

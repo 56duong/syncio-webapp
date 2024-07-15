@@ -2,36 +2,43 @@ package online.syncio.backend.billing;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import online.syncio.backend.idclass.PkUserLabel;
 import online.syncio.backend.label.Label;
 import online.syncio.backend.user.User;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "billing")
 @Data
 @EntityListeners(AuditingEntityListener.class) // tự động xử lý các sự kiện của entity như @CreatedDate
-@IdClass(PkUserLabel.class) // sử dụng class PkUserLabel làm khóa chính (khoá chính phức hợp gồm 2 thuộc tính user và label)
-
 public class Billing {
     @Id
-    @ManyToOne // 1 label có thể được mua bởi nhiều user
-    @JoinColumn(name = "label_id") // tên cột trong bảng billing sẽ là label_id, liên kết tới khóa chính của bảng Label
+    @Column(nullable = false, updatable = false)
+    @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(generator = "uuid")
+    private UUID id;
+
+    @ManyToOne
+    @JoinColumn(name = "label_id", nullable = false)
     private Label label;
 
-    @Id
-    @ManyToOne // 1 user có thể mua nhiều label
-    @JoinColumn(name = "user_id") // // tên cột trong bảng billing sẽ là user_id, liên kết tới khóa chính của bảng User
-    private User user;
+    @ManyToOne
+    @JoinColumn(name = "buyer_id", nullable = false)
+    private User buyer;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 
     @Column
     private String orderNo;
 
     @Column
-    private Double amount;
+    private Long amount;
 
     @Column
     @Enumerated(EnumType.STRING)

@@ -1,30 +1,149 @@
-<div class="card">
-    <p-dataView #dv [value]="labels" [layout]="'grid'" [rows]="8" [paginator]="true" paginatorPosition = 'top'>
-        <ng-template let-label pTemplate="gridItem">
-            <div class="col-12 sm:col-6 lg:col-12 xl:col-3 p-2">
-                <div class="p-4 border-1 surface-border surface-card border-round">
-                    <div class="flex flex-wrap align-items-center justify-content-between gap-2">
-                        <span class="flex align-items-center gap-2">
-                            <i class="pi pi-tag"></i>
-                            <span class="font-semibold">{{label.type}}</span>
-                        </span>
-                        <p-tag *ngIf="label.status === 'ENABLED'" [severity]="'success'">IN STOCK</p-tag>
-                        <p-tag *ngIf="label.status === 'DISABLED'" [severity]="'danger'">OUT OF STOCK</p-tag>
+<div class="main">
+  <div class="card">
+    <p-toolbar styleClass="m-2 gap-2">
+      <ng-template pTemplate="left">
+        <div class="flex flex-column md:flex-row md:justify-content-between">
+          <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By Price" (onChange)="onSortChange($event)" styleClass="mb-2 md:mb-0"></p-dropdown>
+      </div>
+      </ng-template>
 
-                    </div>
-                    <div class="flex flex-column align-items-center gap-3 py-5">
-                        <img class="w-9 shadow-2 border-round" src="{{label.labelURL + '?view=' + dateNow }}" width="160" height="160"  [alt]="label.name" />
-                        <div class="text-2xl font-bold">{{ label.name }}</div>
-                        <!-- <p-rating [ngModel]="label.rating" [readonly]="true" [cancel]="false"></p-rating> -->
-                    </div>
-                    <div class="flex align-items-center justify-content-between">
-                        <span class="text-2xl font-semibold">{{label.price + ' VND'}}</span>
-                        <button *ngIf="!label.purcharse" [disabled]="label.status == 'DISABLED'" (click)="buyNow(label)" pButton class="p-button-rounded" >Mua ngay</button>
-                        <button *ngIf="label.purcharse " disabled pButton class="p-button-rounded" ><span class="pi pi-check-circle" style="margin-right: 5px;"> </span>Đã mua</button>
-                        
-                    </div>
-                </div>
+      <!-- Purchase History -->
+      <ng-template pTemplate="right">
+        <button pButton pRipple label="Purchase History" icon="pi pi-history" class="p-button-help"
+          (click)="openPurchaseHistory()"></button>
+      </ng-template>
+    </p-toolbar>
+    <p-dataView #dv [value]="labels" [layout]="'grid'" [rows]="8" [paginator]="false" paginatorPosition="top" [sortField]="sortField" [sortOrder]="sortOrder" >
+      <ng-template let-label pTemplate="gridItem">
+        <div class="col-12 sm:col-6 lg:col-12 xl:col-3 p-2">
+          <div class="p-4 border-1 surface-border surface-card border-round">
+            <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+              <span class="flex align-items-center gap-2">
+                <i class="pi pi-tag"></i>
+                <span class="font-semibold">{{ label.type }}</span>
+              </span>
+              <p-tag *ngIf="label.status === 'ENABLED'" [severity]="'success'">IN STOCK</p-tag>
+              <p-tag *ngIf="label.status === 'DISABLED'" [severity]="'danger'">OUT OF STOCK</p-tag>
             </div>
-        </ng-template>
+            <div class="flex flex-column align-items-center gap-3 py-5">
+              <img class="w-9 shadow-2 border-round" src="{{ label.labelURL + '?view=' + dateNow }}" width="160"
+                height="160" [alt]="label.name" />
+              <div class="text-lg font-bold">{{ label.name }}</div>
+            </div>
+
+            <!-- gift and buy -->
+            <div class="flex align-items-center justify-content-between">
+              <span class="text-lg font-semibold">{{
+                label.price + " VND"
+                }}</span>
+              <div>
+                <button [disabled]="label.status == 'DISABLED'" (click)="gift(label)" pButton
+                  class="p-button-rounded mr-1">
+                  <i class="pi pi-gift"></i>
+                </button>
+                <button *ngIf="!label.purcharse" [disabled]="label.status == 'DISABLED'" (click)="buyNow(label)" pButton
+                  class="p-button-rounded">
+                  Mua ngay
+                </button>
+                <button *ngIf="label.purcharse" disabled pButton class="p-button-rounded">
+                  <span class="pi pi-check-circle" style="margin-right: 5px">
+                  </span>Đã mua
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
     </p-dataView>
+  </div>
+
+  <!-- Dialog -->
+  <p-dialog [(visible)]="labelDialog" [style]="{ width: '450px' }" header="Payment Details" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+      <!-- Label name -->
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" pInputText id="name" [(ngModel)]="label.name" required autofocus disabled="true" />
+        <small class="p-error" *ngIf="submitted && !label.name">Name is required.</small>
+      </div>
+
+      <!-- Price -->
+      <div class="field">
+        <label for="price">Price</label>
+        <p-inputNumber id="price" [(ngModel)]="label.price" inputId="currency-vn" mode="currency" currency="VND"
+          locale="vi-VN" [disabled]="true">
+        </p-inputNumber>
+        <small class="p-error" *ngIf="submitted && !label.price">Price is required.</small>
+      </div>
+
+      <!-- Receiver -->
+      <div class="field">
+        <label for="receiver">Receiver</label>
+        <input type="text" pInputText id="receiver" [(ngModel)]="label.owner" required autofocus />
+        <small class="p-error" *ngIf="submitted && !label.owner">Owner is required.</small>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <!-- nut an -->
+      <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+
+      <!-- nut save -->
+      <button pButton pRipple label="Payment" icon="pi pi-check" class="p-button-text" (click)="sendGift()"></button>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Bill of User Dialog -->
+  <p-dialog [(visible)]="billOfUserDialog" [style]="{ width: '62rem' }" header="Purchase History" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+      <p-table #dt [value]="bills" [rows]="8" [paginator]="true" [globalFilterFields]="[
+        'name',
+        'country.name',
+        'representative.name',
+        'status'
+      ]" [tableStyle]="{ 'max-width': '60rem' }" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="orderNo" style="max-width: 2rem">
+              Order No <p-sortIcon field="orderNo"></p-sortIcon>
+            </th>
+            <th pSortableColumn="buyer" style="max-width: 4rem">
+              Buyer <p-sortIcon field="buyer"></p-sortIcon>
+            </th>
+            <th pSortableColumn="owner" style="max-width: 4rem">
+              Owner <p-sortIcon field="owner"></p-sortIcon>
+            </th>
+            <th pSortableColumn="amount" style="max-width: 10rem">
+              Amount (VND) <p-sortIcon field="amount"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="createDate" style="max-width: 4rem" >Date Create <p-sortIcon field="createDate"></p-sortIcon></th>
+            <th pSortableColumn="status" style="max-width:4rem">Status <p-sortIcon field="status"></p-sortIcon></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-bill>
+          <tr>
+            <td>{{ bill.orderNo }}</td>
+            <td>{{ bill.buyerId | userIdToName | async }}</td>
+            <td>{{ bill.ownerId | userIdToName | async }}</td>
+            <td>{{ bill.amount }}</td>
+
+            <td>{{ bill.createdDate | date:'HH:mm:ss dd/MM/yyyy' }}</td>
+            <td>
+              <p-tag [value]="bill.status" [severity]="getSeverity(bill.status)"></p-tag>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+          <div class="flex align-items-center justify-content-between">
+            In total there are {{ bills ? bills.length : 0 }} bills.
+          </div>
+        </ng-template>
+      </p-table>
+    </ng-template>
+  </p-dialog>
 </div>

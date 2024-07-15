@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { ViewStoryComponent } from './view-story/view-story.component';
 import { StoryListComponent } from './story-list/story-list.component';
 import { CreateStoryComponent } from './create-story/create-story.component';
+import { RoleEnum } from 'src/app/core/interfaces/user';
+import { authGuard } from 'src/app/core/guards/auth.guard';
 
 const routes: Routes = [
   { 
@@ -11,7 +13,9 @@ const routes: Routes = [
   },
   {
     path: 'create',
-    component: CreateStoryComponent
+    component: CreateStoryComponent,
+    canActivate: [authGuard],
+    data: { requiredRoles: [RoleEnum.USER] }
   },
   {
     path: ':userId',

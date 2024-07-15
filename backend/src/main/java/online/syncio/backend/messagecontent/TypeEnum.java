@@ -3,16 +3,12 @@ package online.syncio.backend.messagecontent;
 public enum TypeEnum {
     TEXT,
     STICKER,
-    IMAGE;
-
-    public static TypeEnum findByName (String name) {
-        TypeEnum result = null;
-        for (TypeEnum type : values()) {
-            if (name.equalsIgnoreCase(type.name())) {
-                result = type;
-                break;
-            }
-        }
-        return result;
-    }
+    IMAGE,
+    NOTIFICATION_CREATE_ROOM,
+    NOTIFICATION_ADD_MEMBER,
+    NOTIFICATION_REMOVE_MEMBER,
+    NOTIFICATION_LEAVE_ROOM,
+    NOTIFICATION_CHANGE_NAME,
+    NOTIFICATION_MAKE_ADMIN,
+    NOTIFICATION_REMOVE_ADMIN;
 }
