@@ -1,0 +1,60 @@
+<div class="help-center-content" *ngIf="selectedMenuItem === 'instagram-features'">
+  <h2 class="text-xl">Syncio Features</h2>
+  <div *ngIf="selectedSubMenuItem === 'your-profile'">
+    <div *ngIf="selectedSubSubMenuItem === 'photos-tagged'">
+      <h5>Your-profile > Photos and Videos You're Tagged In</h5>
+      <ul class="content-list">
+        <li *ngFor="let item of taggedContentItems" [ngClass]="{'active': isContentVisible(item.label)}">
+          <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
+            <i [class]="item.icon"></i>{{item.label}}</button>
+          <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="selectedSubSubMenuItem === 'editing-profile'">
+      <h5>Your-profile > Editing Your Profile</h5>
+      <ul class="content-list">
+        <li *ngFor="let item of editingProfileItems" [ngClass]="{'active': isContentVisible(item.label)}">
+          <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label"><i [class]="item.icon"></i>{{item.label}}</button>
+          <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div *ngIf="selectedSubMenuItem === 'exploring-picture'">
+    <h3>Exploring Picture</h3>
+    <div *ngIf="selectedSubSubMenuItem === 'search-explore'">
+      <h5>Exploring Picture > Search and Explore</h5>
+      <ul class="content-list">
+        <li *ngFor="let item of exploringPictureItems" [ngClass]="{'active': isContentVisible(item.label)}">
+          <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
+            <i [class]="item.icon"></i>{{item.label}}</button>
+          <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div *ngIf="selectedSubMenuItem === 'messaging'">
+    <div *ngIf="selectedSubSubMenuItem === 'send-view-manage'">
+      <h5>Messaging > Send, View and Manage Messages</h5>
+      <ul class="content-list">
+        <li *ngFor="let item of messagingItems" [ngClass]="{'active': isContentVisible(item.label)}">
+          <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
+            <i [class]="item.icon"></i>{{item.label}}</button>
+          <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="selectedSubSubMenuItem === 'group-chat'">
+      <h5>Messaging > Group Chat</h5>
+      <ul class="content-list">
+        <li *ngFor="let item of groupChatItems" [ngClass]="{'active': isContentVisible(item.label)}">
+          <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
+            <i [class]="item.icon"></i>{{item.label}}
+          </button>
+          <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
