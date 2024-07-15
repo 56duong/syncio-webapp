@@ -45,12 +45,7 @@
       <!-- Avatar header -->
       <div class="p-3 flex justify-content-between align-items-center">
         <div class="flex align-items-center gap-2">
-          <div class="avt">
-            <img class="w-full object-cover"
-              src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
-              style="min-width: 32px;"
-              alt="" />
-          </div>
+          <app-avatar [userId]="post.createdBy" [width]="36"></app-avatar>
           <div>
             <!-- username -->
             <h3 *ngIf="post.createdBy" class="inline-flex text-sm my-0 mr-1">

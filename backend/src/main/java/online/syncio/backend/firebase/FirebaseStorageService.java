@@ -49,7 +49,7 @@ public class FirebaseStorageService {
      * @param multipartFile file to upload
      * @param folderName folder name to store file
      * @param fileType file type. e.g. jpg, png, mp4
-     * @return file path. e.g. folderName/fileName
+     * @return file path. e.g. fileName
      */
     public String uploadFile(MultipartFile multipartFile, String folderName, String fileType) {
         try {
@@ -59,7 +59,23 @@ public class FirebaseStorageService {
 
             String fullPath = folderName + "/" + fileName;
             StorageClient.getInstance().bucket().create(fullPath, Files.readAllBytes(tempFile), multipartFile.getContentType()).getMediaLink();
-            return fullPath;
+            return fileName;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public String uploadFileKeepCurrentName(MultipartFile multipartFile, String folderName) {
+        try {
+            String fileName = multipartFile.getOriginalFilename();
+            Path tempFile = Files.createTempFile(fileName, "");
+            multipartFile.transferTo(tempFile.toFile());
+
+            String fullPath = folderName + "/" + fileName;
+            StorageClient.getInstance().bucket().create(fullPath, Files.readAllBytes(tempFile), multipartFile.getContentType()).getMediaLink();
+            return fileName;
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,7 +1,7 @@
 <main>
   <header class="flex align-items-center gap-6 ml-6">
     <!-- Avatar -->
-    <div style="width: 150px; height: 150px;">
+    <div class="border-circle overflow-hidden" style="width: 150px; height: 150px;">
       <input
         #fileInput
         type="file"
@@ -9,11 +9,7 @@
         accept="image/*"
         (change)="onFileSelected($event)" />
       <button (click)="fileInput.click()" class="border-none p-0 outline-none">
-        <img alt=""
-          [src]="userProfile.avtURL"
-          onerror="this.src='/assets/images/avatar.jpg'"
-          class="w-full h-full block"
-          style="object-fit: cover;" />
+        <app-avatar [userId]="userProfile.id" [width]="164"></app-avatar>
       </button>
     </div>
 

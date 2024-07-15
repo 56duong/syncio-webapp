@@ -15,6 +15,7 @@ import { CommentListComponent } from './components/post-detail/comment-list/comm
 import { VoiceRecorderDialogComponent } from './components/voice-recorder-dialog/voice-recorder-dialog.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { NotAuthorizedComponent } from './components/not-authorized/not-authorized.component';
+import { AvatarComponent } from './components/avatar/avatar.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { NotAuthorizedComponent } from './components/not-authorized/not-authoriz
     CommentListComponent,
     VoiceRecorderDialogComponent,
     NotFoundComponent,
-    NotAuthorizedComponent
+    NotAuthorizedComponent,
+    AvatarComponent
   ],
   imports: [
     PickerComponent,
@@ -44,7 +46,8 @@ import { NotAuthorizedComponent } from './components/not-authorized/not-authoriz
     StickerPickerComponent,
     PostDetailComponent,
     GlobalDialogComponent,
-    VoiceRecorderDialogComponent
+    VoiceRecorderDialogComponent,
+    AvatarComponent
   ],
 })
 export class SharedModule {}

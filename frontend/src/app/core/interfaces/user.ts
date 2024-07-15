@@ -9,8 +9,6 @@ export interface User {
 
   password?: string;
 
-  avtURL?: string;
-
   coverURL?: string;
 
   bio?: string;

@@ -10,9 +10,8 @@
           <div *ngFor="let sticker of group.stickers" 
             (click)="onStickerClick(sticker)"
             class="cursor-pointer">
-            <img [src]="sticker.imageUrl" 
-              [appFallbackSrc]="sticker.id + '.jpg'"
-              [folderName]="'stickers'"
+            <img [src]="sticker.imageUrl | constructImageUrl"
+              onerror="this.onerror=null; this.src='/assets/images/no-image-available.jpg';"
               class="w-full h-full" 
               style="object-fit: contain;" 
               [alt]="sticker.name"

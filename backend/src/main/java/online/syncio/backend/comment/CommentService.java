@@ -2,10 +2,6 @@ package online.syncio.backend.comment;
 
 import lombok.AllArgsConstructor;
 import online.syncio.backend.exception.NotFoundException;
-import online.syncio.backend.post.Post;
-import online.syncio.backend.post.PostRepository;
-import online.syncio.backend.user.User;
-import online.syncio.backend.user.UserRepository;
 import online.syncio.backend.utils.AuthUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

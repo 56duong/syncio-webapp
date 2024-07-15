@@ -18,7 +18,6 @@ export class FollowingDialogComponent {
     username: '',
     followerCount: 0,
     followingCount: 0,
-    avtURL: '',
     bio: '',
     posts: [],
     isFollowing: false,

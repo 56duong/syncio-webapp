@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -144,6 +145,12 @@ public class UserController {
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body( ex.getMessage());
         }
+    }
+
+    @PostMapping("/update-avatar")
+    public ResponseEntity<Void> updateAvatar(@RequestParam("file") MultipartFile file) {
+        userService.updateAvatar(file);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/last/{days}")

@@ -24,7 +24,4 @@ public class StoryDTO {
 
     private boolean viewed;
 
-    public String getPhotoURL() {
-        return "http://localhost:8080/api/v1/images/" + photoURL;
-    }
 }

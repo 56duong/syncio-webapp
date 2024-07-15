@@ -4,8 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.NotFoundException;
-import online.syncio.backend.firebase.FirebaseStorageService;
-import online.syncio.backend.utils.FIleUtils;
+import online.syncio.backend.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -22,7 +21,7 @@ public class StickerService {
 
     private final StickerRepository stickerRepository;
     private final StickerMapper stickerMapper;
-    private final FirebaseStorageService firebaseStorageService;
+    private final FileUtils fileUtils;
 
     @Value("${firebase.storage.type}")
     private String storageType;
@@ -82,25 +81,19 @@ public class StickerService {
 
 
     @Transactional
-    public List<String> uploadPhotos(final List<MultipartFile> photos) {
-        return photos.stream()
-                .map(photo -> {
-                    try {
-                        if ("local".equals(storageType)) {
-                            return FIleUtils.storeFile(photo).replace(".jpg", "");
-                        }
-                        else if ("firebase".equals(storageType)) {
-                            String fileName = firebaseStorageService.uploadFile(photo, "stickers", "jpg");
-                            return fileName.replace(".jpg", "").replace("stickers/", "");
-                        }
-                        else {
-                            throw new IllegalStateException("Invalid storage type: " + storageType);
-                        }
-                    } catch (IOException e) {
-                        throw new RuntimeException("Could not save photo: " + photo.getOriginalFilename());
-                    }
-                })
-                .toList();
+    public String uploadPhoto(final MultipartFile photo) {
+        try {
+            String filePath = fileUtils.storeFile(photo, "stickers", false);
+            String fileName = filePath.replace("stickers/", "");
+            System.out.println("file: " + fileName);
+            int lastIndexOfDot = fileName.lastIndexOf(".");
+            if (lastIndexOfDot != -1) {
+                return fileName.substring(0, lastIndexOfDot);
+            }
+        } catch (IOException e) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Could not save photo: " + photo.getOriginalFilename(), e);
+        }
+        return null;
     }
 
 }

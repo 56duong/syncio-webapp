@@ -3,14 +3,13 @@ package online.syncio.backend.messagecontent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.exception.NotFoundException;
-import online.syncio.backend.firebase.FirebaseStorageService;
 import online.syncio.backend.messageroom.MessageRoom;
 import online.syncio.backend.messageroommember.MessageRoomMember;
 import online.syncio.backend.messageroommember.MessageRoomMemberRepository;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
 import online.syncio.backend.utils.AuthUtils;
-import online.syncio.backend.utils.FIleUtils;
+import online.syncio.backend.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,7 @@ public class MessageContentService {
     private final MessageContentRepository messageContentRepository;
     private final MessageContentMapper messageContentMapper;
     private final UserRepository userRepository;
-    private final FirebaseStorageService firebaseStorageService;
+    private final FileUtils fileUtils;
     private final AuthUtils authUtils;
     private final MessageRoomMemberRepository messageRoomMemberRepository;
 
@@ -66,15 +65,7 @@ public class MessageContentService {
         return photos.stream()
                 .map(photo -> {
                     try {
-                        if ("local".equals(storageType)) {
-                            return FIleUtils.storeFile(photo);
-                        }
-                        else if ("firebase".equals(storageType)) {
-                            return firebaseStorageService.uploadFile(photo, "messages", "jpg");
-                        }
-                        else {
-                            throw new IllegalStateException("Invalid storage type: " + storageType);
-                        }
+                        return fileUtils.storeFile(photo, "messages", false);
                     } catch (IOException e) {
                         throw new RuntimeException("Could not save photo: " + photo.getOriginalFilename());
                     }

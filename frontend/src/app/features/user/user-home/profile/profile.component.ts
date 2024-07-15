@@ -1,11 +1,12 @@
 import { Location } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActionEnum } from 'src/app/core/interfaces/notification';
 import { Post } from 'src/app/core/interfaces/post';
 import { UserProfile } from 'src/app/core/interfaces/user-profile';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { PostService } from 'src/app/core/services/post.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserCloseFriendService } from 'src/app/core/services/user-close-friend.service';
 import { UserFollowService } from 'src/app/core/services/user-follow.service';
@@ -24,7 +25,6 @@ export class ProfileComponent implements OnInit {
     username: '',
     followerCount: 0,
     followingCount: 0,
-    avtURL: '',
     bio: '',
     posts: [],
     isFollowing: false,
@@ -70,7 +70,8 @@ export class ProfileComponent implements OnInit {
     private tokenService: TokenService,
     private postService: PostService,
     private userFollowService: UserFollowService,
-    private userCloseFriendService: UserCloseFriendService
+    private userCloseFriendService: UserCloseFriendService,
+    private toastService: ToastService,
   ) {}
 
   ngOnInit(): void {
@@ -139,16 +140,25 @@ export class ProfileComponent implements OnInit {
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.userProfile.avtURL = e.target.result; // Cập nhật URL của ảnh đại diện
-      };
-      reader.readAsDataURL(file);
+      let newAvatarFileNames = this.currentUserId + '.jpg';
+      // Append and rename the file with user id
       const fd = new FormData();
-      fd.append('file', file);
-      // this.userService.changeAvatar(fd).subscribe((response) => {
-      //   console.log('response: ', response);
-      // });
+      fd.append('file', new File([file], newAvatarFileNames, {
+        type: file.type,
+        lastModified: file.lastModified,
+      }));
+
+      this.userService.changeAvatar(fd).subscribe({
+        next: () => {
+          this.toastService.showSuccess('Success', 'Avatar changed successfully');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        },
+        error: (error) => {
+          console.error('Error changing avatar', error);
+        }
+      });
     }
   }
 
