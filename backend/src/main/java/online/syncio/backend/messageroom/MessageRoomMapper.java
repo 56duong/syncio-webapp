@@ -31,20 +31,23 @@ public class MessageRoomMapper {
     public MessageRoomDTO mapToDTO(final MessageRoom messageRoom, final MessageRoomDTO messageRoomDTO) {
         messageRoomDTO.setId(messageRoom.getId());
 
+        List<MessageRoomMember> messageRoomMembers = messageRoomMemberRepository.findByMessageRoomIdOrderByDateJoined(messageRoom.getId());
+        UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        messageRoomMembers.removeIf(messageRoomMember -> messageRoomMember.getUser().getId().equals(currentUserId));
+
+        // if room is not a group, set the avatar to the other member
+        messageRoomDTO.setAvatarURL(messageRoomMembers.size() != 1 ? null : messageRoomMembers.get(0).getUser().getId().toString());
+
         // set name of the room
         if(messageRoom.getName() != null) {
             messageRoomDTO.setName(messageRoom.getName());
         }
         else {
-            List<MessageRoomMember> messageRoomMembers = new ArrayList<>();
             // get all members of the room and set the name
             // if the room is a group, set the name to the list of members
             // else set the name to the other member
             // example: 2 members: John
             // 3 and more members: You, John, Doe, Jane
-            messageRoomMembers = messageRoomMemberRepository.findByMessageRoomIdOrderByDateJoined(messageRoom.getId());
-            UUID currentUserId = authUtils.getCurrentLoggedInUserId();
-            messageRoomMembers.removeIf(messageRoomMember -> messageRoomMember.getUser().getId().equals(currentUserId));
             String messageRoomName = "";
             if(messageRoomMembers.isEmpty()) {
                 messageRoomName = "You";
@@ -67,7 +70,6 @@ public class MessageRoomMapper {
         messageRoomDTO.setGroup(messageRoom.isGroup());
         messageRoomDTO.setCreatedBy(messageRoom.getCreatedBy().getId());
         // set last seen, unseen count, last message
-        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
         final MessageRoomMember messageRoomMember = messageRoomMemberRepository.findByMessageRoomIdAndUserId(messageRoom.getId(), currentUserId)
                 .orElseThrow(() -> new NotFoundException(MessageRoomMember.class, "messageRoomId", messageRoom.getId().toString(), "userId", currentUserId.toString()));
         messageRoomDTO.setLastSeen(messageRoomMember.getLastSeen());

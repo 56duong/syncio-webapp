@@ -7,6 +7,7 @@ export interface MessageRoom {
   createdDate?: string;
   group?: boolean;
   createdBy?: string;
+  avatarURL?: string;
   
   members?: MessageRoomMember[];
   lastSeen?: string;

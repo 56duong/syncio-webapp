@@ -98,7 +98,7 @@
               routerLinkActive="menu-active"
               [routerLink]="['profile', currentUserId]"
               [label]="currentUsername">
-              <img src="/assets/images/avatar.jpg" style="width: 28px; margin-right: 0.5rem; border-radius: 50%;"/>
+              <app-avatar [userId]="currentUserId" [width]="32" style="margin-right: 4px;"></app-avatar>
             </p-button>
           </div>
         </li>

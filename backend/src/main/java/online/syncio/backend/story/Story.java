@@ -41,4 +41,8 @@ public class Story {
 //    StoryView
     @OneToMany(mappedBy = "story")
     private Set<StoryView> views;
+
+    public String getPhotoURL() {
+        return "stories/" + photoURL;
+    }
 }

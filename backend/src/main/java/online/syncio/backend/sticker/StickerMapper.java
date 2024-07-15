@@ -23,7 +23,7 @@ public class StickerMapper {
         stickerDTO.setFlag(sticker.getFlag());
         stickerDTO.setCreatedBy(sticker.getCreatedBy().getId());
         stickerDTO.setStickerGroupId(sticker.getStickerGroup().getId());
-        stickerDTO.setImageUrl("http://localhost:8080/api/v1/images/" + sticker.getId() + ".jpg");
+        stickerDTO.setImageUrl("stickers/" + sticker.getId() + ".jpg");
         return stickerDTO;
     }
 

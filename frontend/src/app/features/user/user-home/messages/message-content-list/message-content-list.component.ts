@@ -324,4 +324,13 @@ export class MessageContentListComponent {
     this.alreadyScrolled = true;
   }
 
+  
+  /**
+   * Get the member that is not the current user.
+   * @returns 
+   */
+  getMemberNotMe(): string {
+    return this.messageRoom.members?.find(member => member.userId !== this.currentUser.id)?.userId || '';
+  }
+
 }

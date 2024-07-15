@@ -25,4 +25,6 @@ public class MessageRoomDTO {
 
     private MessageContentDTO lastMessage;
 
+    private String avatarURL;
+
 }

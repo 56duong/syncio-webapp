@@ -4,15 +4,12 @@
   [(visible)]="isVisibleFollowing" 
   [style]="{ width: '25rem' }"
   (onHide)="onHide.emit()">
-  <div class="flex flex-column gap-2 p-2">
+  <div class="flex flex-column gap-3 p-2">
     <!-- userfollow list -->
     <div *ngFor="let userFollow of userFollowing" class="flex justify-content-between align-items-center">
       <div class="flex gap-2">
         <!-- avatar -->
-        <img (click)="navigateToProfile(userFollow.targetId)" 
-          alt=""
-          src="/assets/images/avatar.jpg"
-          style="object-fit: cover; width: 44px; height: 44px; cursor: pointer;" />
+        <app-avatar [userId]="userFollow.targetId" [width]="48"></app-avatar> 
         
         <div class="flex gap-1 align-items-center">
           <!-- username -->

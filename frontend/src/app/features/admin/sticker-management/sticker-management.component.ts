@@ -196,7 +196,7 @@ export class StickerManagementComponent {
             id: data,
             createdDate: new Date().toISOString(),
             createdBy: this.currentUserId,
-            imageUrl: "http://localhost:8080/api/v1/images/" + data + ".jpg"
+            imageUrl: "stickers/" + data + ".jpg"
           };
           // close dialog and show success message
           this.isStickerDialogVisible = false;

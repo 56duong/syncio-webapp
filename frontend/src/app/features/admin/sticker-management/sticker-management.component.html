@@ -95,9 +95,9 @@
         <tr (dblclick)="onStickerSelect(sticker)">
           <td>{{ sticker.name }}</td>
           <td style="width: 6rem;">
-            <img *ngIf="sticker.id" [src]="sticker.imageUrl" 
-              [appFallbackSrc]="sticker.id + '.jpg'"
-              [folderName]="'stickers'"
+            <img *ngIf="sticker.id" 
+              [src]="sticker.imageUrl | constructImageUrl"
+              onerror="this.onerror=null; this.src='/assets/images/no-image-available.jpg';"
               [alt]="sticker.name" 
               width="50" 
               class="shadow-4" />

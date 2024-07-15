@@ -28,9 +28,6 @@ public class UserDTO {
     private String password;
 
     @Size(max = 1000)
-    private String avtURL;
-
-    @Size(max = 1000)
     private String coverURL;
 
     private String bio;

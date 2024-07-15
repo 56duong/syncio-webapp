@@ -23,7 +23,7 @@ export class MessageItemContentComponent {
    */
   handleImageError(event: any, img: string) {
     if (!this.fallbackAttemptedImages.has(img)) {
-      event.target.src = `https://firebasestorage.googleapis.com/v0/b/syncio-bf6ca.appspot.com/o/${img.replace("/", "%2F")}?alt=media`;
+      event.target.src = '/assets/images/no-image-available.jpg'; // Set the fallback URL
       this.fallbackAttemptedImages.add(img); // Mark the fallback as attempted
     } 
     else {

@@ -2,13 +2,8 @@ package online.syncio.backend.messageroom;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import online.syncio.backend.messagecontent.MessageContentDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 

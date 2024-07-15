@@ -240,9 +240,9 @@ export class UserService {
     return this.http.get<UserStory[]>(url);
   }
 
-  changeAvatar(formData: FormData): Observable<string> {
-    const url = `${this.apiURL}/avatar`;
-    return this.http.post<string>(url, formData);
+  changeAvatar(formData: FormData): Observable<void> {
+    const url = `${this.apiURL}/update-avatar`;
+    return this.http.post<void>(url, formData);
   }
 
   getNewUsersLast30Days(): Observable<any> {
