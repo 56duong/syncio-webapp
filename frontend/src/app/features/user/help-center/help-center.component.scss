@@ -1,0 +1,118 @@
+.help-container {
+  margin: 20px;
+}
+
+.help-container h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.help-layout {
+  display: flex;
+  min-height: 120vh; /* Make sure the layout takes the full height of the viewport */
+}
+
+.help-sidebar {
+  width: 400px; /* Increased width */
+  margin-right: 20px;
+  background-color: #fff; /* Change this to match your theme */
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Make the sidebar take full height */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Adds shadow to the right side */
+}
+
+/* Customize p-panelMenu to remove borders */
+.p-panelmenu {
+  border: none;
+  box-shadow: none; /* Remove shadow if present */
+}
+
+.p-panelmenu .p-panelmenu-header {
+  border: none;
+}
+
+.p-panelmenu .p-panelmenu-content {
+  border: none;
+}
+
+.help-content {
+  flex: 1;
+  margin-left: 20px;
+}
+
+.help-center-content {
+  margin: 15px auto;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  font-size: 1em;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.help-center-content h2,
+.help-center-content h3,
+.help-center-content h5 {
+  color: #333;
+}
+
+.help-center-content p {
+  color: #000;
+  font-size: 1em;
+  line-height: 1.6;
+}
+
+.content-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.content-list li {
+  margin-bottom: 10px;
+}
+
+.p-button-light-gray {
+  background-color: #e4f2fd;
+  color: #000;
+  border: none;
+  width: 100%;
+  font-size: 1.25em;
+  text-align: left;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.p-button-light-gray:hover {
+  background-color: #d0e6f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.content {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.partition {
+  border: 1px solid #e0e0e0;
+  margin: 10px 0;
+}
+
+@media (max-width: 768px) {
+  .p-button-light-gray {
+    font-size: 1em;
+    padding: 8px;
+  }
+  
+  .help-center-content {
+    padding: 15px;
+  }
+}

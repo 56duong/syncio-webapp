@@ -31,6 +31,7 @@ import { ImageModule } from 'primeng/image';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { CardModule } from 'primeng/card';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { PanelMenuModule } from 'primeng/panelmenu';
 
 @NgModule({
   declarations: [],
@@ -66,7 +67,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
     RadioButtonModule,
     DataViewModule,
     CardModule,
-    InputNumberModule
+    InputNumberModule,
   ],
 })
 export class PrimengModule {}
