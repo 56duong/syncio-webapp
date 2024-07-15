@@ -31,6 +31,7 @@ import { ImageModule } from 'primeng/image';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { CardModule } from 'primeng/card';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { PanelMenuModule } from 'primeng/panelmenu';
 import { SpeedDialModule } from 'primeng/speeddial';
 
 @NgModule({
@@ -68,7 +69,7 @@ import { SpeedDialModule } from 'primeng/speeddial';
     RadioButtonModule,
     DataViewModule,
     CardModule,
-    InputNumberModule
+    InputNumberModule,
   ],
 })
 export class PrimengModule {}
