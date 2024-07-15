@@ -5,12 +5,13 @@
       [header]="group.name ? group.name : 'Unknown'"
       class="block primary-scrollbar mt-2 overflow-y-scroll">
       <!-- Sticker inside sticker list -->
-      <div style="min-height: 300px;">
+      <div style="min-height: 300px; max-height: 300px;">
         <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
           <div *ngFor="let sticker of group.stickers" 
             (click)="onStickerClick(sticker)"
             class="cursor-pointer">
-            <img [src]="sticker.imageUrl" 
+            <img [src]="sticker.imageUrl | constructImageUrl"
+              onerror="this.onerror=null; this.src='/assets/images/no-image-available.jpg';"
               class="w-full h-full" 
               style="object-fit: contain;" 
               [alt]="sticker.name"

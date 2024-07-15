@@ -3,6 +3,7 @@ package online.syncio.backend.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import online.syncio.backend.billing.Billing;
 import online.syncio.backend.comment.Comment;
 import online.syncio.backend.commentlike.CommentLike;
 import online.syncio.backend.like.Like;
@@ -13,6 +14,8 @@ import online.syncio.backend.post.Post;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.story.Story;
 import online.syncio.backend.storyview.StoryView;
+import online.syncio.backend.userclosefriend.UserCloseFriend;
+import online.syncio.backend.userfollow.UserFollow;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -50,9 +53,6 @@ public class User implements UserDetails {
     private String password;
 
     @Column(length = 1000)
-    private String avtURL;
-
-    @Column(length = 1000)
     private String coverURL;
 
     @Column
@@ -73,8 +73,6 @@ public class User implements UserDetails {
     @Column(name = "reset_password_token", length = 30)
     private String resetPasswordToken;
 
-//    @CreatedBy
-//    private String createdBy;
 //    Post
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
     private Set<Post> posts;
@@ -83,25 +81,18 @@ public class User implements UserDetails {
     private String interestKeywords;
 
 //    Follow
-    @ManyToMany
-    @JoinTable(
-            name = "user_followers",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "follower_id")
-    )
-    private Set<User> followers;
+    @OneToMany(mappedBy = "target")
+    private Set<UserFollow> followers;
 
-    @ManyToMany(mappedBy = "followers")
-    private Set<User> following;
+    @OneToMany(mappedBy = "actor")
+    private Set<UserFollow> following;
 
-    // Close Friends
-    @ManyToMany
-    @JoinTable(
-            name = "user_close_friends",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "close_friend_id")
-    )
-    private Set<User> closeFriends;
+// Close Friends
+    @OneToMany(mappedBy = "target")
+    private Set<UserCloseFriend> closeFriends;
+
+    @OneToMany(mappedBy = "actor")
+    private Set<UserCloseFriend> closeFriendOf;
 
 //    Like
     @OneToMany(mappedBy = "user")
@@ -142,6 +133,12 @@ public class User implements UserDetails {
 //    Notification
     @OneToMany(mappedBy = "recipient")
     private Set<Notification> receivedNotifications;
+
+    @OneToMany(mappedBy = "buyer")
+    private Set<Billing> boughtItems;
+
+    @OneToMany(mappedBy = "owner")
+    private Set<Billing> ownedItems;
 
     @Column(name = "username_last_modified")
     private LocalDateTime usernameLastModified;

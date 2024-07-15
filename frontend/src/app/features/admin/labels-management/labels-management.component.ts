@@ -109,8 +109,8 @@ export class LabelsManagementComponent implements OnInit {
         }
 
         // check price < 0
-        if (this.label.price < 0) {
-            this.toastService.showError('Error','Price must be greater than 0');
+        if (this.label.price < 10000) {
+            this.toastService.showError('Error','Price must be greater than or equal to 10.000');
             return;
         }
 

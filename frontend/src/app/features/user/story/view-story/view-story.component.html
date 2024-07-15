@@ -31,7 +31,8 @@
               </div>
               <!-- Content -->
               <div>
-                <img src="{{ story.photoURL }}" class="block w-full h-full" />
+                <img [src]="story.photoURL | constructImageUrl"
+                  class="block w-full h-full" />
               </div>
             </div>
           </ng-template>

@@ -16,28 +16,32 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/api/v1/messagecontents")
+@RequestMapping(value = "${api.prefix}/messagecontents")
 @AllArgsConstructor
 public class MessageContentController {
 
     private final MessageContentService messageContentService;
     private final JwtTokenUtils jwtTokenUtils;
 
+
     @GetMapping
     public ResponseEntity<List<MessageContentDTO>> getAllMessageContents() {
         return ResponseEntity.ok(messageContentService.findAll());
     }
+
 
     @GetMapping("/{messageRoomId}")
     public ResponseEntity<List<MessageContentDTO>> getMessageContents(@PathVariable(name = "messageRoomId") final UUID messageRoomId) {
         return ResponseEntity.ok(messageContentService.findByMessageRoomId(messageRoomId));
     }
 
+
     @PostMapping
     public ResponseEntity<UUID> createMessageContent(@RequestBody @Valid final MessageContentDTO messageContentDTO) {
         final UUID createdId = messageContentService.create(messageContentDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
+
 
     /**
      * This method is used to send a message content to a specific message room.
@@ -61,6 +65,7 @@ public class MessageContentController {
         messageContentDTO.setId(createdId);
         return messageContentDTO;
     }
+
 
     /**
      * Used to upload photos. Mean send a message content type IMAGE with photos

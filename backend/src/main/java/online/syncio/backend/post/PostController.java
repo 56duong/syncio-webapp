@@ -1,6 +1,7 @@
 package online.syncio.backend.post;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import online.syncio.backend.exception.ReferencedException;
 import online.syncio.backend.exception.ReferencedWarning;
 import online.syncio.backend.user.EngagementMetricsDTO;
@@ -20,14 +21,12 @@ import java.util.Set;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/api/v1/posts")
+@RequestMapping(value = "${api.prefix}/posts")
+@AllArgsConstructor
 public class PostController {
 
     private final PostService postService;
 
-    public PostController(final PostService postService) {
-        this.postService = postService;
-    }
 
     // new - get 10 post/page
     @GetMapping
@@ -69,13 +68,17 @@ public class PostController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createPost(@RequestPart("post") @Valid CreatePostDTO postDTO,
-                                        @RequestPart(name = "images", required = false) List<MultipartFile> images) throws IOException {
+    public ResponseEntity<?> createPost(@RequestPart("post") @Valid CreatePostDTO createPostDTO,
+                                        @RequestPart(name = "images", required = false) List<MultipartFile> images,
+                                        @RequestPart(name = "audio", required = false) MultipartFile audio) throws IOException {
 
         if (images != null && !images.isEmpty()) {
-            postDTO.setPhotos(images);
+            createPostDTO.setPhotos(images);
         }
-        ResponseEntity<?> createdId = postService.create(postDTO);
+        if (audio != null) {
+            createPostDTO.setAudio(audio);
+        }
+        ResponseEntity<?> createdId = postService.create(createPostDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
@@ -159,6 +162,16 @@ public class PostController {
     public Page<PostDTO> getPostFlagged(@RequestParam(defaultValue = "0") int pageNumber,
                                         @RequestParam(defaultValue = "10") int pageSize) {
         return postService.getPostUnFlagged(PageRequest.of(pageNumber, pageSize));
+    }
+
+    @GetMapping("/{id}/posts")
+    public ResponseEntity<List<PostDTO>> getPostsByUserId(@PathVariable(name = "id") final UUID id) {
+        return ResponseEntity.ok(postService.getPostsByUserId(id));
+    }
+
+    @GetMapping("/user/not-login/{id}")
+    public ResponseEntity<List<PostDTO>> getPostsByUserId2(@PathVariable(name = "id") final UUID id) {
+        return ResponseEntity.ok(postService.getPostsByVisibility(id));
     }
 
 }

@@ -1,0 +1,119 @@
+<div class="w-full p-0 h-full flex flex-column">
+  <!-- Header -->
+  <div class="flex justify-content-between align-items-center p-2">
+    <h3>Details</h3>
+  </div>
+
+  <p-divider></p-divider>
+
+  <!-- Change group name -->
+  <div *ngIf="messageRoom.group" class="flex align-items-center justify-content-between py-4 px-3">
+    <p>Change group name</p>
+    <p-button (click)="isVisibleChangeGroupName = true" label="Change" severity="my-custom-secondary"></p-button>
+  </div>
+  
+  <p-divider></p-divider>
+
+  <!-- Message room members -->
+  <div class="py-4 flex flex-column flex-1 overflow-hidden">
+    <div class="flex justify-content-between align-items-center mb-3 px-3">
+      <p>Members</p>
+      <span *ngIf="messageRoom.group" 
+        (click)="isVisibleAddPeople = true" 
+        class="text-primary cursor-pointer font-semibold">
+        Add people
+      </span>
+    </div>
+    <!-- Members list -->
+    <div class="flex align-items-center flex-column gap-3 px-3 flex-1 overflow-y-scroll primary-scrollbar">
+      <ng-container *ngFor="let member of messageRoom.members">
+        <div *ngIf="messageRoom.group || (!messageRoom.group && member.userId != currentUser.id)" 
+          class="w-full flex align-items-center gap-1">
+          <!-- avatar -->
+          <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
+          <!-- username and is admin -->
+          <div class="flex flex-column gap-2">
+            <p [title]="member.username" class="my-0 line-clamp" style="word-break: break-word;">{{member.username}}</p>
+            <p *ngIf="member.admin" class="text-gray-500 my-0 text-sm">Admin</p>
+          </div>
+          <!-- 3 dots -->
+          <i *ngIf="messageRoom.group && member.userId !== currentUser.id && member.userId !== messageRoom.createdBy" 
+            (click)="isVisibleEditMember = true; selectedMember = member;"
+            class="pi pi-ellipsis-v ml-auto text-gray-700 cursor-pointer" 
+            style="font-size: 1rem"></i>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Leave chat <section></section> -->
+  <p-divider></p-divider>
+  <div *ngIf="messageRoom.group" class="pt-4 pb-3 px-3">
+    <p (click)="isVisibleLeaveChat = true" 
+      class="text-red-500 cursor-pointer font-semibold mb-2">
+      Leave chat
+    </p>
+    <span class="text-sm text-gray-500">
+      You won't be able to send or receive messages unless someone adds you back to the chat.
+    </span>
+  </div>
+
+</div>
+
+
+
+<!-- Change group name dialog -->
+<p-dialog header="Change group name" 
+  [modal]="true"
+  [dismissableMask]="true" 
+  [(visible)]="isVisibleChangeGroupName" 
+  [style]="{ width: '25rem' }">
+  <p-divider></p-divider>
+  <span class="block p-3">Changing the name of a group chat changes it for everyone.</span>
+
+  <!-- Input -->
+  <div class="flex align-items-center gap-3 p-3 pt-0">
+    <input [(ngModel)]="newMessageRoomName" pInputText id="username" class="flex-auto" autocomplete="off" />
+  </div>
+
+  <p-divider></p-divider>
+
+  <!-- Button -->
+  <div class="p-fluid w-full p-3">
+    <p-button label="Save" (click)="updateGroupName()" />
+  </div>
+
+</p-dialog>
+
+
+
+<!-- Add people popup -->
+<app-select-user-dialog
+  [expectedUsers]="memberUserIds"
+  [isDialogVisible]="isVisibleAddPeople"
+  dialogTitle="Add people"
+  dialogDescription="To..."
+  dialogSubmitLabel="Add"
+  (selectedUsersEvent)="addPeople($event)"
+  (visibleHide)="isVisibleAddPeople = false">
+</app-select-user-dialog>
+
+
+
+<!-- Edit member popup -->
+<app-global-dialog
+  [display]="isVisibleEditMember"
+  [items]="editMemberDialogItems"
+  (displayChange)="isVisibleEditMember = false">
+</app-global-dialog>
+
+
+
+<!-- Leave chat popup -->
+<app-global-dialog
+  [display]="isVisibleLeaveChat"
+  [items]="leaveChatDialogItems"
+  [title]="'Leave chat'"
+  [description]="'You won\'t be able to send or receive messages unless someone adds you back to the chat'"
+  (displayChange)="isVisibleLeaveChat = false">
+</app-global-dialog>

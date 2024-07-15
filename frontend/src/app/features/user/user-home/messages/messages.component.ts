@@ -1,10 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageContent, MessageContentTypeEnum } from 'src/app/core/interfaces/message-content';
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
 import { User } from 'src/app/core/interfaces/user';
+import { MessageContentService } from 'src/app/core/services/message-content.service';
+import { MessageRoomMemberService } from 'src/app/core/services/message-room-member.service';
 import { MessageRoomService } from 'src/app/core/services/message-room.service';
 import { TokenService } from 'src/app/core/services/token.service';
-import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-messages',
@@ -17,18 +19,24 @@ export class MessagesComponent {
   currentUser!: User; // Current user logged in.
   
   isDialogVisible: boolean = false;
-  selectedUserMembers: string[] = []; // Array of selected user members to create a message room.
-  searchedUsers: User[] = []; // Array of searched users.
+  selectedUserMembers: User[] = []; // Array of selected user members to create a message room.
 
   selectedMessageRoom!: MessageRoom; // Selected message room to display the messages content.
   
+  MessageContentTypeEnum = MessageContentTypeEnum;
+
+  subscriptionMessageContentsMap: Map<string, any> = new Map(); // Map of subscriptions to the message contents observable
+  
   constructor(
     private messageRoomService: MessageRoomService,
-    private userService: UserService,
     private tokenService: TokenService,
-    private router: Router
+    private router: Router,
+    private messageRoomMemberService: MessageRoomMemberService,
+    private messageContentService: MessageContentService,
+    private cdr: ChangeDetectorRef
   ) { }
   
+
   ngOnInit() {
     this.tokenService.getCurrentUserFromToken().subscribe({
       next: (user) => {
@@ -39,16 +47,129 @@ export class MessagesComponent {
         console.log(error);
       }
     });
+
+    this.messageRoomService.connectWebSocketNewMessageGroup();
+    this.getNewMessageGroupObservable();
+
+    this.messageRoomService.connectWebSocketFirstMessage();
+    this.getMessageRoomsFirstMessageObservable();
   }
 
+
+  ngOnDestroy() {
+    this.subscriptionMessageContentsMap.forEach((subscription) => {
+      subscription.unsubscribe();
+      this.messageContentService.disconnect(subscription.messageRoomId);
+    });
+    this.messageRoomService.disconnect();
+  }
+
+
+  /**
+   * Receive new message content and update the last message and unSeenCount of the message room.
+   * @param messageContent 
+   * @returns 
+   */
+  receiveNewMessageContent(messageContent: MessageContent) {
+    if(Object.keys(messageContent).length <= 0) return;
+    // Find the index of the message room in the message rooms array
+    const roomIndex = this.messageRooms.findIndex(room => room.id === messageContent.messageRoomId);
+    if (roomIndex !== -1) {
+      // Update the last message and unSeenCount of the message room
+      let room = this.messageRooms[roomIndex];
+      if(messageContent.user?.id === this.currentUser.id || (this.selectedMessageRoom && messageContent.messageRoomId === this.selectedMessageRoom.id)) {
+        room = {...room, lastMessage: messageContent};
+      }
+      else {
+        room = {...room, lastMessage: messageContent, unSeenCount: room.unSeenCount ? room.unSeenCount + 1 : 1};
+      }
+      // Remove the room from its current position
+      this.messageRooms.splice(roomIndex, 1);
+      // Unshift the room to the beginning of the array
+      this.messageRooms.unshift(room);
+    }
+  }
+
+
+  /**
+   * Get the new message group observable.
+   * This observable will emit new message room whenever a new message room is received.
+   * This is used if the room is group chat.
+   * It will add the new message room to the message rooms array, connect and subscribe to the message room.
+   */
+  getNewMessageGroupObservable() {
+    this.messageRoomService.getNewMessageGroupObservable().subscribe({
+      next: (messageRoom) => {
+        if(!messageRoom.id) return; 
+        if(messageRoom.createdBy == this.currentUser.id) {
+          // when a new message room is created, add it to the message rooms array
+          this.messageRooms = [messageRoom, ...this.messageRooms];
+        }
+        // Connect to the new message room
+        this.connectAndSubscribeToMessageRoom(messageRoom.id);
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
+
+  /**
+   * Get the message rooms observable for the first message.
+   * This observable will emit new message room whenever the first message is received.
+   * This is used if the room is a direct message between two users.
+   * You can use this method as an alternative to getNewMessageGroupObservable() for direct messages.
+   * It will add the new message room to the message rooms array, connect and subscribe to the message room.
+   */
+  getMessageRoomsFirstMessageObservable() {
+    this.messageRoomService.getMessageRoomsFirstMessageObservable().subscribe({
+      next: (messageRoom) => {
+        if(!messageRoom.id) return;
+        if(messageRoom.createdBy != this.currentUser.id) {
+          this.messageRooms = [messageRoom, ...this.messageRooms];
+        }
+        this.connectAndSubscribeToMessageRoom(messageRoom.id);
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
+
+  /**
+   * Get all message rooms by user id.
+   * @param userId 
+   */
   getMessageRoomsByUserId(userId: string) {
     this.messageRoomService.getMessageRoomsByUserId(userId).subscribe({
       next: (messageRooms) => {
         this.messageRooms = messageRooms;
+        this.connectAndSubscribeToMessageRooms();
         // Get the selected message room from the URL in case of page refresh.
         const roomId = this.router.url.split('/')[3];
         if(roomId) {
-          this.selectedMessageRoom = this.messageRooms.find(room => room.id === roomId) || {} as MessageRoom;
+          // Find the message room by the room id
+          let messageRoom = this.messageRooms.find(room => room.id === roomId) || {} as MessageRoom;
+          // If the message room is found, select the message room
+          if(Object.keys(messageRoom).length > 0) {
+            this.selectMessageRoom(messageRoom);
+          }
+          else {
+            // If the message room is not found, get the message room by the room id
+            // this case happens when the room is created but there is no message content yet.
+            this.messageRoomService.getMessageRoomById(roomId).subscribe({
+              next: (room) => {
+                if(room.id) {
+                  this.selectMessageRoom(room);
+                }
+              },
+              error: (error) => {
+                console.log(error);
+              }
+            });
+          }
         }
       },
       error: (error) => {
@@ -57,19 +178,85 @@ export class MessagesComponent {
     });
   }
 
-  selectMessageRoom(messageRoom: MessageRoom) {
-    this.selectedMessageRoom = messageRoom;
-  }
 
   /**
-   * Search users by username or email.
-   * @param event 
+   * Connect to the WebSocket server and subscribe to all message rooms.
    */
-  search(event: any) {
-    const searchText = event.query;
-    this.userService.searchUsers(searchText, searchText).subscribe({
-      next: (users) => {
-        this.searchedUsers = users;
+  async connectAndSubscribeToMessageRooms() {
+    for (const room of this.messageRooms) {
+      if (!room.id) continue; // Use continue instead of return
+      try {
+        this.connectAndSubscribeToMessageRoom(room.id);
+      } catch (error) {
+        console.error('Error connecting to WebSocket:', error);
+      }
+    }
+  }
+
+
+  /**
+   * Connect to the WebSocket server and subscribe to the specified message room.
+   * @param messageRoomId 
+   * @returns 
+   */
+  async connectAndSubscribeToMessageRoom(messageRoomId: string) {
+    // if the message room is already subscribed, return
+    if(this.subscriptionMessageContentsMap.has(messageRoomId)) return;
+    // Connect to the WebSocket server
+    await this.messageContentService.connectWebSocket(messageRoomId);
+    // Subscribe to the message contents observable
+    const subscription = this.messageContentService.getMessageContentsObservable(messageRoomId).subscribe({
+      next: (messageContent) => {
+        this.receiveNewMessageContent(messageContent);
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+    // Add the subscription to the map
+    this.subscriptionMessageContentsMap.set(messageRoomId, subscription);
+  }
+
+
+  /**
+   * When user selects a message room, update the last seen message and set the selected message room.
+   * @param messageRoom 
+   * @returns 
+   */
+  selectMessageRoom(messageRoom: MessageRoom) {
+    if(messageRoom.id === this.selectedMessageRoom?.id) return;
+    
+    this.updateLastSeenMessage(this.selectedMessageRoom);
+
+    this.selectedMessageRoom = {...messageRoom};
+    // Reset the unSeenCount to 0 when the message room is selected.
+    this.messageRooms = this.messageRooms.map(room => {
+      if(room.id === this.selectedMessageRoom.id) {
+        room = {...room, unSeenCount: 0};
+        this.cdr.detectChanges();
+      }
+      return room;
+    });
+    
+    this.updateLastSeenMessage(messageRoom);
+  }
+
+
+  /**
+   * Update the last seen message of the message room.
+   * @param messageRoom 
+   * @returns 
+   */
+  updateLastSeenMessage(messageRoom: MessageRoom) {
+    if(!messageRoom || !messageRoom.id) return;
+    this.messageRoomMemberService.updateLastSeenMessage(messageRoom.id).subscribe({
+      next: (result) => {
+        this.messageRooms = this.messageRooms.map((room: MessageRoom) => {
+          if(room.id === messageRoom.id) {
+            room = {...room, lastSeen: result};
+          }
+          return room;
+        });
       },
       error: (error) => {
         console.log(error);
@@ -77,24 +264,19 @@ export class MessagesComponent {
     });
   }
 
-  /**
-   * Navigate to the message room and set the selected message room.
-   * @param messageRoom - The message room to navigate to. 
-   */
-  navigateToMessageRoom(messageRoom: MessageRoom) {
-    this.router.navigate(['/messages/inbox', messageRoom.id]);
-    this.selectedMessageRoom = messageRoom;
-  }
 
   /**
    * Check and create a new message room with selected user members.
    */
-  chat() {
+  chat(event: User[]) {
+    this.selectedUserMembers = event;
+
     if(this.selectedUserMembers.length <= 0) return;
     
     // extract list of id inside selectedUserMembers: User here
     const userIds = this.selectedUserMembers.map((user: any) => user.id);
-    userIds.push(this.currentUser.id);
+    userIds.unshift(this.currentUser.id);
+    
     this.messageRoomService.findExactRoomWithMembers(userIds).subscribe({
       next: (existsMessageRoom) => {
         // check if the room already exists
@@ -102,14 +284,17 @@ export class MessagesComponent {
           // if exists, navigate to the room
           this.isDialogVisible = false;
           this.navigateToMessageRoom(existsMessageRoom);
+          this.selectedUserMembers = [];
         }
         else {
           // if not exists, create a new room
           this.messageRoomService.createMessageRoomWithUsers(userIds).subscribe({
             next: (messageRoom) => {
               this.messageRooms = [messageRoom, ...this.messageRooms];
+              this.selectMessageRoom(messageRoom);
               this.isDialogVisible = false;
               this.navigateToMessageRoom(messageRoom);
+              this.selectedUserMembers = [];
             },
             error: (error) => {
               console.log(error);
@@ -123,16 +308,56 @@ export class MessagesComponent {
     });
   }
 
+
   /**
    * Send a message event from the message content component.
    * Check if the selected message room is not in the message rooms array, 
    * mean it's a new message room and is the first message content.
    */
-  sendMessageEvent() {
-    // check if this selected message room is not in the message rooms array
-    if(!this.messageRooms.find(room => room.id === this.selectedMessageRoom.id)) {
-      this.messageRooms = [this.selectedMessageRoom, ...this.messageRooms];
-    }
+  sendFirstMessageEvent() {
+    if(!this.selectedMessageRoom.id) return;
+    this.messageRoomMemberService.getMessageRoomMembersByRoomId(this.selectedMessageRoom.id).subscribe({
+      next: (members) => {
+        this.selectedMessageRoom.members = members;
+        let receiveId = this.selectedMessageRoom.members?.filter((member: any) => member.userId != this.currentUser.id)[0].userId;
+        if(!receiveId || !this.selectedMessageRoom.id) return;
+        this.messageRoomService.sendFirstMessage(receiveId, this.selectedMessageRoom.id).subscribe({
+          next: (result) => {
+            console.log(result);
+          },
+          error: (error) => {
+            console.log(error);
+          }
+        });
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
+
+  /**
+   * Navigate to the message room and set the selected message room.
+   * @param messageRoom - The message room to navigate to. 
+   */
+  navigateToMessageRoom(messageRoom: MessageRoom) {
+    this.router.navigate(['/messages/inbox', messageRoom.id]);
+    this.selectedMessageRoom = messageRoom;
+  }
+
+
+  /**
+   * Receive from the message-content-list component to update the message room name.
+   * @param messageRoom 
+   */
+  updateMessageRoomName(messageRoom: MessageRoom) {
+    this.messageRooms = this.messageRooms.map(room => {
+      if(room.id === messageRoom.id) {
+        return messageRoom;
+      }
+      return room;
+    });
   }
 
 }

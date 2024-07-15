@@ -1,114 +1,91 @@
 <div class="main mt-3 mr-3">
     <!-- card -->
     <div class="card">
-    <p-toolbar styleClass="mb-4 gap-2">
-        <ng-template pTemplate="left">
-            <!-- nut them moi -->
-            <button 
-                pButton pRipple 
-                label="New" 
-                icon="pi pi-plus" 
-                class="p-button-success mr-2" 
-                (click)="openNew()">
-            </button>
+        <p-toolbar styleClass="mb-4 gap-2">
+            <ng-template pTemplate="left">
+                <!-- nut them moi -->
+                <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+                    (click)="openNew()"></button>
+            </ng-template>
+            <!-- export file -->
+            <ng-template pTemplate="right">
+                <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
+            </ng-template>
+        </p-toolbar>
 
-            <!-- nut xoa -->
-            <!-- <button 
-                pButton 
-                pRipple 
-                label="Delete" 
-                icon="pi pi-trash" 
-                class="p-button-danger" 
-                (click)="deleteSelectedUsers()" 
-                [disabled]="!selectedUsers || !selectedUsers.length">
-            </button> -->
-        </ng-template>
-        <!-- nut import, export file -->
-        <ng-template pTemplate="right">
-            <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>
-            <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
-        </ng-template>
-    </p-toolbar>
+        <!-- Bang du lieu Users -->
+        <p-table 
+            #dt [value]="users"
+            [rows]="10" 
+            [paginator]="true" 
+            [globalFilterFields]="[
+                'name',
+                'country.name',
+                'representative.name',
+                'status']" 
+            [tableStyle]="{ 'min-width': '75rem' }" 
+            [rowHover]="true" dataKey="id"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [showCurrentPageReport]="true" 
+            selectionMode="single" 
+            (onRowSelect)="onRowSelect($event)">
+            <ng-template pTemplate="caption">
+                <div class="flex align-items-center justify-content-between">
+                    <h5 class="m-0">Manage Users</h5>
+                </div>
+            </ng-template>
 
-    <!-- Bang du lieu Users -->
-    <p-table
-        #dt
-        [value]="users"
-        [rows]="10"
-        [paginator]="true"
-        [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
-        [tableStyle]="{ 'max-width': '75rem' }"
-        [(selection)]="selectedUsers"
-        [rowHover]="true"
-        dataKey="id"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        [showCurrentPageReport]="true"
-    >
-        <ng-template pTemplate="caption">
-            <div class="flex align-items-center justify-content-between">
-                <h5 class="m-0">Manage Users</h5>
-                <!-- Search -->
-                <!-- <span class="p-input-icon-left">
-                    <i class="pi pi-search"></i>
-                    <input 
-                        pInputText 
-                        type="text" 
-                        (input)="dt.filterGlobal($event.target.value, 'contains')" 
-                        placeholder="Search..." 
-                    />
-                </span> -->
-            </div>
-        </ng-template>
-
-        <ng-template pTemplate="header">
-            <tr>
-                <th style="width: 4rem">
-                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                </th>
-                <!-- <th pSortableColumn="id" style="min-width:15rem">ID <p-sortIcon field="id"></p-sortIcon></th> -->
-                <th pSortableColumn="username" style="min-width:18rem">Username <p-sortIcon field="username"></p-sortIcon></th>
-                <th pSortableColumn="email" style="min-width:21rem">Email <p-sortIcon field="email"></p-sortIcon></th>
-                <th pSortableColumn="createDate" style="min-width:18rem">Date Create <p-sortIcon field="createDate"></p-sortIcon></th>
-                <th pSortableColumn="role" style="min-width:11rem">Role <p-sortIcon field="role"></p-sortIcon></th>
-                <th pSortableColumn="status" style="min-width:11rem">Status <p-sortIcon field="status"></p-sortIcon></th>
-                <th pSortableColumn="action" style="min-width:6rem">Action</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-user>
-            <tr>
-                <td>
-                    <p-tableCheckbox [value]="user"></p-tableCheckbox>
-                </td>
-                <!-- <td>{{ user.id }}</td> -->
-                <!-- <td><img [src]="'/images/demo/product/' + user.image" [alt]="user.username" width="50" class="shadow-4" /></td> -->
-                <td>{{ user.username }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.createdDate | date:'HH:mm:ss dd/MM/yyyy' }}</td>
-                <td>{{ user.role }}</td>
-                <td>
-                    <p-tag [value]="user.status" [severity]="getSeverity(user.status)"></p-tag>
-                </td>
-                <td>
-                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editUser(user)"></button>
-                    <!-- <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteUser(user)"></button> -->
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="summary">
-            <div class="flex align-items-center justify-content-between">In total there are {{ users ? users.length : 0 }} users.</div>
-        </ng-template>
-    </p-table>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="username" style="min-width: 14rem">
+                        Username <p-sortIcon field="username"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="email" style="min-width: 16rem">
+                        Email <p-sortIcon field="email"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="createDate" style="min-width: 16rem">
+                        Date Create <p-sortIcon field="createDate"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="role" style="max-width: 11rem">
+                        Role <p-sortIcon field="role"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="status" style="max-width: 11rem">
+                        Status <p-sortIcon field="status"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="action" style="max-width: 6rem">Action</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user>
+                <tr [pSelectableRow]="user">
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.createdDate | date : "HH:mm:ss dd/MM/yyyy" }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>
+                        <p-tag [value]="user.status" [severity]="getSeverity(user.status)"></p-tag>
+                    </td>
+                    <td>
+                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                            (click)="editUser(user)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="summary">
+                <div class="flex align-items-center justify-content-between">
+                    In total there are {{ users ? users.length : 0 }} users.
+                </div>
+            </ng-template>
+        </p-table>
     </div>
 
     <!-- Dialog -->
     <p-dialog 
-    [(visible)]="userDialog" 
-    [style]="{ width: '450px' }" 
-    header="User Details" 
-    [modal]="true" 
-    styleClass="p-fluid">
+        [(visible)]="userDialog" 
+        [style]="{ width: '450px' }" 
+        header="User Details" 
+        [modal]="true"
+        styleClass="p-fluid">
         <ng-template pTemplate="content">
-            
             <!-- Username -->
             <div class="field">
                 <label for="username">Username</label>
@@ -119,7 +96,7 @@
             <!-- Email -->
             <div class="field">
                 <label for="email">Email</label>
-                <input type="email" pInputText id="email" [(ngModel)]="user.email" required email/>
+                <input type="email" pInputText id="email" [(ngModel)]="user.email" required email />
                 <small class="p-error" *ngIf="submitted && !user.email">Email is required.</small>
             </div>
 
@@ -161,31 +138,54 @@
             <!-- Bio -->
             <div class="field">
                 <label for="bio">Bio</label>
-                <textarea id="bio" pInputTextarea [(ngModel)]="user.bio" required rows="3" cols="20"></textarea>
+                <textarea 
+                    id="bio" 
+                    pInputTextarea 
+                    [(ngModel)]="user.bio" 
+                    required 
+                    rows="3" 
+                    cols="20">
+                </textarea>
             </div>
-
         </ng-template>
 
-    <ng-template pTemplate="footer">
-        <!-- nut an -->
-        <button 
-            pButton pRipple 
-            label="Cancel" 
-            icon="pi pi-times" 
-            class="p-button-text" 
-            (click)="hideDialog()">
-        </button>
+        <ng-template pTemplate="footer">
+            <!-- nut an -->
+            <button 
+                pButton 
+                pRipple 
+                label="Cancel" 
+                icon="pi pi-times" 
+                class="p-button-text"
+                (click)="hideDialog()">
+            </button>
 
-        <!-- nut save -->
-        <button 
-            pButton 
-            pRipple 
-            label="Save" 
-            icon="pi pi-check" 
-            class="p-button-text" 
-            (click)="saveUser()">
-        </button>
-    </ng-template>
+            <!-- nut save -->
+            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveUser()"></button>
+        </ng-template>
     </p-dialog>
 
+    <!-- Post of User Selection Dialog -->
+    <p-dialog 
+        [(visible)]="postOfUserDialog" 
+        [style]="{ width: '1250px' }" 
+        header="List Post of User" 
+        [modal]="true"
+        styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="main">
+                <!-- Post list -->
+                <div>
+                    <!-- Post from close friends and following -->
+                    <app-post *ngFor="let post of posts" [post]="post"></app-post>
+
+                    <!-- End of feed -->
+                    <div #endOfFeed class="text-gray-500 text-center"
+                        style="width: min(470px, 100vw - 1rem); margin: 2rem auto">
+                        <small *ngIf="endOfFeed">You have reached the end of the feed!</small>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-dialog>
 </div>

@@ -9,14 +9,10 @@
 
   <div class="flex justify-content-between align-items-center">
     <div class="flex align-items-center gap-2">
-      <div class="avt">
-        <img class="w-full object-cover"
-          src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
-          alt="" />
-      </div>
+      <app-avatar [userId]="post.createdBy" [width]="40"></app-avatar>
       <div class="flex align-items-center gap-1">
-        <small *ngIf="post.createdBy" class="font-bold">
-          {{ post.createdBy | userIdToName | async }}
+        <small *ngIf="post.createdBy" class="font-bold" style="font-size: 0.925rem;">
+          {{ post.username }}
         </small>
         <small class="text-gray-500">•</small>
         <small class="text-gray-500" [title]="post.createdDate | date: 'HH:mm:ss dd/MM/yyyy'">
@@ -50,16 +46,24 @@
         <img src="{{ photo.url }}" 
           alt="{{ photo.altText }}"
           class="w-full h-full"
-          style="object-fit: cover" />
+          style="object-fit: cover; max-height: 500px;" />
       </ng-template>
     </p-carousel>
+  </div>
+
+  <div *ngIf="post.audioURL">
+    <audio controls class="w-full">
+      <source [src]="'http://localhost:8080/api/v1/audio/' + post.audioURL" type="audio/mpeg">
+      <source [src]="'https://firebasestorage.googleapis.com/v0/b/syncio-bf6ca.appspot.com/o/' + post.audioURL.replace('/', '%2F') + '?alt=media'" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
   </div>
 
   <!-- caption -->
   <div *ngIf="post.caption" class="line-clamp"
     [ngStyle]="{ '-webkit-line-clamp': isViewMore ? 'unset' : '3'}">
     <small *ngIf="post.createdBy && post.photos?.length" class="font-bold mr-1">
-      {{ post.createdBy | userIdToName | async }}
+      {{ post.username }}
     </small>
     <p class="inline m-0"
       (click)="isViewMore = !isViewMore" 
@@ -69,8 +73,9 @@
   </div>
 
   <!-- Like -->
-  <app-like *ngIf="post.id"
+  <app-like *ngIf="post.id && post.createdBy"
     [postId]="post.id"
+    [createdBy]="post.createdBy"
     (visibleChange)="showPostDetail($event)">
   </app-like>
 </div>
@@ -79,7 +84,8 @@
   *ngIf="visible"
   [post]="post"
   [visible]="visible"
-  (visibleChange)="showPostDetail($event)">
+  (visibleChange)="showPostDetail($event)"
+  style="z-index: 1102;">
 </app-post-detail>
 
 <app-report 

@@ -7,11 +7,18 @@
   [draggable]="false"
   [dismissableMask]="true">
   <ng-template pTemplate="content">
+    <div class="dialog-content" *ngIf="title || description">
+      <div *ngIf="title" class="dialog-title">{{title}}</div>
+      <div *ngIf="description" class="dialog-description">{{description}}</div>
+    </div>
     <button *ngFor="let item of items"
       (click)="onItemClick(item)" 
       class="dialog-item">
-      <i *ngIf="item.icon" [ngClass]="'pi' + (item.icon ? ' pi-' + item.icon : '')" [ngStyle]="{'color': item.color}"></i>
-      <span *ngIf="item.label" [ngStyle]="{'color': item.color}">{{item.label}}</span>
+      <i *ngIf="item.icon" 
+        [ngClass]="'pi' + (item.icon ? ' pi-' + item.icon : '')" 
+        [ngStyle]="{'color': item.color, 'font-weight': item.bold+'00'}">
+      </i>
+      <span *ngIf="item.label" [ngStyle]="{'color': item.color, 'font-weight': item.bold+'00'}">{{item.label}}</span>
     </button>
   </ng-template>
 </p-dialog>

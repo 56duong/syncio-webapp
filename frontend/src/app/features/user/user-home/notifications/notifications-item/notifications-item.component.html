@@ -1,4 +1,5 @@
-<div [routerLink]='notification.redirectURL' [ngSwitch]="notification.actionType"
+<div (click)="router.navigateByUrl(notification.redirectURL || '')" 
+  [ngSwitch]="notification.actionType"
   class="p-3"
   [ngClass]="notification.state != StateEnum.SEEN_AND_READ ? 'not-seen-and-read' : ''">
 
@@ -7,10 +8,10 @@
     class="flex align-items-center gap-1">
 
     <!-- Actor avatar -->
-    <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
+    <app-avatar [userId]="notification.actorId" [width]="48"></app-avatar>
 
     <div class="flex-1">
-      <div class="line-clamp-2">
+      <div class="line-clamp-2 text-sm">
         <!-- Actor username -->
         <span *ngIf="notification.actorId" class="font-semibold">
           {{notification.actorId | userIdToName | async}}
@@ -23,10 +24,11 @@
         
         <!-- Action -->
         <span> liked your post</span>
-  
-        <!-- If post has photo, show dot, else show caption -->
-        <span *ngIf="notification.imageURL">.</span>
-        <span *ngIf="notification.previewText && !notification.imageURL">: {{notification.previewText}}</span>
+
+        <!-- if post has caption(previewText), show : caption -->
+         <span *ngIf="notification.previewText">: {{notification.previewText}}</span>
+        <!-- If post doesn't have caption, show dot -->
+        <span *ngIf="!notification.previewText">.</span>
       </div>
 
       <!-- Created date -->
@@ -44,10 +46,10 @@
     class="flex align-items-center gap-1">
 
     <!-- Actor avatar -->
-    <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
+    <app-avatar [userId]="notification.actorId" [width]="48"></app-avatar>
 
     <div class="flex-1">
-      <div class="line-clamp-2">
+      <div class="line-clamp-2 text-sm">
         <!-- Actor username -->
         <span *ngIf="notification.actorId" class="font-semibold">
           {{notification.actorId | userIdToName | async}}
@@ -60,10 +62,11 @@
         
         <!-- Action -->
         <span> commented on your post</span>
-  
-        <!-- If post has photo, show dot, else show caption -->
-        <span *ngIf="notification.imageURL">.</span>
-        <span *ngIf="notification.previewText && !notification.imageURL">: {{notification.previewText}}</span>
+
+        <!-- if has comment.text(previewText), show : comment.text -->
+        <span *ngIf="notification.previewText">: {{notification.previewText}}</span>
+        <!-- If post doesn't have caption, show dot -->
+        <span *ngIf="!notification.previewText">.</span>
       </div>
 
       <!-- Created date -->
@@ -81,10 +84,10 @@
     class="flex align-items-center gap-1">
 
     <!-- Actor avatar -->
-    <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
+    <app-avatar [userId]="notification.actorId" [width]="48"></app-avatar>
 
     <div class="flex-1">
-      <div class="line-clamp-2">
+      <div class="line-clamp-2 text-sm">
         <!-- Actor username -->
         <span *ngIf="notification.actorId" class="font-semibold">
           {{notification.actorId | userIdToName | async}}
@@ -98,9 +101,10 @@
         <!-- Action -->
         <span> replied to your comment</span>
   
-        <!-- If post has photo, show dot, else show caption -->
-        <span *ngIf="notification.imageURL">.</span>
-        <span *ngIf="notification.previewText && !notification.imageURL">: {{notification.previewText}}</span>
+        <!-- if has comment.text(previewText), show : comment.text -->
+        <span *ngIf="notification.previewText">: {{notification.previewText}}</span>
+        <!-- If post doesn't have caption, show dot -->
+        <span *ngIf="!notification.previewText">.</span>
       </div>
 
       <!-- Created date -->
@@ -117,10 +121,10 @@
     class="flex align-items-center gap-1">
 
     <!-- Actor avatar -->
-    <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
+    <app-avatar [userId]="notification.actorId" [width]="48"></app-avatar>
 
     <div class="flex-1">
-      <div class="line-clamp-2">
+      <div class="line-clamp-2 text-sm">
         <!-- Actor username -->
         <span *ngIf="notification.actorId" class="font-semibold">
           {{notification.actorId | userIdToName | async}}
