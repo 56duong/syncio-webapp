@@ -127,6 +127,7 @@ export class MessagesComponent {
       next: (messageRoom) => {
         if(!messageRoom.id) return;
         if(messageRoom.createdBy != this.currentUser.id) {
+          if(!messageRoom.group) messageRoom.avatarURL = messageRoom.members?.filter((member: any) => member.userId != this.currentUser.id)[0].userId;
           this.messageRooms = [messageRoom, ...this.messageRooms];
         }
         this.connectAndSubscribeToMessageRoom(messageRoom.id);

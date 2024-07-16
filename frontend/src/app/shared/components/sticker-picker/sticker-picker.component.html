@@ -12,8 +12,8 @@
             class="cursor-pointer">
             <img [src]="sticker.imageUrl | constructImageUrl"
               onerror="this.onerror=null; this.src='/assets/images/no-image-available.jpg';"
-              class="w-full h-full" 
-              style="object-fit: contain;" 
+              class="block" 
+              style="object-fit: contain; width: 130px; height: 130px;" 
               [alt]="sticker.name"
               [title]="sticker.name">
           </div>

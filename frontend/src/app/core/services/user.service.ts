@@ -10,6 +10,7 @@ import { UserResponse } from 'src/app/features/authentication/login/user.respons
 import { FogotPasswordDTO } from 'src/app/features/authentication/forgotpassword/forgotpassword.dto';
 import { UserStory } from '../interfaces/user-story';
 import { UserProfile } from '../interfaces/user-profile';
+import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +29,8 @@ export class UserService {
   private apiConfig = {
     headers: this.httpUtilService.createHeaders(),
   };
+  private readonly TOKEN_KEY = 'access_token';
+  
   constructor(
     private http: HttpClient,
     private httpUtilService: HttpUtilService
@@ -272,4 +275,15 @@ export class UserService {
   getUserCount(): Observable<number> {
     return this.getUsers().pipe(map((users) => users.length));
   }
+
+
+  logout(): Observable<any> {
+    const token = localStorage.getItem(this.TOKEN_KEY);
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http.post<any>(`${this.apiURL}/logout`, {}, { headers: headers });
+  }
+
 }

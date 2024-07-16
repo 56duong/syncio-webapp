@@ -75,6 +75,7 @@
   .p-button-icon {
     font-weight: 500;
     color: var(--surface-800);
+    font-size: 16px;
   }
 }
 
@@ -204,7 +205,7 @@
 
 p-tieredMenu ::ng-deep {
   .p-menuitem-text {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .p-tieredmenu .p-menuitem:not(.p-highlight):not(.p-disabled) > .p-menuitem-content {
