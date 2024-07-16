@@ -16,7 +16,7 @@
     <div #messageContentContainer class="primary-scrollbar" style="flex: 1; overflow-y: scroll;">
       <!-- Avatar -->
       <div class="flex flex-column justify-content-center align-items-center gap-1 my-4">
-        <app-avatar [userId]="getMemberNotMe()" [width]="48"></app-avatar>
+        <app-avatar [userId]="getMemberNotMe()" [width]="128"></app-avatar>
         <h2 *ngIf="currentUser.username" class="text-3xl mt-1 mb-0 p-2 text-center" style="font-weight: 500;">{{messageRoom.name}}</h2>
         <p-button *ngIf="!messageRoom.group && messageRoom.members" 
           [routerLink]="['/profile', getMemberNotMe()]" 

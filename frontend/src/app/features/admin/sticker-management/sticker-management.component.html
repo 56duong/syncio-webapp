@@ -170,10 +170,11 @@
   <!-- Image -->
   <div class="mb-4 text-center">
     <img *ngIf="selectedSticker.imageUrl"
-      [src]="selectedSticker.imageUrl" 
+      [src]="selectedSticker.imageUrl | constructImageUrl"
+      onerror="this.onerror=null; this.src='/assets/images/no-image-available.jpg';"
       [alt]="selectedSticker.name" 
-      width="130" 
-      class="shadow-4 mb-2" />
+      width="50" 
+      class="shadow-4" />
     <p-fileUpload *ngIf="!selectedSticker.id"
       mode="basic" 
       chooseLabel="Choose" 

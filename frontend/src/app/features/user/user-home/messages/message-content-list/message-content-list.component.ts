@@ -330,6 +330,7 @@ export class MessageContentListComponent {
    * @returns 
    */
   getMemberNotMe(): string {
+    if(this.messageRoom.group) return '';
     return this.messageRoom.members?.find(member => member.userId !== this.currentUser.id)?.userId || '';
   }
 

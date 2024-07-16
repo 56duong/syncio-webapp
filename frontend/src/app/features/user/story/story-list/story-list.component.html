@@ -9,7 +9,7 @@
       <!-- Avatar -->
       <div class="avt border-circle border-3 overflow-hidden"
         [ngClass]="user.hasUnseenStory ? 'border-primary' : 'surface-border'"
-        style="width: 64px; scroll-snap-align: start">
+        style="width: 64px; scroll-snap-align: start; pointer-events: none;">
         <app-avatar [userId]="user.id" [width]="59.5"></app-avatar>
       </div>
       <!-- Username -->

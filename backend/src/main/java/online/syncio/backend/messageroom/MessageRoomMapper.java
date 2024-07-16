@@ -12,7 +12,6 @@ import online.syncio.backend.user.UserRepository;
 import online.syncio.backend.utils.AuthUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -36,7 +35,7 @@ public class MessageRoomMapper {
         messageRoomMembers.removeIf(messageRoomMember -> messageRoomMember.getUser().getId().equals(currentUserId));
 
         // if room is not a group, set the avatar to the other member
-        messageRoomDTO.setAvatarURL(messageRoomMembers.size() != 1 ? null : messageRoomMembers.get(0).getUser().getId().toString());
+        messageRoomDTO.setAvatarURL(messageRoomMembers.size() == 1 ? messageRoomMembers.get(0).getUser().getId().toString() : null);
 
         // set name of the room
         if(messageRoom.getName() != null) {
