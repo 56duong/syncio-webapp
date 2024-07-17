@@ -127,8 +127,10 @@ export class MessagesComponent {
       next: (messageRoom) => {
         if(!messageRoom.id) return;
         if(messageRoom.createdBy != this.currentUser.id) {
-          if(!messageRoom.group) messageRoom.avatarURL = messageRoom.members?.filter((member: any) => member.userId != this.currentUser.id)[0].userId;
-          this.messageRooms = [messageRoom, ...this.messageRooms];
+          if(!messageRoom.group) {
+            messageRoom.avatarURL = messageRoom.members?.filter((member: any) => member.userId != this.currentUser.id)[0].userId;
+            this.messageRooms = [messageRoom, ...this.messageRooms];
+          }
         }
         this.connectAndSubscribeToMessageRoom(messageRoom.id);
       },
@@ -231,13 +233,10 @@ export class MessagesComponent {
 
     this.selectedMessageRoom = {...messageRoom};
     // Reset the unSeenCount to 0 when the message room is selected.
-    this.messageRooms = this.messageRooms.map(room => {
-      if(room.id === this.selectedMessageRoom.id) {
-        room = {...room, unSeenCount: 0};
-        this.cdr.detectChanges();
-      }
-      return room;
-    });
+    const index = this.messageRooms.findIndex(room => room.id === this.selectedMessageRoom.id);
+    if(index !== -1) {
+      this.messageRooms[index].unSeenCount = 0;
+    }
     
     this.updateLastSeenMessage(messageRoom);
   }
