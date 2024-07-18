@@ -1,0 +1,6 @@
+<div>
+    <span [ngStyle]="{'font-size': fontSize, 'color': color}">
+      {{ id | userIdToName | async }}
+    </span>
+    <img *ngIf="gifUrl !== undefined && gifUrl !== null && gifUrl !== ''" [src]="gifUrl" alt="User Label" class="user-label">
+</div>
