@@ -1,28 +1,24 @@
 package online.syncio.backend.auth;
 
 import lombok.RequiredArgsConstructor;
-
+import online.syncio.backend.auth.request.RegisterDTO;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.DataNotFoundException;
 import online.syncio.backend.exception.ExpiredTokenException;
 import online.syncio.backend.exception.InvalidParamException;
-
 import online.syncio.backend.setting.SettingService;
 import online.syncio.backend.user.RoleEnum;
 import online.syncio.backend.user.StatusEnum;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
-import online.syncio.backend.auth.request.RegisterDTO;
-import online.syncio.backend.utils.ConstantsMessage;
 import online.syncio.backend.utils.CustomerForgetPasswordUtil;
 import online.syncio.backend.utils.CustomerRegisterUtil;
 import online.syncio.backend.utils.JwtTokenUtils;
-
 import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -30,10 +26,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -52,6 +46,8 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final  TokenService tokenService;
     private final SettingService settingService;
+    private final MessageSource messageSource;
+
     @Value("${url.frontend}")
     private String urlFE;
     public Boolean existsByEmail(String email) {
@@ -121,21 +117,24 @@ public class AuthService {
             subject = email;
         }
 
+        System.out.println(LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage("user.login.failed", null, LocaleContextHolder.getLocale());
+        System.out.println(message);
         if(optionalUser.isEmpty()) {
-            throw new DataNotFoundException(ConstantsMessage.USER_NOT_FOUND);
+            throw new DataNotFoundException(message);
         }
 
         User existingUser = optionalUser.get();
 
-
         if(!passwordEncoder.matches(password, existingUser.getPassword())) {
-            throw new BadCredentialsException(ConstantsMessage.PASSWORD_NOT_MATCH);
-
+            throw new BadCredentialsException(message);
         }
 
         if(!optionalUser.get().getStatus().equals(StatusEnum.ACTIVE)) {
-            throw new DataNotFoundException(ConstantsMessage.NEED_VERIFY_USER_IN_EMAIL);
+            String messageStatus = messageSource.getMessage("user.login.need.verify", null, LocaleContextHolder.getLocale());
+            throw new DataNotFoundException(messageStatus);
         }
+
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 subject, password,
                 existingUser.getAuthorities()
