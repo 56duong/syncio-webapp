@@ -12,7 +12,11 @@
       <app-avatar [userId]="post.createdBy" [width]="40"></app-avatar>
       <div class="flex align-items-center gap-1">
         <small *ngIf="post.createdBy" class="font-bold" style="font-size: 0.925rem;">
-          {{ post.username }}
+          <!-- {{ post.createdBy | userIdToName | async }} -->
+          <app-username-label [userId]="post.createdBy"
+                        [fontSize]="'13px'"
+                        [color]="''">
+          </app-username-label>
         </small>
         <small class="text-gray-500">•</small>
         <small class="text-gray-500" [title]="post.createdDate | date: 'HH:mm:ss dd/MM/yyyy'">

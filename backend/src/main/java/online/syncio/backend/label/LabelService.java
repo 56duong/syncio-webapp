@@ -209,4 +209,23 @@ public class LabelService {
 
         return labelIds.contains(labelId);
     }
+
+    public List<LabelResponseDTO> getAllLabelUserPurchased (UUID user_id) {
+        // lay ra tat ca cac label tu db
+        List<Label> labels = labelRepository.findAll();
+
+        // lay thong tin cac label ma nguoi dung da mua
+        List<UserLabelInfo> userLabelInfos = userLabelInfoRepository.findByUserId(user_id);
+
+        // chuyen danh sach UserLabelInfo sang danh sach ID Label ma nguoi dung da mua
+        Set<UUID> purcharsedLabelIds = userLabelInfos.stream()
+                .map(userLabelInfo -> userLabelInfo.getLabel().getId())
+                .collect(Collectors.toSet());
+
+        // tao danh sach DTO de tra ve, moi DTO chua thong tin label va trang thai mua
+        return labels.stream()
+                .filter(label -> purcharsedLabelIds.contains(label.getId())) // Chỉ lấy các label có trong purchasedLabelIds
+                .map(label -> new LabelResponseDTO(label, true)) // Đánh dấu label đã mua
+                .collect(Collectors.toList());
+    }
 }
