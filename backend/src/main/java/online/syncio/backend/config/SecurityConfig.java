@@ -114,6 +114,9 @@ public class SecurityConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(apiPrefix + "/images/**")
                 .addResourceLocations("file:uploads/");
+
+        registry.addResourceHandler(apiPrefix + "/audio/**")
+                .addResourceLocations("file:uploads/");
     }
 
 

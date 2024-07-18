@@ -3,6 +3,7 @@ package online.syncio.backend.messageroom;
 import lombok.AllArgsConstructor;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.NotFoundException;
+import online.syncio.backend.messagecontent.MessageContentRepository;
 import online.syncio.backend.messagecontent.MessageContentService;
 import online.syncio.backend.messagecontent.TypeEnum;
 import online.syncio.backend.messageroommember.MessageRoomMember;
@@ -16,10 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -32,6 +32,7 @@ public class MessageRoomService {
     private final AuthUtils authUtils;
     private final MessageContentService messageContentService;
     private final MessageRoomMemberService messageRoomMemberService;
+    private final MessageContentRepository messageContentRepository;
 
 
     public List<MessageRoomDTO> findAll() {
@@ -92,6 +93,7 @@ public class MessageRoomService {
             messageRoomMember.setMessageRoom(savedMessageRoom);
             messageRoomMember.setUser(user);
             messageRoomMember.setAdmin(userId.equals(currentUserId));
+            messageRoomMember.setLastSeen(LocalDateTime.now());
             messageRoomMemberRepository.save(messageRoomMember);
         });
         // if the room is a group, send a notification that the room has been created
@@ -102,6 +104,41 @@ public class MessageRoomService {
         final MessageRoomDTO messageRoomDTO = new MessageRoomDTO();
         messageRoomMapper.mapToDTO(savedMessageRoom, messageRoomDTO);
         return messageRoomDTO;
+    }
+
+
+    public String convertMessageRoomName(final UUID messageRoomId, final UUID userId) {
+        final MessageRoom messageRoom = messageRoomRepository.findById(messageRoomId)
+                .orElseThrow(() -> new NotFoundException(MessageRoom.class, "id", messageRoomId.toString()));
+
+        if(messageRoom.getName() != null) {
+            return messageRoom.getName();
+        }
+
+        List<MessageRoomMember> messageRoomMembers = new ArrayList<>();
+        // get all members of the room and set the name
+        // if the room is a group, set the name to the list of members
+        // else set the name to the other member
+        // example: 2 members: John
+        // 3 and more members: You, John, Doe, Jane
+        messageRoomMembers = messageRoomMemberRepository.findByMessageRoomIdOrderByDateJoined(messageRoomId);
+        messageRoomMembers.removeIf(messageRoomMember -> messageRoomMember.getUser().getId().equals(userId));
+        String messageRoomName = "";
+        if (messageRoomMembers.isEmpty()) {
+            messageRoomName = "You";
+        }
+        else if (messageRoomMembers.size() == 1) {
+            messageRoomName = messageRoomMembers.get(0).getUser().getUsername();
+        }
+        else {
+            messageRoomName = "You, "
+                    + messageRoomMembers
+                    .stream()
+                    .map(messageRoomMember -> String.valueOf(messageRoomMember.getUser().getUsername()))
+                    .collect(Collectors.joining(", "));
+        }
+
+        return messageRoomName;
     }
 
 

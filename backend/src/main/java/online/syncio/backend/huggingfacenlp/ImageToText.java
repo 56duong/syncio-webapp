@@ -20,12 +20,8 @@ public class ImageToText {
         this.accessToken = accessToken;
     }
 
-    public String execute(String photoUrl) {
-        try {
-            return fetchAndProcessPhoto(photoUrl).get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException("Failed to fetch and process photo", e);
-        }
+    public String execute(String photoUrl) throws ExecutionException, InterruptedException {
+        return fetchAndProcessPhoto(photoUrl).get();
     }
 
     public CompletableFuture<String> fetchAndProcessPhoto(String photoUrl) {

@@ -1,0 +1,10 @@
+{
+    "host": "localhost",
+    "port": 8111,
+    "domain": "example.com",
+    "rabbitmq_url": "amqp://guest:guest@rabbitmq",
+    "exchange": "imageVerificationExchange",
+    "queu_image_verify": "imageVerificationQueue",
+    "TELEGRAM_TOKEN": "6478734755:AAHwesjyBmtIVaQsYafxvqGKeWldDbwPrg0",
+    "TELEGRAM_CHAT_ID": "6498678908"
+}

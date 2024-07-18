@@ -3,6 +3,7 @@ import { CreatePostComponent } from '../create-post/create-post.component';
 import { Router } from '@angular/router';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
+import { color } from 'html2canvas/dist/types/css/types/color';
 
 @Component({
   selector: 'app-left-menu',
@@ -24,6 +25,7 @@ export class LeftMenuComponent {
   hideTabs: string[] = ['messages']; // Tabs to hide
 
   currentUserId: string = '';
+  currentUsername: string = '';
 
   menus: any[] = [
     {
@@ -85,6 +87,14 @@ export class LeftMenuComponent {
           label: 'Help',
           icon: 'pi pi-question-circle',
           route: '/help',
+        },
+        {
+          label: 'Log out',
+          color: 'red',
+          icon: 'pi pi-sign-out',
+          command: () => {
+            this.logout();
+          },
         }
       ],
     },
@@ -99,6 +109,7 @@ export class LeftMenuComponent {
 
   ngOnInit() {
     this.currentUserId = this.tokenService.extractUserIdFromToken();
+    this.currentUsername = this.tokenService.extractUsernameFromToken();
 
     // Get the current tab when routing changes
     this.router.events.subscribe(() => {
@@ -116,6 +127,19 @@ export class LeftMenuComponent {
 
   toggleNotifications(): void {
     this.actionToggle.emit('notifications');
+  }
+
+  logout(): void {
+    this.userService.logout().subscribe({
+      next: () => {
+        this.userService.removeUserFromLocalStorage();
+        this.tokenService.removeToken();
+        window.location.href = '/login';
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
   
 }

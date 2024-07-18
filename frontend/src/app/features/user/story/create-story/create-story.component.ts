@@ -162,9 +162,10 @@ export class CreateStoryComponent {
         // send the image to the server
         this.storyService.createStory(formData).subscribe({
           next: (response: any) => {
-            console.log(response);
             this.toastService.showSuccess('Success', 'Story created successfully');
-            this.router.navigate(['/']);
+            setTimeout(() => {
+              window.location.href = '/';
+            }, 1000);
           },
           error: (error) => {
             console.error(error);

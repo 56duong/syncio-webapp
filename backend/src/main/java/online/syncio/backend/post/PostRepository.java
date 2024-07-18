@@ -16,8 +16,23 @@ import java.util.UUID;
 @Repository
 public interface PostRepository extends JpaRepository<Post, UUID> {
 
-    /* Find posts which were created by a user with the UUID in createdBy column */
-    List<Post> findByCreatedBy_IdOrderByCreatedDateDesc (UUID id);
+    /**
+     * Get the posts of the user with the UUID. Also check if the current user can see the post.
+     * @param userId
+     * @param currentUserId
+     * @return
+     */
+    @Query(value = "SELECT p.*, ucf.user_id AS ucf_user_id " +
+            "FROM post p " +
+            "LEFT JOIN user_close_friend ucf ON p.user_id = ucf.user_id " +
+            "WHERE p.flag = true " +
+            "AND p.user_id = :userId " +
+            "AND (p.user_id = :currentUserId OR " +
+            "p.visibility = 'PUBLIC' OR " +
+            "(p.visibility = 'CLOSE_FRIENDS' AND ucf.close_friend_id = :currentUserId) OR " +
+            "(p.visibility = 'PRIVATE' AND p.user_id = :currentUserId)) " +
+            "ORDER BY p.created_date DESC", nativeQuery = true)
+    List<Post> findPostsByUser(@Param("userId") UUID userId, @Param("currentUserId") UUID currentUserId);
 
     /**
      * This method is used to get the caption of a post by its id.
@@ -57,8 +72,8 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
      * @return
      */
     @Query(value = "SELECT p.*, ucf.user_id AS ucf_user_id " +
-        "FROM Post p " +
-            "LEFT JOIN user_close_friends ucf ON p.user_id = ucf.user_id " +
+        "FROM post p " +
+            "LEFT JOIN user_close_friend ucf ON p.user_id = ucf.user_id " +
             "WHERE p.flag = true " +
                 "AND p.user_id IN (:users) " +
                 "AND p.created_date >= :daysAgo " +
@@ -83,7 +98,7 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
      * @return
      */
     @Query(value = "SELECT * " +
-            "FROM Post p " +
+            "FROM post p " +
             "WHERE p.flag = true " +
             "AND p.visibility = 'PUBLIC' " +
             "AND (COALESCE(:following) IS NULL OR p.user_id NOT IN :following) " +
@@ -103,11 +118,19 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
      * @return
      */
     @Query(value = "SELECT * " +
-            "FROM Post p " +
+            "FROM post p " +
             "WHERE p.flag = true " +
             "AND p.visibility = 'PUBLIC' " +
             "AND (COALESCE(:postIds) IS NULL OR p.id NOT IN :postIds) " +
             "ORDER BY p.created_date DESC", nativeQuery = true)
     Page<Post> findPostsFeed(@Param("postIds") Set<UUID> postIds, Pageable pageable);
+
+    @Query(value = "SELECT * " +
+            "FROM post p " +
+            "WHERE p.flag = true " +
+            "AND p.visibility = :visibility " +
+            "AND p.user_id = :userId " +
+            "ORDER BY p.created_date DESC", nativeQuery = true)
+    List<Post> findPostsByVisibilityAndUserId(@Param("visibility") String visibility, @Param("userId") UUID userId);
 
 }

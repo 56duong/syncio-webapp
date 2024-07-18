@@ -2,16 +2,11 @@
 
   <!-- Caption as comment -->
   <div *ngIf="post.caption" class="flex align-items-start gap-2 py-2">
-    <div class="avt">
-      <img class="w-full object-cover"
-        src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
-        style="min-width: 32px;"
-        alt="" />
-    </div>
+    <app-avatar [userId]="post.createdBy" [width]="32"></app-avatar>
     <div>
       <!-- username -->
-      <h3 *ngIf="post.createdBy" class="inline-flex text-sm my-0 mr-1">
-        {{ post.createdBy | userIdToName | async }}
+      <h3 class="inline-flex text-sm my-0 mr-1">
+        {{ post.username }}
       </h3>
       <!-- comment text -->
       <div class="comment-text inline" [innerHTML]="post.caption"></div>
@@ -25,16 +20,11 @@
   </div>
 
   <div *ngFor="let c of comments" [id]="c.id" class="flex align-items-start gap-2 py-2">
-    <div class="avt">
-      <img class="w-full object-cover"
-        src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
-        style="min-width: 32px;"
-        alt="" />
-    </div>
+    <app-avatar [userId]="c.userId" [width]="32"></app-avatar>
     <div>
       <!-- username -->
       <h3 *ngIf="c.userId" class="inline-flex text-sm my-0 mr-1">
-        {{ c.userId | userIdToName | async }}
+        {{ c.username }}
       </h3>
       <!-- comment text -->
       <div class="comment-text inline" [innerHTML]="c.text"></div>
@@ -76,17 +66,12 @@
             <div *ngFor="let reply of c.replies"
               [id]="reply.id"
               class="flex align-items-start gap-2">
-              <!-- avt -->
-              <div class="avt">
-                <img class="w-full object-cover"
-                  src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
-                  alt="" />
-              </div>
+              <app-avatar [userId]="reply.userId" [width]="32"></app-avatar>
               <div>
                 <!-- username -->
                 <h3 *ngIf="reply.userId"
                   class="inline-flex text-sm my-0 mr-1">
-                  {{ reply.userId | userIdToName | async }}
+                  {{ reply.username }}
                 </h3>
                 <!-- comment text -->
                 <div class="comment-text inline"

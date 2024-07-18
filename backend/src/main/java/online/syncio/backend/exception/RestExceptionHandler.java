@@ -38,6 +38,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ResponseObject> handleGeneralException(Exception exception) {
+        exception.printStackTrace();
         return ResponseEntity.internalServerError().body(
                 ResponseObject.builder()
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -8,10 +8,10 @@
     class="flex align-items-center gap-1">
 
     <!-- Actor avatar -->
-    <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
+    <app-avatar [userId]="notification.actorId" [width]="48"></app-avatar>
 
     <div class="flex-1">
-      <div class="line-clamp-2">
+      <div class="line-clamp-2 text-sm">
         <!-- Actor username -->
         <span *ngIf="notification.actorId" class="font-semibold">
           {{notification.actorId | userIdToName | async}}
@@ -46,10 +46,10 @@
     class="flex align-items-center gap-1">
 
     <!-- Actor avatar -->
-    <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
+    <app-avatar [userId]="notification.actorId" [width]="48"></app-avatar>
 
     <div class="flex-1">
-      <div class="line-clamp-2">
+      <div class="line-clamp-2 text-sm">
         <!-- Actor username -->
         <span *ngIf="notification.actorId" class="font-semibold">
           {{notification.actorId | userIdToName | async}}
@@ -84,10 +84,10 @@
     class="flex align-items-center gap-1">
 
     <!-- Actor avatar -->
-    <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
+    <app-avatar [userId]="notification.actorId" [width]="48"></app-avatar>
 
     <div class="flex-1">
-      <div class="line-clamp-2">
+      <div class="line-clamp-2 text-sm">
         <!-- Actor username -->
         <span *ngIf="notification.actorId" class="font-semibold">
           {{notification.actorId | userIdToName | async}}
@@ -121,10 +121,10 @@
     class="flex align-items-center gap-1">
 
     <!-- Actor avatar -->
-    <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
+    <app-avatar [userId]="notification.actorId" [width]="48"></app-avatar>
 
     <div class="flex-1">
-      <div class="line-clamp-2">
+      <div class="line-clamp-2 text-sm">
         <!-- Actor username -->
         <span *ngIf="notification.actorId" class="font-semibold">
           {{notification.actorId | userIdToName | async}}

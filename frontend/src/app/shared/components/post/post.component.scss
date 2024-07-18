@@ -49,20 +49,6 @@
   }
 }
 
-.avt {
-  width: 36px;
-  border: 1px solid var(--gray-200);
-  border-radius: 50%;
-  padding: 2px;
-
-  img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-  }
-}
-
 // hide slide control when 1 photo
 p-carousel.hide-slide-control ::ng-deep {
   .p-carousel .p-carousel-content .p-carousel-prev, 

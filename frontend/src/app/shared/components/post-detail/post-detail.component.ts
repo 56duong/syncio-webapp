@@ -142,12 +142,12 @@ export class PostDetailComponent {
     // Empty comment
     if (!this.comment.text || !this.comment.text.trim()) return;
 
-    console.log(this.comment);
     this.comment = {
       ...this.comment,
       text: this.comment.text.replace('@Reply ', ''),
       postId: this.post.id,
       userId: this.currentUserId,
+      username: this.tokenService.extractUsernameFromToken(),
       likesCount: 0,
     };
 
@@ -169,7 +169,6 @@ export class PostDetailComponent {
     }
     // If the comment is a reply, send the reply (not realtime).
     else {
-      console.log("replying to comment");
       this.commentService.postComment(this.comment).subscribe({
         next: (id) => {
           this.comment = {
