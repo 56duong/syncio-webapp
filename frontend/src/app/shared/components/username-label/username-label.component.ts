@@ -9,7 +9,9 @@ import { LabelUpdateService } from 'src/app/core/services/label-update.service';
 })
 export class UsernameLabelComponent implements OnInit {
   @Input() userId: string | undefined;
+  @Input() username: string | undefined;
   @Input() fontSize: string | undefined;
+  @Input() fontWeight: string | undefined;
   @Input() color: string = '#000';
   
   id!: string;
