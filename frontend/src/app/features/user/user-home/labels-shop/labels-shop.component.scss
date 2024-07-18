@@ -1,0 +1,15 @@
+p-dataView ::ng-deep .card {
+  .p-button {
+    justify-content: center;
+  }
+
+  .p-button-label {
+    flex: none;
+    width: fit-content;
+  }
+
+  .p-tag {
+    font-size: 0.625rem;
+    font-weight: 600;
+  }
+}

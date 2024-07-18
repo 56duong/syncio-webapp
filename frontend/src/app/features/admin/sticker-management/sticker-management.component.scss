@@ -60,3 +60,17 @@ p-table ::ng-deep {
     color: #1D4ED8;
   }
 }
+
+p-table.stickers ::ng-deep {
+  tbody {
+    display: block;
+    max-height: 55vh;
+    overflow-y: scroll;
+  }
+  
+  thead, tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+}

@@ -1,0 +1,33 @@
+<p-dialog header="Voice Recorder" 
+  [modal]="true"
+  [dismissableMask]="true" 
+  [(visible)]="isVisibleRecorder" 
+  [style]="{ width: '25rem' }"
+  (onHide)="closeRecorderEvent.emit()">
+  <p-divider></p-divider>
+  
+  <!-- Audio -->
+  <div *ngIf="isShowPlayer" class="flex justify-content-center align-items-center p-3">
+    <audio controls class="w-full">
+      <source [src]="audioUrl" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+
+  <p-divider></p-divider>
+
+  <!-- Button -->
+  <div class="flex justify-content-center align-items-center">
+    <div class="col-3"></div>
+    <!-- Record button -->
+    <div class="container">
+      <div [ngClass]="isRecording ? 'bg' : ''"></div>
+      <div class="button-pluses" (click)="isRecording ? stopRecording() : onRecordAudio()">
+        <i [ngClass]="isRecording ? 'pi pi-stop-circle' : 'pi pi-microphone'"></i>
+      </div>
+    </div>
+    <!-- Submit button -->
+    <p-button label="Submit" [text]="true" (click)="submitAudio()" class="p-button-success" />
+  </div>
+
+</p-dialog>

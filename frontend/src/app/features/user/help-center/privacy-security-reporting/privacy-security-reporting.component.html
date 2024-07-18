@@ -1,0 +1,35 @@
+<div class="help-center-content" *ngIf="selectedMenuItem === 'privacy-security-reporting'">
+  <h2 class="text-xl">Privacy, Security and Reporting</h2>
+  <div *ngIf="selectedSubMenuItem === 'login-passwords'">
+    <div *ngIf="selectedSubSubMenuItem">
+      <h5>Login and Passwords > {{getSubSubMenuTitle(selectedSubSubMenuItem)}}</h5>
+      <ul class="content-list">
+        <li *ngFor="let item of loginPasswordsItems[selectedSubSubMenuItem]" [ngClass]="{'active': isContentVisible(item.label)}">
+          <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
+            <i [class]="item.icon"></i>{{item.label}}</button>
+          <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div *ngIf="selectedSubMenuItem === 'report-things'">
+    <h5>How to Report Things</h5>
+    <ul class="content-list">
+      <li *ngFor="let item of reportThingsItems" [ngClass]="{'active': isContentVisible(item.label)}">
+        <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
+          <i [class]="item.icon"></i>{{item.label}}</button>
+        <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="selectedSubMenuItem === 'impersonation-accounts'">
+    <h5>Impersonation Accounts</h5>
+    <ul class="content-list">
+      <li *ngFor="let item of impersonationAccountsItems" [ngClass]="{'active': isContentVisible(item.label)}">
+        <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
+          <i [class]="item.icon"></i>{{item.label}}</button>
+        <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
+      </li>
+    </ul>
+  </div>
+</div>

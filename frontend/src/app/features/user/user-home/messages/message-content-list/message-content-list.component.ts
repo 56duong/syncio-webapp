@@ -7,7 +7,6 @@ import { Sticker } from 'src/app/core/interfaces/sticker';
 import { User } from 'src/app/core/interfaces/user';
 import { MessageContentService } from 'src/app/core/services/message-content.service';
 import { MessageRoomMemberService } from 'src/app/core/services/message-room-member.service';
-import { MessageRoomService } from 'src/app/core/services/message-room.service';
 
 @Component({
   selector: 'app-message-content-list',
@@ -18,7 +17,9 @@ import { MessageRoomService } from 'src/app/core/services/message-room.service';
 export class MessageContentListComponent {
   @Input() messageRoom: MessageRoom = {}; // current message room
   @Input() currentUser!: User; // Current user logged in.
-  @Output() sendMessageEvent = new EventEmitter<void>();
+  @Output() sendFirstMessageEvent = new EventEmitter<void>();
+  @Output() updateMessageRoomNameEvent = new EventEmitter<MessageRoom>();
+  @Output() newMessageContentEvent = new EventEmitter<MessageContent>();
   @ViewChild('messageContentContainer') private messageContainer!: ElementRef;
 
   messageContents: MessageContent[] = []; // Array of message contents
@@ -44,62 +45,66 @@ export class MessageContentListComponent {
   @ViewChild('imageUploader') imageUploader: any; // Image uploader component use to upload and send images
   MessageContentTypeEnum = MessageContentTypeEnum;
 
-  isShowDetails: boolean = false; // Indicates if the message room details are shown
+  /** Indicates if the message room details are shown */
+  isShowDetails: boolean = false;
+
+  // UNSEEN MESSAGE SECTION
+  /** The id of the last seen message */
+  lastSeenMessageId: string = '';
+  /** Indicates if the user has already scrolled to the unseen message section */
+  alreadyScrolled: boolean = false;
+  /** Intersection observer to watch the unseen message section */
+  observer: IntersectionObserver | undefined;
+  /** Reference to the end of the feed element. */
+  @ViewChild('unseen') unseenElement: any;
 
   constructor(
     private messageContentService: MessageContentService,
     private messageRoomMemberService: MessageRoomMemberService,
   ) { }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if(changes['messageRoom'] && this.messageRoom.id) {
-      // get old messageRoom value and disconnect from the old message room
-      let messageRoom: SimpleChange = changes['messageRoom'];
 
-      // Disconnect
-      if(messageRoom.previousValue && messageRoom.previousValue.id) {
-        this.messageContentService.disconnect();
-      }
-      this.subscriptionMessageContents.unsubscribe();
-      
+  ngOnInit() {
+    // Create an observer to watch the end of the feed element.
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        // If the end of the feed element is intersecting, get more posts.
+        if (entry.isIntersecting && !this.alreadyScrolled) {
+          this.alreadyScrolled = true;
+        }
+      });
+    });
+  }
+  
+
+  async ngOnChanges(changes: SimpleChanges) {
+    if(changes['messageRoom'] && this.messageRoom.id) {
       // New connect
-      this.messageContentService.connectWebSocket(this.messageRoom.id);
+      if(!this.messageContentService.getConnection(this.messageRoom.id)) {
+        await this.messageContentService.connectWebSocket(this.messageRoom.id);
+      }
+
       this.getMessageContentsObservable();
       this.getMessageContent();
       this.getMessageRoomMembers();
 
       this.isShowDetails = false;
+      this.alreadyScrolled = false;
+
+      // observe the unseen message section
+      setTimeout(() => {
+        const unseenElement = document.getElementById('unSeenMessage');
+        if(unseenElement) this.observer?.observe(unseenElement);
+      }, 100);
     }
   }
 
+
   ngOnDestroy() {
-    if (this.messageRoom.id) this.messageContentService.disconnect();
+    if (this.messageRoom.id) this.messageContentService.disconnect(this.messageRoom.id);
     this.subscriptionMessageContents.unsubscribe();
   }
 
-  /**
-   * Scroll to the bottom of the message container.
-   */
-  scrollToBottom(): void {
-    this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
-  }
-
-  /**
-   * Subscribe to the comments observable to get the Comment object in real-time.
-   */
-  getMessageContentsObservable() {
-    this.subscriptionMessageContents = this.messageContentService.getMessageContentsObservable().subscribe({
-      next: (messageContent) => {
-        this.messageContents.push(messageContent);
-        setTimeout(() => {
-          this.scrollToBottom();
-        }, 50);
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
-  }
 
   /**
    * Get the message content by room id.
@@ -110,6 +115,14 @@ export class MessageContentListComponent {
     this.messageContentService.getMessageContentByRoomId(this.messageRoom.id).subscribe({
       next: (messageContents) => {
         this.messageContents = messageContents;
+        // Get the last seen message id
+        this.messageContents.forEach((messageContent) => {
+          if(!this.lastSeenMessageId && messageContent.dateSent && this.messageRoom.lastSeen) {
+            if(messageContent.dateSent > this.messageRoom.lastSeen && messageContent.user?.id !== this.currentUser.id) {
+              this.lastSeenMessageId = messageContent.id || '';
+            }
+          }
+        });
         setTimeout(() => {
           this.scrollToBottom();
         }, 50);
@@ -119,6 +132,7 @@ export class MessageContentListComponent {
       }
     });
   }
+
 
   /**
    * Get all the members in the message room.
@@ -137,6 +151,30 @@ export class MessageContentListComponent {
       }
     });
   }
+
+
+  /**
+   * Subscribe to the message contents observable to get new message contents and append them to the message contents array.
+   */
+  getMessageContentsObservable() {
+    if(!this.messageRoom.id) return;
+    this.subscriptionMessageContents.unsubscribe();
+    this.subscriptionMessageContents = this.messageContentService.getMessageContentsObservable(this.messageRoom.id).subscribe({
+      next: (messageContent) => {
+        if(Object.keys(messageContent).length > 0) {
+          // append the new message content to the message contents array
+          this.messageContents = [...this.messageContents, messageContent];
+          setTimeout(() => {
+            this.scrollToBottom();
+          }, 50);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
   
   addEmoji(event: any) {
     this.messageContent.message = `${this.messageContent.message || ''}${event.emoji.native}`;
@@ -172,17 +210,27 @@ export class MessageContentListComponent {
       type: type,
     };
 
-    this.messageContentService.sendMessageContent(this.messageContent);
-    this.messageContent = {};
-
     // If this is the first message, emit the event to the parent component
     if(this.messageContents.length === 0) {
-      this.sendMessageEvent.emit(); // Emit the event to the parent component
+      this.sendFirstMessageEvent.emit(); // Emit the event to the parent component
     }
+
+    this.messageContentService.sendMessageContent(this.messageContent);
+    this.messageContent = {};
     
     setTimeout(() => {
       this.scrollToBottom();
     }, 50);
+  }
+
+
+  /**
+   * The event receive from the message-room-detail component to update the message room name.
+   * Emit to the message.component to update the message room name.
+   * @param messageRoom 
+   */
+  updateMessageRoomName(messageRoom: MessageRoom) {
+    this.updateMessageRoomNameEvent.emit(messageRoom);
   }
 
 
@@ -231,9 +279,6 @@ export class MessageContentListComponent {
     this.imageUploader.clear();
   }
 
-  showDetails() {
-    this.isShowDetails = !this.isShowDetails;
-  }
 
   /**
    * Add a notification message to the message content.
@@ -246,6 +291,47 @@ export class MessageContentListComponent {
       message: message,
     };
     this.sendMessage(type);
+  }
+
+
+  /**
+   * Show the message room details.
+   */
+  showDetails() {
+    this.isShowDetails = !this.isShowDetails;
+  }
+
+
+  /**
+   * Scroll to the bottom of the message container.
+   */
+  scrollToBottom(): void {
+    this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
+  }
+
+  
+  /**
+   * Scroll to the element with the given id.
+   * @param id 
+   */
+  scrollToElement(id: string): void {
+    const element = document.getElementById(id);
+    element?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start',
+      inline: 'start' 
+    });
+    this.alreadyScrolled = true;
+  }
+
+  
+  /**
+   * Get the member that is not the current user.
+   * @returns 
+   */
+  getMemberNotMe(): string {
+    if(this.messageRoom.group) return '';
+    return this.messageRoom.members?.find(member => member.userId !== this.currentUser.id)?.userId || '';
   }
 
 }

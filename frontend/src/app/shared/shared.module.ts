@@ -12,6 +12,10 @@ import { ResizableDraggableComponent } from './components/resizable-draggable/re
 import { StickerPickerComponent } from './components/sticker-picker/sticker-picker.component';
 import { GlobalDialogComponent } from './components/global-dialog/global-dialog.component';
 import { CommentListComponent } from './components/post-detail/comment-list/comment-list.component';
+import { VoiceRecorderDialogComponent } from './components/voice-recorder-dialog/voice-recorder-dialog.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
+import { NotAuthorizedComponent } from './components/not-authorized/not-authorized.component';
+import { AvatarComponent } from './components/avatar/avatar.component';
 import { UsernameLabelComponent } from './components/username-label/username-label.component';
 
 @NgModule({
@@ -23,7 +27,11 @@ import { UsernameLabelComponent } from './components/username-label/username-lab
     ResizableDraggableComponent,
     StickerPickerComponent,
     GlobalDialogComponent,
-    CommentListComponent,
+    CommentListComponent
+    VoiceRecorderDialogComponent,
+    NotFoundComponent,
+    NotAuthorizedComponent,
+    AvatarComponent,
     UsernameLabelComponent
   ],
   imports: [
@@ -40,6 +48,8 @@ import { UsernameLabelComponent } from './components/username-label/username-lab
     StickerPickerComponent,
     PostDetailComponent,
     GlobalDialogComponent,
+    VoiceRecorderDialogComponent,
+    AvatarComponent,
     UsernameLabelComponent
   ],
 })

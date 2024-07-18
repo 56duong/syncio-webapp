@@ -17,12 +17,16 @@ public class PostDTO {
     @Max(2000)
     private String caption;
 
+    private String audioURL;
+
     private List<PhotoDTO> photos;
 
     private LocalDateTime createdDate;
 
     @NotNull
     private Boolean flag;
+
+    private String username;
 
     @NotNull
     private UUID createdBy;

@@ -1,10 +1,12 @@
 package online.syncio.backend.post.photo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import online.syncio.backend.post.Post;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.nio.file.Files;
@@ -32,13 +34,18 @@ public class Photo {
     private Post post;
 
     @JsonIgnore
-    public String getImageUrl() {
-        Path imagePath = Paths.get("uploads/" + url);
-        if (Files.exists(imagePath)) {
-            return "http://localhost:8080/api/v1/posts/images/" + url;
+    public String getImageUrl(String storageType) {
+        if("firebase".equals(storageType)) {
+            return "https://firebasestorage.googleapis.com/v0/b/syncio-bf6ca.appspot.com/o/" + url.replaceAll("/", "%2F") + "?alt=media";
         }
         else {
-            return "https://your-s3-bucket-name.s3.your-region.amazonaws.com/" + url;
+            Path imagePath = Paths.get("uploads/" + url);
+            if (Files.exists(imagePath)) {
+                return "http://localhost:8080/api/v1/posts/images/" + url;
+            }
+            else {
+                return "https://your-s3-bucket-name.s3.your-region.amazonaws.com/" + url;
+            }
         }
     }
 }

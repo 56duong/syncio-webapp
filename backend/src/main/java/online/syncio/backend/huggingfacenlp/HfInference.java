@@ -1,5 +1,7 @@
 package online.syncio.backend.huggingfacenlp;
 
+import java.util.concurrent.ExecutionException;
+
 /**
  * Hugging Face Inference class to perform inference on Hugging Face models.
  * Currently, supports image to text.
@@ -21,7 +23,7 @@ public class HfInference {
      * @param photoUrl URL of the image
      * @return Text caption of the image
      */
-    public String imageToText(String photoUrl) {
+    public String imageToText(String photoUrl) throws ExecutionException, InterruptedException {
         ImageToText imageToText = new ImageToText(this.ACCESS_TOKEN);
         return imageToText.execute(photoUrl);
     }

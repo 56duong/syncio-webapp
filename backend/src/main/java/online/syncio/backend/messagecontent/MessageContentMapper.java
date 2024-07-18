@@ -25,7 +25,6 @@ public class MessageContentMapper {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(messageContent.getUser().getId());
         userDTO.setUsername(messageContent.getUser().getUsername());
-        userDTO.setAvtURL(messageContent.getUser().getAvtURL());
         messageContentDTO.setUser(userDTO);
 
         messageContentDTO.setMessage(messageContent.getMessage());
@@ -42,7 +41,6 @@ public class MessageContentMapper {
             UserDTO replyToUserDTO = new UserDTO();
             replyToUserDTO.setId(messageContent.getParentMessageContent().getUser().getId());
             replyToUserDTO.setUsername(messageContent.getParentMessageContent().getUser().getUsername());
-            replyToUserDTO.setAvtURL(messageContent.getParentMessageContent().getUser().getAvtURL());
             replyTo.setUser(replyToUserDTO);
             messageContentDTO.setReplyTo(replyTo);
         }

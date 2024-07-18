@@ -20,6 +20,8 @@ import { LabelsShopComponent } from './labels-shop/labels-shop.component';
 import { PaymentInfoComponent } from './payment-info/payment-info.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { NotificationsItemComponent } from './notifications/notifications-item/notifications-item.component';
+import { FollowerDialogComponent } from './profile/follower-dialog/follower-dialog.component';
+import { FollowingDialogComponent } from './profile/following-dialog/following-dialog.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import { NotificationsItemComponent } from './notifications/notifications-item/n
     LabelsShopComponent,
     PaymentInfoComponent,
     NotificationsComponent,
-    NotificationsItemComponent
+    NotificationsItemComponent,
+    FollowerDialogComponent,
+    FollowingDialogComponent
   ],
   imports: [
     CommonModule,

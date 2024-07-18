@@ -1,0 +1,55 @@
+<div class="help-center-content" *ngIf="selectedMenuItem === 'account-settings'">
+  <h2>Manage Your Account</h2>
+  <div *ngIf="selectedSubMenuItem === 'creating-account-username'">
+    <div *ngIf="selectedSubSubMenuItem === 'change-info'">
+      <h5>Creating Account and Username > Change Your Account Information</h5>
+      <ul class="content-list">
+        <li *ngFor="let item of changeAccountInfoItems" [ngClass]="{'active': isContentVisible(item.label)}">
+          <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
+            <i [class]="item.icon"></i>{{item.label}}</button>
+          <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="selectedSubSubMenuItem === 'navigating-the-app'">
+      <h5>Manage Your Account > Navigating The App</h5>
+      <ul class="content-list">
+        <li *ngFor="let item of navigatingTheApp" [ngClass]="{'active': isContentVisible(item.label)}">
+          <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
+            <i [class]="item.icon"></i>{{item.label}}</button>
+          <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div *ngIf="selectedSubMenuItem === 'login-password'">
+    <h5>Login and Password</h5>
+    <ul class="content-list">
+      <li *ngFor="let item of loginPasswordItems" [ngClass]="{'active': isContentVisible(item.label)}">
+        <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
+          <i [class]="item.icon"></i>{{item.label}}</button>
+        <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="selectedSubMenuItem === 'privacy-security'">
+    <h5>Privacy and Security</h5>
+    <ul class="content-list">
+      <li *ngFor="let item of privacySecurityItems" [ngClass]="{'active': isContentVisible(item.label)}">
+        <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
+          <i [class]="item.icon"></i>{{item.label}}</button>
+        <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="selectedSubMenuItem === 'notifications'">
+    <h5>Notifications</h5>
+    <ul class="content-list">
+      <li *ngFor="let item of notificationsItems" [ngClass]="{'active': isContentVisible(item.label)}">
+        <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
+          <i [class]="item.icon"></i>{{item.label}}</button>
+        <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
+      </li>
+    </ul>
+  </div>
+</div>
