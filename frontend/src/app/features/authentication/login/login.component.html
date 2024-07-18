@@ -72,15 +72,19 @@
 </div> -->
 
 <div class="wrapper">
+  <!-- lang -->
+  <div class="absolute top-0 right-0 p-4 flex gap-4 text-white">
+    <p (click)="switchLang('en')" class="underline cursor-pointer">English</p>
+    <p (click)="switchLang('vi')" class="underline cursor-pointer">Tiếng Việt</p>
+  </div>
+
   <div class="form flex col-8 p-0 bg-white align-items-stretch shadow-1">
-    <form
-      class="col-6 flex flex-column gap-5 justify-content-center align-items-center"
-    >
-      <h1>Log in</h1>
+    <form class="col-6 flex flex-column gap-5 justify-content-center align-items-center">
+      <h1>{{ 'login' | translate }}</h1>
       <div class="flex flex-column gap-4 w-full">
         <div class="w-full">
           <input
-            placeholder="Email"
+            [placeholder]="'email' | translate"
             type="email"
             [(ngModel)]="email"
             name="email"
@@ -90,7 +94,7 @@
         <div class="w-full">
           <input
             type="password"
-            placeholder="Password"
+            [placeholder]="'password' | translate"
             [(ngModel)]="password"
             name="password"
           />
@@ -98,20 +102,25 @@
             class="text-right cursor-pointer text-sm mt-2"
             (click)="navigateToForgotPassword()"
           >
-            Forgot password?
+            {{ 'forgotPassword' | translate }}
           </p>
         </div>
       </div>
       <p-button
         (click)="login()"
-        label="Log in"
+        [label]="'login' | translate"
         class="w-full"
         styleClass="w-full"
       />
-      <p routerLink="/register" class="text-right cursor-pointer text-sm mt-2">
-        Don't have an account?
-        <span class="text-primary font-bold">Sign up</span>
-      </p>
+      <div>
+        <p routerLink="/register" class="text-center cursor-pointer text-sm mt-2">
+          {{ 'dontHaveAnAccount' | translate }}
+          <span class="text-primary font-bold">{{ 'signUp' | translate }}</span>
+        </p>
+        <p routerLink="/" class="text-center cursor-pointer text-sm mt-2">
+          {{ 'continueAsGuest' | translate }}
+        </p>
+      </div>
     </form>
     <div class="col-6 p-0">
       <img

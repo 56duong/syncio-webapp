@@ -1,7 +1,9 @@
 package online.syncio.backend.auth.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,11 +15,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserLoginDTO {
     @JsonProperty("email")
-    @NotBlank(message = "Email is required")
+    @NotBlank(message = "{user.login.email.blank}")
+    @Email(message = "{user.login.email.invalid}")
     private String email;
 
-    @NotBlank(message = "Password cannot be blank")
+    @NotBlank(message = "{user.login.password.blank}")
+    @Size(min = 6, max = 100, message = "{user.login.password.length}")
     private String password;
-
 
 }

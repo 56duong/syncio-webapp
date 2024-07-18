@@ -21,6 +21,8 @@
     "@angular/router": "^16.2.0",
     "@auth0/angular-jwt": "^5.2.0",
     "@ctrl/ngx-emoji-mart": "^9.2.0",
+    "@ngx-translate/core": "^15.0.0",
+    "@ngx-translate/http-loader": "^8.0.0",
     "@stomp/stompjs": "^7.0.0",
     "@types/chart.js": "^2.9.41",
     "@types/sockjs-client": "^1.5.4",

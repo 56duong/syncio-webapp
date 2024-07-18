@@ -17,6 +17,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { RoleEnum } from './core/interfaces/user';
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 import { NotAuthorizedComponent } from './shared/components/not-authorized/not-authorized.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [ProfileFormComponent],
@@ -105,7 +106,8 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     ToastModule,
     DialogModule,
-    PrimengModule
+    PrimengModule,
+    TranslateModule
   ],
   exports: [RouterModule],
 })
