@@ -17,7 +17,11 @@
     <section class="flex flex-column gap-3">
       <div class="flex align-items-center gap-3">
         <!-- Username -->
-        <h1 class="font-normal text-2xl my-0 mr-3">{{ userProfile.username }}</h1>
+        <!-- <h1 class="font-normal text-2xl my-0 mr-3">{{ userProfile.username }}</h1> -->
+        <app-username-label [userId]="currentUserId"
+                        [fontSize]="'28px'"
+                        [color]="''">
+        </app-username-label>
         <!-- Follow button -->
         <p-button *ngIf="!isOwnerProfile && !userProfile.isFollowing"
           (click)="toggleFollow(userProfile.id)" 
@@ -39,6 +43,12 @@
           <a *ngIf="isOwnerProfile" href="/edit-profile">
             <p-button (click)="handleEditProfile()" label="Edit Profile" severity="my-custom-secondary"></p-button>
           </a>
+          <!-- choose Label -->
+          <p-button class="ml-2"
+            (click)="showChooseLabelDialog()" 
+            label="Choose Label" severity="my-custom-primary">
+          </p-button>
+
           <!-- Setting -->
           <i *ngIf="isOwnerProfile" class="pi pi-cog cursor-pointer" style="font-size: 1.5rem"></i>
         </ng-container>
@@ -127,3 +137,36 @@
   (onFollow)="sendFollowNotification($event)"
   (updateFollowingCount)="userProfile.followingCount = $event">
 </app-following-dialog>
+
+<!-- Choose Label -->
+<p-dialog [(visible)]="chooseLableDialog" [style]="{ width: '62rem' }" header="Choose Label" [modal]="true"
+styleClass="p-fluid">
+  <div class="flex">
+    <div class="left-column">
+      <p-dataView #dv [value]="userLabelInfos" >
+        <ng-template let-userLabelInfo pTemplate="listItem">
+          <div class="col-12 lg:col-12 xl:col-6 p-2">
+            <div class="p-4 border-1 surface-border surface-card border-round">
+              <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+                <span class="flex align-items-center gap-2">
+                  <i class="pi pi-tag"></i>
+                  <span class="font-semibold">{{ userLabelInfo.type }}</span>
+                </span>
+              </div>
+              <div class="flex flex-column align-items-center gap-3 py-5">
+                <img class="w-9 shadow-2 border-round" src="{{ userLabelInfo.labelURL }}" width="150"
+                  height="150" [alt]="userLabelInfo.name" />
+                <div class="text-lg font-bold">{{ userLabelInfo.name }}</div>
+              </div>
+              
+              <div class="card flex justify-content-center">
+                <p-button label="Cancel" (click)="confirm(userLabelInfo)" *ngIf="userLabelInfo.isShow" icon="pi pi-times" severity="secondary" [rounded]="true"></p-button>
+                <p-button label="Confirm" (click)="confirm(userLabelInfo)" *ngIf="!userLabelInfo.isShow" [rounded]="true"></p-button>
+            </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-dataView>
+    </div>
+  </div>
+</p-dialog>
