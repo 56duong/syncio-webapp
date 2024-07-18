@@ -18,6 +18,9 @@ import java.util.UUID;
 @Service
 public class FirebaseStorageService {
 
+    @Value("${firebase.storage.type}")
+    private String storageType;
+
     @Value("${firebase.storage.bucket.url}")
     private String bucketName;
 
@@ -27,6 +30,9 @@ public class FirebaseStorageService {
 
     @PostConstruct
     public void init() {
+        if(!this.storageType.equals("firebase")) {
+            return;
+        }
         try {
             FileInputStream serviceAccountStream = new FileInputStream(this.serviceAccount);
 
