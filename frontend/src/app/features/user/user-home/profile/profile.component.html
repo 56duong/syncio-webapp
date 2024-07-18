@@ -18,8 +18,8 @@
       <div class="flex align-items-center gap-3">
         <!-- Username -->
         <!-- <h1 class="font-normal text-2xl my-0 mr-3">{{ userProfile.username }}</h1> -->
-        <app-username-label [userId]="userProfile.id"
-                        [fontSize]="'24px'"
+        <app-username-label [userId]="currentUserId"
+                        [fontSize]="'28px'"
                         [color]="''">
         </app-username-label>
         <!-- Follow button -->
@@ -145,7 +145,7 @@ styleClass="p-fluid">
     <div class="left-column">
       <p-dataView #dv [value]="userLabelInfos" >
         <ng-template let-userLabelInfo pTemplate="listItem">
-          <div class="col-12 sm:col-6 lg:col-12 xl:col-3 p-2">
+          <div class="col-12 lg:col-12 xl:col-6 p-2">
             <div class="p-4 border-1 surface-border surface-card border-round">
               <div class="flex flex-wrap align-items-center justify-content-between gap-2">
                 <span class="flex align-items-center gap-2">
@@ -154,8 +154,8 @@ styleClass="p-fluid">
                 </span>
               </div>
               <div class="flex flex-column align-items-center gap-3 py-5">
-                <img class="w-9 shadow-2 border-round" src="{{ userLabelInfo.labelURL }}" width="100"
-                  height="100" [alt]="userLabelInfo.name" />
+                <img class="w-9 shadow-2 border-round" src="{{ userLabelInfo.labelURL }}" width="150"
+                  height="150" [alt]="userLabelInfo.name" />
                 <div class="text-lg font-bold">{{ userLabelInfo.name }}</div>
               </div>
               
