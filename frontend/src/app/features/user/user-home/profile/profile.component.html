@@ -19,6 +19,7 @@
         <!-- Username -->
         <!-- <h1 class="font-normal text-2xl my-0 mr-3">{{ userProfile.username }}</h1> -->
         <app-username-label [userId]="currentUserId"
+                        [username]="userProfile.username"
                         [fontSize]="'28px'"
                         [color]="''">
         </app-username-label>
@@ -141,11 +142,9 @@
 <!-- Choose Label -->
 <p-dialog [(visible)]="chooseLableDialog" [style]="{ width: '62rem' }" header="Choose Label" [modal]="true"
 styleClass="p-fluid">
-  <div class="flex">
-    <div class="left-column">
       <p-dataView #dv [value]="userLabelInfos" >
         <ng-template let-userLabelInfo pTemplate="listItem">
-          <div class="col-12 lg:col-12 xl:col-6 p-2">
+          <div class="col-12 lg:col-12 xl:col-3 p-2">
             <div class="p-4 border-1 surface-border surface-card border-round">
               <div class="flex flex-wrap align-items-center justify-content-between gap-2">
                 <span class="flex align-items-center gap-2">
@@ -167,6 +166,4 @@ styleClass="p-fluid">
           </div>
         </ng-template>
       </p-dataView>
-    </div>
-  </div>
 </p-dialog>

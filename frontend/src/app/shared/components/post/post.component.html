@@ -13,9 +13,11 @@
       <div class="flex align-items-center gap-1">
         <small *ngIf="post.createdBy" class="font-bold" style="font-size: 0.925rem;">
           <!-- {{ post.createdBy | userIdToName | async }} -->
-          <app-username-label [userId]="post.createdBy"
-                        [fontSize]="'13px'"
-                        [color]="''">
+          <app-username-label 
+            [userId]="post.createdBy"
+            [username]="post.username"
+            [fontSize]="'13px'"
+            [color]="''">
           </app-username-label>
         </small>
         <small class="text-gray-500">•</small>
@@ -64,10 +66,15 @@
   </div>
 
   <!-- caption -->
-  <div *ngIf="post.caption" class="line-clamp"
+  <div *ngIf="post.caption" class="line-clamp flex align-items-center gap-1"
     [ngStyle]="{ '-webkit-line-clamp': isViewMore ? 'unset' : '3'}">
     <small *ngIf="post.createdBy && post.photos?.length" class="font-bold mr-1">
-      {{ post.username }}
+      <!-- {{ post.username }} -->
+      <app-username-label [userId]="post.createdBy"
+                        [username]="post.username"
+                        [fontSize]=""
+                        [color]="''">
+      </app-username-label>
     </small>
     <p class="inline m-0"
       (click)="isViewMore = !isViewMore" 
