@@ -6,7 +6,12 @@
     <div>
       <!-- username -->
       <h3 class="inline-flex text-sm my-0 mr-1">
-        {{ post.username }}
+        <!-- {{ post.username }} -->
+        <app-username-label [userId]="post.createdBy"
+                        [username]="post.username"
+                        [fontSize]="'1em'"
+                        [color]="''">
+        </app-username-label>
       </h3>
       <!-- comment text -->
       <div class="comment-text inline" [innerHTML]="post.caption"></div>
@@ -24,7 +29,12 @@
     <div>
       <!-- username -->
       <h3 *ngIf="c.userId" class="inline-flex text-sm my-0 mr-1">
-        {{ c.username }}
+        <!-- {{ c.username }} -->
+        <app-username-label [userId]="c.userId"
+                        [username]="c.username"
+                        [fontSize]="'1em'"
+                        [color]="''">
+        </app-username-label>
       </h3>
       <!-- comment text -->
       <div class="comment-text inline" [innerHTML]="c.text"></div>

@@ -52,7 +52,7 @@ export class SearchComponent implements OnInit {
         this.suggestions = response.map((item) => ({
           id: item.id,
           username: item.username,
-          avatar: item.avtURL,
+          // avatar: item.avtURL,
         }));
         this.dataFetched = true; // Update the state to show that data has been fetched
       },
@@ -83,7 +83,7 @@ export class SearchComponent implements OnInit {
         this.suggestions.push({
           id: suggestions[i].id,
           username: suggestions[i].username,
-          avatar: suggestions[i].avtURL,
+          // avatar: suggestions[i].avtURL,
           followerCount: suggestions[i].followerCount,
         });
       }
