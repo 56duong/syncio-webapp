@@ -27,7 +27,7 @@ import { UsernameLabelComponent } from './components/username-label/username-lab
     ResizableDraggableComponent,
     StickerPickerComponent,
     GlobalDialogComponent,
-    CommentListComponent
+    CommentListComponent,
     VoiceRecorderDialogComponent,
     NotFoundComponent,
     NotAuthorizedComponent,
