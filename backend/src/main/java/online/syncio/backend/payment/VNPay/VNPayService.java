@@ -1,9 +1,8 @@
-package online.syncio.backend.payment.VNPay;
+package online.syncio.backend.payment.vnpay;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import online.syncio.backend.billing.Billing;
 import online.syncio.backend.billing.BillingDTO;
 import online.syncio.backend.billing.BillingService;
 import online.syncio.backend.billing.StatusEnum;
@@ -12,11 +11,9 @@ import online.syncio.backend.label.LabelDTO;
 import online.syncio.backend.label.LabelService;
 import online.syncio.backend.user.UserDTO;
 import online.syncio.backend.user.UserService;
-import online.syncio.backend.userlabelinfo.UserLabelInfo;
 import online.syncio.backend.userlabelinfo.UserLabelInfoDTO;
 import online.syncio.backend.userlabelinfo.UserLabelInfoService;
 import online.syncio.backend.utils.AuthUtils;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 

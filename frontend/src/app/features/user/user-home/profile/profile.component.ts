@@ -9,6 +9,12 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { UserService } from 'src/app/core/services/user.service';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
 
+import { UserLabelInfoService } from 'src/app/core/services/user-label-info.service';
+import { LabelService } from 'src/app/core/services/label.service';
+import { UserLabelInfo } from 'src/app/core/interfaces/user-label-info';
+import { LabelUpdateService } from 'src/app/core/services/label-update.service';
+
+
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -38,13 +44,20 @@ export class ProfileComponent implements OnInit {
   post: Post = {};
   visible: boolean = false; // Used to show/hide the post detail modal
 
+  // chooseLabel
+  chooseLableDialog: boolean = false;
+  userLabelInfos!: UserLabelInfo[];
+
+
   constructor(
     private notificationService: NotificationService,
     private userService: UserService,
     private route: ActivatedRoute,
     private router: Router,
-    private location: Location
-  ) {}
+    private location: Location,
+    private userLabelInfoService: UserLabelInfoService,
+    private labelUpdateService: LabelUpdateService
+  ) { }
 
   ngOnInit(): void {
     let id;
@@ -52,7 +65,7 @@ export class ProfileComponent implements OnInit {
       id = params['userId'];
       // this.checkFollowStatus(id);
 
-      if(this.loginUser) {
+      if (this.loginUser) {
         this.userService.getUserProfile2(id).subscribe({
           next: (response) => {
             this.userProfile = response;
@@ -63,6 +76,7 @@ export class ProfileComponent implements OnInit {
           },
         });
         this.notificationService.connectWebSocket(this.loginUser);
+
       }
       else {
         this.loadUserProfile(id);
@@ -71,7 +85,7 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    if(this.loginUser) this.notificationService.disconnect();
+    if (this.loginUser) this.notificationService.disconnect();
   }
 
   private loadUserProfile(userId: string): void {
@@ -163,6 +177,7 @@ export class ProfileComponent implements OnInit {
       },
     });
   }
+
   public handleRemoveCloseFriends(targetId: any): void {
     this.userService.removeCloseFriends(targetId).subscribe({
       next: (response: any) => {
@@ -185,4 +200,40 @@ export class ProfileComponent implements OnInit {
     this.location.replaceState('/post/' + this.post.id);
   }
 
+  showChooseLabelDialog() {
+    this.chooseLableDialog = true;
+    if (this.userProfile.id) {
+      this.userLabelInfoService.getLabelsByUserId(this.userProfile.id).subscribe({
+        next: (response) => {
+          this.userLabelInfos = response;
+        },
+        error: (error) => {
+          console.error('Error getting labels', error);
+        },
+      });
+    }
+  }
+
+  confirm(userLabelInfo: any) {
+    const userId = userLabelInfo.userId;
+    let curLabelId = '';
+    const userLabelInfoWithShow = this.userLabelInfos.find(i => i.isShow === true);
+
+    if (userLabelInfoWithShow) {
+      curLabelId = userLabelInfoWithShow?.labelId ?? '';
+    }
+
+    const newLabelId = userLabelInfo.labelId;
+
+    this.userLabelInfoService.update_isShow(userId, curLabelId, newLabelId).subscribe({
+      next: (response) => {
+        // response chứa URL mới
+        this.labelUpdateService.updateGifUrl(response);
+        this.chooseLableDialog = false;
+      },
+      error: (error) => {
+        console.error('Error updating label info', error);
+      },
+    });
+  }
 }

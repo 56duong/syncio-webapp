@@ -183,7 +183,6 @@ export class UsersManagementComponent implements OnInit {
         try {
             const response = await lastValueFrom(this.userService.getUserProfile(userId));
             this.posts = response.posts;
-            console.log(this.posts);
             this.postOfUserDialog = true;
         } catch (error) {
             console.error('Failed to fetch posts:', error);

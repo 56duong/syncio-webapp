@@ -16,7 +16,11 @@
       </div>
       <div class="flex align-items-center gap-1">
         <small *ngIf="post.createdBy" class="font-bold">
-          {{ post.createdBy | userIdToName | async }}
+          <!-- {{ post.createdBy | userIdToName | async }} -->
+          <app-username-label [userId]="post.createdBy"
+                        [fontSize]="'13px'"
+                        [color]="''">
+                      </app-username-label>
         </small>
         <small class="text-gray-500">•</small>
         <small class="text-gray-500" [title]="post.createdDate | date: 'HH:mm:ss dd/MM/yyyy'">
