@@ -1,4 +1,4 @@
-package online.syncio.backend.payment.VNPay;
+package online.syncio.backend.payment.vnpay;
 
 import jakarta.servlet.http.HttpServletRequest;
 

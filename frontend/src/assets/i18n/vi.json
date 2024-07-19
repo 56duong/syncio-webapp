@@ -1,0 +1,25 @@
+{
+  "login": "Đăng nhập",
+  "email": "Email",
+  "password": "Mật khẩu",
+  "forgotPassword": "Quên mật khẩu?",
+  "dontHaveAnAccount": "Chưa có tài khoản?",
+  "signUp": "Đăng ký",
+  "continueAsGuest": "Tiếp tục mà không đăng nhập",
+
+  "error": "Lỗi",
+  "emailIsRequired": "Email không được để trống",
+  "passwordIsRequired": "Mật khẩu không được để trống",
+
+  "home": "Trang chủ",
+  "search": "Tìm kiếm",
+  "messages": "Tin nhắn",
+  "notifications": "Thông báo",
+  "labelShopping": "Mua sắm nhãn",
+  "create": "Tạo",
+  "post": "Bài viết",
+  "story": "Tin",
+  "settings": "Cài đặt",
+  "help": "Trợ giúp",
+  "logout": "Đăng xuất"
+}

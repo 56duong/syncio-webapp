@@ -1,0 +1,6 @@
+<div class="flex align-items-center">
+    <span [ngStyle]="{'font-size': fontSize, 'color': color, 'font-weight': fontWeight}">
+      {{ username }}
+    </span>
+    <img *ngIf="gifUrl !== undefined && gifUrl !== null && gifUrl !== ''" [src]="gifUrl" alt="User Label" class="user-label">
+</div>

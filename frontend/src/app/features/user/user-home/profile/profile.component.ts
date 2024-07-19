@@ -11,6 +11,11 @@ import { TokenService } from 'src/app/core/services/token.service';
 import { UserCloseFriendService } from 'src/app/core/services/user-close-friend.service';
 import { UserFollowService } from 'src/app/core/services/user-follow.service';
 import { UserService } from 'src/app/core/services/user.service';
+import { UserResponse } from 'src/app/features/authentication/login/user.response';
+import { UserLabelInfoService } from 'src/app/core/services/user-label-info.service';
+import { LabelService } from 'src/app/core/services/label.service';
+import { UserLabelInfo } from 'src/app/core/interfaces/user-label-info';
+import { LabelUpdateService } from 'src/app/core/services/label-update.service';
 
 @Component({
   selector: 'app-profile',
@@ -61,6 +66,10 @@ export class ProfileComponent implements OnInit {
   isVisibleFollowers: boolean = false; // show/hide the followers modal
   isVisibleFollowing: boolean = false; // show/hide the following modal
 
+  // chooseLabel
+  chooseLableDialog: boolean = false;
+  userLabelInfos!: UserLabelInfo[];
+
   constructor(
     private notificationService: NotificationService,
     private userService: UserService,
@@ -72,6 +81,9 @@ export class ProfileComponent implements OnInit {
     private userFollowService: UserFollowService,
     private userCloseFriendService: UserCloseFriendService,
     private toastService: ToastService,
+    private userLabelInfoService: UserLabelInfoService,
+    private labelUpdateService: LabelUpdateService
+
   ) {}
 
   ngOnInit(): void {
@@ -131,7 +143,6 @@ export class ProfileComponent implements OnInit {
       });
     }
   }
-  
 
   public handleEditProfile(): void {
     this.router.navigate(['/edit-profile']);
@@ -224,7 +235,6 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
-
   /**
    * Send follow notification to target user.
    * @param targetId 
@@ -256,4 +266,40 @@ export class ProfileComponent implements OnInit {
     this.location.replaceState('/post/' + this.post.id);
   }
 
+  showChooseLabelDialog() {
+    this.chooseLableDialog = true;
+    if (this.userProfile.id) {
+      this.userLabelInfoService.getLabelsByUserId(this.userProfile.id).subscribe({
+        next: (response) => {
+          this.userLabelInfos = response;
+        },
+        error: (error) => {
+          console.error('Error getting labels', error);
+        },
+      });
+    }
+  }
+
+  confirm(userLabelInfo: any) {
+    const userId = userLabelInfo.userId;
+    let curLabelId = '';
+    const userLabelInfoWithShow = this.userLabelInfos.find(i => i.isShow === true);
+
+    if (userLabelInfoWithShow) {
+      curLabelId = userLabelInfoWithShow?.labelId ?? '';
+    }
+
+    const newLabelId = userLabelInfo.labelId;
+
+    this.userLabelInfoService.update_isShow(userId, curLabelId, newLabelId).subscribe({
+      next: (response) => {
+        // response chứa URL mới
+        this.labelUpdateService.updateGifUrl(response);
+        this.chooseLableDialog = false;
+      },
+      error: (error) => {
+        console.error('Error updating label info', error);
+      },
+    });
+  }
 }

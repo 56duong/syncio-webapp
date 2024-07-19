@@ -30,7 +30,7 @@
         <div *ngIf="messageRoom.group || (!messageRoom.group && member.userId != currentUser.id)" 
           class="w-full flex align-items-center gap-1">
           <!-- avatar -->
-          <img src="/assets/images/avatar.jpg" class="border-circle" style="width: 48px;">
+          <app-avatar [userId]="member.userId" [width]="48"></app-avatar>
           <!-- username and is admin -->
           <div class="flex flex-column gap-2">
             <p [title]="member.username" class="my-0 line-clamp" style="word-break: break-word;">{{member.username}}</p>

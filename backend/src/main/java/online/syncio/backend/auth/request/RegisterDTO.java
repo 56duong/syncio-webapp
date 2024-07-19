@@ -11,16 +11,16 @@ import lombok.*;
 @Getter
 @Setter
 public class RegisterDTO {
-    @Email(message = "Invalid email format")
-    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "{user.register.email.invalid}")
+    @NotBlank(message = "{user.register.email.invalid}")
     private String email;
 
-    @NotBlank(message = "Username cannot be blank")
-    @Size(max = 50)
+    @NotBlank(message = "{user.register.username.blank}")
+    @Size(max = 30, min = 3, message = "{user.register.username.length}")
     private String username;
 
-    @NotBlank(message = "Password cannot be blank")
-    @Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters")
+    @NotBlank(message = "{user.register.password.blank}")
+    @Size(min = 6, max = 100, message = "{user.register.password.length}")
     @Pattern(regexp = "^[^\\s]+$", message = "Password must not contain spaces")
     private String password;
 

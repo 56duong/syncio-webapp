@@ -1,8 +1,11 @@
 package online.syncio.backend.exception;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import online.syncio.backend.auth.responses.ResponseObject;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -32,8 +35,10 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @ControllerAdvice
 @Slf4j
 @RestControllerAdvice
-
+@AllArgsConstructor
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+
+    private final MessageSource messageSource;
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -87,7 +92,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleConstraintViolation(
             jakarta.validation.ConstraintViolationException ex) {
         ApiError apiError = new ApiError(BAD_REQUEST);
-        apiError.setMessage("Validation error");
+        String message = messageSource.getMessage("validate.error", null, LocaleContextHolder.getLocale());
+        apiError.setMessage(message);
         apiError.addValidationErrors(ex.getConstraintViolations());
         return buildResponseEntity(apiError);
     }
@@ -152,7 +158,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request) {
         ApiError apiError = new ApiError(BAD_REQUEST);
-        apiError.setMessage("Validation error");
+        String message = messageSource.getMessage("validate.error", null, LocaleContextHolder.getLocale());
+        apiError.setMessage(message);
         apiError.addValidationErrors(ex.getBindingResult().getFieldErrors());
         apiError.addValidationError(ex.getBindingResult().getGlobalErrors());
         return buildResponseEntity(apiError);
