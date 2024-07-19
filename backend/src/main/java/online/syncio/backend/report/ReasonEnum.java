@@ -5,7 +5,5 @@ public enum ReasonEnum {
     HARASSMENT,
     VIOLENCE,
     INAPPROPRIATE_CONTENT,
-    NUDE
+    NUDE,
 }
-// m co r mà
-// v them o fe

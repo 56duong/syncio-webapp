@@ -1,0 +1,9 @@
+# Build stage
+FROM maven:3.8.4-openjdk-17-slim
+WORKDIR /opt
+COPY target/*.jar /opt/app.jar
+ENTRYPOINT exec java $JAVA_OPTS -jar app.jar
+
+
+#docker build -t chuthanh/dockerfile-backend:latest -f DockerfileBackend .
+#docker push chuthanh/dockerfile-backend:latest

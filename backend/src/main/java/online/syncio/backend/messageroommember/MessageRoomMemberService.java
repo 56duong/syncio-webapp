@@ -8,6 +8,7 @@ import online.syncio.backend.utils.AuthUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,10 +22,23 @@ public class MessageRoomMemberService {
 
     
     public List<MessageRoomMemberDTO> findByMessageRoomId(final UUID messageRoomId) {
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        final MessageRoomMember currentMessageRoomMember = messageRoomMemberRepository.findByMessageRoomIdAndUserId(messageRoomId, currentUserId)
+                .orElseThrow(() -> new NotFoundException(MessageRoomMember.class, "messageRoomId", messageRoomId.toString(), "userId", currentUserId.toString()));
         return messageRoomMemberRepository.findByMessageRoomIdOrderByDateJoined(messageRoomId)
                 .stream()
                 .map(messageRoomMember -> messageRoomMemberMapper.mapToDTO(messageRoomMember, new MessageRoomMemberDTO()))
                 .toList();
+    }
+
+
+    public LocalDateTime updateLastSeen(final UUID messageRoomId) {
+        UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        final MessageRoomMember messageRoomMember = messageRoomMemberRepository.findByMessageRoomIdAndUserId(messageRoomId, currentUserId)
+                .orElseThrow(() -> new NotFoundException(MessageRoomMember.class, "messageRoomId", messageRoomId.toString(), "userId", currentUserId.toString()));
+        messageRoomMember.setLastSeen(LocalDateTime.now());
+        messageRoomMemberRepository.save(messageRoomMember);
+        return messageRoomMember.getLastSeen();
     }
 
 

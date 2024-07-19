@@ -13,6 +13,10 @@ import { ProfileFormComponent } from './features/user/user-home/profile-form/pro
 import { SearchComponent } from './features/user/user-home/search/search.component';
 import { PrimengModule } from './primeng/primeng.module';
 import { RegisterComponent } from './features/authentication/register/register.component';
+import { authGuard } from './core/guards/auth.guard';
+import { RoleEnum } from './core/interfaces/user';
+import { NotFoundComponent } from './shared/components/not-found/not-found.component';
+import { NotAuthorizedComponent } from './shared/components/not-authorized/not-authorized.component';
 
 @NgModule({
   declarations: [ProfileFormComponent],
@@ -39,6 +43,8 @@ const routes: Routes = [
     component: AdminComponent,
     loadChildren: () =>
       import('./features/admin/admin.module').then((m) => m.AdminModule),
+    canActivate: [authGuard],
+    data: { requiredRoles: [RoleEnum.ADMIN] }
   },
   {
     path: 'login',
@@ -69,8 +75,20 @@ const routes: Routes = [
     path: 'edit-profile',
     title: 'edit-profile',
     component: ProfileFormComponent,
+    canActivate: [authGuard],
+    data: { requiredRoles: [RoleEnum.USER] }
   },
   { path: 'search', component: SearchComponent },
+  {
+    path: "not-found",
+    title: "Not Found",
+    component: NotFoundComponent
+  },
+  {
+    path: "not-authorized",
+    title: "Not Authorized",
+    component: NotAuthorizedComponent
+  }
 ];
 
 @NgModule({

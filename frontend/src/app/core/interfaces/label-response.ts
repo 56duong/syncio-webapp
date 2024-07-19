@@ -5,5 +5,6 @@ export interface LabelResponse {
     labelURL?: string;
     status?: string;
     type?: string;
+    owner?: string;
     isPurcharse?: boolean;
   }

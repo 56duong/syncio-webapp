@@ -225,7 +225,13 @@ public class AuthController {
 
             SecurityContextHolder.clearContext();
 
-            return ResponseEntity.ok().body("Logged out successfully.");
+            return ResponseEntity.ok(
+                    ResponseObject.builder()
+                            .message("Logout successfully")
+                            .data("")
+                            .status(HttpStatus.OK)
+                            .build()
+            );
         }
 
         return ResponseEntity.notFound().build();

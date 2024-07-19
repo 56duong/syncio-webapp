@@ -9,6 +9,7 @@ import online.syncio.backend.comment.CommentRepository;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.exception.ReferencedWarning;
+import online.syncio.backend.firebase.FirebaseStorageService;
 import online.syncio.backend.huggingfacenlp.HfInference;
 import online.syncio.backend.keyword.KeywordResponseDTO;
 import online.syncio.backend.keyword.KeywordService;
@@ -22,7 +23,9 @@ import online.syncio.backend.setting.SettingService;
 import online.syncio.backend.user.EngagementMetricsDTO;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
+import online.syncio.backend.userfollow.UserFollowRepository;
 import online.syncio.backend.utils.AuthUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +54,12 @@ public class PostService {
     private final KeywordService keywordService;
     private final SettingService settingService;
     private final AuthUtils authUtils;
+    private final UserFollowRepository userFollowRepository;
+    private final FirebaseStorageService firebaseStorageService;
+
+    @Value("${firebase.storage.type}")
+    private String storageType;
+
 
     //    CRUD
     public List<PostDTO> findAll () {
@@ -82,11 +91,12 @@ public class PostService {
                              .orElseThrow(() -> new NotFoundException(Post.class, "id", id.toString()));
     }
 
-    public ResponseEntity<?> create (final CreatePostDTO postDTO) throws IOException {
+    @Transactional
+    public ResponseEntity<?> create (final CreatePostDTO createPostDTO) throws IOException {
         Post post = new Post();
 
         //Upload image
-        List<MultipartFile> files = postDTO.getPhotos();
+        List<MultipartFile> files = createPostDTO.getPhotos();
         List<String> filenames = new ArrayList<>();
 
         if (files != null && !files.isEmpty()) {
@@ -108,13 +118,51 @@ public class PostService {
                                          .body("File must be an image");
                 }
 
-                String filename = storeFile(file);
+                String filename;
+                if ("local".equals(storageType)) {
+                    filename = storeFile(file, "image");
+                }
+                else if ("firebase".equals(storageType)) {
+                    filename = firebaseStorageService.uploadFile(file, "posts", "png");
+                }
+                else {
+                    throw new IllegalStateException("Invalid storage type: " + storageType);
+                }
                 filenames.add(filename);
             }
         }
-        post.setVisibility(postDTO.getVisibility());
-        post.setCaption(postDTO.getCaption());
-        post.setFlag(postDTO.getFlag());
+
+        // Audio
+        if(createPostDTO.getAudio() != null) {
+            MultipartFile audio = createPostDTO.getAudio();
+            if (audio.getSize() == 0) {
+                post.setAudioURL(null);
+            } else {
+                if (audio.getSize() > 10 * 1024 * 1024) {
+                    return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                                         .body("File size is too large");
+                }
+                if (audio.getContentType() == null || !audio.getContentType().startsWith("audio/")) {
+                    return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                                         .body("File must be an audio");
+                }
+                String filename;
+                if ("local".equals(storageType)) {
+                    filename = storeFile(audio, "audio");
+                }
+                else if ("firebase".equals(storageType)) {
+                    filename = firebaseStorageService.uploadFile(audio, "posts", "wav");
+                }
+                else {
+                    throw new IllegalStateException("Invalid storage type: " + storageType);
+                }
+                post.setAudioURL(filename);
+            }
+        }
+
+        post.setVisibility(createPostDTO.getVisibility());
+        post.setCaption(createPostDTO.getCaption());
+        post.setFlag(createPostDTO.getFlag());
 
         // Initialize the Hugging Face Inference object
         HfInference hfInference;
@@ -130,7 +178,7 @@ public class PostService {
 
                     if(hfInference != null) {
                         // Generate alt text for the image
-                        String altTexts = hfInference.imageToText(photo.getImageUrl());
+                        String altTexts = hfInference.imageToText(photo.getImageUrl(storageType));
                         if (altTexts != null) {
                             photo.setAltText(altTexts);
                         }
@@ -142,8 +190,8 @@ public class PostService {
 
         // Get keywords from the caption
         Set<String> keywords = new HashSet<>();
-        if(postDTO.getCaption() != null) {
-            KeywordResponseDTO keywordsFromCaption = keywordService.extractKeywords(postDTO.getCaption());
+        if(createPostDTO.getCaption() != null) {
+            KeywordResponseDTO keywordsFromCaption = keywordService.extractKeywords(createPostDTO.getCaption());
             if(keywordsFromCaption != null) {
                 keywords = keywordService.getKeywordsByOrderAndLimit(keywordsFromCaption);
             }
@@ -162,9 +210,16 @@ public class PostService {
         return contentType != null && contentType.startsWith("image/");
     }
 
-    public String storeFile (MultipartFile file) throws IOException {
-        if (!isImageFile(file) || file.getOriginalFilename() == null) {
-            throw new IOException("Invalid image format");
+    public String storeFile (MultipartFile file, String fileType) throws IOException {
+        if(fileType.equals("image")) {
+            if (!isImageFile(file) || file.getOriginalFilename() == null) {
+                throw new IOException("Invalid image format");
+            }
+        }
+        else if(fileType.equals("audio")) {
+            if (file.getContentType() == null || !file.getContentType().startsWith("audio/")) {
+                throw new IOException("Invalid audio format");
+            }
         }
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         // Thêm UUID vào trước tên file để đảm bảo tên file là duy nhất
@@ -195,13 +250,6 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    public List<PostDTO> findByUserId (final UUID id) {
-        List<Post> posts = postRepository.findByCreatedBy_IdOrderByCreatedDateDesc(id);
-        return posts.stream()
-                    .map(post -> mapToDTO(post, new PostDTO()))
-                    .collect(Collectors.toList());
-    }
-
     public User getCurrentUser() {
         UUID currentUserId = authUtils.getCurrentLoggedInUserId();
         if(currentUserId == null) {
@@ -220,9 +268,9 @@ public class PostService {
 
     public Page<PostDTO> getPostsFollowing(Pageable pageable) {
         User user = getCurrentUser();
-        Set<UUID> following = user.getFollowing().stream()
-            .map(User::getId)
-            .collect(Collectors.toSet());
+        Set<UUID> following = userFollowRepository.findAllByActorId(user.getId()).stream()
+                        .map(userFollow -> userFollow.getTarget().getId())
+                        .collect(Collectors.toSet());
         following.add(user.getId()); // Include the current user
         Page<Post> posts = postRepository.findPostsByUserFollowing(pageable, user.getId(), following, LocalDateTime.now().minusDays(1));
         return convertToPostDTOPage(posts, pageable);
@@ -242,8 +290,8 @@ public class PostService {
         String keywords = Arrays.stream(user.getInterestKeywords().split(", "))
                 .map(String::trim)
                 .collect(Collectors.joining("|"));
-        Set<UUID> following = user.getFollowing().stream()
-                .map(User::getId)
+        Set<UUID> following = userFollowRepository.findAllByActorId(user.getId()).stream()
+                .map(userFollow -> userFollow.getTarget().getId())
                 .collect(Collectors.toSet());
         following.add(user.getId()); // Include the current user
         return postRepository.findPostsByUserInterests(pageable, following, postIds, keywords.isBlank() ? null : keywords);
@@ -296,17 +344,34 @@ public class PostService {
         return new HashSet<>(updatedKeywords);
     }
 
+    public List<PostDTO> getPostsByUserId(UUID userId) {
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        List<Post> posts = postRepository.findPostsByUser(userId, currentUserId);
+        return posts.stream()
+                .map(post -> mapToDTO(post, new PostDTO()))
+                .collect(Collectors.toList());
+    }
+
+    public List<PostDTO> getPostsByVisibility(UUID userId) {
+        List<Post> posts = postRepository.findPostsByVisibilityAndUserId(PostEnum.PUBLIC.toString(), userId);
+        return posts.stream()
+                .map(post -> mapToDTO(post, new PostDTO()))
+                .collect(Collectors.toList());
+    }
+
+
 
     //    MAPPER
     private PostDTO mapToDTO (final Post post, final PostDTO postDTO) {
         postDTO.setId(post.getId());
         postDTO.setCaption(post.getCaption());
+        postDTO.setAudioURL(post.getAudioURL());
 
         List<PhotoDTO> photos = post.getPhotos().stream()
                 .map(photo -> {
                     PhotoDTO photoDTO = new PhotoDTO();
                     photoDTO.setId(photo.getId());
-                    photoDTO.setUrl(photo.getUrl());
+                    photoDTO.setUrl(photo.getImageUrl(storageType));
                     photoDTO.setAltText(photo.getAltText());
                     photoDTO.setPostId(photo.getPost().getId());
                     return photoDTO;
@@ -316,6 +381,7 @@ public class PostService {
 
         postDTO.setCreatedDate(post.getCreatedDate());
         postDTO.setFlag(post.getFlag());
+        postDTO.setUsername(post.getCreatedBy().getUsername());
         postDTO.setCreatedBy(post.getCreatedBy().getId());
         postDTO.setVisibility(post.getVisibility());
         return postDTO;
@@ -323,6 +389,7 @@ public class PostService {
 
     private Post mapToEntity (final PostDTO postDTO, final Post post) {
         post.setCaption(postDTO.getCaption());
+        post.setAudioURL(postDTO.getAudioURL());
 
         List<Photo> photos = postDTO.getPhotos().stream()
                 .map(photoDTO -> {
@@ -444,14 +511,23 @@ public class PostService {
                                                        .build());
             }
         } catch (Exception e) {
-            System.err.println("Failed to toggle like: " + e.getMessage());
-
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                                                                   .status(HttpStatus.BAD_REQUEST)
                                                                   .data(null)
                                                                   .message("Failed to toggle like.")
                                                                   .build());
         }
+    }
+
+
+    @Transactional
+    public Optional<Post> blockPost(UUID postId) {
+        Optional<Post> postOptional = postRepository.findById(postId);
+        postOptional.ifPresent(post -> {
+            post.setVisibility(PostEnum.BLOCKED);
+            postRepository.save(post);
+        });
+        return postOptional;
     }
 
     // get post have report != null and flag = true
@@ -504,5 +580,6 @@ public class PostService {
 
         return metrics;
     }
+
 
 }

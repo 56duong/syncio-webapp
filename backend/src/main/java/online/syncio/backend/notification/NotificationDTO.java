@@ -12,6 +12,8 @@ public class NotificationDTO {
 
     private UUID targetId;
 
+    private UUID actionPerformedId;
+
     private UUID actorId;
 
     private ActionEnum actionType;

@@ -11,6 +11,8 @@ public class MessageRoomMemberDTO {
 
     private UUID userId;
 
+    private String username;
+
     private LocalDateTime dateJoined;
 
     private boolean isAdmin;

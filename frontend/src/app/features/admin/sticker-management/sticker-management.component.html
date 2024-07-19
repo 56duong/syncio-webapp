@@ -11,7 +11,7 @@
       </div>
     </p-toolbar>
   
-    <!-- Table -->
+    <!-- Sticker group table -->
     <p-table [value]="stickerGroups" 
       selectionMode="single" 
       [(selection)]="selectedStickerGroup"
@@ -47,7 +47,7 @@
       </div>
     </p-toolbar>
   
-    <!-- Table -->
+    <!-- Stickers table -->
     <p-table *ngIf="selectedStickerGroup && selectedStickerGroup.stickers"
       #stickerTable
       [value]="selectedStickerGroup.stickers"
@@ -57,7 +57,8 @@
       [rowHover]="true"
       dataKey="id"
       [showCurrentPageReport]="true"
-      styleClass="p-0">
+      styleClass="p-0"
+      class="stickers">
       <ng-template pTemplate="caption">
         <div class="flex align-items-center justify-content-between">
           <!-- Search -->
@@ -75,8 +76,8 @@
         <!-- Header title -->
         <tr>
           <th pSortableColumn="name" style="min-width:10rem">Name<p-sortIcon field="name" /></th>
-          <th>Image</th>
-          <th>Flag</th>
+          <th style="width: 6rem;">Image</th>
+          <th style="width: 5rem;">Flag</th>
           <th>Created By</th>
           <th pSortableColumn="createdDate">Created Date <p-sortIcon field="createdDate" /></th>
         </tr>
@@ -93,13 +94,15 @@
       <ng-template pTemplate="body" let-sticker>
         <tr (dblclick)="onStickerSelect(sticker)">
           <td>{{ sticker.name }}</td>
-          <td>
-            <img [src]="sticker.imageUrl" 
+          <td style="width: 6rem;">
+            <img *ngIf="sticker.id" 
+              [src]="sticker.imageUrl | constructImageUrl"
+              onerror="this.onerror=null; this.src='/assets/images/no-image-available.jpg';"
               [alt]="sticker.name" 
               width="50" 
               class="shadow-4" />
           </td>
-          <td>
+          <td style="width: 5rem;">
             <i class="pi" [ngClass]="{ 'text-green-500 pi-check-circle': sticker.flag, 'text-red-500 pi-times-circle': !sticker.flag }"></i>
           </td>
           <td>{{ sticker.createdBy | userIdToName | async }}</td>
@@ -167,10 +170,11 @@
   <!-- Image -->
   <div class="mb-4 text-center">
     <img *ngIf="selectedSticker.imageUrl"
-      [src]="selectedSticker.imageUrl" 
+      [src]="selectedSticker.imageUrl | constructImageUrl"
+      onerror="this.onerror=null; this.src='/assets/images/no-image-available.jpg';"
       [alt]="selectedSticker.name" 
-      width="130" 
-      class="shadow-4 mb-2" />
+      width="50" 
+      class="shadow-4" />
     <p-fileUpload *ngIf="!selectedSticker.id"
       mode="basic" 
       chooseLabel="Choose" 

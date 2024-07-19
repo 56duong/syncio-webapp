@@ -1,0 +1,109 @@
+<div class="p-3 flex flex-column gap-2 py-2">
+
+  <!-- Caption as comment -->
+  <div *ngIf="post.caption" class="flex align-items-start gap-2 py-2">
+    <app-avatar [userId]="post.createdBy" [width]="32"></app-avatar>
+    <div>
+      <!-- username -->
+      <h3 *ngIf="post.createdBy" class="inline-flex text-sm my-0 mr-1">
+        {{ post.username }}
+      </h3>
+      <!-- comment text -->
+      <div class="comment-text inline" [innerHTML]="post.caption"></div>
+      <!-- footer -->
+      <div class="flex align-items-center gap-3 mt-2">
+        <small class="text-gray-500 text-xs" [title]="post.createdDate == 'Just now' ? post.createdDate : post.createdDate | date: 'HH:mm:ss dd/MM/yyyy'">
+          {{post.createdDate | dateAgoPipe}}
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div *ngFor="let c of comments" [id]="c.id" class="flex align-items-start gap-2 py-2">
+    <app-avatar [userId]="c.userId" [width]="32"></app-avatar>
+    <div>
+      <!-- username -->
+      <h3 *ngIf="c.userId" class="inline-flex text-sm my-0 mr-1">
+        {{ c.username }}
+      </h3>
+      <!-- comment text -->
+      <div class="comment-text inline" [innerHTML]="c.text"></div>
+      <!-- footer -->
+      <div class="flex align-items-center gap-3 mt-2">
+        <small class="text-gray-500 text-xs" [title]="c.createdDate == 'Just now' ? c.createdDate : c.createdDate | date: 'HH:mm:ss dd/MM/yyyy'">
+          {{c.createdDate | dateAgoPipe}}
+        </small>
+        <!-- Like -->
+        <div class="flex justify-content-center align-items-center gap-1">
+          <span (click)="likeComment(c)" class="cursor-pointer"
+          [ngClass]="c.id && commentLikes[c.id] ? 'pi pi-heart-fill text-red-500' : 'pi pi-heart'"
+          style="font-size: 1rem"></span>
+          <span class="text-gray-500 text-xs">
+            {{c.likesCount}} like{{c.likesCount && c.likesCount > 1 ? 's' : ''}}
+          </span>
+        </div>
+        <!-- Reply -->
+        <small (click)="onReply(c.id || '', c.userId || '')"
+          [ngClass]="{ 'text-blue-500 font-bold': c.id === comment.parentCommentId }"
+          class="cursor-pointer text-xs">
+          Reply
+        </small>
+        <!-- 3 dots -->
+        <span class="pi pi-ellipsis-h cursor-pointer"></span>
+      </div>
+
+      <!-- ------------------------------- REPLIES ------------------------------- -->
+      <ng-container *ngIf="c.id && c.repliesCount && c.repliesCount > 0">
+        <div class="my-2">
+          <!-- Show/Hide replies -->
+          <small (click)="viewReplies(c)"
+            class="cursor-pointer text-xs mt-3 block">
+            ___{{ c.isShowReplies ? "Hide" : "View" }} replies ({{ c.repliesCount }})
+          </small>
+          <!-- Reply List -->
+          <div *ngIf="c && c.isShowReplies"
+            class="flex flex-column gap-4 mt-3">
+            <div *ngFor="let reply of c.replies"
+              [id]="reply.id"
+              class="flex align-items-start gap-2">
+              <app-avatar [userId]="reply.userId" [width]="32"></app-avatar>
+              <div>
+                <!-- username -->
+                <h3 *ngIf="reply.userId"
+                  class="inline-flex text-sm my-0 mr-1">
+                  {{ reply.username }}
+                </h3>
+                <!-- comment text -->
+                <div class="comment-text inline"
+                  [innerHTML]="reply.text">
+                </div>
+                <!-- footer -->
+                <div class="flex align-items-center gap-3 mt-2">
+                  <small class="text-gray-500 text-xs" [title]="reply.createdDate == 'Just now' ? reply.createdDate : reply.createdDate | date: 'HH:mm:ss dd/MM/yyyy'">
+                    {{reply.createdDate | dateAgoPipe}}
+                  </small>
+                  <!-- Like -->
+                  <div class="flex justify-content-center align-items-center gap-1">
+                    <span (click)="likeComment(reply)" class="cursor-pointer"
+                    [ngClass]="reply.id && commentLikes[reply.id] ? 'pi pi-heart-fill text-red-500' : 'pi pi-heart'"
+                    style="font-size: 1rem"></span>
+                    <span class="text-gray-500 text-xs">
+                      {{reply.likesCount}} like{{reply.likesCount && reply.likesCount > 1 ? 's' : ''}}
+                    </span>
+                  </div>
+                  <!-- Reply of reply -->
+                  <small (click)="onReply(reply.parentCommentId ? reply.parentCommentId : '', reply.userId || '')"
+                    class="cursor-pointer text-xs">
+                    Reply
+                  </small>
+                  <!-- 3 dots -->
+                  <span class="pi pi-ellipsis-h cursor-pointer"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

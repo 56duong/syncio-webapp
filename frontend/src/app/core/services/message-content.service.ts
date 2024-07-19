@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { MessageContent } from '../interfaces/message-content';
-import { CompatClient, IMessage, Stomp } from '@stomp/stompjs';
+import { IMessage, Stomp } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
 
 @Injectable({
@@ -15,9 +15,8 @@ export class MessageContentService {
   private apiURL = environment.apiUrl + 'api/v1/messagecontents';
 
   private webSocketURL = environment.apiUrl + 'live'; // WebSocket URL with 'live' is the endpoint for the WebSocket configuration in the backend. In WebSocketConfig.java, the endpoint is '/live'.
-  private stompClient: CompatClient = {} as CompatClient;
-  private messageContentSubject: BehaviorSubject<MessageContent> = new BehaviorSubject<MessageContent>({}); // BehaviorSubject of MessageContent type. You can know when a new messageContent is received.
-  private subscription: any;
+
+  private connections: Map<string, any> = new Map(); // Map to store the connections for each message room ID.
 
   constructor(private http: HttpClient) {}
 
@@ -25,79 +24,99 @@ export class MessageContentService {
 
   /* ---------------------------- REALTIME SECTION ---------------------------- */
 
-
   /**
-   * Connect to the WebSocket. Subscribe to the topic '/topic/messagecontent/{messageRoomId}', 
-   * that URL is the endpoint for the WebSocket configuration in the backend with @SendTo annotation.
-   * Remember to disconnect from the WebSocket when the component is destroyed.
-   * @param messageRoomId - The id of the post.
-   * @example
-   * this.messageContentService.connectWebSocket(messageRoomId);
-   * 
-   * ngOnDestroy() {
-   *  if (this.messageRoom.id) this.messageContentService.disconnect(this.messageRoom.id);
-   * }
+   * Connect to the WebSocket server for the given message room ID.
+   * @param messageRoomId 
+   * @returns 
    */
-  connectWebSocket(messageRoomId: string) {
-    const socket = new SockJS(this.webSocketURL);
-    this.stompClient = Stomp.over(socket);
+  connectWebSocket(messageRoomId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Check if a connection for the given messageRoomId already exists
+      if (this.connections.has(messageRoomId)) {
+        // If connection exists, resolve immediately without creating a new connection
+        resolve();
+        return; // Exit the function to prevent creating a new connection
+      }
 
-    this.stompClient.connect({}, () => {
-      this.subscription = this.stompClient.subscribe(`/topic/messagecontent/${messageRoomId}`, (messageContent: IMessage) => {
-        this.messageContentSubject.next(JSON.parse(messageContent.body));
+      const socket = new SockJS(this.webSocketURL);
+      const stompClient = Stomp.over(socket);
+      const messageContentSubject: BehaviorSubject<MessageContent> = new BehaviorSubject<MessageContent>({});
+
+      stompClient.connect({}, () => {
+        const subscription = stompClient.subscribe(`/topic/messagecontent/${messageRoomId}`, (messageContent: IMessage) => {
+          messageContentSubject.next(JSON.parse(messageContent.body));
+        });
+        // Store the connection or subscription as needed
+        this.connections.set(messageRoomId, { stompClient, subscription, messageContentSubject });
+        resolve(); // Resolve the promise here
+      }, (error: any) => {
+        reject(error); // Reject the promise on error
       });
     });
   }
 
-  /**
-   * Get the messageContents observable.
-   * Remember to unsubscribe from the observable when the component is destroyed.
-   * @returns the messageContent observable.
-   * @example
-   * subscriptionMessageContents: Subscription = new Subscription();
-   * 
-   * this.subscriptionMessageContents = this.messageContentService.getMessageContentsObservable().subscribe({
-   *  next: (messageContent) => {
-   *   console.log(messageContent);
-   *   this.messageContents.unshift({ ...messageContent, createdDate: 'now' });
-   *  },
-   *  error: (error) => {
-   *   console.log(error);
-   *  }
-   * });
-   * 
-   * ngOnDestroy() {
-   *  this.subscriptionMessageContents.unsubscribe();
-   * }
-   */
-  getMessageContentsObservable(): Observable<MessageContent> {
-    return this.messageContentSubject.asObservable();
-  }
 
   /**
-   * Disconnect from the WebSocket.
+   * Get the connection for the given message room ID. 
+   * Connection contains the stompClient, subscription, and messageContentSubject.
+   * @param messageRoomId 
+   * @returns 
    */
-  disconnect() {
-    if(this.subscription) this.subscription.unsubscribe();
-    if(Object.keys(this.stompClient).length) {
-      this.stompClient.deactivate();
-      this.stompClient.disconnect();
+  getConnection(messageRoomId: string) {
+    return this.connections.get(messageRoomId);
+  }
+
+
+  /**
+   * Get the message content observable for the given message room ID.
+   * This observable will emit new message content whenever a new message content is received.
+   * @param messageRoomId 
+   * @returns 
+   */
+  getMessageContentsObservable(messageRoomId: string): Observable<MessageContent> {
+    const connection = this.getConnection(messageRoomId);
+    if(connection && connection.messageContentSubject) {
+      return connection.messageContentSubject.asObservable();
+    }
+    return new Observable();
+  }
+
+
+  /**
+   * Disconnect from the WebSocket server for the given message room ID.
+   * @param messageRoomId 
+   */
+  disconnect(messageRoomId: string) {
+    const connection = this.getConnection(messageRoomId);
+    if(connection) {
+      connection.subscription.unsubscribe();
+      connection.stompClient.deactivate();
+      connection.stompClient.disconnect();
+      this.connections.delete(messageRoomId);
     }
   }
 
+  
   /**
-   * Send a messageContent to the WebSocket. /app is config in setApplicationDestinationPrefixes method in WebSocketConfig.java 
-   * and '/app/messageContent/{postId}' is the endpoint for the WebSocket configuration in the backend with @MessageMapping annotation.
-   * @param messageContent - The messageContent object.
+   * Send message content to the WebSocket server for the given message room ID.
+   * @param messageContent 
+   * @returns 
    */
   sendMessageContent(messageContent: MessageContent) {
-    this.stompClient.publish({ 
-      headers: {
-        'token': localStorage.getItem('access_token') || '', // Send the token in the header to authenticate the user.
-      },
-      destination: `/app/messagecontent/${messageContent.messageRoomId}`, 
-      body: JSON.stringify(messageContent)
-    });
+    if(!messageContent.messageRoomId) return;
+    const connection = this.getConnection(messageContent.messageRoomId);
+    if (connection && connection.stompClient) {
+      connection.stompClient.publish({ 
+        headers: {
+          'token': localStorage.getItem('access_token') || '', // Send the token in the header to authenticate the user.
+        },
+        destination: `/app/messagecontent/${messageContent.messageRoomId}`, 
+        body: JSON.stringify(messageContent)
+      });
+    } 
+    else {
+      console.error('Connection not found or not established for room ID:', messageContent.messageRoomId);
+    }
   }
 
 

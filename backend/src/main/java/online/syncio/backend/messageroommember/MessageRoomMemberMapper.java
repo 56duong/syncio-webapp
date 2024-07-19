@@ -19,6 +19,7 @@ public class MessageRoomMemberMapper {
     public MessageRoomMemberDTO mapToDTO(final MessageRoomMember messageRoomMember, final MessageRoomMemberDTO messageRoomMemberDTO) {
         messageRoomMemberDTO.setMessageRoomId(messageRoomMember.getMessageRoom().getId());
         messageRoomMemberDTO.setUserId(messageRoomMember.getUser().getId());
+        messageRoomMemberDTO.setUsername(messageRoomMember.getUser().getUsername());
         messageRoomMemberDTO.setDateJoined(messageRoomMember.getDateJoined());
         messageRoomMemberDTO.setAdmin(messageRoomMember.isAdmin());
         return messageRoomMemberDTO;
@@ -26,9 +27,9 @@ public class MessageRoomMemberMapper {
 
 
     public MessageRoomMember mapToEntity(final MessageRoomMemberDTO messageRoomMemberDTO, final MessageRoomMember messageRoomMember) {
-        final MessageRoom post = messageRoomMemberDTO.getMessageRoomId() == null ? null : messageRoomRepository.findById(messageRoomMemberDTO.getMessageRoomId())
+        final MessageRoom messageRoom = messageRoomMemberDTO.getMessageRoomId() == null ? null : messageRoomRepository.findById(messageRoomMemberDTO.getMessageRoomId())
                 .orElseThrow(() -> new NotFoundException(MessageRoom.class, "id", messageRoomMemberDTO.getMessageRoomId().toString()));
-        messageRoomMember.setMessageRoom(post);
+        messageRoomMember.setMessageRoom(messageRoom);
         final User user = messageRoomMemberDTO.getUserId() == null ? null : userRepository.findById(messageRoomMemberDTO.getUserId())
                 .orElseThrow(() -> new NotFoundException(User.class, "id", messageRoomMemberDTO.getUserId().toString()));
         messageRoomMember.setUser(user);

@@ -17,7 +17,7 @@ public class LabelDTO {
         private String description;
 
         @NotNull
-        private Double price;
+        private Long price;
 
         private LocalDateTime createdDate;
 

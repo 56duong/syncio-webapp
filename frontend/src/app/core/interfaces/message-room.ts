@@ -1,3 +1,4 @@
+import { MessageContent } from "./message-content";
 import { MessageRoomMember } from "./message-room-member";
 
 export interface MessageRoom {
@@ -6,5 +7,10 @@ export interface MessageRoom {
   createdDate?: string;
   group?: boolean;
   createdBy?: string;
+  avatarURL?: string;
+  
   members?: MessageRoomMember[];
+  lastSeen?: string;
+  unSeenCount?: number;
+  lastMessage?: MessageContent;
 }

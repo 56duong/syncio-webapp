@@ -8,9 +8,10 @@ import java.util.UUID;
 @Data
 public class BillingDTO {
     private UUID labelId;
-    private UUID userId;
+    private UUID buyerId;
+    private UUID ownerId;
     private String orderNo;
-    private Double amount;
+    private Long amount;
     private StatusEnum status;
     private LocalDateTime createdDate;
 }

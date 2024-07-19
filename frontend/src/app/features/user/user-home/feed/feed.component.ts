@@ -1,6 +1,7 @@
 import {Component, HostListener, ViewChild} from '@angular/core';
 import { lastValueFrom, Subscription } from 'rxjs';
 import { Post } from 'src/app/core/interfaces/post';
+import { AudioRecorderService } from 'src/app/core/services/audio-recorder.service';
 import { PostService } from 'src/app/core/services/post.service';
 import { TokenService } from 'src/app/core/services/token.service';
 
@@ -30,6 +31,8 @@ export class FeedComponent {
 
   observer: IntersectionObserver | undefined; // Observer to watch the end of the feed element.
   @ViewChild('endOfFeed') endOfFeedElement: any; // Reference to the end of the feed element.
+
+  audioUrl: string | null = null;
 
   constructor(
     private postService: PostService,

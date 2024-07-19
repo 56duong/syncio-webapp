@@ -19,6 +19,11 @@ export class MessageRoomMemberService {
     return this.http.get<MessageRoomMember[]>(url);
   }
 
+  updateLastSeenMessage(roomId: string): Observable<string> {
+    const url = `${this.apiURL}/user/${roomId}`;
+    return this.http.put<string>(url, {});
+  }
+
   addMessageRoomMembers(roomId: string, messageRoomMembers: string[]): Observable<MessageRoomMember[]> {
     const url = `${this.apiURL}/${roomId}`;
     return this.http.post<MessageRoomMember[]>(url, messageRoomMembers);
