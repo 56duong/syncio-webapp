@@ -40,6 +40,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -178,7 +179,13 @@ public class PostService {
 
                     if(hfInference != null) {
                         // Generate alt text for the image
-                        String altTexts = hfInference.imageToText(photo.getImageUrl(storageType));
+                        String altTexts = null;
+                        try {
+                            altTexts = hfInference.imageToText(photo.getImageUrl(storageType));
+                        } catch (ExecutionException | InterruptedException e) {
+                            System.err.println("Error generating alt text: " + e.getMessage());
+                            e.printStackTrace();
+                        }
                         if (altTexts != null) {
                             photo.setAltText(altTexts);
                         }

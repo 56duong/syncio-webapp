@@ -3,16 +3,14 @@ import { NgForm } from '@angular/forms';
 import { UserResponse } from './user.response';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/core/services/user.service';
-import { RoleService } from '../role/role.service';
 import { LoginDTO } from './login.dto';
 import { LoginResponse } from './login.response';
 import { RegisterDTO } from '../register/register.dto';
 import { MessageService } from 'primeng/api';
-import { DialogModule } from 'primeng/dialog';
-import { HttpClient } from '@angular/common/http';
 import { TokenService } from 'src/app/core/services/token.service';
-import { NotificationService } from 'src/app/core/services/notification.service';
 import { ToastService } from 'src/app/core/services/toast.service';
+import { TranslateService } from '@ngx-translate/core';
+import { LangService } from 'src/app/core/services/lang.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -54,13 +52,12 @@ export class LoginComponent implements OnInit {
   onEmailChange() {}
   constructor(
     private router: Router,
-    private activatedRoute: ActivatedRoute,
     private userService: UserService,
     private tokenService: TokenService,
-    private roleService: RoleService,
     private toastService: ToastService,
     private route: ActivatedRoute,
-    private http: HttpClient
+    private translateService: TranslateService,
+    public langService: LangService
   ) {}
 
   ngOnInit() {
@@ -72,6 +69,11 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  switchLang(lang: string) {
+    this.langService.setLang(lang);
+    window.location.reload();
+  }
+
   createAccount() {
     this.router.navigate(['/register']);
   }
@@ -81,18 +83,21 @@ export class LoginComponent implements OnInit {
 
   login() {
     console.log('login', this.email);
+    let errorText = this.translateService.instant('error');
     if (this.email == null || this.email == '') {
-      this.toastService.showError('Error', 'Email is required');
+      this.toastService.showError(errorText, this.translateService.instant('emailIsRequired'));
       return;
     }
     if (this.password == null || this.password == '') {
-      this.toastService.showError('Error', 'Password is required');
+      this.toastService.showError(errorText, this.translateService.instant('passwordIsRequired'));
       return;
     }
+    
     const loginDTO: LoginDTO = {
       email: this.email,
       password: this.password,
     };
+
     this.userService.login(loginDTO).subscribe({
       next: (response: LoginResponse) => {
         const { token, refresh_token } = response.data;
@@ -113,22 +118,43 @@ export class LoginComponent implements OnInit {
           },
           complete: () => {},
           error: (error: any) => {
-            this.toastService.showError('Error', error.error.message);
+            let errorMessage = '';
+            if(error.error.subErrors) {
+              const subErrors = error.error.subErrors;
+              subErrors.forEach((subError: any) => {
+                errorMessage += subError.message + '\n';
+              });
+            }
+            else {
+              errorMessage = error.error.message;
+            }
+            this.toastService.showError(errorText, errorMessage);
           },
         });
       },
       complete: () => {},
       error: (error: any) => {
-        this.toastService.showError('Error', error.error.message);
+        let errorMessage = '';
+        if(error.error.subErrors) {
+          const subErrors = error.error.subErrors;
+          subErrors.forEach((subError: any) => {
+            errorMessage += subError.message + '\n';
+          });
+        }
+        else {
+          errorMessage = error.error.message;
+        }
+        this.toastService.showError(errorText, errorMessage);
       },
     });
   }
+
   togglePassword() {
     this.showPassword = !this.showPassword;
   }
 
   register() {
-    const usernameRegex = /^[a-zA-Z0-9]{3,50}$/;
+    const usernameRegex = /^[a-zA-Z0-9]{3,30}$/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!usernameRegex.test(this.username)) {
       if (/[^a-zA-Z0-9]/.test(this.username)) {

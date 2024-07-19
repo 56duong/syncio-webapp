@@ -16,7 +16,7 @@
         <!-- Bang du lieu Users -->
         <p-table 
             #dt [value]="users"
-            [rows]="10" 
+            [rows]="6" 
             [paginator]="true" 
             [globalFilterFields]="[
                 'name',
@@ -57,7 +57,12 @@
             </ng-template>
             <ng-template pTemplate="body" let-user>
                 <tr [pSelectableRow]="user">
-                    <td>{{ user.username }}</td>
+                    <td>
+                        <app-username-label [userId]="user.id"
+                        [fontSize]="'16px'"
+                        [color]="''">
+                      </app-username-label>
+                    </td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.createdDate | date : "HH:mm:ss dd/MM/yyyy" }}</td>
                     <td>{{ user.role }}</td>

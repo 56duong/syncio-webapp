@@ -16,6 +16,7 @@ import { VoiceRecorderDialogComponent } from './components/voice-recorder-dialog
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { NotAuthorizedComponent } from './components/not-authorized/not-authorized.component';
 import { AvatarComponent } from './components/avatar/avatar.component';
+import { UsernameLabelComponent } from './components/username-label/username-label.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { AvatarComponent } from './components/avatar/avatar.component';
     VoiceRecorderDialogComponent,
     NotFoundComponent,
     NotAuthorizedComponent,
-    AvatarComponent
+    AvatarComponent,
+    UsernameLabelComponent
   ],
   imports: [
     PickerComponent,
@@ -47,7 +49,8 @@ import { AvatarComponent } from './components/avatar/avatar.component';
     PostDetailComponent,
     GlobalDialogComponent,
     VoiceRecorderDialogComponent,
-    AvatarComponent
+    AvatarComponent,
+    UsernameLabelComponent
   ],
 })
 export class SharedModule {}

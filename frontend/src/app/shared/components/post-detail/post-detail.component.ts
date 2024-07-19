@@ -147,6 +147,7 @@ export class PostDetailComponent {
       text: this.comment.text.replace('@Reply ', ''),
       postId: this.post.id,
       userId: this.currentUserId,
+      username: this.tokenService.extractUsernameFromToken(),
       likesCount: 0,
     };
 

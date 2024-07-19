@@ -33,6 +33,12 @@ public class LabelController {
         return ResponseEntity.ok(labels);
     }
 
+    @GetMapping("/buyed")
+    public ResponseEntity<List<LabelResponseDTO>> getLabelsUserPurchase(@RequestParam final UUID user_id) {
+        List<LabelResponseDTO> labels =  labelService.getAllLabelUserPurchased(user_id);
+        return ResponseEntity.ok(labels);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<LabelDTO> getLabel(@PathVariable(name = "id") final UUID id) {
         return ResponseEntity.ok(labelService.get(id));

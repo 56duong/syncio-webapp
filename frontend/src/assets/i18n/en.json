@@ -1,0 +1,25 @@
+{
+  "login": "Log in",
+  "email": "Email",
+  "password": "Password",
+  "forgotPassword": "Forgot password?",
+  "dontHaveAnAccount": "Don't have an account?",
+  "signUp": "Sign up",
+  "continueAsGuest": "Continue as guest",
+
+  "error": "Error",
+  "emailIsRequired": "Email is required",
+  "passwordIsRequired": "Password is required",
+
+  "home": "Home",
+  "search": "Search",
+  "messages": "Messages",
+  "notifications": "Notifications",
+  "labelShopping": "Label Shopping",
+  "create": "Create",
+  "post": "Post",
+  "story": "Story",
+  "settings": "Settings",
+  "help": "Help",
+  "logout": "Log out"
+}

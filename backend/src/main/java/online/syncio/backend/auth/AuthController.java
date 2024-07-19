@@ -26,6 +26,7 @@ import online.syncio.backend.utils.CustomerForgetPasswordUtil;
 import online.syncio.backend.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,8 +49,9 @@ public class AuthController {
     private final AuthService authService;
     private final TokenService tokenService;
     private final TokenRepository tokenRepository;
-
     private final SettingService settingService;
+    private final MessageSource messageSource;
+
     @Value("${apiPrefix.client}")
     private String apiPrefix;
 
@@ -61,13 +63,11 @@ public class AuthController {
     /**
      * Register a new user
      * @param registerDTO
-     * @param result
      * @return
      */
     @PostMapping("/register")
     public ResponseEntity<ResponseObject> createUser(
-            @Valid @RequestBody RegisterDTO registerDTO,
-            BindingResult result
+            @Valid @RequestBody RegisterDTO registerDTO
     ) throws Exception {
 
         User user = authService.createUser(registerDTO);
@@ -97,9 +97,11 @@ public class AuthController {
         User userDetail = authService.getUserDetailsFromToken(token);
         Token jwtToken = tokenService.addToken(userDetail, token, isMobileDevice(userAgent));
 
+        String message = messageSource.getMessage("user.login.success", null, request.getLocale());
+
         LoginResponse loginResponse = LoginResponse
                 .builder()
-                .message("Login successfully")
+                .message(message)
                 .token(jwtToken.getToken())
                 .bio(userDetail.getBio())
                 .tokenType(jwtToken.getTokenType())
@@ -109,7 +111,7 @@ public class AuthController {
                 .id(userDetail.getId())
                 .build();
         return ResponseEntity.ok().body(ResponseObject.builder()
-                .message("Login successfully")
+                .message(message)
                 .data(loginResponse)
                 .status(HttpStatus.OK)
                 .build());
