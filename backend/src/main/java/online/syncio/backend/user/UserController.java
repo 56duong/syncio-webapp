@@ -5,11 +5,14 @@ import online.syncio.backend.auth.responses.LoginResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
 import online.syncio.backend.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import online.syncio.backend.exception.AppException;
+import online.syncio.backend.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -49,6 +52,11 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/search-by-username")
+    public ResponseEntity<List<UserProfile>> searchUsersByUsername (@RequestParam Optional<String> username) {
+        return ResponseEntity.ok(userService.searchUsers(username));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUser (@PathVariable(name = "id") final UUID id) {
         return ResponseEntity.ok(userService.get(id));
@@ -77,14 +85,11 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UUID> createUser (@RequestBody @Valid final UserDTO userDTO) {
-
-
         if (userRedisService.usernameExists(userDTO.getUsername())) {
             throw new AppException(HttpStatus.BAD_REQUEST, "Username already exists!", null);
         }
-
-        // Check for existing email
         if (userRedisService.emailExists(userDTO.getEmail())) {
+
             throw new AppException(HttpStatus.BAD_REQUEST, "Email already exists!", null);
         }
 
@@ -112,16 +117,6 @@ public class UserController {
 
         userService.update(id, userDTO);
         return ResponseEntity.ok(id);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser (@PathVariable(name = "id") final UUID id) {
-        final ReferencedWarning referencedWarning = userService.getReferencedWarning(id);
-        if (referencedWarning != null) {
-            throw new ReferencedException(referencedWarning);
-        }
-        userService.delete(id);
-        return ResponseEntity.noContent().build();
     }
 
 
@@ -169,79 +164,10 @@ public class UserController {
         }
     }
 
-    @PostMapping("/follow/{targetId}")
-    public ResponseEntity<?> followUser(@PathVariable UUID targetId) {
-        try {
-            boolean result = userService.followUser(targetId);
-            if (result) {
-                return ResponseEntity.ok(result);
-            } else {
-                return ResponseEntity.badRequest().body(result);
-            }
-        } catch (DataNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing request");
-        }
-    }
-
-    @PostMapping("/unfollow/{targetId}")
-    public ResponseEntity<?> unfollowUser(@PathVariable UUID targetId) {
-
-        try {
-            boolean result = userService.unfollowUser(targetId);
-            if (result) {
-                return ResponseEntity.ok(result);
-            } else {
-                return ResponseEntity.badRequest().body(result);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing request");
-        }
-    }
-    @GetMapping("/{userId}/is-following/{targetId}")
-    public ResponseEntity<?> checkIfUserIsFollowing(
-            @PathVariable UUID userId,
-            @PathVariable UUID targetId
-    ) {
-        boolean isFollowing = userService.isFollowing(userId, targetId);
-        return ResponseEntity.ok().body(isFollowing);
-    }
-
-    /**
-     * Add a user to the close friends list of another user
-     * @param friendId the user to add to the close friends list
-     * @return a response entity with a message
-     */
-    @PostMapping("/add-close-friend/{friendId}")
-    public ResponseEntity<?> addCloseFriend(@PathVariable UUID friendId) {
-        try {
-            boolean isAdded = userService.addCloseFriend(friendId);
-            if (isAdded) {
-                return ResponseEntity.ok(isAdded);
-            } else {
-                return ResponseEntity.badRequest().body(isAdded);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("An error occurred: " + e.getMessage());
-        }
-    }
-
-    @PostMapping("/remove-close-friend/{friendId}")
-    public ResponseEntity<?> removeCloseFriend(@PathVariable UUID friendId) {
-        try {
-            boolean isRemoved = userService.removeCloseFriend(friendId);
-            if (isRemoved) {
-                return ResponseEntity.ok(isRemoved);
-            } else {
-                return ResponseEntity.badRequest().body(isRemoved);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("An error occurred: " + e.getMessage());
-        }
+    @PostMapping("/update-avatar")
+    public ResponseEntity<Void> updateAvatar(@RequestParam("file") MultipartFile file) {
+        userService.updateAvatar(file);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/last/{days}")

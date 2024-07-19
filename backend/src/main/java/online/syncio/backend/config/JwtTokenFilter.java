@@ -91,6 +91,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/posts/images/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/posts/", apiPrefix), "GET"),
                 Pair.of(String.format("%s/posts/feed", apiPrefix), "POST"),
+                Pair.of(String.format("%s/posts/user/not-login/**", apiPrefix), "GET"),
 
                 // Like
                 Pair.of(String.format("%s/likes/count/**", apiPrefix), "GET"),
@@ -119,6 +120,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
                 // Global images view
                 Pair.of(String.format("%s/images/**", apiPrefix), "GET"),
+
+                //Global audio view
+                Pair.of(String.format("%s/audio/**", apiPrefix), "GET"),
 
                 // Payment
                 Pair.of(String.format("%s/payment/vnpay-callback", apiPrefix), "GET")

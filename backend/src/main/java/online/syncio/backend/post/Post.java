@@ -32,6 +32,8 @@ public class Post {
     @Column(columnDefinition = "text")
     private String caption;
 
+    private String audioURL;
+
     @Column
     @CreatedDate
     private LocalDateTime createdDate;

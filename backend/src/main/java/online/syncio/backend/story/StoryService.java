@@ -1,14 +1,10 @@
 package online.syncio.backend.story;
 
 import lombok.RequiredArgsConstructor;
-import online.syncio.backend.auth.AuthService;
 import online.syncio.backend.exception.AppException;
-import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.storyview.StoryViewRepository;
-import online.syncio.backend.user.User;
-import online.syncio.backend.user.UserRepository;
 import online.syncio.backend.utils.AuthUtils;
-import online.syncio.backend.utils.FIleUtils;
+import online.syncio.backend.utils.FileUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,18 +18,18 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StoryService {
     private final StoryRepository storyRepository;
-    private final UserRepository userRepository;
     private final StoryViewRepository storyViewRepository;
     private final AuthUtils authUtils;
+    private final FileUtils fileUtils;
+    private final StoryMapper storyMapper;
 
 
-    //    CRUD
     public List<StoryDTO> findAllByCreatedBy_IdAndCreatedDateAfterOrderByCreatedDate(final UUID userId, final LocalDateTime createdDate) {
         final List<Story> stories = storyRepository.findAllByCreatedBy_IdAndCreatedDateAfterOrderByCreatedDate(userId, createdDate);
         final  UUID viewerId = authUtils.getCurrentLoggedInUserId();
         return stories.stream()
                 .map(story -> {
-                    StoryDTO storyDTO = mapToDTO(story, new StoryDTO());
+                    StoryDTO storyDTO = storyMapper.mapToDTO(story, new StoryDTO());
                     storyDTO.setViewed(
                             storyViewRepository.findByUserIdAndStoryId(viewerId, story.getId())
                             .isPresent()
@@ -42,6 +38,7 @@ public class StoryService {
                 })
                 .toList();
     }
+
 
     public UUID create(final MultipartFile photo) throws IOException {
         // Check if file size is greater than 10MB
@@ -54,34 +51,13 @@ public class StoryService {
             throw new AppException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Invalid image format", null);
         }
 
-        String photoURL = FIleUtils.storeFile(photo);
+        String photoURL = fileUtils.storeFile(photo, "stories", false);
         Story story = new Story();
         story.setPhotoURL(photoURL);
         story.setFlag(true);
 
         Story savedStory = storyRepository.save(story);
         return savedStory.getId();
-    }
-
-
-//    MAPPER
-    private StoryDTO mapToDTO(final Story story, final StoryDTO storyDTO) {
-        storyDTO.setId(story.getId());
-        storyDTO.setPhotoURL(story.getPhotoURL());
-        storyDTO.setCreatedDate(story.getCreatedDate());
-        storyDTO.setFlag(story.getFlag());
-        storyDTO.setCreatedBy(story.getCreatedBy().getId());
-        return storyDTO;
-    }
-
-    private Story mapToEntity(final StoryDTO storyDTO, final Story story) {
-        story.setPhotoURL(storyDTO.getPhotoURL());
-        story.setCreatedDate(storyDTO.getCreatedDate());
-        story.setFlag(storyDTO.getFlag());
-        final User user = storyDTO.getCreatedBy() == null ? null : userRepository.findById(storyDTO.getCreatedBy())
-                .orElseThrow(() -> new NotFoundException(User.class, "id", storyDTO.getCreatedBy().toString()));
-        story.setCreatedBy(user);
-        return story;
     }
 
 }

@@ -1,1 +1,40 @@
-<p>help-center works!</p>
+<div class="help-container">
+  <h1>Help Center</h1>
+  <hr class="partition">
+  <div class="help-layout">
+    <div class="help-sidebar font-bold">
+      <app-help-sidebar (menuItemSelected)="onMenuItemSelected($event)"></app-help-sidebar>
+    </div>
+    <div class="help-content ">
+      <!-- Introduction Section -->
+      <div *ngIf="!selectedMenuItem" class="help-center-content">
+        <h2 class="text-xl">Welcome to the Help Center</h2>
+        <p>Here you can find answers to your questions and learn how to use our platform effectively. Please select a section from the sidebar to get started.</p>
+        <h3>Popular Topics</h3>
+        <ul class="content-list">
+          <li>Learn how to edit your profile and manage your photos and videos.</li>
+          <li>Discover how to explore and search for new content.</li>
+          <li>Get tips on how to send, view, and manage messages.</li>
+          <li>Understand how to keep your account secure and report issues.</li>
+        </ul>
+        <p>If you need further assistance, feel free to reach out to our support team.</p>
+      </div>
+      <app-features
+        [selectedMenuItem]="selectedMenuItem"
+        [selectedSubMenuItem]="selectedSubMenuItem"
+        [selectedSubSubMenuItem]="selectedSubSubMenuItem">
+      </app-features>
+      <app-account-setting *ngIf="selectedMenuItem === 'account-settings'"
+      [selectedMenuItem]="selectedMenuItem"
+      [selectedSubMenuItem]="selectedSubMenuItem"
+      [selectedSubSubMenuItem]="selectedSubSubMenuItem">
+    </app-account-setting>
+    <app-privacy-security-reporting
+        *ngIf="selectedMenuItem === 'privacy-security-reporting'"
+        [selectedMenuItem]="selectedMenuItem"
+        [selectedSubMenuItem]="selectedSubMenuItem"
+        [selectedSubSubMenuItem]="selectedSubSubMenuItem">
+      </app-privacy-security-reporting>
+    </div>
+  </div>
+</div>

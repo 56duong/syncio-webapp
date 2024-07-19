@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/api/v1/stickers")
+@RequestMapping(value = "${api.prefix}/stickers")
 @AllArgsConstructor
 public class StickerController {
 
@@ -36,7 +36,7 @@ public class StickerController {
     public ResponseEntity<UUID> createSticker(@RequestPart("photo") MultipartFile photo,
                                               @RequestPart("sticker") StickerDTO stickerDTO) {
         // Get the file name and set it as the sticker id, cause the sticker id will be used as the file name with .jpg extension
-        String fileName = stickerService.uploadPhotos(List.of(photo)).get(0);
+        String fileName = stickerService.uploadPhoto(photo);
         stickerDTO.setId(UUID.fromString(fileName));
 
         UUID createdId = stickerService.create(stickerDTO);

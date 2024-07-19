@@ -5,9 +5,7 @@ import lombok.Data;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Data
 public class PhotoDTO {
@@ -19,6 +17,9 @@ public class PhotoDTO {
     private String altText;
 
     private UUID postId;
+
+
+
     private String cleanUrl(String url) {
         String prefixToRemove = "http://localhost:8080/api/v1/posts/images/";
         if (url.startsWith(prefixToRemove)) {
@@ -38,5 +39,6 @@ public class PhotoDTO {
             return "https://your-s3-bucket-name.s3.your-region.amazonaws.com/" + url;
         }
     }
+
 
 }

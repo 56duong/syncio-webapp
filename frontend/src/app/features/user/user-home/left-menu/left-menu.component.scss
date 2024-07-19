@@ -11,7 +11,7 @@
   border-right-style: solid;
   border-color: var(--gray-300);
   background-color: var(--surface-0);
-  z-index: 1102;
+  z-index: 1100;
 
   @media screen and (min-width: 992px) {
     min-width: 250px;
@@ -75,6 +75,7 @@
   .p-button-icon {
     font-weight: 500;
     color: var(--surface-800);
+    font-size: 16px;
   }
 }
 
@@ -204,7 +205,7 @@
 
 p-tieredMenu ::ng-deep {
   .p-menuitem-text {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .p-tieredmenu .p-menuitem:not(.p-highlight):not(.p-disabled) > .p-menuitem-content {

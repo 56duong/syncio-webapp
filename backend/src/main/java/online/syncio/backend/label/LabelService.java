@@ -199,4 +199,14 @@ public class LabelService {
         labelRepository.save(label);
         return mapToDTO(label, new LabelDTO());
     }
+
+    // Check if the user already owns the label or not
+    public boolean checkIfUserOwnsLabel(UUID userId, UUID labelId) {
+        List<UserLabelInfo> checkOwnerLabel = userLabelInfoRepository.findByUserId(userId);
+        Set<UUID> labelIds = checkOwnerLabel.stream()
+                .map(userLabelInfo -> userLabelInfo.getLabel().getId())
+                .collect(Collectors.toSet());
+
+        return labelIds.contains(labelId);
+    }
 }

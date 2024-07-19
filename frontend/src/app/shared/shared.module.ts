@@ -11,6 +11,11 @@ import { ReportComponent } from './components/report/report.component';
 import { ResizableDraggableComponent } from './components/resizable-draggable/resizable-draggable.component';
 import { StickerPickerComponent } from './components/sticker-picker/sticker-picker.component';
 import { GlobalDialogComponent } from './components/global-dialog/global-dialog.component';
+import { CommentListComponent } from './components/post-detail/comment-list/comment-list.component';
+import { VoiceRecorderDialogComponent } from './components/voice-recorder-dialog/voice-recorder-dialog.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
+import { NotAuthorizedComponent } from './components/not-authorized/not-authorized.component';
+import { AvatarComponent } from './components/avatar/avatar.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +25,12 @@ import { GlobalDialogComponent } from './components/global-dialog/global-dialog.
     ReportComponent,
     ResizableDraggableComponent,
     StickerPickerComponent,
-    GlobalDialogComponent
+    GlobalDialogComponent,
+    CommentListComponent,
+    VoiceRecorderDialogComponent,
+    NotFoundComponent,
+    NotAuthorizedComponent,
+    AvatarComponent
   ],
   imports: [
     PickerComponent,
@@ -35,7 +45,9 @@ import { GlobalDialogComponent } from './components/global-dialog/global-dialog.
     ResizableDraggableComponent,
     StickerPickerComponent,
     PostDetailComponent,
-    GlobalDialogComponent
+    GlobalDialogComponent,
+    VoiceRecorderDialogComponent,
+    AvatarComponent
   ],
 })
 export class SharedModule {}

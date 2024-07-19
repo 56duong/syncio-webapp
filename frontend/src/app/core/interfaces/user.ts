@@ -9,8 +9,6 @@ export interface User {
 
   password?: string;
 
-  avtURL?: string;
-
   coverURL?: string;
 
   bio?: string;
@@ -21,14 +19,7 @@ export interface User {
 
   status?: StatusEnum;
 
-  posts?: Post[];
-
-  followerCount?: number;
-
-  followingCount?: number;
-
-  isFollowing?: boolean;
-  isCloseFriend?: boolean;
+  avtURL?: string;
 }
 
 export enum StatusEnum {
