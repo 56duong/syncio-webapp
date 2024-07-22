@@ -117,9 +117,7 @@ public class AuthService {
             subject = email;
         }
 
-        System.out.println(LocaleContextHolder.getLocale());
         String message = messageSource.getMessage("user.login.failed", null, LocaleContextHolder.getLocale());
-        System.out.println(message);
         if(optionalUser.isEmpty()) {
             throw new DataNotFoundException(message);
         }

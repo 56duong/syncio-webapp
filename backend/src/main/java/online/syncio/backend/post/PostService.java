@@ -34,6 +34,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -182,7 +183,7 @@ public class PostService {
                         String altTexts = null;
                         try {
                             altTexts = hfInference.imageToText(photo.getImageUrl(storageType));
-                        } catch (ExecutionException | InterruptedException e) {
+                        } catch (ExecutionException | InterruptedException | URISyntaxException e) {
                             System.err.println("Error generating alt text: " + e.getMessage());
                             e.printStackTrace();
                         }

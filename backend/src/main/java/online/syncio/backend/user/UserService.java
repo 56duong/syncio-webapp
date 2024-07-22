@@ -117,14 +117,6 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(User.class, "username", username));
     }
 
-    public List<UserStoryDTO> findAllUsersWithAtLeastOneStoryAfterCreatedDate(final LocalDateTime createdDate) {
-        final List<User> users = userRepository.findAllUsersWithAtLeastOneStoryAfterCreatedDate(createdDate);
-        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
-        return users.stream()
-                .map(user -> userMapper.mapToUserStoryDTO(user, new UserStoryDTO(), currentUserId))
-                .toList();
-    }
-
     public UUID create(final UserDTO userDTO) {
 
         // encode password

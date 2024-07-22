@@ -114,7 +114,8 @@ export class LoginComponent implements OnInit {
             if (this.userResponse?.role == 'ADMIN') {
               this.router.navigate(['/admin']);
             } else if (this.userResponse?.role == 'USER') {
-              this.router.navigate(['/']);
+              // this.router.navigate(['/']);
+              window.location.href = '/';
             }
           },
           complete: () => {},

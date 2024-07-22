@@ -11,6 +11,10 @@
     </div>
   
     <p-divider></p-divider>
+
+    <div #loading *ngIf="showLoading" class="my-2 mx-auto h-full">
+      <i class="pi pi-spin pi-spinner text-primary" style="font-size: 2rem"></i>
+    </div>
   
     <!-- Message list -->
     <div #messageContentContainer class="primary-scrollbar" style="flex: 1; overflow-y: scroll;">

@@ -1,12 +1,16 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
 
 @Pipe({
   name: 'dateAgoPipe'
 })
 export class DateAgoPipePipe implements PipeTransform {
 
-  constructor(private datePipe: DatePipe) {}
+  constructor(
+    private datePipe: DatePipe,
+    private translateService: TranslateService
+  ) {}
 
   /**
    * This function transforms a given date into a human-readable format indicating how long ago it was.
@@ -51,7 +55,8 @@ export class DateAgoPipePipe implements PipeTransform {
         if (counter > 0) {
           // If the count is 1, return the count and the interval in singular form.
           if (counter === 1 || i !== type) {
-            return counter + i; // 1h, 1d, 3m, 6y
+            let translationKey = this.translateService.instant(i);
+            return counter + translationKey; // 1h, 1d, 3m, 6y
           } 
           else {
             // If the interval is 'type' (may be day, week, month, year) and the count is more than 1, return the date in 'HH:mm:ss dd/MM/yyyy' format.

@@ -1,6 +1,7 @@
-import { Component, ElementRef, HostListener } from '@angular/core';
+import { Component, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import html2canvas from 'html2canvas';
+import { LoadingService } from 'src/app/core/services/loading.service';
 import { StoryService } from 'src/app/core/services/story.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 
@@ -38,6 +39,7 @@ export class CreateStoryComponent {
     private router: Router,
     private toastService: ToastService,
     private elementRef: ElementRef,
+    private loadingService: LoadingService
   ) { }
 
   ngOnInit() {
@@ -140,6 +142,8 @@ export class CreateStoryComponent {
    * Share the story by converting the story into an image and uploading it to the server
    */
   async share() {
+    this.loadingService.show();
+
     this.selectedObject = null;
 
     // wait for the selectedObject to be set to null
@@ -162,10 +166,11 @@ export class CreateStoryComponent {
         // send the image to the server
         this.storyService.createStory(formData).subscribe({
           next: (response: any) => {
+            this.loadingService.hide();
             this.toastService.showSuccess('Success', 'Story created successfully');
             setTimeout(() => {
               window.location.href = '/';
-            }, 1000);
+            }, 3000);
           },
           error: (error) => {
             console.error(error);

@@ -17,6 +17,8 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import { NotAuthorizedComponent } from './components/not-authorized/not-authorized.component';
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { UsernameLabelComponent } from './components/username-label/username-label.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { LoadingComponent } from './components/loading/loading.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,8 @@ import { UsernameLabelComponent } from './components/username-label/username-lab
     NotFoundComponent,
     NotAuthorizedComponent,
     AvatarComponent,
-    UsernameLabelComponent
+    UsernameLabelComponent,
+    LoadingComponent
   ],
   imports: [
     PickerComponent,
@@ -40,7 +43,8 @@ import { UsernameLabelComponent } from './components/username-label/username-lab
     CoreModule,
     PrimengModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslateModule
   ],
   exports: [
     PostComponent,
@@ -50,7 +54,8 @@ import { UsernameLabelComponent } from './components/username-label/username-lab
     GlobalDialogComponent,
     VoiceRecorderDialogComponent,
     AvatarComponent,
-    UsernameLabelComponent
+    UsernameLabelComponent,
+    LoadingComponent
   ],
 })
 export class SharedModule {}

@@ -106,6 +106,10 @@ $white : white;
     }
 }
 
+::ng-deep body:has(.hide-menu-label) .search_section.show {
+    left: 5.4rem;
+}
+
 @media screen and (max-width: 992px) {
     .search_section.show {
         left: 5.4em !important;

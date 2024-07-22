@@ -1,5 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { tap } from 'rxjs';
 import { Post, Visibility } from 'src/app/core/interfaces/post';
 import { Report } from 'src/app/core/interfaces/report';
@@ -24,22 +25,7 @@ export class PostComponent {
   
   dialogVisible: boolean = false;
   
-  dialogItems: any = [
-    { 
-      label: 'Report', 
-      bold: 7,
-      color: 'red', 
-      action: () => this.showReportModal() 
-    },
-    { 
-      label: 'Copy link',
-      action: () => this.copyLink()
-    },
-    { 
-      label: 'Cancel',
-      action: () => this.dialogVisible = false
-    }
-  ];
+  dialogItems: any = [];
   
   reasonDialogVisible: boolean = false;
 
@@ -62,7 +48,8 @@ export class PostComponent {
     private location: Location,
     private textUtils: TextUtils,
     private toastService: ToastService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private translateService: TranslateService
   ) {}
 
   hideDialog() {
@@ -70,6 +57,23 @@ export class PostComponent {
   }
   
   ngOnInit(): void {
+    this.dialogItems = [
+      { 
+        label: this.translateService.instant('report'), 
+        bold: 7,
+        color: 'red', 
+        action: () => this.showReportModal() 
+      },
+      { 
+        label: this.translateService.instant('copyLink'),
+        action: () => this.copyLink()
+      },
+      { 
+        label: this.translateService.instant('cancel'),
+        action: () => this.dialogVisible = false
+      }
+    ];
+
     if (this.isReportedPostsPage) {
       this.getReports();
     }
@@ -109,7 +113,10 @@ export class PostComponent {
    */
   async copyLink() {
     await this.textUtils.copyToClipboard(window.location.href + 'post/' + this.post.id);
-    this.toastService.showSuccess('Success', 'Link copied to clipboard');
+    this.toastService.showSuccess(
+      this.translateService.instant('success'), 
+      this.translateService.instant('linkCopiedToClipboard')
+    );
   }
 
   onActivePost(): void {

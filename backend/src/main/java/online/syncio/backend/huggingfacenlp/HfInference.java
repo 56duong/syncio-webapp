@@ -1,5 +1,6 @@
 package online.syncio.backend.huggingfacenlp;
 
+import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -23,7 +24,7 @@ public class HfInference {
      * @param photoUrl URL of the image
      * @return Text caption of the image
      */
-    public String imageToText(String photoUrl) throws ExecutionException, InterruptedException {
+    public String imageToText(String photoUrl) throws ExecutionException, InterruptedException, URISyntaxException {
         ImageToText imageToText = new ImageToText(this.ACCESS_TOKEN);
         return imageToText.execute(photoUrl);
     }

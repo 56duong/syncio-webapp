@@ -1,8 +1,9 @@
 package online.syncio.backend.story;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.storyview.StoryViewRepository;
+import online.syncio.backend.user.User;
 import online.syncio.backend.utils.AuthUtils;
 import online.syncio.backend.utils.FileUtils;
 import org.springframework.http.HttpStatus;
@@ -15,13 +16,29 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class StoryService {
     private final StoryRepository storyRepository;
     private final StoryViewRepository storyViewRepository;
     private final AuthUtils authUtils;
     private final FileUtils fileUtils;
     private final StoryMapper storyMapper;
+
+
+    public List<UserStoryDTO> findAllUsersWithAtLeastOneStoryAfterCreatedDate(final LocalDateTime createdDate) {
+        final List<User> users = storyRepository.findAllUsersWithAtLeastOneStoryAfterCreatedDate(createdDate);
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        return users.stream()
+                .map(user -> storyMapper.mapToUserStoryDTO(user, new UserStoryDTO(), currentUserId))
+                .toList();
+    }
+
+
+    public UserStoryDTO findUserWithAtLeastOneStoryAfterCreatedDate(final UUID userId, final LocalDateTime createdDate) {
+        final User user = storyRepository.findUserWithAtLeastOneStoryAfterCreatedDate(userId, createdDate);
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        return storyMapper.mapToUserStoryDTO(user, new UserStoryDTO(), currentUserId);
+    }
 
 
     public List<StoryDTO> findAllByCreatedBy_IdAndCreatedDateAfterOrderByCreatedDate(final UUID userId, final LocalDateTime createdDate) {

@@ -21,6 +21,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { LangInterceptor } from './core/interceptors/lang.interceptor';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from './shared/shared.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -47,6 +48,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ToastModule,
     FormsModule,
     ReactiveFormsModule,
+    SharedModule
   ],
   providers: [
     MessageService,

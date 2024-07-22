@@ -1,4 +1,5 @@
 {
+  "LOGIN": "-----------------------------------------------------------------",
   "login": "Đăng nhập",
   "email": "Email",
   "password": "Mật khẩu",
@@ -7,10 +8,11 @@
   "signUp": "Đăng ký",
   "continueAsGuest": "Tiếp tục mà không đăng nhập",
 
-  "error": "Lỗi",
+  "VALIDATE": "-----------------------------------------------------------------",
   "emailIsRequired": "Email không được để trống",
   "passwordIsRequired": "Mật khẩu không được để trống",
 
+  "LEFT MENU": "-----------------------------------------------------------------",
   "home": "Trang chủ",
   "search": "Tìm kiếm",
   "messages": "Tin nhắn",
@@ -21,5 +23,57 @@
   "story": "Tin",
   "settings": "Cài đặt",
   "help": "Trợ giúp",
-  "logout": "Đăng xuất"
+  "logout": "Đăng xuất",
+
+  "STORY": "-----------------------------------------------------------------",
+  "expandStories": "Mở rộng Tin",
+  "collapseStories": "Thu gọn Tin",
+  "yourStory": "Tin của bạn",
+
+  "HOME": "-----------------------------------------------------------------",
+  "suggestedForYou": "Đề xuất cho bạn",
+  "youReachTheEnOfTheFeed": "Bạn đã đến cuối xem hết các bài viết",
+
+  "POST": "-----------------------------------------------------------------",
+  "viewAll": "Xem tất cả",
+  "like": {
+    "one": "Lượt thích",
+    "other": "Lượt thích"
+  },
+  "comment": {
+    "one": "Bình luận",
+    "other": "Bình luận"
+  },
+
+  "DATETIME": "-----------------------------------------------------------------",
+  "justNow": "Vừa xong",
+  "y": " năm",
+  "mth": " tháng",
+  "w": " tuần",
+  "d": " ngày",
+  "h": " giờ",
+  "m": " phút",
+  "s": " giây",
+
+  "REPORT": "-----------------------------------------------------------------",
+  "report": "Báo cáo",
+  "reason": "Lý do",
+  "selectAReason": "Chọn một lý do",
+  "description": "Mô tả",
+  "submit": "Gửi",
+  "spam": "Spam",
+  "nude": "Khỏa thân",
+  "harassment": "Quấy rối",
+  "violence": "Bạo lực",
+  "inappropriateContent": "Nội dung không phù hợp",
+  "thanksForLettingUsKnow": "Cảm ơn bạn đã thông báo cho chúng tôi",
+  "yourFeedbackIsImportantInHelpingUsKeepTheCommunitySafe": "Phản hồi của bạn rất quan trọng trong việc giúp chúng tôi giữ an toàn cho cộng đồng",
+
+
+
+  "error": "Lỗi",
+  "success": "Thành công",
+  "copyLink": "Sao chép liên kết",
+  "linkCopiedToClipboard": "Đã sao chép liên kết vào bộ nhớ tạm",
+  "cancel": "Hủy"
 }

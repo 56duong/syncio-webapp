@@ -22,6 +22,10 @@
   transition: all 0.5s ease;
 }
 
+::ng-deep body:has(.hide-menu-label) .notifications_section.show {
+    left: 5.4rem;
+}
+
 .notifications_section.show {
   left: 15.6rem;
   opacity: 1 !important;

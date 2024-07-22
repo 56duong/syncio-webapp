@@ -1,4 +1,4 @@
-package online.syncio.backend.user;
+package online.syncio.backend.story;
 
 
 import jakarta.validation.constraints.NotNull;
@@ -16,9 +16,8 @@ public class UserStoryDTO {
     @Size(max = 30)
     private String username;
 
-    @Size(max = 1000)
-    private String avtURL;
+    private Long storyCount;
 
-    private boolean hasUnseenStory = false;
+    private Long storyViewedCount;
 
 }

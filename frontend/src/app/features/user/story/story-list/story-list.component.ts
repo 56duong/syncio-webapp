@@ -1,8 +1,8 @@
 import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { UserStory } from 'src/app/core/interfaces/user-story';
+import { StoryService } from 'src/app/core/services/story.service';
 import { TokenService } from 'src/app/core/services/token.service';
-import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-story-list',
@@ -15,8 +15,11 @@ export class StoryListComponent {
   currentUserId: string = '';
   selectedUser: UserStory | null = null;
 
+  /** Whether the story-list is expanded */
+  isExpandedStory: boolean = false;
+
   constructor(
-    private userService: UserService,
+    private storyService: StoryService,
     private tokenService: TokenService,
     private location: Location,
   ) { }
@@ -27,7 +30,7 @@ export class StoryListComponent {
   }
 
   getUsersWithStories() {
-    this.userService.getUsersWithStories().subscribe({
+    this.storyService.getUsersWithStories().subscribe({
       next: (users) => {
         this.usersWithStories = users;
         // Move the current user to the top of the list

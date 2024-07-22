@@ -21,7 +21,6 @@
   min-height: 100vh;
   max-height: 100vh;
   transition: 0s;
-  overflow: scroll;
 
   .p-sidebar-header {
     display: none;
@@ -37,7 +36,8 @@
 
   .p-sidebar-content {
     overflow: visible !important;
-    padding: 1.25rem;
+    padding: 0;
+    height: 100%;
   }
 }
 
@@ -74,5 +74,9 @@
   p-togglebutton.bold .p-togglebutton,
   p-togglebutton.bold .p-togglebutton .p-button-label {
     font-weight: inherit;
+  }
+
+  .p-inputtext {
+    height: auto !important;
   }
 }

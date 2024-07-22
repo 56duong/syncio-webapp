@@ -58,6 +58,8 @@ export class MessageContentListComponent {
   /** Reference to the end of the feed element. */
   @ViewChild('unseen') unseenElement: any;
 
+  showLoading: boolean = false;
+
   constructor(
     private messageContentService: MessageContentService,
     private messageRoomMemberService: MessageRoomMemberService,
@@ -112,6 +114,9 @@ export class MessageContentListComponent {
    */
   getMessageContent() {
     if(!this.messageRoom.id) return;
+
+    this.showLoading = true;
+
     this.messageContentService.getMessageContentByRoomId(this.messageRoom.id).subscribe({
       next: (messageContents) => {
         this.messageContents = messageContents;
@@ -126,6 +131,7 @@ export class MessageContentListComponent {
         setTimeout(() => {
           this.scrollToBottom();
         }, 50);
+        this.showLoading = false;
       },
       error: (error) => {
         console.log(error);

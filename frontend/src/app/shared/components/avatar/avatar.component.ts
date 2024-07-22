@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { UserStory } from 'src/app/core/interfaces/user-story';
 import { ConstructImageUrlPipe } from 'src/app/core/pipes/construct-image-url.pipe';
 
 @Component({
@@ -14,12 +15,33 @@ export class AvatarComponent {
   @Input() width: number | undefined;
   /** The height of the avatar in pixels, if not provided, it will be the same as the width */
   @Input() height: number | undefined;
+  
+  @Input() userStory: UserStory | undefined;
+  
+  innerWidth: number =0;
+  innerHeight: number = 0;
 
   currentDateTime: string = Date.now().toString();
 
 
-  ngOnInit(): void {
+  ngOnInit() {
     if (!this.height) this.height = this.width;
+    if(this.width && !this.userStory) {
+      this.innerWidth = this.width;
+      this.innerHeight = this.width;
+    }
+  }
+
+
+  ngOnChanges(changes: any) {
+    if (changes.userStory && changes.userStory.currentValue) {
+      if(this.width) {
+        if(this.userStory) {
+          this.innerWidth = this.width - 8;
+          this.innerHeight = this.width - 8;
+        }
+      }
+    }
   }
 
 
