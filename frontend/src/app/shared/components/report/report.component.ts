@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { SelectItem } from 'primeng/api';
 import { Post } from 'src/app/core/interfaces/post';
 import { Report } from 'src/app/core/interfaces/report';
 import { PostService } from 'src/app/core/services/post.service';
 import { ReportService } from 'src/app/core/services/report.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
@@ -23,7 +25,9 @@ export class ReportComponent implements OnInit {
   constructor(
     private userService: UserService,
     private reportService: ReportService, 
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private translateService: TranslateService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -33,12 +37,11 @@ export class ReportComponent implements OnInit {
     });
 
     this.reasons = [
-      { label: 'SPAM', value: 'SPAM' },
-      { label: 'NUDE', value: 'NUDE' },
-      { label: 'HARASSMENT', value: 'HARASSMENT' },
-      { label: 'VIOLENCE', value: 'VIOLENCE' },
-      { label: 'INAPPROPRIATE CONTENT', value: 'INAPPROPRIATE_CONTENT' },
-      { label: 'NUDE', value: 'NUDE' },
+      { label: this.translateService.instant('spam'), value: 'SPAM' },
+      { label: this.translateService.instant('nude'), value: 'NUDE' },
+      { label: this.translateService.instant('harassment'), value: 'HARASSMENT' },
+      { label: this.translateService.instant('violence'), value: 'VIOLENCE' },
+      { label: this.translateService.instant('inappropriateContent'), value: 'INAPPROPRIATE_CONTENT' },
     ];
   }
 
@@ -58,6 +61,10 @@ export class ReportComponent implements OnInit {
 
       this.reportService.createReport(report).subscribe(
         (response) => {
+          this.toastService.showSuccess(
+            this.translateService.instant('thanksForLettingUsKnow'),
+            this.translateService.instant('yourFeedbackIsImportantInHelpingUsKeepTheCommunitySafe')
+          );
           console.log('Report submitted successfully:', report);
           // reset the form and close the modal after successful submission
           this.reportForm?.reset();

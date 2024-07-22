@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -55,15 +54,6 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> searchUsers (@RequestParam(name = "username", required = false) final String username,
                                                       @RequestParam(name = "email", required = false) final String email) {
         return ResponseEntity.ok(userService.findTop20ByUsernameContainingOrEmailContaining(username, email));
-    }
-
-    /**
-     * Get all users with at least one story created in the last 24 hours
-     * @return a list of users
-     */
-    @GetMapping("/stories")
-    public ResponseEntity<List<UserStoryDTO>> getUsersWithStories() {
-        return ResponseEntity.ok(userService.findAllUsersWithAtLeastOneStoryAfterCreatedDate(LocalDateTime.now().minusDays(1)));
     }
 
     @PostMapping

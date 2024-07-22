@@ -8,9 +8,7 @@ import { HttpUtilService } from './http.util.service';
 import { LoginDTO } from 'src/app/features/authentication/login/login.dto';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
 import { FogotPasswordDTO } from 'src/app/features/authentication/forgotpassword/forgotpassword.dto';
-import { UserStory } from '../interfaces/user-story';
 import { UserProfile } from '../interfaces/user-profile';
-import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -232,15 +230,6 @@ export class UserService {
   searchUsers(username: string, email: string): Observable<User[]> {
     const url = `${this.apiURL}/search?username=${username}&email=${email}`;
     return this.http.get<User[]>(url);
-  }
-
-  /**
-   * Get all users with at least one story created in the last 24 hours
-   * @returns array of stories.
-   */
-  getUsersWithStories(): Observable<UserStory[]> {
-    const url = `${this.apiURL}/stories`;
-    return this.http.get<UserStory[]>(url);
   }
 
   changeAvatar(formData: FormData): Observable<void> {

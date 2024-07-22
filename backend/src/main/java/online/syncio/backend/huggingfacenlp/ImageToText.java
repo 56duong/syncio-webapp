@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -20,17 +21,19 @@ public class ImageToText {
         this.accessToken = accessToken;
     }
 
-    public String execute(String photoUrl) throws ExecutionException, InterruptedException {
+    public String execute(String photoUrl) throws ExecutionException, InterruptedException, URISyntaxException {
         return fetchAndProcessPhoto(photoUrl).get();
     }
 
-    public CompletableFuture<String> fetchAndProcessPhoto(String photoUrl) {
+    public CompletableFuture<String> fetchAndProcessPhoto(String photoUrl) throws URISyntaxException {
+        URI photoURI = new URI(null, null, photoUrl, null);
+        String finalPhotoUrl = photoURI.toASCIIString();
         return CompletableFuture.supplyAsync(() -> {
             try {
-                byte[] imageData = HttpUtil.fetchPhoto(photoUrl);
+                byte[] imageData = HttpUtil.fetchPhoto(finalPhotoUrl);
                 return generateText(imageData);
             } catch (Exception e) {
-                throw new RuntimeException("Failed to process photo from URL: " + photoUrl, e);
+                throw new RuntimeException("Failed to process photo from URL: " + finalPhotoUrl, e);
             }
         });
     }

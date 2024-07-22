@@ -1,6 +1,8 @@
 package online.syncio.backend.story;
 
+import online.syncio.backend.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -19,5 +21,11 @@ public interface StoryRepository extends JpaRepository<Story, UUID> {
      * @return
      */
     List<Story> findAllByCreatedBy_IdAndCreatedDateAfterOrderByCreatedDate(UUID userId, LocalDateTime createdDate);
+
+    @Query("SELECT u FROM User u JOIN u.stories s WHERE s.createdDate > :createdDate")
+    List<User> findAllUsersWithAtLeastOneStoryAfterCreatedDate(LocalDateTime createdDate);
+
+    @Query("SELECT u FROM User u JOIN u.stories s WHERE s.createdDate > :createdDate AND u.id = :userId")
+    User findUserWithAtLeastOneStoryAfterCreatedDate(UUID userId, LocalDateTime createdDate);
 
 }

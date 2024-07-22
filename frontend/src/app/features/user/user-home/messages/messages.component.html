@@ -59,7 +59,7 @@
                 </ng-container>
                 <small>·</small>
                 <!-- date sent -->
-                <small>{{messageroom.lastMessage?.dateSent | dateAgoPipe: 'd'}}</small>
+                <small class="white-space-nowrap">{{messageroom.lastMessage?.dateSent | dateAgoPipe: 'mth'}}</small>
               </div>
             </div>
             <!-- unSeenCount -->
@@ -75,14 +75,20 @@
   <p-divider [layout]="'vertical'"></p-divider>
 
   <!-- Message Content -->
-  <div class="right col-9 message-content p-0">
-    <!-- <router-outlet></router-outlet> -->
+  <div class="right col-9 message-content p-0 relative">
     <app-message-content-list *ngIf="selectedMessageRoom" 
       [messageRoom]="selectedMessageRoom"
       [currentUser]="currentUser"
       (sendFirstMessageEvent)="sendFirstMessageEvent()"
       (updateMessageRoomNameEvent)="updateMessageRoomName($event)">
     </app-message-content-list>
+
+    <div *ngIf="!selectedMessageRoom" class="flex flex-column justify-content-center align-items-center gap-3 absolute top-50 left-50" style="transform: translate(-50%, -50%);">
+      <i class="pi pi-comments" style="font-size: 4rem"></i>
+      <p class="my-0 text-xl">Your messages</p>
+      <small>Send a message to start a chat.</small>
+      <p-button label="Send message" (click)="isDialogVisible = true"></p-button>
+    </div>
   </div>
 </div>
 

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageContent, MessageContentTypeEnum } from 'src/app/core/interfaces/message-content';
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
@@ -33,7 +33,6 @@ export class MessagesComponent {
     private router: Router,
     private messageRoomMemberService: MessageRoomMemberService,
     private messageContentService: MessageContentService,
-    private cdr: ChangeDetectorRef
   ) { }
   
 

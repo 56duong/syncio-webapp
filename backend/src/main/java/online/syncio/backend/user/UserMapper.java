@@ -2,13 +2,11 @@ package online.syncio.backend.user;
 
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.exception.NotFoundException;
-import online.syncio.backend.storyview.StoryViewRepository;
 import online.syncio.backend.userclosefriend.UserCloseFriendRepository;
 import online.syncio.backend.userfollow.UserFollowRepository;
 import online.syncio.backend.utils.AuthUtils;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Component
@@ -19,7 +17,6 @@ public class UserMapper {
     private final UserCloseFriendRepository userCloseFriendRepository;
     private final UserFollowRepository userFollowRepository;
     private final AuthUtils authUtils;
-    private final StoryViewRepository storyViewRepository;
 
 
     public UserDTO mapToDTO (final User user, final UserDTO userDTO) {
@@ -55,14 +52,6 @@ public class UserMapper {
         userProfile.setFollowingCount(user.getFollowing().size());
 
         return userProfile;
-    }
-
-
-    public UserStoryDTO mapToUserStoryDTO (final User user, final UserStoryDTO userStoryDTO, final UUID currentUserId) {
-        userStoryDTO.setId(user.getId());
-        userStoryDTO.setUsername(user.getUsername());
-        userStoryDTO.setHasUnseenStory(storyViewRepository.hasUnseenStoriesFromCreatorSinceDate(user.getId(), currentUserId, LocalDateTime.now().minusDays(1)));
-        return userStoryDTO;
     }
 
 

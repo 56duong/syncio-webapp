@@ -11,6 +11,7 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { ColorPickerModule } from 'ngx-color-picker';
     PickerModule,
     SharedModule,
     FormsModule,
-    ColorPickerModule
+    ColorPickerModule,
+    TranslateModule
   ]
 })
 export class StoryModule { }

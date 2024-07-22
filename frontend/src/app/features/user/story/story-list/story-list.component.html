@@ -1,20 +1,35 @@
 <div *ngIf="usersWithStories.length > 0" class="container mt-4 w-full">
-  <div class="flex align-items-center justify-content-start gap-3 p-3 m-auto 
-    primary-scrollbar overflow-x-scroll"
-    style="width: min(470px, 100vw - 1rem); scroll-snap-type: x mandatory">
+
+  <!-- Expand/Collapse Stories -->
+  <div *ngIf="usersWithStories.length > 6"
+    (click)="isExpandedStory = !isExpandedStory"
+    style="width: min(470px, 100vw - 1rem); margin: 1rem auto 0.5rem auto; user-select: none;"
+    class="cursor-pointer flex justify-content-end align-items-center gap-1">
+    <ng-container *ngIf="!isExpandedStory" >
+      <small>{{ 'expandStories' | translate }}</small>
+      <i class="pi pi-th-large"></i>
+    </ng-container>
+    <ng-container *ngIf="isExpandedStory">
+      <small>{{ 'collapseStories' | translate }}</small>
+      <i class="pi pi-ellipsis-h"></i>
+    </ng-container>
+  </div>
+  
+  <div class="flex align-items-center justify-content-start gap-3 py-3 m-auto primary-scrollbar overflow-x-scroll"
+    style="width: min(470px, 100vw - 1rem); scroll-snap-type: x mandatory"
+    [ngStyle]="{
+      'flex-wrap': isExpandedStory ? 'wrap' : 'nowrap',
+    }">
     <!-- Story item -->
     <div *ngFor="let user of usersWithStories" 
       (click)="navigateToStory(user)"
-      class="story-item cursor-pointer text-center">
+      class="story-item cursor-pointer text-center"
+      [title]="currentUserId === user.id ? ('yourStory' | translate) : user.username">
       <!-- Avatar -->
-      <div class="avt border-circle border-3 overflow-hidden"
-        [ngClass]="user.hasUnseenStory ? 'border-primary' : 'surface-border'"
-        style="width: 64px; scroll-snap-align: start; pointer-events: none;">
-        <app-avatar [userId]="user.id" [width]="59.5"></app-avatar>
-      </div>
+      <app-avatar [userId]="user.id" [width]="64" [userStory]="user"></app-avatar>
       <!-- Username -->
-      <p class="mt-1 text-sm" style="width: 64px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-        {{currentUserId === user.id ? 'Your Story' : user.username}}
+      <p class="mt-1" style="font-size: 0.75rem; width: 64px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+        {{currentUserId === user.id ? ('yourStory' | translate) : user.username}}
       </p>
     </div>
   </div>
@@ -26,6 +41,6 @@
   <app-view-story 
     [userIdInput]="selectedUser.id"
     (close)="close()"
-    (storyViewedAll)="selectedUser.hasUnseenStory = false">
+    (storyViewedCount)="selectedUser.storyViewedCount = $event">
   </app-view-story>
 </div>

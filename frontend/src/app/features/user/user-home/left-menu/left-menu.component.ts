@@ -45,7 +45,6 @@ export class LeftMenuComponent {
 
 
   ngOnInit() {
-    console.log(this.translateService.instant('home'))
     this.menus = [
       {
         label: this.translateService.instant('home'),
@@ -113,14 +112,6 @@ export class LeftMenuComponent {
             label: this.translateService.instant('help'),
             icon: 'pi pi-question-circle',
             route: '/help',
-          },
-          {
-            label: this.translateService.instant('logout'),
-            color: 'red',
-            icon: 'pi pi-sign-out',
-            command: () => {
-              this.logout();
-            },
           }
         ],
       },
@@ -128,6 +119,17 @@ export class LeftMenuComponent {
     
     this.currentUserId = this.tokenService.extractUserIdFromToken();
     this.currentUsername = this.tokenService.extractUsernameFromToken();
+
+    if(this.currentUserId) {
+      this.settingSubmenuItems[0].items.push({
+        label: this.translateService.instant('logout'),
+        color: 'red',
+        icon: 'pi pi-sign-out',
+        command: () => {
+          this.logout();
+        },
+      });
+    }
 
     // Get the current tab when routing changes
     this.router.events.subscribe(() => {

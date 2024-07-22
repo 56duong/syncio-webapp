@@ -1,15 +1,15 @@
 <main>
   <header class="flex align-items-center gap-6 ml-6">
     <!-- Avatar -->
-    <div class="border-circle overflow-hidden" style="width: 164px; height: 164px;">
+    <div title="Upload avatar" class="border-circle overflow-hidden" style="width: 164px; height: 164px;">
       <input
         #fileInput
         type="file"
         style="display: none"
         accept="image/*"
         (change)="onFileSelected($event)" />
-      <button (click)="fileInput.click()" class="border-none p-0 outline-none">
-        <app-avatar [userId]="userProfile.id" [width]="164"></app-avatar>
+      <button (click)="fileInput.click()" class="border-none p-0 outline-none cursor-pointer" style="background: none;">
+        <app-avatar [userId]="userProfile.id" [width]="164" [userStory]="userStory"></app-avatar>
       </button>
     </div>
 

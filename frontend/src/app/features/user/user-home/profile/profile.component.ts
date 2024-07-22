@@ -16,6 +16,8 @@ import { UserLabelInfoService } from 'src/app/core/services/user-label-info.serv
 import { LabelService } from 'src/app/core/services/label.service';
 import { UserLabelInfo } from 'src/app/core/interfaces/user-label-info';
 import { LabelUpdateService } from 'src/app/core/services/label-update.service';
+import { UserStory } from 'src/app/core/interfaces/user-story';
+import { StoryService } from 'src/app/core/services/story.service';
 
 @Component({
   selector: 'app-profile',
@@ -70,6 +72,8 @@ export class ProfileComponent implements OnInit {
   chooseLableDialog: boolean = false;
   userLabelInfos!: UserLabelInfo[];
 
+  userStory: UserStory | undefined;
+
   constructor(
     private notificationService: NotificationService,
     private userService: UserService,
@@ -82,7 +86,8 @@ export class ProfileComponent implements OnInit {
     private userCloseFriendService: UserCloseFriendService,
     private toastService: ToastService,
     private userLabelInfoService: UserLabelInfoService,
-    private labelUpdateService: LabelUpdateService
+    private labelUpdateService: LabelUpdateService,
+    private storyService: StoryService
 
   ) {}
 
@@ -92,12 +97,27 @@ export class ProfileComponent implements OnInit {
     // subscribe to route params to get user id
     this.route.params.subscribe((params) => {
       this.profileId = params['userId'];
+      this.getUserStory();
       this.getUserProfile();
       this.getPosts();
     });
   }
 
   
+  getUserStory() {
+    if(this.currentUserId) {
+      this.storyService.getUserStory(this.profileId).subscribe({
+        next: (response) => {
+          this.userStory = response;
+        },
+        error: (error) => {
+          console.error('Error getting user story', error);
+        },
+      });
+    }
+  }
+
+
   getUserProfile() {
     if(this.currentUserId) {
       // if user is logged in, use getUserProfile2 to get with token

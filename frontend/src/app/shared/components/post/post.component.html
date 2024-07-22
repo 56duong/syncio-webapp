@@ -66,7 +66,7 @@
   </div>
 
   <!-- caption -->
-  <div *ngIf="post.caption" class="line-clamp flex align-items-center gap-1"
+  <div *ngIf="post.caption" class="line-clamp"
     [ngStyle]="{ '-webkit-line-clamp': isViewMore ? 'unset' : '3'}">
     <small *ngIf="post.createdBy && post.photos?.length" class="font-bold mr-1">
       <!-- {{ post.username }} -->
@@ -76,7 +76,7 @@
                         [color]="''">
       </app-username-label>
     </small>
-    <p class="inline m-0"
+    <p class="inline m-0" style="white-space: pre-line;"
       (click)="isViewMore = !isViewMore" 
       [title]="isViewMore ? 'View less' : 'View more'">
       {{ post.caption }}
