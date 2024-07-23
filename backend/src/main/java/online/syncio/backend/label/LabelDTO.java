@@ -2,12 +2,18 @@ package online.syncio.backend.label;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Data
 public class LabelDTO {
+
+        @Value("${url.frontend}")
+        public String frontendUrl;
+
         private UUID id;
 
         @NotNull
@@ -28,6 +34,6 @@ public class LabelDTO {
         @NotNull
         private StatusEnum status = StatusEnum.ENABLED;
         public String getLabelURL() {
-                return labelURL = "http://localhost:8080/api/v1/posts/images/" + labelURL;
+                return labelURL = frontendUrl + "/api/v1/posts/images/" + labelURL;
         }
 }

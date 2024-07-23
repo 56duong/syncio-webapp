@@ -19,6 +19,9 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 @Data
 public class Photo {
+    @Value("${url.frontend}")
+    public String frontendUrl;
+
     @Id
     @Column(nullable = false, updatable = false)
     @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
@@ -41,7 +44,7 @@ public class Photo {
         else {
             Path imagePath = Paths.get("uploads/" + url);
             if (Files.exists(imagePath)) {
-                return "http://localhost:8080/api/v1/posts/images/" + url;
+                return frontendUrl + "/api/v1/posts/images/" + url;
             }
             else {
                 return "https://your-s3-bucket-name.s3.your-region.amazonaws.com/" + url;
