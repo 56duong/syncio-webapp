@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: chuthanh/dockerfile-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql-username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql-password
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: backend_url
+            - name: SPRING_RABBITMQ_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: spring_rabbitmq_host
+            - name: SPRING_RABBITMQ_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: spring_rabbitmq_port
+            - name: SPRING_RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: spring_rabbitmq_username
+            - name: SPRING_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: spring_rabbitmq_password
+            - name: SPRING_RABBITMQ_VIRTUAL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: spring_rabbitmq_virtual_host
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: backend

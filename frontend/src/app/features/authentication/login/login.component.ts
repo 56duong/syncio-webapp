@@ -96,7 +96,6 @@ export class LoginComponent implements OnInit {
     const loginDTO: LoginDTO = {
       email: this.email,
       password: this.password,
-      role_name: 'USER',
     };
 
     this.userService.login(loginDTO).subscribe({

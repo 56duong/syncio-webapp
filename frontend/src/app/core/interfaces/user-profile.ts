@@ -1,4 +1,4 @@
-import { Post } from "./post";
+import { Post } from './post';
 
 export interface UserProfile {
   id: string;
@@ -8,6 +8,6 @@ export interface UserProfile {
   followingCount: number;
   isFollowing: boolean;
   isCloseFriend: boolean;
-
+  avtURL?: string;
   posts: Post[];
 }

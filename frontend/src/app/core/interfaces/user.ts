@@ -18,6 +18,8 @@ export interface User {
   role?: RoleEnum;
 
   status?: StatusEnum;
+
+  avtURL?: string;
 }
 
 export enum StatusEnum {
