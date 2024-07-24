@@ -70,7 +70,7 @@ public class CustomerForgetPasswordUtil {
                 + "<br>"
                 + "<p>If you did not request this verification, please ignore this email. This request will be ignored if you do not verify your account.</p>"
                 + "<p>Thank you!</p>"
-                + "<p>The [Your Company Name] Team</p>";
+                + "<p>The SyncioWeb Team</p>";
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
 

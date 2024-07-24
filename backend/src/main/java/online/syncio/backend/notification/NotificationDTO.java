@@ -3,6 +3,7 @@ package online.syncio.backend.notification;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Data;
+import online.syncio.backend.utils.Constants;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
@@ -10,8 +11,6 @@ import java.util.UUID;
 
 @Data
 public class NotificationDTO {
-    @Value("${url.frontend}")
-    public String frontendUrl;
 
     private UUID targetId;
 
@@ -46,7 +45,7 @@ public class NotificationDTO {
     private String previewText;
 
     public String getImageURL() {
-        return imageURL == null ? null : frontendUrl + "/api/v1/images/" + imageURL;
+        return imageURL == null ? null : Constants.BACKEND_URL + "/api/v1/images/" + imageURL;
     }
 
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import online.syncio.backend.post.Post;
+import online.syncio.backend.utils.Constants;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,8 +20,6 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 @Data
 public class Photo {
-    @Value("${url.frontend}")
-    public String frontendUrl;
 
     @Id
     @Column(nullable = false, updatable = false)
@@ -44,7 +43,7 @@ public class Photo {
         else {
             Path imagePath = Paths.get("uploads/" + url);
             if (Files.exists(imagePath)) {
-                return frontendUrl + "/api/v1/posts/images/" + url;
+                return Constants.BACKEND_URL + "/api/v1/posts/images/" + url;
             }
             else {
                 return "https://your-s3-bucket-name.s3.your-region.amazonaws.com/" + url;

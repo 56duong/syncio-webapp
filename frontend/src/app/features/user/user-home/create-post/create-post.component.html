@@ -6,8 +6,9 @@
   [responsive]="true"
   [style]="{ width: '80vw', maxWidth: '900px' }"
   [baseZIndex]="10000"
-  header="Header">
-  <ng-template pTemplate="header" style="padding: 0;">
+  header="Header"
+>
+  <ng-template pTemplate="header" style="padding: 0">
     <!-- Modal header -->
     <div
       class="modal-header"
@@ -16,7 +17,9 @@
         justify-content: space-between;
         align-items: center;
         width: 100%;
-        border-bottom: 1px solid #ccc;">
+        border-bottom: 1px solid #ccc;
+      "
+    >
       <div>
         <button
           pButton
@@ -27,7 +30,7 @@
         ></button>
       </div>
       <div>
-        <p style="margin: 0; font-weight: 600;">Create New Post</p>
+        <p style="margin: 0; font-weight: 600">Create New Post</p>
       </div>
       <div>
         <button
@@ -45,8 +48,12 @@
     <!-- Left content / Photos -->
     <div class="col-7 p-0">
       <div class="p-fluid">
-        <div class="flex justify-content-center align-items-center" style="height: 500px">
-          <p-fileUpload *ngIf="selectedPhotos.length === 0"
+        <div
+          class="flex justify-content-center align-items-center"
+          style="height: 500px"
+        >
+          <p-fileUpload
+            *ngIf="selectedPhotos.length === 0"
             #fileUploader
             name="photo[]"
             mode="basic"
@@ -54,18 +61,23 @@
             chooseIcon="pi pi-upload"
             (onSelect)="onPhotoSelected($event)"
             [multiple]="true"
-            accept="image/*">
+            accept="image/*"
+          >
           </p-fileUpload>
-          <p-carousel *ngIf="selectedPhotos.length > 0"
+          <p-carousel
+            *ngIf="selectedPhotos.length > 0"
             [value]="selectedPhotos"
             [numVisible]="1"
             [numScroll]="1"
             [circular]="false"
-            [ngClass]="selectedPhotos.length == 1 ? 'hide-slide-control' : ''">
+            [ngClass]="selectedPhotos.length == 1 ? 'hide-slide-control' : ''"
+          >
             <ng-template let-photo pTemplate="item">
-              <img src="{{ photo }}"
+              <img
+                src="{{ photo }}"
                 class="w-full h-full"
-                style="object-fit: cover" />
+                style="object-fit: cover"
+              />
             </ng-template>
           </p-carousel>
         </div>
@@ -78,9 +90,13 @@
     <div class="col-5 px-3 pt-2">
       <div class="p-fluid">
         <div class="field">
-          <div class="inline-flex align-items-center justify-content-center gap-2">
+          <div
+            class="inline-flex align-items-center justify-content-center gap-2"
+          >
             <app-avatar [userId]="currentUserId" [width]="32"></app-avatar>
-            <span class="font-semibold white-space-nowrap">{{currentUsername}}</span>
+            <span class="font-semibold white-space-nowrap">{{
+              currentUsername
+            }}</span>
             <!-- Visibility -->
             <button
               pButton
@@ -101,31 +117,44 @@
             [autoResize]="true"
             placeholder="Write a caption..."
             class="border-0 outline-none p-0 shadow-none"
-            style="max-height: 154px;"
+            style="max-height: 154px"
           ></textarea>
         </div>
         <!-- Emoji -->
         <div class="field">
           <div class="relative">
-            <i (click)="isEmojiPickerVisible = !isEmojiPickerVisible"
-              class="cursor-pointer fa-regular fa-face-smile text-xl">
+            <i
+              (click)="isEmojiPickerVisible = !isEmojiPickerVisible"
+              class="cursor-pointer fa-regular fa-face-smile text-xl"
+            >
             </i>
             <emoji-mart
               *ngIf="isEmojiPickerVisible"
               [showPreview]="false"
               (emojiSelect)="addEmoji($event)"
               [enableSearch]="false"
-              [style]="{ position: 'absolute', top: '20px', left: '-18px', zIndex: '1' }"
+              [style]="{
+                position: 'absolute',
+                top: '20px',
+                left: '-18px',
+                zIndex: '1'
+              }"
             ></emoji-mart>
           </div>
         </div>
         <!-- Audio Player -->
-        <div *ngIf="showPlayer && post.audioURL" class="flex justify-content-center align-items-center pb-3 w-full gap-2">
+        <div
+          *ngIf="showPlayer && post.audioURL"
+          class="flex justify-content-center align-items-center pb-3 w-full gap-2"
+        >
           <audio controls class="w-full">
-            <source [src]="post.audioURL" type="audio/mpeg">
+            <source [src]="post.audioURL" type="audio/mpeg" />
             Your browser does not support the audio element.
           </audio>
-          <i class="pi pi-trash cursor-pointer" (click)="post.audioURL=undefined; selectedAudioFile=null"></i>
+          <i
+            class="pi pi-trash cursor-pointer"
+            (click)="post.audioURL = undefined; selectedAudioFile = null"
+          ></i>
         </div>
 
         <p-divider></p-divider>
@@ -135,12 +164,17 @@
           <p>Audio</p>
           <div class="relative">
             <p-speedDial [model]="audioItems" direction="up" />
-            <input #audioInput type="file" accept="audio/*" (change)="onAudioSelected($event)" hidden />
+            <input
+              #audioInput
+              type="file"
+              accept="audio/*"
+              (change)="onAudioSelected($event)"
+              hidden
+            />
           </div>
         </div>
 
         <p-divider></p-divider>
-
       </div>
     </div>
   </div>
@@ -153,23 +187,47 @@
   [modal]="true"
   [(visible)]="isVisibleVisibility"
   [style]="{ width: '23.5rem' }"
-  [closable]="false">
-
+  [closable]="false"
+>
   <p-divider></p-divider>
-  
-  <div class="modal-content p-2">
-    <span class="block text-center mb-3 mt-2 font-semibold">Who would you like to share your post with?</span>
 
-    <div *ngFor="let visibility of visibilityOptions | keyvalue" class="field-checkbox mb-3">
-      <p-radioButton 
+  <div class="modal-content p-2">
+    <span class="block text-center mb-3 mt-2 font-semibold"
+      >Who would you like to share your post with?</span
+    >
+
+    <div
+      *ngFor="let visibility of visibilityOptions | keyvalue"
+      class="field-checkbox mb-3"
+    >
+      <p-radioButton
         [inputId]="visibility.key"
-        name="visibility" 
-        [value]="visibility.value" 
-        [(ngModel)]="selectedVisibility" />
+        name="visibility"
+        [value]="visibility.value"
+        [(ngModel)]="selectedVisibility"
+      />
       <label [for]="visibility.key" class="gap-2 flex align-items-center">
-        <p-button *ngIf="visibility.value == visibilityOptions.PRIVATE" class="close-friend" icon="pi pi-lock" severity="secondary" size="small" />
-        <p-button *ngIf="visibility.value === visibilityOptions.CLOSE_FRIENDS" class="close-friend" icon="pi pi-star-fill" severity="success" size="small" />
-        <p-button *ngIf="visibility.value === visibilityOptions.PUBLIC" class="close-friend" icon="pi pi-users" severity="success" size="small" />
+        <p-button
+          *ngIf="visibility.value == visibilityOptions.PRIVATE"
+          class="close-friend"
+          icon="pi pi-lock"
+          severity="secondary"
+          size="small"
+        />
+        <p-button
+          *ngIf="visibility.value === visibilityOptions.CLOSE_FRIENDS"
+          class="close-friend"
+          icon="pi pi-star-fill"
+          severity="success"
+          size="small"
+        />
+        <p-button
+          *ngIf="visibility.value === visibilityOptions.PUBLIC"
+          class="close-friend"
+          icon="pi pi-users"
+          severity="success"
+          size="small"
+        />
         {{ getVisibilityLabel(visibility.value) }}
       </label>
     </div>
@@ -183,5 +241,6 @@
 <app-voice-recorder-dialog
   [isVisibleRecorder]="isVisibleRecorder"
   (submitAudioEvent)="submitAudio($event)"
-  (closeRecorderEvent)="isVisibleRecorder = false">
+  (closeRecorderEvent)="isVisibleRecorder = false"
+>
 </app-voice-recorder-dialog>

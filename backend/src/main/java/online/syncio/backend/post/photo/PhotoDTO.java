@@ -1,6 +1,7 @@
 package online.syncio.backend.post.photo;
 
 import lombok.Data;
+import online.syncio.backend.utils.Constants;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.nio.file.Files;
@@ -10,9 +11,6 @@ import java.util.UUID;
 
 @Data
 public class PhotoDTO {
-
-    @Value("${url.frontend}")
-    public String frontendUrl;
 
     private UUID id;
 
@@ -25,7 +23,8 @@ public class PhotoDTO {
 
 
     private String cleanUrl(String url) {
-        String prefixToRemove = frontendUrl + "/api/v1/posts/images/";
+        System.out.println("imageurl: " + url);
+        String prefixToRemove = Constants.BACKEND_URL + "/api/v1/posts/images/";
         if (url.startsWith(prefixToRemove)) {
             return url.substring(prefixToRemove.length());
         }
@@ -37,7 +36,7 @@ public class PhotoDTO {
 
         System.out.println("imagePath: " + imagePath);
         if (Files.exists(imagePath)) {
-            return frontendUrl + "/api/v1/posts/images/" + url;
+            return Constants.BACKEND_URL + "/api/v1/posts/images/" + url;
         }
         else {
             return "https://your-s3-bucket-name.s3.your-region.amazonaws.com/" + url;
