@@ -1,5 +1,5 @@
 {
-  "LOGIN": "-----------------------------------------------------------------",
+  "LOGIN-----------------------------------------------------------------": "",
   "login": "Log in",
   "email": "Email",
   "password": "Password",
@@ -8,11 +8,24 @@
   "signUp": "Sign up",
   "continueAsGuest": "Continue as guest",
 
-  "VALIDATE": "-----------------------------------------------------------------",
+
+  "REGISTER-----------------------------------------------------------------": "",
+  "passwordConfirm": "Confirm password",
+  "haveAnAccount": "Have an account?",
+  "usernameOnlyContain": "Username only contain letters, numbers and underscore",
+  "usernameShouldBeAtLeast3CharactersAndAtMost30Characters": "Username should be at least 3 characters and at most 30 characters",
+  "emailShouldContain": "Email should contain @ symbol",
+  "emailShouldContainADot": "Email should contain a domain name with at least one dot",
+  "emailInvalid": "Email is invalid",
+  "passwordShouldBeAtLeast6CharactersAndAtMost100Characters": "Password should be at least 6 characters and at most 100 characters",
+
+
+  "VALIDATE-----------------------------------------------------------------": "",
   "emailIsRequired": "Email is required",
   "passwordIsRequired": "Password is required",
 
-  "LEFT MENU": "-----------------------------------------------------------------",
+
+  "LEFT MENU-----------------------------------------------------------------": "",
   "home": "Home",
   "search": "Search",
   "messages": "Messages",
@@ -25,16 +38,19 @@
   "help": "Help",
   "logout": "Log out",
 
-  "STORY": "-----------------------------------------------------------------",
+
+  "STORY-----------------------------------------------------------------": "",
   "expandStories": "Expand stories",
   "collapseStories": "Collapse stories",
   "yourStory": "Your story",
 
-  "HOME": "-----------------------------------------------------------------",
+
+  "HOME-----------------------------------------------------------------": "",
   "suggestedForYou": "Suggested for you",
   "youReachTheEnOfTheFeed": "You reach the end of the feed",
 
-  "POST": "-----------------------------------------------------------------",
+
+  "POST-----------------------------------------------------------------": "",
   "viewAll": "View all",
   "like": {
     "one": "Like",
@@ -45,7 +61,16 @@
     "other": "Comments"
   },
 
-  "DATETIME": "-----------------------------------------------------------------",
+
+  "POST_DETAIL-----------------------------------------------------------------": "",
+  "reply": "Reply",
+  "hideReplies": "Hide replies",
+  "viewReplies": "View replies",
+  "addAComment": "Add a comment",
+  "postComment": "Post",
+
+
+  "DATETIME-----------------------------------------------------------------": "",
   "justNow": "Just now",
   "y": "y",
   "mth": "mth",
@@ -55,7 +80,8 @@
   "m": "m",
   "s": "s",
 
-  "REPORT": "-----------------------------------------------------------------",
+
+  "REPORT-----------------------------------------------------------------": "",
   "report": "Report",
   "reason": "Reason",
   "selectAReason": "Select a reason",
@@ -70,7 +96,43 @@
   "yourFeedbackIsImportantInHelpingUsKeepTheCommunitySafe": "Your feedback is important in helping us keep the community safe",
 
 
+  "SEARCH-----------------------------------------------------------------": "",
+  "byImage": "By image",
+  "recent": "Recent",
+  "clearAll": "Clear all",
+  "suggestForYou": "Suggest for you",
+  "follower": {
+    "one": "follower",
+    "other": "followers"
+  },
 
+
+  "MESSAGE-----------------------------------------------------------------": "",
+  "yourMessages": "Your messages",
+  "sendAMessageToStartAChat": "Send a message to start a chat",
+  "sendMessage": "Send message",
+  "newMessage": "New message",
+  "to": "To",
+  "chat": "Chat",
+  "details": "Details",
+  "changeGroupName": "Change group name",
+  "change": "Change",
+  "members": "Members",
+  "addPeople": "Add people",
+  "admin": "Admin",
+  "changingTheNameOfTheGroupWillChangeTheNameForAllMembers": "Changing the name of the group will change the name for all members",
+  "save": "Save",
+  "leaveChat": "Leave chat",
+  "youWontBeAbleToSendOrReceiveMessagesUnlessSomeoneAddsYouBackToTheChat": "You won't be able to send or receive messages unless someone adds you back to the chat",
+  "add": "Add",
+  "removeFromGroup": "Remove from group",
+  "makeAdmin": "Make admin",
+  "removeAdmin": "Remove admin",
+  "send": "Gửi",
+  "viewProfile": "View profile",
+
+
+  "OTHERS-----------------------------------------------------------------": "",
   "error": "Error",
   "success": "Success",
   "copyLink": "Copy link",

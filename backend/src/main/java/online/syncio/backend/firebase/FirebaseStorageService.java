@@ -89,4 +89,15 @@ public class FirebaseStorageService {
         return null;
     }
 
+
+    public boolean deleteFile(String fileName) {
+        try {
+            StorageClient.getInstance().bucket().get(fileName).delete();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

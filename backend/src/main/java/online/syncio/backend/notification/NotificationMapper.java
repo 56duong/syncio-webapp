@@ -56,7 +56,7 @@ public class NotificationMapper {
 
         String firstPhoto = postRepository.findFirstPhotoIdByPostId(notificationDTO.getTargetId());
         if (firstPhoto != null) {
-            notificationDTO.setImageURL(firstPhoto);
+            notificationDTO.setImageURL("posts/" + firstPhoto);
         }
 
         return notificationDTO;

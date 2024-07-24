@@ -1,0 +1,26 @@
+<div class="flex min-h-screen">
+  <div class="left-side pl-3">
+    <!-- header -->
+    <h2 class="pr-3 mb-4">Settings</h2>
+
+    <!-- list of sections -->
+    <div class="flex flex-column gap-4">
+      <div *ngFor="let menu of menus">
+        <!-- header of section -->
+        <small class="pr-3 mb-2 block">{{menu.title}}</small>
+        <!-- list of items -->
+        <div class="flex flex-column">
+          <div *ngFor="let item of menu.items" class="p-fluid w-full">
+            <p-button [routerLink]="item.link" routerLinkActive="menu-active" [label]="item.label" [icon]="item.icon" [text]="true" severity="secondary" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p-divider [layout]="'vertical'"></p-divider>
+
+  <div class="flex-1 p-4">
+    <router-outlet></router-outlet>
+  </div>
+</div>

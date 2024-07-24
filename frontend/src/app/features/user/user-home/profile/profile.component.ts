@@ -164,10 +164,6 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  public handleEditProfile(): void {
-    this.router.navigate(['/edit-profile']);
-  }
-
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
     if (file) {

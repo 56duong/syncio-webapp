@@ -68,6 +68,12 @@ public class Post {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PostEnum visibility;
+
+    public String getAudioURL() {
+        if (audioURL == null) return null;
+        return "posts/" + audioURL;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);

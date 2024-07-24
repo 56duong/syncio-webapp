@@ -7,7 +7,7 @@
     <form
       class="col-6 flex flex-column gap-5 justify-content-center align-items-center"
     >
-      <h1>Sign up</h1>
+      <h1>{{ 'signUp' | translate }}</h1>
       <div class="flex flex-column gap-3 w-full">
         <!-- Email -->
         <div class="w-full">
@@ -31,7 +31,7 @@
         <div class="w-full">
           <input
             type="password"
-            placeholder="Password"
+            [placeholder]="'password' | translate"
             [(ngModel)]="password"
             name="password"
           />
@@ -40,7 +40,7 @@
         <div class="w-full">
           <input
             type="password"
-            placeholder="Confirm password"
+            [placeholder]="'passwordConfirm' | translate"
             [(ngModel)]="retypePassword"
             name="retypePassword"
           />
@@ -48,18 +48,19 @@
       </div>
       <!-- Submit -->
       <p-button
+        [disabled]="!email || !username || !password || !retypePassword"
         (click)="register()"
-        label="Sign up"
+        [label]=" 'signUp' | translate"
         class="w-full"
         styleClass="w-full"
       />
       <!-- Login link -->
       <div>
         <p routerLink="/login" class="text-center cursor-pointer text-sm mt-2">
-          Have an account? <span class="text-primary font-bold">Log in</span>
+          {{ 'haveAnAccount' | translate }} <span class="text-primary font-bold">{{ 'login' | translate }}</span>
         </p>
         <p routerLink="/" class="text-center cursor-pointer text-sm mt-2">
-          Continue as guest
+          {{ 'continueAsGuest' | translate }}
         </p>
       </div>
     </form>

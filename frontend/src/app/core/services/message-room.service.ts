@@ -56,8 +56,8 @@ export class MessageRoomService {
     this.stompClientNewMessageGroup = Stomp.over(socket);
 
     this.stompClientNewMessageGroup.connect({id: this.tokenService.extractUserIdFromToken()}, () => {    
-      this.newMessageGroupSubscription = this.stompClientNewMessageGroup.subscribe(`/user/queue/newMessageRoom`, (comment: IMessage) => {
-        this.newMessageGroupSubject.next(JSON.parse(comment.body));
+      this.newMessageGroupSubscription = this.stompClientNewMessageGroup.subscribe(`/user/queue/newMessageRoom`, (messageContent: IMessage) => {
+        this.newMessageGroupSubject.next(JSON.parse(messageContent.body));
       });
     });
   }

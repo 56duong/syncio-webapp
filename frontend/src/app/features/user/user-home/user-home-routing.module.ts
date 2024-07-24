@@ -9,6 +9,7 @@ import { PaymentInfoComponent } from './payment-info/payment-info.component';
 import { PostDetailComponent } from 'src/app/shared/components/post-detail/post-detail.component';
 import { authGuard } from 'src/app/core/guards/auth.guard';
 import { RoleEnum } from 'src/app/core/interfaces/user';
+import { SettingComponent } from './setting/setting.component';
 
 const routes: Routes = [
   {
@@ -47,6 +48,14 @@ const routes: Routes = [
     component: PaymentInfoComponent,
     canActivate: [authGuard],
     data: { requiredRoles: [RoleEnum.USER] }
+  },
+  {
+    path: 'account',
+    component: SettingComponent,
+    canActivate: [authGuard],
+    data: { requiredRoles: [RoleEnum.USER] },
+    loadChildren: () =>
+      import('./setting/setting.module').then((m) => m.SettingModule),
   }
 ];
 

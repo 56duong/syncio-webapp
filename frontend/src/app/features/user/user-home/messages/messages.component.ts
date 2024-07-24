@@ -322,7 +322,7 @@ export class MessagesComponent {
         if(!receiveId || !this.selectedMessageRoom.id) return;
         this.messageRoomService.sendFirstMessage(receiveId, this.selectedMessageRoom.id).subscribe({
           next: (result) => {
-            console.log(result);
+            // console.log(result);
           },
           error: (error) => {
             console.log(error);

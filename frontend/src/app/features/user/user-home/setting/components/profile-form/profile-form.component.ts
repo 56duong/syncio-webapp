@@ -1,28 +1,25 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../../../core/services/user.service';
-import { User } from 'src/app/core/interfaces/user';
+import { UserService } from '../../../../../../core/services/user.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
-import { MessageService } from 'primeng/api';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-profile-form',
   templateUrl: './profile-form.component.html',
   styleUrls: ['./profile-form.component.scss'],
 })
+
 export class ProfileFormComponent {
   data_id: any;
   profilePic: string | null = null;
   profileForm: FormGroup = new FormGroup({});
   userResponse?: UserResponse | null =
     this.userService.getUserResponseFromLocalStorage();
+
   constructor(
-    private ar: ActivatedRoute,
-    private ds: UserService,
-    private route: Router,
     private userService: UserService,
-    private messageService: MessageService
+    private toastService: ToastService,
   ) {}
 
   ngOnInit(): void {
@@ -31,7 +28,7 @@ export class ProfileFormComponent {
         `${this.userResponse?.username}`,
         Validators.required
       ),
-      email: new FormControl(`${this.userResponse?.email}`, [
+      email: new FormControl({ value: `${this.userResponse?.email}`, disabled: true}, [
         Validators.required,
         Validators.email,
       ]),
@@ -39,18 +36,7 @@ export class ProfileFormComponent {
     });
     console.log('this.userResponse', this.userResponse);
   }
-  showError(message: string) {
-    this.messageService.add({
-      severity: 'error',
-      detail: message,
-    });
-  }
-  showSuccess(message: string) {
-    this.messageService.add({
-      severity: 'success',
-      detail: message,
-    });
-  }
+
   updateProfile(): void {
     if (this.profileForm) {
       this.userService
@@ -61,14 +47,15 @@ export class ProfileFormComponent {
               ...response.data,
             };
             this.userService.saveUserResponseToLocalStorage(this.userResponse);
-            this.showSuccess('Profile updated successfully');
+            this.toastService.showSuccess('Success', 'Profile updated successfully');
           },
           error: (error) => {
-            this.showError(error.error);
+            console.log('error', error);
+            this.toastService.showError('Error', error.error);
           },
         });
     } else {
-      this.showError('Please fill email and username');
+      this.toastService.showError('Error', 'Please fill email and username');
     }
   }
 }

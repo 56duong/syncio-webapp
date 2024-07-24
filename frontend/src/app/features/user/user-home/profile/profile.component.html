@@ -41,9 +41,9 @@
         <!-- Edit profile/ Setting -->
         <ng-container *ngIf="isOwnerProfile">
           <!-- Edit profile -->
-          <a *ngIf="isOwnerProfile" href="/edit-profile">
-            <p-button (click)="handleEditProfile()" label="Edit Profile" severity="my-custom-secondary"></p-button>
-          </a>
+          <div *ngIf="isOwnerProfile" routerLink="/account/edit-profile">
+            <p-button label="Edit Profile" severity="my-custom-secondary"></p-button>
+          </div>
           <!-- choose Label -->
           <p-button class="ml-2"
             (click)="showChooseLabelDialog()" 
@@ -51,7 +51,7 @@
           </p-button>
 
           <!-- Setting -->
-          <i *ngIf="isOwnerProfile" class="pi pi-cog cursor-pointer" style="font-size: 1.5rem"></i>
+          <i *ngIf="isOwnerProfile" routerLink="/account/edit-profile" class="pi pi-cog cursor-pointer" style="font-size: 1.5rem"></i>
         </ng-container>
       </div>
 
@@ -95,7 +95,7 @@
           (click)="handleShowPostDetail(true, post)">
           <img height="100%"
             width="100%"
-            [src]="post.photos[0].url"
+            [src]="post.photos[0].url | constructImageUrl"
             [alt]="post.photos[0].altText"
             style="object-fit: cover; display: block;" />
         </div>
