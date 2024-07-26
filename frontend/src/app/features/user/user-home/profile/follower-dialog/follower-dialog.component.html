@@ -12,7 +12,16 @@
         <app-avatar [userId]="userFollow.actorId" [width]="48"></app-avatar> 
         <div class="flex gap-1 align-items-center">
           <!-- username -->
-          <span (click)="navigateToProfile(userFollow.actorId)" class="font-semibold cursor-pointer">{{ userFollow.actorUsername }}</span>
+          <span (click)="navigateToProfile(userFollow.actorId)" class="font-semibold cursor-pointer">
+            <!-- {{ userFollow.actorUsername }} -->
+            <app-username-label 
+              [userId]="userFollow.actorId"
+              [username]="userFollow.actorUsername"
+              [fontSize]=""
+              [fontWeight]="'bold'"
+              [color]="''">
+            </app-username-label>
+          </span>
           <!-- follow button if not following and is owner profile -->
           <ng-container *ngIf="isOwnerProfile && !userFollow.following && userFollow.actorId != currentUserId">
             <span>·</span>

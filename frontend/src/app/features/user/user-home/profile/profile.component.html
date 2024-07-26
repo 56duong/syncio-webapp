@@ -18,10 +18,11 @@
       <div class="flex align-items-center gap-3">
         <!-- Username -->
         <!-- <h1 class="font-normal text-2xl my-0 mr-3">{{ userProfile.username }}</h1> -->
-        <app-username-label [userId]="currentUserId"
-                        [username]="userProfile.username"
-                        [fontSize]="'28px'"
-                        [color]="''">
+        <app-username-label 
+          [userId]="currentUserId"
+          [username]="userProfile.username"
+          [fontSize]="'1.5rem'"
+          [color]="''">
         </app-username-label>
         <!-- Follow button -->
         <p-button *ngIf="!isOwnerProfile && !userProfile.isFollowing"

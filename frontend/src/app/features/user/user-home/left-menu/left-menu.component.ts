@@ -6,6 +6,7 @@ import { UserService } from 'src/app/core/services/user.service';
 import { color } from 'html2canvas/dist/types/css/types/color';
 import { TranslateService } from '@ngx-translate/core';
 import { LangService } from 'src/app/core/services/lang.service';
+import { UserLabelInfoService } from'src/app/core/services/user-label-info.service';
 
 @Component({
   selector: 'app-left-menu',
@@ -35,12 +36,15 @@ export class LeftMenuComponent {
 
   settingSubmenuItems: any[] = []; // Submenu of the Settings button
 
+  gifUrl: string = '';
+
   constructor(
     private router: Router,
     private tokenService: TokenService,
     private userService: UserService,
     private translateService: TranslateService,
-    private langService: LangService
+    private langService: LangService,
+    private userLabelInfoService: UserLabelInfoService
   ) { }
 
 
@@ -135,6 +139,20 @@ export class LeftMenuComponent {
     this.router.events.subscribe(() => {
       this.currentTab = this.router.url.split('/')[1].split('?')[0];
       this.isHideMenuLabel = this.hideTabs.includes(this.currentTab);
+    });
+
+    // user-label
+    this.userLabelInfoService.getLabelURL(this.currentUserId).subscribe({
+      next: (resp) => {
+        if (resp) {
+          this.gifUrl = resp;
+        } else {
+          this.gifUrl = ''; // gifUrl là undefined nếu resp là null
+        }
+      },
+      error: (error) => {
+        this.gifUrl = ''; // gifUrl là undefined nếu có lỗi
+      }
     });
   }
   onSearchClick(): void {

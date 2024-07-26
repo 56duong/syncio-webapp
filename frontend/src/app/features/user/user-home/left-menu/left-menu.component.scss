@@ -236,3 +236,28 @@ p-tieredMenu ::ng-deep {
     color: red !important;
   }
 }
+
+// xu ly hien thi user label
+@media (max-width: 992px) {
+  .user-label {
+    display: none;
+  }
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  order: 1;
+}
+
+.user-label {
+  order: 3;
+}
+
+.p-button-label {
+  order: 2;
+  flex: 0 1 auto;
+}
