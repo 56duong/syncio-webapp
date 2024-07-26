@@ -71,6 +71,12 @@
 }
 
 .left-menu ::ng-deep .menu .p-button.p-button-text:not(:disabled) { 
+  .p-button-icon {
+    font-size: 1.25rem !important;
+    width: 32px;
+    margin-right: 0;
+  }
+
   .p-button-label,
   .p-button-icon {
     font-weight: 500;
@@ -83,6 +89,12 @@
 .main ::ng-deep .p-tieredmenu .p-menuitem > .p-menuitem-content .p-menuitem-link {
   padding: 1rem;
   border-radius: 6px;
+
+  .p-menuitem-icon {
+    font-size: 1.25rem !important;
+    width: 32px;
+    margin-right: 0;
+  }
 
   .p-menuitem-text,
   .p-menuitem-icon {

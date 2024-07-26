@@ -25,20 +25,16 @@ import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
 import online.syncio.backend.userfollow.UserFollowRepository;
 import online.syncio.backend.utils.AuthUtils;
+import online.syncio.backend.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -47,7 +43,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostService {
-    private static final String UPLOADS_FOLDER = "uploads";
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
@@ -57,7 +52,7 @@ public class PostService {
     private final SettingService settingService;
     private final AuthUtils authUtils;
     private final UserFollowRepository userFollowRepository;
-    private final FirebaseStorageService firebaseStorageService;
+    private final FileUtils fileUtils;
 
     @Value("${firebase.storage.type}")
     private String storageType;
@@ -120,16 +115,7 @@ public class PostService {
                                          .body("File must be an image");
                 }
 
-                String filename;
-                if ("local".equals(storageType)) {
-                    filename = storeFile(file, "image");
-                }
-                else if ("firebase".equals(storageType)) {
-                    filename = firebaseStorageService.uploadFile(file, "posts", "png");
-                }
-                else {
-                    throw new IllegalStateException("Invalid storage type: " + storageType);
-                }
+                String filename = fileUtils.storeFile(file, "posts", false);
                 filenames.add(filename);
             }
         }
@@ -148,16 +134,7 @@ public class PostService {
                     return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
                                          .body("File must be an audio");
                 }
-                String filename;
-                if ("local".equals(storageType)) {
-                    filename = storeFile(audio, "audio");
-                }
-                else if ("firebase".equals(storageType)) {
-                    filename = firebaseStorageService.uploadFile(audio, "posts", "wav");
-                }
-                else {
-                    throw new IllegalStateException("Invalid storage type: " + storageType);
-                }
+                String filename = fileUtils.storeFile(audio, "posts", false);
                 post.setAudioURL(filename);
             }
         }
@@ -183,7 +160,7 @@ public class PostService {
                         String altTexts = null;
                         try {
                             altTexts = hfInference.imageToText(photo.getImageUrl(storageType));
-                        } catch (ExecutionException | InterruptedException | URISyntaxException e) {
+                        } catch (ExecutionException | InterruptedException e) {
                             System.err.println("Error generating alt text: " + e.getMessage());
                             e.printStackTrace();
                         }
@@ -211,38 +188,6 @@ public class PostService {
 
         Post savedPost = postRepository.save(post);
         return ResponseEntity.ok(savedPost.getId());
-    }
-
-    private boolean isImageFile (MultipartFile file) {
-        String contentType = file.getContentType();
-        return contentType != null && contentType.startsWith("image/");
-    }
-
-    public String storeFile (MultipartFile file, String fileType) throws IOException {
-        if(fileType.equals("image")) {
-            if (!isImageFile(file) || file.getOriginalFilename() == null) {
-                throw new IOException("Invalid image format");
-            }
-        }
-        else if(fileType.equals("audio")) {
-            if (file.getContentType() == null || !file.getContentType().startsWith("audio/")) {
-                throw new IOException("Invalid audio format");
-            }
-        }
-        String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        // Thêm UUID vào trước tên file để đảm bảo tên file là duy nhất
-        String uniqueFilename = UUID.randomUUID() + "_" + filename;
-        // Đường dẫn đến thư mục mà bạn muốn lưu file
-        Path uploadDir = Paths.get(UPLOADS_FOLDER);
-        // Kiểm tra và tạo thư mục nếu nó không tồn tại
-        if (!Files.exists(uploadDir)) {
-            Files.createDirectories(uploadDir);
-        }
-        // Đường dẫn đầy đủ đến file
-        Path destination = Paths.get(uploadDir.toString(), uniqueFilename);
-        // Sao chép file vào thư mục đích
-        Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-        return uniqueFilename;
     }
 
     public void update (final UUID id, final PostDTO postDTO) {
@@ -379,7 +324,7 @@ public class PostService {
                 .map(photo -> {
                     PhotoDTO photoDTO = new PhotoDTO();
                     photoDTO.setId(photo.getId());
-                    photoDTO.setUrl(photo.getImageUrl(storageType));
+                    photoDTO.setUrl(photo.getUrl());
                     photoDTO.setAltText(photo.getAltText());
                     photoDTO.setPostId(photo.getPost().getId());
                     return photoDTO;

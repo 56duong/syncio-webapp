@@ -24,7 +24,7 @@ public class HfInference {
      * @param photoUrl URL of the image
      * @return Text caption of the image
      */
-    public String imageToText(String photoUrl) throws ExecutionException, InterruptedException, URISyntaxException {
+    public String imageToText(String photoUrl) throws ExecutionException, InterruptedException {
         ImageToText imageToText = new ImageToText(this.ACCESS_TOKEN);
         return imageToText.execute(photoUrl);
     }

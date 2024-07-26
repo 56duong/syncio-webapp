@@ -1,5 +1,5 @@
 {
-  "LOGIN": "-----------------------------------------------------------------",
+  "LOGIN-----------------------------------------------------------------": "",
   "login": "Đăng nhập",
   "email": "Email",
   "password": "Mật khẩu",
@@ -8,11 +8,24 @@
   "signUp": "Đăng ký",
   "continueAsGuest": "Tiếp tục mà không đăng nhập",
 
-  "VALIDATE": "-----------------------------------------------------------------",
+
+  "REGISTER-----------------------------------------------------------------": "",
+  "passwordConfirm": "Nhập lại mật khẩu",
+  "haveAnAccount": "Đã có tài khoản?",
+  "usernameOnlyContain": "Tên người dùng chỉ chứa chữ cái, số và dấu gạch dưới",
+  "usernameShouldBeAtLeast3CharactersAndAtMost30Characters": "Username phải chứa ít nhất 3 ký tự và nhiều nhất 30 ký tự",
+  "emailShouldContain": "Email phải chứa ký tự @",
+  "emailShouldContainADot": "Email phải chứa tên miền có ít nhất một dấu chấm",
+  "emailInvalid": "Email không hợp lệ",
+  "passwordShouldBeAtLeast6CharactersAndAtMost100Characters": "Mật khẩu phải chứa ít nhất 6 ký tự và nhiều nhất 100 ký tự",
+
+
+  "VALIDATE-----------------------------------------------------------------": "",
   "emailIsRequired": "Email không được để trống",
   "passwordIsRequired": "Mật khẩu không được để trống",
 
-  "LEFT MENU": "-----------------------------------------------------------------",
+
+  "LEFT MENU-----------------------------------------------------------------": "",
   "home": "Trang chủ",
   "search": "Tìm kiếm",
   "messages": "Tin nhắn",
@@ -25,16 +38,19 @@
   "help": "Trợ giúp",
   "logout": "Đăng xuất",
 
-  "STORY": "-----------------------------------------------------------------",
+
+  "STORY-----------------------------------------------------------------": "",
   "expandStories": "Mở rộng Tin",
   "collapseStories": "Thu gọn Tin",
   "yourStory": "Tin của bạn",
 
-  "HOME": "-----------------------------------------------------------------",
+
+  "HOME-----------------------------------------------------------------": "",
   "suggestedForYou": "Đề xuất cho bạn",
   "youReachTheEnOfTheFeed": "Bạn đã đến cuối xem hết các bài viết",
 
-  "POST": "-----------------------------------------------------------------",
+
+  "POST-----------------------------------------------------------------": "",
   "viewAll": "Xem tất cả",
   "like": {
     "one": "Lượt thích",
@@ -45,7 +61,16 @@
     "other": "Bình luận"
   },
 
-  "DATETIME": "-----------------------------------------------------------------",
+
+  "POST_DETAIL-----------------------------------------------------------------": "",
+  "reply": "Trả lời",
+  "hideReplies": "Ẩn câu trả lời",
+  "viewReplies": "Xem câu trả lời",
+  "addAComment": "Thêm bình luận",
+  "postComment": "Đăng",
+
+
+  "DATETIME-----------------------------------------------------------------": "",
   "justNow": "Vừa xong",
   "y": " năm",
   "mth": " tháng",
@@ -55,7 +80,8 @@
   "m": " phút",
   "s": " giây",
 
-  "REPORT": "-----------------------------------------------------------------",
+
+  "REPORT-----------------------------------------------------------------": "",
   "report": "Báo cáo",
   "reason": "Lý do",
   "selectAReason": "Chọn một lý do",
@@ -70,7 +96,43 @@
   "yourFeedbackIsImportantInHelpingUsKeepTheCommunitySafe": "Phản hồi của bạn rất quan trọng trong việc giúp chúng tôi giữ an toàn cho cộng đồng",
 
 
+  "SEARCH-----------------------------------------------------------------": "",
+  "byImage": "Bằng hình ảnh",
+  "recent": "Gần đây",
+  "clearAll": "Xóa tất cả",
+  "suggestForYou": "Đề xuất cho bạn",
+  "follower": {
+    "one": "người theo dõi",
+    "other": "người theo dõi"
+  },
 
+
+  "MESSAGE-----------------------------------------------------------------": "",
+  "yourMessages": "Tin nhắn của bạn",
+  "sendAMessageToStartAChat": "Gửi tin nhắn để bắt đầu trò chuyện",
+  "sendMessage": "Gửi tin nhắn",
+  "newMessage": "Tin nhắn mới",
+  "to": "Đến",
+  "chat": "Chat",
+  "details": "Chi tiết",
+  "changeGroupName": "Thay đổi tên nhóm",
+  "change": "Thay đổi",
+  "members": "Thành viên",
+  "addPeople": "Thêm người",
+  "admin": "Quản trị viên",
+  "changingTheNameOfTheGroupWillChangeTheNameForAllMembers": "Thay đổi tên nhóm sẽ thay đổi tên cho tất cả thành viên",
+  "save": "Lưu",
+  "leaveChat": "Rời khỏi cuộc trò chuyện",
+  "youWontBeAbleToSendOrReceiveMessagesUnlessSomeoneAddsYouBackToTheChat": "Bạn sẽ không thể gửi hay nhận tin nhắn trừ khi có ai đó thêm bạ trở lại cuộc trò chuyện",
+  "add": "Thêm",
+  "removeFromGroup": "Xóa khỏi nhóm",
+  "makeAdmin": "Chỉ định làm quản trị viên",
+  "removeAdmin": "Gỡ vai trò quản trị viên",
+  "send": "Gửi",
+  "viewProfile": "Xem trang cá nhân",
+
+
+  "OTHERS-----------------------------------------------------------------": "",
   "error": "Lỗi",
   "success": "Thành công",
   "copyLink": "Sao chép liên kết",

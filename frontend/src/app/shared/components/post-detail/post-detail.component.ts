@@ -1,6 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { Comment } from 'src/app/core/interfaces/comment';
 import { ActionEnum } from 'src/app/core/interfaces/notification';
@@ -35,22 +36,7 @@ export class PostDetailComponent {
 
   reportVisible: boolean = false; // Used to show/hide the report modal
   dialogVisible: boolean = false;
-  dialogItems: any = [
-    { 
-      label: 'Report',
-      bold: 7,
-      color: 'red', 
-      action: () => this.reportVisible = true
-    },
-    { 
-      label: 'Copy link',
-      action: () => this.copyLink()
-    },
-    { 
-      label: 'Cancel',
-      action: () => this.dialogVisible = false
-    }
-  ];
+  dialogItems: any = [];
 
   constructor(
     private postService: PostService,
@@ -62,9 +48,27 @@ export class PostDetailComponent {
     private location: Location,
     private textUtils: TextUtils,
     private toastService: ToastService,
+    private translateService: TranslateService
   ) { }
 
   ngOnInit() {
+    this.dialogItems = [
+      { 
+        label: this.translateService.instant('report'), 
+        bold: 7,
+        color: 'red', 
+        action: () => this.reportVisible = true
+      },
+      { 
+        label: this.translateService.instant('copyLink'),
+        action: () => this.copyLink()
+      },
+      { 
+        label: this.translateService.instant('cancel'),
+        action: () => this.dialogVisible = false
+      }
+    ];
+
     this.currentUserId = this.tokenService.extractUserIdFromToken();
 
     // Get the post id from the route if it is not set. Mean the user is viewing the post directly.
@@ -192,7 +196,10 @@ export class PostDetailComponent {
 
   async copyLink() {
     await this.textUtils.copyToClipboard(window.location.href + 'post/' + this.post.id);
-    this.toastService.showSuccess('Success', 'Link copied to clipboard');
+    this.toastService.showSuccess(
+      this.translateService.instant('success'), 
+      this.translateService.instant('linkCopiedToClipboard')
+    );
   }
 
   handleReportModalVisibility(event: boolean) {

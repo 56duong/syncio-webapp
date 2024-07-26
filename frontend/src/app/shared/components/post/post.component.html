@@ -49,8 +49,8 @@
       [style]="{ height: '100%', position: 'relative' }"
       [ngClass]="post.photos.length == 1 ? 'hide-slide-control' : ''">
       <ng-template let-photo pTemplate="item">
-        <img src="{{ photo.url }}" 
-          alt="{{ photo.altText }}"
+        <img [src]="photo.url | constructImageUrl" 
+          [alt]="photo.altText"
           class="w-full h-full"
           style="object-fit: cover; max-height: 500px;" />
       </ng-template>

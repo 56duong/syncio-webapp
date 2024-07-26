@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { firstValueFrom, Subscription } from 'rxjs';
 import { Comment } from 'src/app/core/interfaces/comment';
 import { ActionEnum } from 'src/app/core/interfaces/notification';
@@ -34,7 +35,8 @@ export class CommentListComponent {
     private commentService: CommentService,
     private activatedRoute: ActivatedRoute,
     private notificationService: NotificationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private translateService: TranslateService
   ) { 
     this.subscribeToQueryParams();
   }
@@ -202,7 +204,7 @@ export class CommentListComponent {
   getCommentsObservable() {
     this.subscriptionComments = this.commentService.getCommentsObservable().subscribe({
       next: (comment) => {
-        this.comments.unshift({ ...comment, createdDate: 'Just now' });
+        this.comments.unshift({ ...comment, createdDate: this.translateService.instant('justNow') });
         // send notification to owner of the post
         // need to place here because we need to get the comment id, 
         // and the comment id is generated in the backend, 

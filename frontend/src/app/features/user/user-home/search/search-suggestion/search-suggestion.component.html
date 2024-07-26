@@ -1,9 +1,8 @@
 <a href="{{ '/profile/' + suggestion.id }}" class="search-result-a px-3">
   <div class="search-result-row">
     <div class="search-result-photo">
-      <canvas height="42" width="42"></canvas>
       <span>
-        <app-avatar [userId]="suggestion.id" [width]="32"></app-avatar>
+        <app-avatar [userId]="suggestion.id" [width]="40"></app-avatar>
       </span>
     </div>
     <div class="search-result-label">
@@ -23,11 +22,11 @@
         *ngIf="suggestion.followerCount; else suggestForYou"
         class="search-result-username"
       >
-        {{ suggestion.followerCount }} followers
+        {{ suggestion.followerCount }} {{ (suggestion.followerCount > 1 ? 'follower.other' : 'follower.one') | translate }}
       </span>
       <ng-template #suggestForYou
         ><span class="search-result-username"
-          >Suggest for you</span
+          >{{ 'suggestForYou' | translate }}</span
         ></ng-template
       >
     </div>

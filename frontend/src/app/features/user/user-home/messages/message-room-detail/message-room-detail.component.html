@@ -1,15 +1,15 @@
 <div class="w-full p-0 h-full flex flex-column">
   <!-- Header -->
   <div class="flex justify-content-between align-items-center p-2">
-    <h3>Details</h3>
+    <h3>{{ 'details' | translate }}</h3>
   </div>
 
   <p-divider></p-divider>
 
   <!-- Change group name -->
   <div *ngIf="messageRoom.group" class="flex align-items-center justify-content-between py-4 px-3">
-    <p>Change group name</p>
-    <p-button (click)="isVisibleChangeGroupName = true" label="Change" severity="my-custom-secondary"></p-button>
+    <p>{{ 'changeGroupName' | translate }}</p>
+    <p-button (click)="isVisibleChangeGroupName = true" [label]="'change' | translate" severity="my-custom-secondary"></p-button>
   </div>
   
   <p-divider></p-divider>
@@ -17,11 +17,11 @@
   <!-- Message room members -->
   <div class="py-4 flex flex-column flex-1 overflow-hidden">
     <div class="flex justify-content-between align-items-center mb-3 px-3">
-      <p>Members</p>
+      <p>{{ 'members' | translate }}</p>
       <span *ngIf="messageRoom.group" 
         (click)="isVisibleAddPeople = true" 
         class="text-primary cursor-pointer font-semibold">
-        Add people
+        {{ 'addPeople' | translate }}
       </span>
     </div>
     <!-- Members list -->
@@ -34,7 +34,7 @@
           <!-- username and is admin -->
           <div class="flex flex-column gap-2">
             <p [title]="member.username" class="my-0 line-clamp" style="word-break: break-word;">{{member.username}}</p>
-            <p *ngIf="member.admin" class="text-gray-500 my-0 text-sm">Admin</p>
+            <p *ngIf="member.admin" class="text-gray-500 my-0 text-sm">{{ 'admin' | translate }}</p>
           </div>
           <!-- 3 dots -->
           <i *ngIf="messageRoom.group && member.userId !== currentUser.id && member.userId !== messageRoom.createdBy" 
@@ -51,10 +51,10 @@
   <div *ngIf="messageRoom.group" class="pt-4 pb-3 px-3">
     <p (click)="isVisibleLeaveChat = true" 
       class="text-red-500 cursor-pointer font-semibold mb-2">
-      Leave chat
+      {{ 'leaveChat' | translate }}
     </p>
     <span class="text-sm text-gray-500">
-      You won't be able to send or receive messages unless someone adds you back to the chat.
+      {{ 'youWontBeAbleToSendOrReceiveMessagesUnlessSomeoneAddsYouBackToTheChat' | translate }}.
     </span>
   </div>
 
@@ -63,13 +63,13 @@
 
 
 <!-- Change group name dialog -->
-<p-dialog header="Change group name" 
+<p-dialog [header]="'changeGroupName' | translate" 
   [modal]="true"
   [dismissableMask]="true" 
   [(visible)]="isVisibleChangeGroupName" 
   [style]="{ width: '25rem' }">
   <p-divider></p-divider>
-  <span class="block p-3">Changing the name of a group chat changes it for everyone.</span>
+  <span class="block p-3">{{ 'changingTheNameOfTheGroupWillChangeTheNameForAllMembers' | translate }}.</span>
 
   <!-- Input -->
   <div class="flex align-items-center gap-3 p-3 pt-0">
@@ -80,7 +80,7 @@
 
   <!-- Button -->
   <div class="p-fluid w-full p-3">
-    <p-button label="Save" (click)="updateGroupName()" />
+    <p-button [label]="'save' | translate" (click)="updateGroupName()" />
   </div>
 
 </p-dialog>
@@ -91,9 +91,9 @@
 <app-select-user-dialog
   [expectedUsers]="memberUserIds"
   [isDialogVisible]="isVisibleAddPeople"
-  dialogTitle="Add people"
-  dialogDescription="To..."
-  dialogSubmitLabel="Add"
+  [dialogTitle]="'addPeople' | translate"
+  [dialogDescription]="('to' | translate) + '...'"
+  [dialogSubmitLabel]="'add' | translate"
   (selectedUsersEvent)="addPeople($event)"
   (visibleHide)="isVisibleAddPeople = false">
 </app-select-user-dialog>
@@ -113,7 +113,7 @@
 <app-global-dialog
   [display]="isVisibleLeaveChat"
   [items]="leaveChatDialogItems"
-  [title]="'Leave chat'"
-  [description]="'You won\'t be able to send or receive messages unless someone adds you back to the chat'"
+  [title]=" 'leaveChat' | translate"
+  [description]=" 'youWontBeAbleToSendOrReceiveMessagesUnlessSomeoneAddsYouBackToTheChat' | translate"
   (displayChange)="isVisibleLeaveChat = false">
 </app-global-dialog>

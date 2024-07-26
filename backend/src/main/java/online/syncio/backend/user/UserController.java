@@ -3,8 +3,6 @@ package online.syncio.backend.user;
 import jakarta.validation.Valid;
 import online.syncio.backend.auth.responses.LoginResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
-import online.syncio.backend.exception.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -22,33 +20,18 @@ public class UserController {
 
     private final UserService userService;
 
-
-    private final UserRedisService userRedisService;
-    public UserController (final UserService userService, PasswordEncoder passwordEncoder, UserRedisService userRedisService) {
+    public UserController (final UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
-        this.userRedisService = userRedisService;
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<UserDTO>> getAllUsers () {
+//        return ResponseEntity.ok(userService.findAll());
+//    }
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> searchUsers (@RequestParam Optional<String> username) {
-        List<UserDTO> users;
-
-        // Attempt to get cached data if username is specified
-        if (username.isPresent()) {
-            users = userRedisService.getCachedUsers(username.get());
-            if (users != null) {
-                return ResponseEntity.ok(users);
-            }
-        }
-
-        // Fetch from the database and cache the result if username is specified
-        users = userService.findAll(username);
-        if (username.isPresent() && !users.isEmpty()) {
-            userRedisService.cacheUsers(username.get(), users);
-        }
-
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(userService.findAll(username));
     }
 
     @GetMapping("/search-by-username")
@@ -75,11 +58,11 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UUID> createUser (@RequestBody @Valid final UserDTO userDTO) {
-        if (userRedisService.usernameExists(userDTO.getUsername())) {
+        if (userService.existsByUsername(userDTO.getUsername())) {
             throw new AppException(HttpStatus.BAD_REQUEST, "Username already exists!", null);
         }
-        if (userRedisService.emailExists(userDTO.getEmail())) {
 
+        if (userService.existsByEmail(userDTO.getEmail())) {
             throw new AppException(HttpStatus.BAD_REQUEST, "Email already exists!", null);
         }
 

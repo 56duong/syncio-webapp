@@ -17,12 +17,14 @@
       <div class="story" style="width: 390px; height: 694px;">
         <p-carousel [value]="stories" class="block w-full h-full"
           (onPage)="onPageChange($event)" 
-          [numVisible]="1" [numScroll]="1" [page]="firstUnreadStoryIndex">
+          [numVisible]="1" [numScroll]="1" [page]="firstUnreadStoryIndex"
+          [ngClass]="stories.length == 1 ? 'hide-slide-control' : ''">
           <ng-template let-story pTemplate="item">
             <!-- Story item -->
             <div class="item relative border-round text-center overflow-hidden">
               <!-- Header -->
               <div class="header text-white flex align-items-center gap-1">
+                <app-avatar [userId]="story.createdBy" [width]="32"></app-avatar>
                 <small *ngIf="story.createdBy" class="font-bold">
                   <!-- {{ story.createdBy | userIdToName | async }} -->
                   <app-username-label 
@@ -34,7 +36,8 @@
                   </app-username-label>
                 </small>
                 <small class="text-gray-400">
-                  {{ story.createdDate | dateAgoPipe }}</small>
+                  {{ story.createdDate | dateAgoPipe }}
+                </small>
               </div>
               <!-- Content -->
               <div>

@@ -63,14 +63,14 @@ public class UserService {
 
     public UserDTO get (final UUID id) {
         return userRepository.findById(id)
-                .map(user -> userMapper.mapToDTO(user, new UserDTO()))
-                .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+                             .map(user -> userMapper.mapToDTO(user, new UserDTO()))
+                             .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
     }
 
     public UserProfile getUserProfile (final UUID id)  {
         return userRepository.findByIdWithPosts(id)
-                .map(user -> userMapper.mapToUserProfile(user, new UserProfile()))
-                .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+                             .map(user -> userMapper.mapToUserProfile(user, new UserProfile()))
+                             .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
     }
 
     @jakarta.transaction.Transactional
@@ -103,8 +103,8 @@ public class UserService {
     public List<UserDTO> findTop20ByUsernameContainingOrEmailContaining (final String username, final String email) {
         final List<User> users = userRepository.findTop20ByUsernameContainingOrEmailContaining(username, email);
         return users.stream()
-                .map(user -> userMapper.mapToDTO(user, new UserDTO()))
-                .toList();
+                    .map(user -> userMapper.mapToDTO(user, new UserDTO()))
+                    .toList();
     }
 
     public String getUsernameById(final UUID id) {
@@ -122,7 +122,7 @@ public class UserService {
         // encode password
         String encodePassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(encodePassword);
-
+        
         final User user = new User();
         userMapper.mapToEntity(userDTO, user);
         return userRepository.save(user).getId();
@@ -130,7 +130,7 @@ public class UserService {
 
     public void update (final UUID id, final UserDTO userDTO) {
         final User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+                                        .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
 
         String encodePassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(encodePassword);
@@ -141,7 +141,7 @@ public class UserService {
 
     public void delete (final UUID id) {
         final User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+                                        .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
         userRepository.delete(user);
     }
 

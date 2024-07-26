@@ -15,7 +15,7 @@
 
     <!-- Message Room List -->
     <div class="flex-1 overflow-hidden flex flex-column">
-      <h4 class="px-2">Messages</h4>
+      <h4 class="px-2">{{ 'messages' | translate }}</h4>
       <div class="flex-1 primary-scrollbar overflow-y-scroll">
         <div *ngFor="let messageroom of messageRooms"
           (click)="selectMessageRoom(messageroom)"
@@ -85,9 +85,9 @@
 
     <div *ngIf="!selectedMessageRoom" class="flex flex-column justify-content-center align-items-center gap-3 absolute top-50 left-50" style="transform: translate(-50%, -50%);">
       <i class="pi pi-comments" style="font-size: 4rem"></i>
-      <p class="my-0 text-xl">Your messages</p>
-      <small>Send a message to start a chat.</small>
-      <p-button label="Send message" (click)="isDialogVisible = true"></p-button>
+      <p class="my-0 text-xl">{{ 'yourMessages' | translate }}</p>
+      <small>{{ 'sendAMessageToStartAChat' | translate }}.</small>
+      <p-button [label]="'sendMessage' | translate" (click)="isDialogVisible = true"></p-button>
     </div>
   </div>
 </div>
@@ -97,9 +97,9 @@
 <!-- New message dialog -->
 <app-select-user-dialog *ngIf="currentUser && currentUser.id"
   [isDialogVisible]="isDialogVisible"
-  dialogTitle="New message"
-  dialogDescription="To..."
-  dialogSubmitLabel="Chat"
+  [dialogTitle]="'newMessage' | translate"
+  [dialogDescription]="('to' | translate) + '...'"
+  [dialogSubmitLabel]="'chat' | translate"
   (selectedUsersEvent)="chat($event)"
   (visibleHide)="isDialogVisible = false">
 </app-select-user-dialog>

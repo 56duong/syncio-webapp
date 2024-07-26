@@ -69,14 +69,17 @@ public class AuthService {
         // Check if the email already exists
         String email = userDTO.getEmail();
         if( userRepository.existsByEmail(email)) {
-            throw new AppException(HttpStatus.BAD_REQUEST,"Email đã tồn tại",null);
+            String message = messageSource.getMessage("user.register.email.exist", null, LocaleContextHolder.getLocale());
+            throw new AppException(HttpStatus.BAD_REQUEST, message, null);
         }
         String username = userDTO.getUsername();
         if( userRepository.existsByUsername(username)) {
-            throw new AppException(HttpStatus.BAD_REQUEST,"username đã tồn tại",null);
+            String message = messageSource.getMessage("user.register.username.exist", null, LocaleContextHolder.getLocale());
+            throw new AppException(HttpStatus.BAD_REQUEST, message, null);
         }
         if (!userDTO.getPassword().equals(userDTO.getRetypePassword())) {
-            throw new AppException(HttpStatus.BAD_REQUEST,"Mật khẩu không khớp",null);
+            String message = messageSource.getMessage("user.register.password.not.match", null, LocaleContextHolder.getLocale());
+            throw new AppException(HttpStatus.BAD_REQUEST, message, null);
         }
 
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
