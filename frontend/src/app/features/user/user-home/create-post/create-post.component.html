@@ -80,7 +80,15 @@
         <div class="field">
           <div class="inline-flex align-items-center justify-content-center gap-2">
             <app-avatar [userId]="currentUserId" [width]="32"></app-avatar>
-            <span class="font-semibold white-space-nowrap">{{currentUsername}}</span>
+            <span class="font-semibold white-space-nowrap">
+              <!-- {{currentUsername}} -->
+              <app-username-label 
+                [userId]="currentUserId"
+                [username]="currentUsername"
+                [fontSize]="''"
+                [color]="''">
+              </app-username-label>
+            </span>
             <!-- Visibility -->
             <button
               pButton

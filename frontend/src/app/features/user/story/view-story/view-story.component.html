@@ -24,7 +24,14 @@
               <!-- Header -->
               <div class="header text-white flex align-items-center gap-1">
                 <small *ngIf="story.createdBy" class="font-bold">
-                  {{ story.createdBy | userIdToName | async }}
+                  <!-- {{ story.createdBy | userIdToName | async }} -->
+                  <app-username-label 
+                    [userId]="story.createdBy"
+                    [username]="(story.createdBy | userIdToName | async) ?? ''"
+                    [fontSize]=""
+                    [fontWeight]="''"
+                    [color]="''">
+                  </app-username-label>
                 </small>
                 <small class="text-gray-400">
                   {{ story.createdDate | dateAgoPipe }}</small>

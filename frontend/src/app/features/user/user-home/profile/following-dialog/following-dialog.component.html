@@ -13,7 +13,15 @@
         
         <div class="flex gap-1 align-items-center">
           <!-- username -->
-          <span (click)="navigateToProfile(userFollow.targetId)" class="font-semibold cursor-pointer">{{ userFollow.targetUsername }}</span>
+          <span (click)="navigateToProfile(userFollow.targetId)" class="font-semibold cursor-pointer">
+            <!-- {{ userFollow.targetUsername }} -->
+            <app-username-label 
+              [userId]="userFollow.targetId"
+              [username]="userFollow.targetUsername"
+              [fontSize]=""
+              [color]="''">
+            </app-username-label>
+          </span>
         </div>
       </div>
       <!-- Follow/Unfollow button -->
