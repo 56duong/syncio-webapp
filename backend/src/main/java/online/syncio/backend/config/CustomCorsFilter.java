@@ -14,7 +14,11 @@ import java.io.IOException;
 public class CustomCorsFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+        String origin = request.getHeader("Origin");
+        if (origin != null && (origin.equals("http://localhost:4200") || origin.equals("http://localhost"))) {
+            response.setHeader("Access-Control-Allow-Origin", origin);
+        }
+//        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers", "authorization, content-type, xsrf-token");

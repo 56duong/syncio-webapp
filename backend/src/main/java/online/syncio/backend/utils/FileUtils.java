@@ -106,7 +106,6 @@ public class FileUtils {
         }
         else {
             Path path = Paths.get(UPLOADS_FOLDER, fileName);
-            System.out.println(path);
             return Files.deleteIfExists(path);
         }
     }

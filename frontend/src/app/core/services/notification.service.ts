@@ -21,7 +21,11 @@ export class NotificationService {
   
   private isConnected = false; // Check if the WebSocket is connected. Cause the connectWebSocket method to be called only once for each user.
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {  
+    if (environment.android) {
+      this.webSocketURL = this.webSocketURL.replace(environment.apiUrl, window.localStorage.getItem('apiUrl') || environment.apiUrl);
+    }
+  }
 
 
   /* ---------------------------- REALTIME SECTION ---------------------------- */
@@ -47,7 +51,10 @@ export class NotificationService {
     this.stompClient.connect({}, () => {
       this.subscription = this.stompClient.subscribe(`/topic/notification/${userId}`, (notification: IMessage) => {
         this.notificationSubject.next(JSON.parse(notification.body));
-      });
+      }),
+      (error: any) => {
+        console.error(error);
+      }
     });
     this.isConnected = true;
   }

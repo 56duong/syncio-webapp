@@ -1,6 +1,6 @@
 
 .post {
-  width: min(470px, calc(100vw - 1rem));
+  width: min(470px, 100vw);
 
   ::ng-deep {
     // Photos

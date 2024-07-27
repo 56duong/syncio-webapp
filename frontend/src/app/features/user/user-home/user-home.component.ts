@@ -11,8 +11,16 @@ export class UserHomeComponent {
   showSearch: boolean = false;
   showNotifications: boolean = false;
   isHideMenuLabel: boolean = false;
+  isMobile: boolean = false;
 
-  constructor(private elementRef: ElementRef) {}
+  constructor() {
+    this.isMobile = window.innerWidth < 768;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isMobile = window.innerWidth < 768;
+  }
 
   actionToggle(event: any) {
     switch (event) {

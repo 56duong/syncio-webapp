@@ -1,4 +1,5 @@
-<div class="message-container flex">
+<div #messageContainer class="message-container flex"
+  [class.mobile]="isMobile">
 
   <!-- Left  -->
   <div class="left col-3 p-0 flex flex-column">
@@ -77,10 +78,12 @@
   <!-- Message Content -->
   <div class="right col-9 message-content p-0 relative">
     <app-message-content-list *ngIf="selectedMessageRoom" 
+      [isMobile]="isMobile"
       [messageRoom]="selectedMessageRoom"
       [currentUser]="currentUser"
       (sendFirstMessageEvent)="sendFirstMessageEvent()"
-      (updateMessageRoomNameEvent)="updateMessageRoomName($event)">
+      (updateMessageRoomNameEvent)="updateMessageRoomName($event)"
+      (backToMessageRoomListEvent)="backToMessageRoomListEvent($event)">
     </app-message-content-list>
 
     <div *ngIf="!selectedMessageRoom" class="flex flex-column justify-content-center align-items-center gap-3 absolute top-50 left-50" style="transform: translate(-50%, -50%);">

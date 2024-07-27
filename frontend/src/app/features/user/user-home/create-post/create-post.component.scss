@@ -169,3 +169,37 @@ p-speedDial ::ng-deep {
   }
 }
 
+
+
+// mobile
+.mobile ::ng-deep .p-dialog-mask {
+  align-items: flex-start;
+}
+
+.mobile ::ng-deep .p-dialog {
+  width: 100vw;
+  max-height: calc(100vh - var(--mobile-bottom-menu-height));
+  overflow: scroll;
+  border-radius: 0;
+}
+
+.mobile ::ng-deep .p-dialog-header {
+  border-radius: 0;
+}
+
+.mobile ::ng-deep .p-dialog-content {
+  border-radius: 0;
+}
+
+.mobile ::ng-deep .p-dialog-content > .flex {
+  flex-direction: column;
+}
+
+.mobile ::ng-deep .p-dialog-content > .flex > div {
+  width: 100%;
+}
+
+.mobile ::ng-deep .p-dialog-content > .flex > .p-divider {
+  display: none;
+}
+

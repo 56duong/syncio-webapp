@@ -6,6 +6,7 @@ import { UserResponse } from '../login/user.response';
 import { RegisterDTO } from './register.dto';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { TranslateService } from '@ngx-translate/core';
+import { LangService } from 'src/app/core/services/lang.service';
 
 @Component({
   selector: 'app-register',
@@ -18,6 +19,7 @@ export class RegisterComponent {
     private userService: UserService,
     private toastService: ToastService,
     private translateService: TranslateService,
+    private langService: LangService
   ) {}
 
   isLoading: boolean = false;
@@ -30,6 +32,11 @@ export class RegisterComponent {
   rememberMe: boolean = true;
   selectedRole: string | undefined; // Biến để lưu giá trị được chọn từ dropdown
   userResponse?: UserResponse;
+
+  switchLang(lang: string) {
+    this.langService.setLang(lang);
+    window.location.reload();
+  }
 
   register() {
     let errorText = this.translateService.instant('error');

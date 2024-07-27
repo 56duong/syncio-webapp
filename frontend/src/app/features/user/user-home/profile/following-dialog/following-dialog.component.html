@@ -9,7 +9,7 @@
     <div *ngFor="let userFollow of userFollowing" class="flex justify-content-between align-items-center">
       <div class="flex gap-2">
         <!-- avatar -->
-        <app-avatar [userId]="userFollow.targetId" [width]="48"></app-avatar> 
+        <app-avatar (click)="isVisibleFollowing = false" [userId]="userFollow.targetId" [width]="48"></app-avatar> 
         
         <div class="flex gap-1 align-items-center">
           <!-- username -->

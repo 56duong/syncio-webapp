@@ -82,3 +82,16 @@ p-carousel.hide-slide-control ::ng-deep {
     display: none;
   }
 }
+
+
+
+// mobile
+.mobile {
+  p-carousel ::ng-deep .p-carousel-prev {
+    left: 0.5rem;
+  }
+  
+  p-carousel ::ng-deep .p-carousel-next {
+    right: 0.5rem;
+  }
+}

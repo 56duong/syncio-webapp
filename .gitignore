@@ -10,10 +10,8 @@ ai-check-image/main.py
 ai-check-image/test1.py
 
 backend/src/main/resources/static/syncio-bf6ca-firebase-adminsdk-68fpl-88eea603ef.json
-ca.pem
-<<<<<<< HEAD
-
 backend/src/main/resources/static/syncio-bf6ca-firebase-adminsdk-68fpl-bf6eb06c71.json
-backend/src/main/resources/static/syncio-bf6ca-firebase-adminsdk-68fpl-88eea603ef.json
-=======
->>>>>>> c38f652d43c775a95bb1d3499311dc2977133de1
+ca.pem
+
+android
+

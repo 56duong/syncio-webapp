@@ -19,6 +19,7 @@ import { AvatarComponent } from './components/avatar/avatar.component';
 import { UsernameLabelComponent } from './components/username-label/username-label.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { LoadingComponent } from './components/loading/loading.component';
+import { UpdateIpComponent } from './components/update-ip/update-ip.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { LoadingComponent } from './components/loading/loading.component';
     NotAuthorizedComponent,
     AvatarComponent,
     UsernameLabelComponent,
-    LoadingComponent
+    LoadingComponent,
+    UpdateIpComponent
   ],
   imports: [
     PickerComponent,

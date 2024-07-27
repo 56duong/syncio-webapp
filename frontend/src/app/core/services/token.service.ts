@@ -129,7 +129,12 @@ export class TokenService {
     canActivate(requiredRoles: string[]): boolean {
         let userRole = this.extractUserRoleFromToken();
         if(!userRole) {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/login'], { 
+                queryParams: { 
+                    type: 'error',
+                    message: 'You need to login first.'
+                } 
+            });
             return false;
         }
         if (!requiredRoles.includes(userRole)) {

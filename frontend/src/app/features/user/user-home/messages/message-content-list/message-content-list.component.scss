@@ -61,3 +61,16 @@ p-fileUpload ::ng-deep .p-button {
 .container ::ng-deep .material-symbols-outlined.active {
   font-variation-settings: "FILL" 1, "wght" 300, "GRAD" 0, "opsz" 24;
 }
+
+
+
+// mobile
+.mobile.container {
+  overflow: hidden;
+  scroll-behavior: smooth;
+}
+
+.mobile .message-content-container,
+.mobile .show-detail {
+  width: 100% !important;
+}

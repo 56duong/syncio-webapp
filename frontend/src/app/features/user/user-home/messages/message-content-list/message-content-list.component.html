@@ -1,11 +1,15 @@
-<div class="container h-full flex align-items-stretch">
+<div #container class="container h-full flex align-items-stretch"
+  [class.mobile]="isMobile">
   <div class="message-content-container h-full flex flex-column p-0"
     [ngClass]="isShowDetails ? 'col-8' : 'col-12'">
     <!-- Message room name -->
     <div class="flex justify-content-between align-items-center my-1 p-2">
-      <div class="flex justify-content-between align-items-center gap-2">
-        <app-avatar [userId]="getMemberNotMe()" [width]="48"></app-avatar>
-        <h3 class="text-base font-semibold">{{messageRoom.name}}</h3>
+      <div class="flex justify-content-start align-items-center gap-3">
+        <span *ngIf="isMobile" (click)="backToMessageRoomList()" class="pi pi-arrow-left" style="font-size: 1.25rem;"></span>
+        <div class="flex justify-content-between align-items-center gap-2">
+          <app-avatar [userId]="getMemberNotMe()" [width]="48"></app-avatar>
+          <h3 class="text-base font-semibold">{{messageRoom.name}}</h3>
+        </div>
       </div>
       <span (click)="showDetails()" class="pi pi-info-circle cursor-pointer" style="font-size: 1.5rem"></span>
     </div>
@@ -77,7 +81,7 @@
           <i (click)="op.toggle($event)" 
             class="fa-regular fa-note-sticky cursor-pointer text-xl"></i>
           <p-overlayPanel #op>
-            <div class="flex flex-column gap-3 w-25rem">
+            <div class="flex flex-column gap-3 w-25rem" style="max-width: calc(100% - 1rem);">
               <app-sticker (stickerClick)="sendSticker($event)"></app-sticker>
             </div>
           </p-overlayPanel>
@@ -117,8 +121,9 @@
   <p-divider *ngIf="isShowDetails" [layout]="'vertical'"></p-divider>
   
   <!-- Message Room Details -->
-  <div *ngIf="isShowDetails" class="col-4 p-0">
+  <div *ngIf="isShowDetails || (!isShowDetails && isMobile)" class="show-detail col-4 p-0">
     <app-message-room-detail
+      [isMobile]="isMobile"
       [messageRoom]="messageRoom"
       [currentUser]="currentUser"
       (updateMessageRoomNameEvent)="updateMessageRoomName(messageRoom); addMessageContentNotification(MessageContentTypeEnum.NOTIFICATION_CHANGE_NAME, this.messageRoom.name || '')"
@@ -126,7 +131,8 @@
       (removeMemberEvent)="addMessageContentNotification(MessageContentTypeEnum.NOTIFICATION_REMOVE_MEMBER, $event)"
       (leaveChatEvent)="addMessageContentNotification(MessageContentTypeEnum.NOTIFICATION_LEAVE_ROOM, $event)"
       (makeAdminEvent)="addMessageContentNotification(MessageContentTypeEnum.NOTIFICATION_MAKE_ADMIN, $event)"
-      (removeAdminEvent)="addMessageContentNotification(MessageContentTypeEnum.NOTIFICATION_REMOVE_ADMIN, $event)">
+      (removeAdminEvent)="addMessageContentNotification(MessageContentTypeEnum.NOTIFICATION_REMOVE_ADMIN, $event)"
+      (backToMessageContentListEvent)="backToMessageContentListEvent($event)">
     </app-message-room-detail>
   </div>
   

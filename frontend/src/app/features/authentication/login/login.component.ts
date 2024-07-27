@@ -70,6 +70,28 @@ export class LoginComponent implements OnInit {
       if (token) {
         this.confirmRegistration(token);
       }
+
+      let message = params['message'];
+      let type = params['type'];
+      if (message) {
+        let errorText = this.translateService.instant('error');
+        switch (type) {
+          case 'success':
+            this.toastService.showSuccess('Success', message);
+            break;
+          case 'error':
+            this.toastService.showError(errorText, message);
+            break;
+          case 'info':
+            this.toastService.showInfo('Info', message);
+            break;
+          case 'warn':
+            this.toastService.showWarn('Warning', message);
+            break;
+          default:
+            this.toastService.showInfo('Info', message);
+        }
+      }
     });
   }
 
@@ -128,6 +150,7 @@ export class LoginComponent implements OnInit {
           },
           complete: () => {},
           error: (error: any) => {
+            console.log('error', error);
             this.loadingService.hide();
             let errorMessage = '';
             if(error.error.subErrors) {
@@ -145,6 +168,7 @@ export class LoginComponent implements OnInit {
       },
       complete: () => {},
       error: (error: any) => {
+        console.log('error', error);
         this.loadingService.hide();
         let errorMessage = '';
         if(error.error.subErrors) {

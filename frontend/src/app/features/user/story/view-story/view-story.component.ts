@@ -13,6 +13,7 @@ import { StoryService } from 'src/app/core/services/story.service';
 })
 
 export class ViewStoryComponent {
+  isMobile: boolean = false;
   /** If userIdInput is true, the story view was opened from the FeedComponent. Otherwise, it was opened from a direct link. */
   @Input() userIdInput: string = '';
   /** Emit the viewed story count */
@@ -33,8 +34,10 @@ export class ViewStoryComponent {
     private route: ActivatedRoute,
     private location: Location,
     private router: Router
-  ) { }
-
+  ) { 
+    this.isMobile = window.innerWidth < 768;
+  }
+  
   ngOnInit() {
     if(this.userIdInput) {
       // get stories by userId

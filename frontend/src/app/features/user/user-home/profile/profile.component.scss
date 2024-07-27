@@ -1,7 +1,11 @@
 main {
-  width: calc(100% - 40px);
   max-width: 935px;
   margin: auto;
   padding: 2.5rem 0;
+}
+
+.line-clamp {
+  word-break: break-word;
+  display: -webkit-box;
 }
 

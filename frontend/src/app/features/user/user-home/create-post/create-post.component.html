@@ -4,9 +4,10 @@
   [dismissableMask]="true"
   [closable]="false"
   [responsive]="true"
-  [style]="{ width: '80vw', maxWidth: '900px' }"
+  [style]="{ width: isMobile? '100vw' : '80vw', maxWidth: '900px' }"
   [baseZIndex]="10000"
-  header="Header">
+  header="Header"
+  [class.mobile]="isMobile">
   <ng-template pTemplate="header" style="padding: 0;">
     <!-- Modal header -->
     <div
@@ -72,13 +73,14 @@
       </div>
     </div>
 
-    <p-divider layout="vertical"></p-divider>
+    <p-divider *ngIf="!isMobile" layout="vertical"></p-divider>
+    <p-divider *ngIf="isMobile" layout="horizontal"></p-divider>
 
     <!-- Right content / Caption -->
     <div class="col-5 px-3 pt-2">
       <div class="p-fluid">
         <div class="field">
-          <div class="inline-flex align-items-center justify-content-center gap-2">
+          <div class="inline-flex align-items-center justify-content-start gap-2 w-full">
             <app-avatar [userId]="currentUserId" [width]="32"></app-avatar>
             <span class="font-semibold white-space-nowrap">
               <!-- {{currentUsername}} -->
@@ -95,7 +97,8 @@
               pRipple
               [label]="getVisibilityLabel(selectedVisibility)"
               (click)="onShowModalVisibility()"
-              class="p-button-success padding-7"
+              class="p-button-success padding-7 w-fit"
+              [ngStyle]="{ 'margin-left': isMobile ? 'auto' : '0' }"
             ></button>
           </div>
         </div>

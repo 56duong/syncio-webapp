@@ -29,6 +29,8 @@ public class AuthResponse {
     @JsonProperty("role")
     private RoleEnum role;
 
+    private String bio;
+
     public static AuthResponse fromUser(User user) {
         return AuthResponse.builder()
                 .id(user.getId())
@@ -36,6 +38,7 @@ public class AuthResponse {
                 .email(user.getEmail())
                 .status(String.valueOf(user.getStatus()))
                 .role(user.getRole())
+                .bio(user.getBio())
                 .build();
     }
 }

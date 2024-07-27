@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActionEnum } from 'src/app/core/interfaces/notification';
 import { Post } from 'src/app/core/interfaces/post';
@@ -11,9 +11,7 @@ import { TokenService } from 'src/app/core/services/token.service';
 import { UserCloseFriendService } from 'src/app/core/services/user-close-friend.service';
 import { UserFollowService } from 'src/app/core/services/user-follow.service';
 import { UserService } from 'src/app/core/services/user.service';
-import { UserResponse } from 'src/app/features/authentication/login/user.response';
 import { UserLabelInfoService } from 'src/app/core/services/user-label-info.service';
-import { LabelService } from 'src/app/core/services/label.service';
 import { UserLabelInfo } from 'src/app/core/interfaces/user-label-info';
 import { LabelUpdateService } from 'src/app/core/services/label-update.service';
 import { UserStory } from 'src/app/core/interfaces/user-story';
@@ -25,6 +23,7 @@ import { StoryService } from 'src/app/core/services/story.service';
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit {
+  isMobile: boolean = false;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   public userProfile: UserProfile = {
     id: '',
@@ -94,7 +93,14 @@ export class ProfileComponent implements OnInit {
     private userLabelInfoService: UserLabelInfoService,
     private labelUpdateService: LabelUpdateService,
     private storyService: StoryService
-  ) {}
+  ) {
+    this.isMobile = window.innerWidth < 768;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isMobile = window.innerWidth < 768;
+  }
 
   ngOnInit(): void {
     this.notificationService.connectWebSocket(this.currentUserId);

@@ -15,6 +15,10 @@ import { MessageRoomMemberService } from 'src/app/core/services/message-room-mem
 })
 
 export class MessageContentListComponent {
+  @Input() isMobile: boolean = false; // Flag to indicate if the device is mobile
+  @Output() backToMessageRoomListEvent = new EventEmitter<void>(); // Event emitter to close the message room
+  @ViewChild('container') containerElement!: ElementRef;
+  
   @Input() messageRoom: MessageRoom = {}; // current message room
   @Input() currentUser!: User; // Current user logged in.
   @Output() sendFirstMessageEvent = new EventEmitter<void>();
@@ -305,6 +309,9 @@ export class MessageContentListComponent {
    */
   showDetails() {
     this.isShowDetails = !this.isShowDetails;
+    if(this.isMobile) {
+      this.scrollToBehavior('right');
+    }
   }
 
 
@@ -338,6 +345,30 @@ export class MessageContentListComponent {
   getMemberNotMe(): string {
     if(this.messageRoom.group) return '';
     return this.messageRoom.members?.find(member => member.userId !== this.currentUser.id)?.userId || '';
+  }
+
+
+  /**
+   * When device is mobile and click back to message room list
+   */
+  backToMessageRoomList() {
+    this.backToMessageRoomListEvent.emit();
+  }
+
+
+  backToMessageContentListEvent(event: any) {
+    this.scrollToBehavior('left');
+    this.isShowDetails = false;
+  }
+
+
+  scrollToBehavior(direction: 'left' | 'right') {
+    if(direction === 'left') {
+      this.containerElement.nativeElement.scrollLeft -= this.containerElement.nativeElement.scrollWidth;
+    }
+    else {
+      this.containerElement.nativeElement.scrollLeft += this.containerElement.nativeElement.scrollWidth;
+    }
   }
 
 }

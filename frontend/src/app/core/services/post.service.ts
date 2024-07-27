@@ -99,7 +99,7 @@ export class PostService {
    * @returns the post object. 
    */
   getPostById(id: string): Observable<Post> {
-    const url = `${this.apiURL}/${id}`;
+    const url = `${this.apiURL}/details/${id}`;
     return this.http.get<Post>(url);
   }
   

@@ -37,3 +37,15 @@
     left: 5.4em !important;
   }
 }
+
+.mobile {
+  width: 100%;
+  height: calc(100vh - var(--mobile-top-menu-height) - var(--mobile-bottom-menu-height));
+  top: var(--mobile-top-menu-height);
+  border-radius: 0;
+  left: 100%;
+}
+
+.mobile.notifications_section.show {
+  left: 0 !important;
+}

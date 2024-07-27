@@ -8,7 +8,7 @@
     >
       <!-- Logo -->
       <div class="mobile-hidden logo">
-        <li class="p-fluid">
+        <li (click)="reloadPage()" class="p-fluid">
           <p-button
             class="logo-big"
             styleClass="shadow-none"
@@ -84,7 +84,6 @@
           </p-tieredMenu>
         </li>
         <!-- Profile -->
-
         <li class="p-fluid w-full">
           <!-- Not logged in -->
           <p-button *ngIf="!currentUserId" 
@@ -114,8 +113,8 @@
                 <a [routerLink]="item.route"
                   [href]="item.href"
                   class="p-menuitem-link">
-                  <span [class]="item.icon + ' p-menuitem-icon'"></span>
-                  <span class="p-menuitem-text">{{ item.label }}</span>
+                  <span [class]="item.icon + ' p-menuitem-icon'" [ngStyle]="{ 'color': item.color }"></span>
+                  <span class="p-menuitem-text" [ngStyle]="{ 'color': item.color }">{{ item.label }}</span>
                 </a>
               </ng-container>
               <ng-template #withoutRoute>
@@ -123,8 +122,8 @@
                   <a [href]="item.url"
                     [target]="item.target"
                     class="p-menuitem-link">
-                    <span [class]="item.icon + ' p-menuitem-icon'"></span>
-                    <span class="p-menuitem-text">{{ item.label }}</span>
+                    <span [class]="item.icon + ' p-menuitem-icon'" [ngStyle]="{ 'color': item.color }"></span>
+                    <span class="p-menuitem-text" [ngStyle]="{ 'color': item.color }">{{ item.label }}</span>
                     <span
                       *ngIf="hasSubmenu"
                       class="pi pi-angle-right ml-auto"
@@ -133,8 +132,8 @@
                 </ng-container>
                 <ng-template #withoutUrl>
                   <a class="p-menuitem-link">
-                    <span [class]="item.icon + ' p-menuitem-icon'"></span>
-                    <span class="p-menuitem-text">{{ item.label }}</span>
+                    <span [class]="item.icon + ' p-menuitem-icon'" [ngStyle]="{ 'color': item.color }"></span>
+                    <span class="p-menuitem-text" [ngStyle]="{ 'color': item.color }">{{ item.label }}</span>
                     <span
                       *ngIf="hasSubmenu"
                       class="pi pi-angle-right ml-auto"

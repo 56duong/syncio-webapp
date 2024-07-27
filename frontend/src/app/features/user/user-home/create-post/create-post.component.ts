@@ -1,10 +1,4 @@
-import {
-  Component,
-  ViewChild,
-  ChangeDetectorRef,
-  ElementRef,
-} from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, ViewChild, ChangeDetectorRef, ElementRef, Input } from '@angular/core';
 import { Post, Visibility } from 'src/app/core/interfaces/post';
 import { LoadingService } from 'src/app/core/services/loading.service';
 import { PostService } from 'src/app/core/services/post.service';
@@ -16,7 +10,10 @@ import { TokenService } from 'src/app/core/services/token.service';
   templateUrl: './create-post.component.html',
   styleUrls: ['./create-post.component.scss'],
 })
+
 export class CreatePostComponent {
+  @Input() isMobile: boolean = false; // Flag to indicate if the device is mobile
+
   @ViewChild('fileUploader') fileUploader: any; // photo upload
   isVisible!: boolean; // Used to show/hide the create post dialog
   post: Post = {}; // The post object to be created
@@ -26,7 +23,7 @@ export class CreatePostComponent {
 
   currentUsername: any;
   currentUserId: string = '' as string;
-
+  
   isVisibleVisibility: boolean = false; // Used to show/hide the visibility modal
 
   isVisibleRecorder: boolean = false; // Used to show/hide the audio recorder dialog
@@ -38,23 +35,22 @@ export class CreatePostComponent {
       icon: 'pi pi-microphone',
       command: () => {
         this.isVisibleRecorder = true;
-      },
+      }
     },
     {
       icon: 'pi pi-upload',
       command: () => {
         this.audioInput.nativeElement.click();
-      },
-    },
+      }
+    }
   ]; // The items for the audio menu
-
+  
   constructor(
     private postService: PostService,
     private cdr: ChangeDetectorRef,
     private tokenService: TokenService,
     private toastService: ToastService,
-    private loadingService: LoadingService,
-    private router: Router
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit() {
@@ -82,10 +78,6 @@ export class CreatePostComponent {
 
   // create a post
   createPost() {
-    if (!this.currentUserId) {
-      this.router.navigate(['/login']);
-      return;
-    }
     const formData = new FormData();
     const post: Post = {
       caption: this.post.caption,
@@ -95,15 +87,8 @@ export class CreatePostComponent {
     };
 
     //validate
-    if (
-      !post.caption &&
-      this.selectedPhotoFile.length === 0 &&
-      !this.selectedAudioFile
-    ) {
-      this.toastService.showError(
-        'Error',
-        'A post must have either a caption or at least one image or a audio.'
-      );
+    if (!post.caption && this.selectedPhotoFile.length === 0 && !this.selectedAudioFile) {
+      this.toastService.showError('Error', 'A post must have either a caption or at least one image or a audio.');
       return; // Stop execution if validation fails
     }
 
@@ -130,11 +115,11 @@ export class CreatePostComponent {
     this.postService.createPost(formData).subscribe({
       next: (response: any) => {
         this.loadingService.hide();
-
+        
         post.id = response.body;
         post.createdBy = this.currentUserId;
         this.postService.setNewPostCreated(post);
-
+        
         this.post = {}; // Reset the post object
         this.selectedPhotos = []; // Clear selected photos display
         this.selectedPhotoFile = [];
@@ -143,13 +128,11 @@ export class CreatePostComponent {
       },
       error: (error) => {
         this.loadingService.hide();
-        this.toastService.showError(
-          'Error',
-          'An error occurred while creating the post'
-        );
+        this.toastService.showError('Error', 'An error occurred while creating the post');
         console.error(error);
       },
     });
+
   }
 
   onPhotoSelected(event: any) {
@@ -175,6 +158,8 @@ export class CreatePostComponent {
       : event.emoji.native;
     this.isEmojiPickerVisible = false;
   }
+
+
 
   /* ------------------------------- VISIBILITY ------------------------------- */
 
@@ -208,11 +193,13 @@ export class CreatePostComponent {
     this.isVisibleVisibility = false;
   }
 
+
+
   /* ---------------------------------- AUDIO --------------------------------- */
 
   /**
    * Handle the audio file selected event.
-   * @param event
+   * @param event 
    */
   onAudioSelected(event: any) {
     const element = event.currentTarget as HTMLInputElement;
@@ -233,14 +220,15 @@ export class CreatePostComponent {
    * @param event The audio URL
    */
   async submitAudio(event: any) {
-    if (!event) return;
+    if(!event) return;
     this.selectedAudioFile = await fetch(event).then((r) => r.blob());
     this.post.audioURL = event || '';
     // Force re-rendering of the audio player
     this.showPlayer = false;
-    setTimeout(() => {
-      this.showPlayer = true;
-    }, 0);
+      setTimeout(() => {
+        this.showPlayer = true;
+      }, 0);
     this.isVisibleRecorder = false;
   }
+  
 }

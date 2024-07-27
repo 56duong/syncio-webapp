@@ -92,6 +92,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/posts/", apiPrefix), "GET"),
                 Pair.of(String.format("%s/posts/feed", apiPrefix), "POST"),
                 Pair.of(String.format("%s/posts/user/not-login/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/posts/details/**", apiPrefix), "GET"),
 
                 // Like
                 Pair.of(String.format("%s/likes/count/**", apiPrefix), "GET"),
@@ -106,6 +107,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/users/**/username", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/search/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/profile/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/users/logout/**", apiPrefix), "POST"),
 
                 // Label
                 Pair.of(String.format("%s/labels/**", apiPrefix), "GET"),
@@ -125,7 +127,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/audio/**", apiPrefix), "GET"),
 
                 // Payment
-                Pair.of(String.format("%s/payment/vnpay-callback", apiPrefix), "GET")
+                Pair.of(String.format("%s/payment/vnpay-callback", apiPrefix), "GET"),
+
+                // Welcome page
+                Pair.of("/welcome-page", "GET")
         );
 
         String requestPath = request.getServletPath();

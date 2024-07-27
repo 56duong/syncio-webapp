@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { LangService } from 'src/app/core/services/lang.service';
+import { TokenService } from 'src/app/core/services/token.service';
+import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-admin',
@@ -31,5 +34,54 @@ export class AdminComponent {
       name: 'Hidden Posts',
       link: 'hidden-posts',
     },
-  ]
+  ];
+  settingSubmenuItems = [
+    {
+      label: 'Settings',
+      icon: 'pi pi-cog',
+      items: [
+        {
+          label: this.langService.getLang() === 'en' ? 'Tiếng Việt' : 'English',
+          icon: 'pi pi-globe',
+          command: () => {
+            const lang = this.langService.getLang() === 'en' ? 'vi' : 'en';
+            this.langService.setLang(lang);
+            window.location.reload();
+          },
+        },
+        {
+          label: "Help",
+          icon: 'pi pi-question-circle',
+          route: '/help',
+        },
+        {
+          label: 'Logout',
+          color: 'red',
+          icon: 'pi pi-sign-out',
+          command: () => {
+            this.logout();
+          },
+        },
+      ],
+    },
+  ];
+
+  constructor(
+    private userService: UserService,
+    private tokenService: TokenService,
+    private langService: LangService,
+  ) {}
+
+  logout(): void {
+    this.userService.logout().subscribe({
+      next: () => {
+        this.userService.removeUserFromLocalStorage();
+        this.tokenService.removeToken();
+        window.location.href = '/login';
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+  }
 }

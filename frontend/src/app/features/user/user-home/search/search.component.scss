@@ -129,3 +129,15 @@ $white : white;
 .search-result ::ng-deep app-search-suggestion:hover {
     background-color: var(--gray-200);
 }
+
+.mobile {
+    width: 100%;
+    height: calc(100vh - var(--mobile-top-menu-height) - var(--mobile-bottom-menu-height));
+    top: var(--mobile-top-menu-height);
+    border-radius: 0;
+    left: 100%;
+}
+
+.mobile.search_section.show {
+    left: 0 !important;
+}

@@ -15,6 +15,9 @@ import { DialogItem } from 'src/app/shared/components/global-dialog/global-dialo
 })
 
 export class MessageRoomDetailComponent {
+  @Input() isMobile: boolean = false; // Flag to indicate if the device is mobile
+  @Output() backToMessageContentListEvent = new EventEmitter<void>(); // Event emitter to close the message room
+
   @Input() messageRoom: MessageRoom = {}; // current message room
   @Input() currentUser!: User; // Current user logged in.
 
@@ -204,6 +207,14 @@ export class MessageRoomDetailComponent {
         console.log(error);
       }
     });
+  }
+
+
+  /**
+   * When device is mobile, click on the back button to close the message room detail
+   */
+  backToMessageContentList() {
+    this.backToMessageContentListEvent.emit();
   }
 
 }

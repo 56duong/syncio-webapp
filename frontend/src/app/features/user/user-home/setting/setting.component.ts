@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-setting',
@@ -7,6 +7,8 @@ import { Component } from '@angular/core';
 })
 
 export class SettingComponent {
+  @ViewChild('container') containerElement: any;
+  isMobile: boolean = false;
   menus = [
     {
       title: 'How you use Syncio',
@@ -29,4 +31,18 @@ export class SettingComponent {
       ]
     }
   ];
+
+  constructor() {
+    this.isMobile = window.innerWidth < 768;
+  }
+
+  scrollToBehavior(direction: 'left' | 'right') {
+    if(direction === 'left') {
+      this.containerElement.nativeElement.scrollLeft -= this.containerElement.nativeElement.scrollWidth;
+    }
+    else {
+      this.containerElement.nativeElement.scrollLeft += this.containerElement.nativeElement.scrollWidth;
+    }
+  }
+
 }

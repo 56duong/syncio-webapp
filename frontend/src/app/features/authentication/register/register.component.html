@@ -1,12 +1,17 @@
 <div class="wrapper">
-  <div class="form flex col-8 p-0 bg-white align-items-stretch shadow-1">
+  <!-- lang -->
+  <div class="absolute top-0 right-0 p-4 flex align-items-center gap-4" style="color: var(--surface-900);">
+    <p (click)="switchLang('en')" class="underline cursor-pointer">English</p>
+    <p (click)="switchLang('vi')" class="underline cursor-pointer">Tiếng Việt</p>
+    <span class="pi pi-question-circle" routerLink="/help" style="font-size: 1.25rem;"></span>
+  </div>
+
+  <div class="form flex col-12 sm:col-8 p-0 align-items-stretch px-4">
     <div *ngIf="isLoading" class="overlay">
       <div class="spinner"></div>
     </div>
     <!-- Left form -->
-    <form
-      class="col-6 flex flex-column gap-5 justify-content-center align-items-center"
-    >
+    <form class="col-12 sm:col-6 flex flex-column gap-5 justify-content-center align-items-center bg-white shadow-1">
       <h1>{{ 'signUp' | translate }}</h1>
       <div class="flex flex-column gap-3 w-full">
         <!-- Email -->
@@ -65,7 +70,7 @@
       </div>
     </form>
     <!-- Right image -->
-    <div class="col-6 p-0">
+    <div class="col-6 p-0 hidden sm:block">
       <img
         class="w-full h-full"
         src="/assets/images/signup-mockup.jpg"

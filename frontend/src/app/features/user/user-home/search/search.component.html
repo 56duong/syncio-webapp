@@ -4,7 +4,8 @@
     id="search"
     class="search_section flex flex-column"
     (click)="$event.stopPropagation()"
-    [class.show]="showSearch">
+    [class.show]="showSearch"
+    [class.mobile]="isMobile">
 
     <div class="flex align-items-center justify-content-between my-3 px-3">  
       <!-- title -->

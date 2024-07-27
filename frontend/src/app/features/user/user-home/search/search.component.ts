@@ -21,6 +21,7 @@ import { ToastService } from 'src/app/core/services/toast.service';
 
 export class SearchComponent implements OnInit {
   @Input() showSearch: boolean = true;
+  @Input() isMobile: boolean = false;
   @Output() onClose = new EventEmitter<void>();
   public dataFetched: boolean = false;
   public suggestions: Search[] = []; // Array to store the suggestions

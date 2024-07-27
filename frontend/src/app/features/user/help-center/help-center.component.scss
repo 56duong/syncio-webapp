@@ -116,3 +116,27 @@
     padding: 15px;
   }
 }
+
+
+
+// mobile
+.mobile {
+  margin: 0;
+  padding: 1rem;
+}
+
+.mobile .help-layout {
+  flex-direction: column;
+  min-height: auto;
+}
+
+.mobile .help-sidebar {
+  width: 100%;
+  height: auto;
+  margin: 1rem 0;
+  padding: 0;
+}
+
+.mobile .help-content {
+  margin-left: 0;
+}

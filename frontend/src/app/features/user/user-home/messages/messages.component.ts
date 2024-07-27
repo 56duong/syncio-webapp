@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageContent, MessageContentTypeEnum } from 'src/app/core/interfaces/message-content';
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
@@ -15,6 +15,9 @@ import { TokenService } from 'src/app/core/services/token.service';
 })
 
 export class MessagesComponent {
+  isMobile: boolean = false;
+  @ViewChild('messageContainer') messageContainerElement: any;
+
   messageRooms: MessageRoom[] = []; // Array of message rooms to display in the sidebar.
   currentUser!: User; // Current user logged in.
   
@@ -33,7 +36,9 @@ export class MessagesComponent {
     private router: Router,
     private messageRoomMemberService: MessageRoomMemberService,
     private messageContentService: MessageContentService,
-  ) { }
+  ) { 
+    this.isMobile = window.innerWidth < 768;
+  }
   
 
   ngOnInit() {
@@ -238,6 +243,10 @@ export class MessagesComponent {
     }
     
     this.updateLastSeenMessage(messageRoom);
+
+    if(this.isMobile) {
+      this.scrollToBehavior('right');
+    }
   }
 
 
@@ -357,6 +366,23 @@ export class MessagesComponent {
       }
       return room;
     });
+  }
+
+
+  backToMessageRoomListEvent(event: any) {
+    this.scrollToBehavior('left');
+    this.selectedMessageRoom = {} as MessageRoom;
+    this.router.navigate(['/messages']);
+  }
+
+
+  scrollToBehavior(direction: 'left' | 'right') {
+    if(direction === 'left') {
+      this.messageContainerElement.nativeElement.scrollLeft -= this.messageContainerElement.nativeElement.scrollWidth;
+    }
+    else {
+      this.messageContainerElement.nativeElement.scrollLeft += this.messageContainerElement.nativeElement.scrollWidth;
+    }
   }
 
 }

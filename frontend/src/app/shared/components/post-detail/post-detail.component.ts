@@ -9,6 +9,7 @@ import { Post } from 'src/app/core/interfaces/post';
 import { CommentService } from 'src/app/core/services/comment.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { PostService } from 'src/app/core/services/post.service';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { TokenService } from 'src/app/core/services/token.service';
 import { TextUtils } from 'src/app/core/utils/text-utils';
@@ -20,6 +21,8 @@ import { TextUtils } from 'src/app/core/utils/text-utils';
 })
 
 export class PostDetailComponent {
+  isMobile: boolean = false; // Check if the user is using a mobile device
+
   @Input() post: Post = {}; // Current post
   @Input() visible: boolean = false;
   @Output() visibleChange: EventEmitter<any> = new EventEmitter(); // Event emitter to close the dialog.
@@ -48,8 +51,11 @@ export class PostDetailComponent {
     private location: Location,
     private textUtils: TextUtils,
     private toastService: ToastService,
-    private translateService: TranslateService
-  ) { }
+    private translateService: TranslateService,
+    private redirectService: RedirectService
+  ) { 
+    this.isMobile = window.innerWidth < 768;
+  }
 
   ngOnInit() {
     this.dialogItems = [
@@ -57,7 +63,7 @@ export class PostDetailComponent {
         label: this.translateService.instant('report'), 
         bold: 7,
         color: 'red', 
-        action: () => this.reportVisible = true
+        action: () => this.currentUserId ? this.reportVisible = true : this.redirectService.needLogin()
       },
       { 
         label: this.translateService.instant('copyLink'),
@@ -135,10 +141,7 @@ export class PostDetailComponent {
   postComment() {
     // Not logged in
     if(this.currentUserId == null) {
-      this.router.navigate(['/login'], { 
-        queryParams: { message: 'Please login to comment' } 
-      });
-      return;
+      this.redirectService.needLogin();
     }
 
     if (!this.post.id) return;
@@ -203,7 +206,12 @@ export class PostDetailComponent {
   }
 
   handleReportModalVisibility(event: boolean) {
-    this.reportVisible = event; // Update reportVisible based on the event emitted from ReportComponent
+    if(!this.currentUserId) {
+      this.redirectService.needLogin();
+    }
+    else {
+      this.reportVisible = event; // Update reportVisible based on the event emitted from ReportComponent
+    }
   }
 
   hideDialog() {

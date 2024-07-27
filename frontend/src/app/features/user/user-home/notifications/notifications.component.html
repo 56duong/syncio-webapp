@@ -2,7 +2,8 @@
   <div id="notifications"
     class="notifications_section flex flex-column"
     (click)="$event.stopPropagation()"
-    [class.show]="showNotifications">
+    [class.show]="showNotifications"
+    [class.mobile]="isMobile">
 
     <!-- Title -->
     <h2 (click)="saveNotificationsState()" class="font-semibold px-3">Notifications</h2>

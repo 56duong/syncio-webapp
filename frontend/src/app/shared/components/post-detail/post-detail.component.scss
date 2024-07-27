@@ -105,3 +105,11 @@ p-carousel.hide-slide-control ::ng-deep {
     display: none;
   }
 }
+
+
+
+// mobile
+.mobile ::ng-deep .p-dialog-mask {
+  top: var(--mobile-top-menu-height);
+  height: calc(100% - var(--mobile-bottom-menu-height) - var(--mobile-top-menu-height));
+}

@@ -62,7 +62,7 @@ public class PostController {
         return ResponseEntity.ok(postService.isPostCreatedByUserIFollow(userId));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/details/{id}")
     public ResponseEntity<PostDTO> getPost(@PathVariable(name = "id") final UUID id) {
         return ResponseEntity.ok(postService.get(id));
     }

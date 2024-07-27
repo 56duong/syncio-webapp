@@ -4,8 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { tap } from 'rxjs';
 import { Post, Visibility } from 'src/app/core/interfaces/post';
 import { Report } from 'src/app/core/interfaces/report';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 import { ReportService } from 'src/app/core/services/report.service';
 import { ToastService } from 'src/app/core/services/toast.service';
+import { TokenService } from 'src/app/core/services/token.service';
 import { TextUtils } from 'src/app/core/utils/text-utils';
 
 @Component({
@@ -49,7 +51,9 @@ export class PostComponent {
     private textUtils: TextUtils,
     private toastService: ToastService,
     private reportService: ReportService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private tokenService: TokenService,
+    private redirectService: RedirectService
   ) {}
 
   hideDialog() {
@@ -101,7 +105,12 @@ export class PostComponent {
   }
 
   showReportModal() {
-    this.reportVisible = true;
+    if(!this.tokenService.extractUserIdFromToken()) {
+      this.redirectService.needLogin();
+    }
+    else {
+      this.reportVisible = true;
+    }
   }
 
   handleReportModalVisibility(event: boolean) {

@@ -7,6 +7,7 @@ import { Report } from 'src/app/core/interfaces/report';
 import { PostService } from 'src/app/core/services/post.service';
 import { ReportService } from 'src/app/core/services/report.service';
 import { ToastService } from 'src/app/core/services/toast.service';
+import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
@@ -27,7 +28,8 @@ export class ReportComponent implements OnInit {
     private reportService: ReportService, 
     private fb: FormBuilder,
     private translateService: TranslateService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private tokenService: TokenService
   ) {}
 
   ngOnInit(): void {

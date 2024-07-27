@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
-import { CreatePostComponent } from '../create-post/create-post.component';
+import { CreatePostComponent } from '../../create-post/create-post.component';
 import { Router } from '@angular/router';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
-import { color } from 'html2canvas/dist/types/css/types/color';
 import { TranslateService } from '@ngx-translate/core';
 import { LangService } from 'src/app/core/services/lang.service';
 import { UserLabelInfoService } from'src/app/core/services/user-label-info.service';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 
 @Component({
   selector: 'app-left-menu',
@@ -19,7 +19,8 @@ export class LeftMenuComponent {
   @Output() actionToggle = new EventEmitter<string>();
 
   toggleSearch(): void {
-    this.actionToggle.emit('search');
+    if(!this.currentUserId) this.redirectService.needLogin();
+    else this.actionToggle.emit('search');
   }
 
   visible: boolean = false;
@@ -44,11 +45,15 @@ export class LeftMenuComponent {
     private userService: UserService,
     private translateService: TranslateService,
     private langService: LangService,
-    private userLabelInfoService: UserLabelInfoService
+    private userLabelInfoService: UserLabelInfoService,
+    private redirectService: RedirectService,
   ) { }
 
 
   ngOnInit() {
+    this.currentUserId = this.tokenService.extractUserIdFromToken();
+    this.currentUsername = this.tokenService.extractUsernameFromToken();
+
     this.menus = [
       {
         label: this.translateService.instant('home'),
@@ -93,7 +98,9 @@ export class LeftMenuComponent {
           {
             label: this.translateService.instant('story'),
             icon: 'pi pi-history',
-            route: '/story/create',
+            command: () => {
+              this.onCreateStoryClick();
+            },
           },
         ],
       },
@@ -120,9 +127,6 @@ export class LeftMenuComponent {
         ],
       },
     ];
-    
-    this.currentUserId = this.tokenService.extractUserIdFromToken();
-    this.currentUsername = this.tokenService.extractUsernameFromToken();
 
     if(this.currentUserId) {
       this.settingSubmenuItems[0].items.push({
@@ -155,16 +159,20 @@ export class LeftMenuComponent {
       }
     });
   }
-  onSearchClick(): void {
-    this.router.navigate(['/search']);
-  }
 
   onCreateClick() {
-    this.createPostComponent.showDialog();
+    if(!this.currentUserId) this.redirectService.needLogin();
+    else this.createPostComponent.showDialog();
+  }
+
+  onCreateStoryClick() {
+    if(!this.currentUserId) this.redirectService.needLogin();
+    else this.router.navigate(['/story/create']);
   }
 
   toggleNotifications(): void {
-    this.actionToggle.emit('notifications');
+    if(!this.currentUserId) this.redirectService.needLogin();
+    else this.actionToggle.emit('notifications');
   }
 
   logout(): void {
@@ -178,6 +186,11 @@ export class LeftMenuComponent {
         console.error(error);
       },
     });
+  }
+
+
+  reloadPage() {
+    window.location.reload();
   }
   
 }

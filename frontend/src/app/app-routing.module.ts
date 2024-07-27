@@ -18,6 +18,7 @@ import { NotFoundComponent } from './shared/components/not-found/not-found.compo
 import { NotAuthorizedComponent } from './shared/components/not-authorized/not-authorized.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from "./shared/shared.module";
+import { UpdateIpComponent } from './shared/components/update-ip/update-ip.component';
 
 @NgModule({
   declarations: [],
@@ -83,6 +84,11 @@ const routes: Routes = [
     path: "not-authorized",
     title: "Not Authorized",
     component: NotAuthorizedComponent
+  },
+  {
+    path: "update-ip",
+    title: "Update IP",
+    component: UpdateIpComponent
   }
 ];
 

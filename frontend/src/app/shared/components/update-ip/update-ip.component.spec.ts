@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TopMenuComponent } from './top-menu.component';
+import { UpdateIpComponent } from './update-ip.component';
 
-describe('TopMenuComponent', () => {
-  let component: TopMenuComponent;
-  let fixture: ComponentFixture<TopMenuComponent>;
+describe('UpdateIpComponent', () => {
+  let component: UpdateIpComponent;
+  let fixture: ComponentFixture<UpdateIpComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TopMenuComponent]
+      declarations: [UpdateIpComponent]
     });
-    fixture = TestBed.createComponent(TopMenuComponent);
+    fixture = TestBed.createComponent(UpdateIpComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

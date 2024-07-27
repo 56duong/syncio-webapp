@@ -1,28 +1,16 @@
 <main>
-  <header class="flex align-items-center gap-6 ml-6">
+  <!-- header desktop -->
+  <header *ngIf="!isMobile" class="flex align-items-center gap-6 ml-6">
     <!-- Avatar -->
-    <div
-      title="Upload avatar"
-      class="border-circle overflow-hidden"
-      style="width: 164px; height: 164px"
-    >
+    <div title="Upload avatar" class="border-circle overflow-hidden" style="width: 164px; height: 164px;">
       <input
         #fileInput
         type="file"
         style="display: none"
         accept="image/*"
-        (change)="onFileSelected($event)"
-      />
-      <button
-        (click)="fileInput.click()"
-        class="border-none p-0 outline-none cursor-pointer"
-        style="background: none"
-      >
-        <app-avatar
-          [userId]="userProfile.id"
-          [width]="164"
-          [userStory]="userStory"
-        ></app-avatar>
+        (change)="onFileSelected($event)" />
+      <button (click)="fileInput.click()" class="border-none p-0 outline-none cursor-pointer" style="background: none;">
+        <app-avatar [userId]="userProfile.id" [width]="164" [userStory]="userStory"></app-avatar>
       </button>
     </div>
 
@@ -31,7 +19,6 @@
       <div class="flex align-items-center gap-3">
         <!-- Username -->
         <!-- <h1 class="font-normal text-2xl my-0 mr-3">{{ userProfile.username }}</h1> -->
-
         <app-username-label 
           [userId]="currentUserId"
           [username]="userProfile.username"
@@ -39,22 +26,15 @@
           [color]="''">
         </app-username-label>
         <!-- Follow button -->
-        <p-button
-          *ngIf="!isOwnerProfile && !userProfile.isFollowing"
-          (click)="toggleFollow(userProfile.id)"
-          label="Follow"
-          severity="my-custom-primary"
-        >
+        <p-button *ngIf="!isOwnerProfile && !userProfile.isFollowing"
+          (click)="toggleFollow(userProfile.id)" 
+          label="Follow" severity="my-custom-primary">
         </p-button>
         <!-- Unfollow button -->
-        <p-button
-          *ngIf="!isOwnerProfile && userProfile.isFollowing"
-          (click)="dialogVisible = !dialogVisible"
-          icon="pi pi-angle-down"
-          iconPos="right"
-          label="Unfollow"
-          severity="my-custom-secondary"
-        >
+        <p-button *ngIf="!isOwnerProfile && userProfile.isFollowing"
+          (click)="dialogVisible = !dialogVisible" 
+          icon="pi pi-angle-down" iconPos="right"
+          label="Unfollow" severity="my-custom-secondary">
         </p-button>
         <!-- Message -->
         <a *ngIf="!isOwnerProfile" href="/messages">
@@ -63,66 +43,33 @@
         <!-- Edit profile/ Setting -->
         <ng-container *ngIf="isOwnerProfile">
           <!-- Edit profile -->
-
           <div *ngIf="isOwnerProfile" routerLink="/account/edit-profile">
             <p-button label="Edit Profile" severity="my-custom-secondary"></p-button>
           </div>
-
           <!-- choose Label -->
-          <p-button
-            class="ml-2"
-            (click)="showChooseLabelDialog()"
-            label="Choose Label"
-            severity="my-custom-primary"
-          >
+          <p-button class="ml-2"
+            (click)="showChooseLabelDialog()" 
+            label="Choose Label" severity="my-custom-primary">
           </p-button>
 
           <!-- Setting -->
-
           <i *ngIf="isOwnerProfile" routerLink="/account/edit-profile" class="pi pi-cog cursor-pointer" style="font-size: 1.5rem"></i>
         </ng-container>
       </div>
 
       <!-- Count section -->
-      <ul class="flex align-items-center gap-4 list-none pl-0">
+      <ul class="flex align-items-center gap-4 list-none pl-0 m-0">
         <!-- posts -->
-        <li>
-          <span class="font-semibold">{{
-            !userProfile.posts ? 0 : userProfile.posts.length
-          }}</span>
-          posts
-        </li>
+        <li><span class="font-semibold">{{ !userProfile.posts ? 0 : userProfile.posts.length }}</span> posts</li>
         <!-- followers -->
-        <li
-          (click)="
-            currentUserId && userProfile.followerCount > 0
-              ? (isVisibleFollowers = true)
-              : ''
-          "
-          [ngClass]="
-            currentUserId && userProfile.followerCount > 0
-              ? 'cursor-pointer'
-              : ''
-          "
-        >
-          <span class="font-semibold">{{ userProfile.followerCount }}</span>
-          followers
+        <li (click)="currentUserId && userProfile.followerCount > 0 ? isVisibleFollowers = true : ''"
+          [ngClass]="currentUserId && userProfile.followerCount > 0 ? 'cursor-pointer' : ''">
+          <span class="font-semibold">{{ userProfile.followerCount }}</span> followers
         </li>
         <!-- following -->
-        <li
-          (click)="
-            currentUserId && userProfile.followingCount > 0
-              ? (isVisibleFollowing = true)
-              : ''
-          "
-          [ngClass]="
-            currentUserId && userProfile.followingCount > 0
-              ? 'cursor-pointer'
-              : ''
-          "
-        >
-          <span class="font-semibold">{{ userProfile.followingCount }}</span>
-          following
+        <li (click)="currentUserId && userProfile.followingCount > 0 ? isVisibleFollowing = true: ''"
+          [ngClass]="currentUserId && userProfile.followingCount > 0 ? 'cursor-pointer' : ''">
+          <span class="font-semibold">{{ userProfile.followingCount }}</span> following
         </li>
       </ul>
 
@@ -133,12 +80,104 @@
     </section>
   </header>
 
-  <div
-    class="mt-6 border-top-1 border-gray-300 flex justify-content-center align-items-center"
-  >
-    <div
-      class="py-3 border-top-1 flex justify-content-center align-items-center"
-    >
+  <!-- header mobile -->
+  <header *ngIf="isMobile" class="px-2 flex flex-column gap-3">
+    <div class="flex align-items-center column-gap-3">
+      <!-- Avatar -->
+      <div title="Upload avatar" class="border-circle overflow-hidden" style="min-width: 96px; height: 96px;">
+        <input
+          #fileInput
+          type="file"
+          style="display: none"
+          accept="image/*"
+          (change)="onFileSelected($event)" />
+        <button (click)="fileInput.click()" class="border-none p-0 outline-none cursor-pointer" style="background: none;">
+          <app-avatar [userId]="userProfile.id" [width]="96" [userStory]="userStory"></app-avatar>
+        </button>
+      </div>
+
+      <!-- Right side -->
+      <section class="flex flex-column gap-3">
+        <div class="flex align-items-center gap-3">
+          <!-- Username -->
+          <app-username-label 
+            [userId]="currentUserId"
+            [username]="userProfile.username"
+            [fontSize]="'1.5rem'"
+            [color]="''">
+          </app-username-label>
+        </div>
+
+        <!-- Count section -->
+        <ul class="flex align-items-center gap-4 list-none pl-0 m-0">
+          <!-- posts -->
+          <li>
+            <span class="font-semibold">{{ !userProfile.posts ? 0 : userProfile.posts.length }}</span>
+            <span class="line-clamp">posts</span>
+          </li>
+          <!-- followers -->
+          <li (click)="currentUserId && userProfile.followerCount > 0 ? isVisibleFollowers = true : ''"
+            [ngClass]="currentUserId && userProfile.followerCount > 0 ? 'cursor-pointer' : ''">
+            <span class="font-semibold">{{ userProfile.followerCount }}</span>
+            <span class="line-clamp">followers</span>
+          </li>
+          <!-- following -->
+          <li (click)="currentUserId && userProfile.followingCount > 0 ? isVisibleFollowing = true: ''"
+            [ngClass]="currentUserId && userProfile.followingCount > 0 ? 'cursor-pointer' : ''">
+            <span class="font-semibold">{{ userProfile.followingCount }}</span> 
+            <span class="line-clamp">following</span>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <!-- button list -->
+     <div class="flex gap-2 flex-column mt-2">
+        <!-- Bio -->
+        <div *ngIf="userProfile.bio" class="intro">
+          <span>{{ userProfile.bio }}</span>
+        </div>
+        <div class="flex align-items-center gap-2 mt-2">
+          <!-- Follow button -->
+          <p-button *ngIf="!isOwnerProfile && !userProfile.isFollowing"
+            (click)="toggleFollow(userProfile.id)" 
+            label="Follow" severity="my-custom-primary"
+            class="flex-1"
+            styleClass="w-full">
+          </p-button>
+          <!-- Unfollow button -->
+          <p-button *ngIf="!isOwnerProfile && userProfile.isFollowing"
+            (click)="dialogVisible = !dialogVisible" 
+            icon="pi pi-angle-down" iconPos="right"
+            label="Unfollow" severity="my-custom-secondary"
+            class="flex-1"
+            styleClass="w-full">
+          </p-button>
+          <!-- Message -->
+          <a *ngIf="!isOwnerProfile" href="/messages" class="flex-1">
+            <p-button label="Messages" severity="my-custom-secondary" styleClass="w-full"></p-button>
+          </a>
+          <!-- Edit profile/ Setting -->
+          <ng-container *ngIf="isOwnerProfile">
+            <!-- Edit profile -->
+            <div *ngIf="isOwnerProfile" routerLink="/account/edit-profile" class="flex-1">
+              <p-button label="Edit Profile" severity="my-custom-secondary" styleClass="w-full"></p-button>
+            </div>
+            <!-- choose Label -->
+            <p-button class="ml-2 flex-1" styleClass="w-full"
+              (click)="showChooseLabelDialog()" 
+              label="Choose Label" severity="my-custom-primary">
+            </p-button>
+    
+            <!-- Setting -->
+            <i *ngIf="isOwnerProfile" routerLink="/account/edit-profile" class="pi pi-cog cursor-pointer" style="font-size: 1.5rem"></i>
+          </ng-container>
+          </div>
+     </div>
+  </header>
+  
+  <div class="mt-6 border-top-1 border-gray-300 flex justify-content-center align-items-center">
+    <div class="py-3 border-top-1 flex justify-content-center align-items-center">
       <i class="pi pi-table mr-2" style="font-size: 1rem"></i>
       <span class="text-xs font-semibold">POSTS</span>
     </div>
@@ -146,22 +185,16 @@
 
   <!-- Post list -->
   <div class="content">
-    <article
-      style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px"
-    >
+    <article style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px">
       <ng-container *ngFor="let post of userProfile.posts">
-        <div
-          *ngIf="post.photos && post.photos.length > 0"
-          style="aspect-ratio: 1/1; cursor: pointer"
-          (click)="handleShowPostDetail(true, post)"
-        >
-          <img
-            height="100%"
+        <div *ngIf="post.photos && post.photos.length > 0" 
+          style="aspect-ratio: 1/1; cursor: pointer;"
+          (click)="handleShowPostDetail(true, post)">
+          <img height="100%"
             width="100%"
             [src]="post.photos[0].url | constructImageUrl"
             [alt]="post.photos[0].altText"
-            style="object-fit: cover; display: block"
-          />
+            style="object-fit: cover; display: block;" />
         </div>
       </ng-container>
     </article>
@@ -172,8 +205,7 @@
 <app-global-dialog
   [display]="dialogVisible"
   [items]="dialogItems"
-  (displayChange)="dialogVisible = false"
->
+  (displayChange)="dialogVisible = false">
 </app-global-dialog>
 
 <!-- Post Detail popup -->
@@ -182,8 +214,7 @@
   [post]="post"
   [visible]="visible"
   (visibleChange)="showPostDetail($event)"
-  style="position: relative; z-index: 1102"
->
+  style="position: relative; z-index: 1102;">
 </app-post-detail>
 
 <!-- Follower dialog -->
@@ -193,8 +224,7 @@
   (onHide)="isVisibleFollowers = false"
   (onFollow)="sendFollowNotification($event)"
   (updateFollowerCount)="userProfile.followerCount = $event"
-  (updateFollowingCount)="userProfile.followingCount = $event"
->
+  (updateFollowingCount)="userProfile.followingCount = $event">
 </app-follower-dialog>
 
 <!-- Following dialog -->
@@ -203,61 +233,36 @@
   [isVisibleFollowing]="isVisibleFollowing"
   (onHide)="isVisibleFollowing = false"
   (onFollow)="sendFollowNotification($event)"
-  (updateFollowingCount)="userProfile.followingCount = $event"
->
+  (updateFollowingCount)="userProfile.followingCount = $event">
 </app-following-dialog>
 
 <!-- Choose Label -->
-<p-dialog
-  [(visible)]="chooseLableDialog"
-  [style]="{ width: '62rem' }"
-  header="Choose Label"
-  [modal]="true"
-  styleClass="p-fluid"
->
-  <p-dataView #dv [value]="userLabelInfos">
-    <ng-template let-userLabelInfo pTemplate="listItem">
-      <div class="col-12 lg:col-12 xl:col-3 p-2">
-        <div class="p-4 border-1 surface-border surface-card border-round">
-          <div
-            class="flex flex-wrap align-items-center justify-content-between gap-2"
-          >
-            <span class="flex align-items-center gap-2">
-              <i class="pi pi-tag"></i>
-              <span class="font-semibold">{{ userLabelInfo.type }}</span>
-            </span>
+<p-dialog [(visible)]="chooseLableDialog" [style]="{ width: '62rem' }" header="Choose Label" [modal]="true"
+styleClass="p-fluid">
+      <p-dataView #dv [value]="userLabelInfos" >
+        <ng-template let-userLabelInfo pTemplate="listItem">
+          <div class="col-12 lg:col-12 xl:col-3 p-2">
+            <div class="p-4 border-1 surface-border surface-card border-round">
+              <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+                <span class="flex align-items-center gap-2">
+                  <i class="pi pi-tag"></i>
+                  <span class="font-semibold">{{ userLabelInfo.type }}</span>
+                </span>
+              </div>
+              <div class="flex flex-column align-items-center gap-3 py-5">
+                <img class="w-9 shadow-2 border-round" src="{{ userLabelInfo.labelURL }}" width="150"
+                  height="150" [alt]="userLabelInfo.name" />
+                <div class="text-lg font-bold">{{ userLabelInfo.name }}</div>
+              </div>
+              
+              <div class="card flex justify-content-center">
+                <p-button label="Cancel" (click)="confirm(userLabelInfo)" *ngIf="userLabelInfo.isShow" icon="pi pi-times" severity="secondary" [rounded]="true"></p-button>
+                <p-button label="Confirm" (click)="confirm(userLabelInfo)" *ngIf="!userLabelInfo.isShow" [rounded]="true"></p-button>
+            </div>
+            </div>
           </div>
-          <div class="flex flex-column align-items-center gap-3 py-5">
-            <img
-              class="w-9 shadow-2 border-round"
-              src="{{ userLabelInfo.labelURL }}"
-              width="150"
-              height="150"
-              [alt]="userLabelInfo.name"
-            />
-            <div class="text-lg font-bold">{{ userLabelInfo.name }}</div>
-          </div>
-
-          <div class="card flex justify-content-center">
-            <p-button
-              label="Cancel"
-              (click)="confirm(userLabelInfo)"
-              *ngIf="userLabelInfo.isShow"
-              icon="pi pi-times"
-              severity="secondary"
-              [rounded]="true"
-            ></p-button>
-            <p-button
-              label="Confirm"
-              (click)="confirm(userLabelInfo)"
-              *ngIf="!userLabelInfo.isShow"
-              [rounded]="true"
-            ></p-button>
-          </div>
-        </div>
-      </div>
-    </ng-template>
-  </p-dataView>
+        </ng-template>
+      </p-dataView>
 </p-dialog>
 
 <p-dialog

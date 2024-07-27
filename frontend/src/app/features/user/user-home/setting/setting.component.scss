@@ -9,3 +9,18 @@
     color: #64748B;
   }
 }
+
+.mobile {
+  overflow: scroll;
+  scroll-behavior: smooth;
+}
+
+.mobile ::ng-deep .p-divider.p-divider-vertical {
+  margin: 0;
+}
+
+.mobile .left-side,
+.mobile .right-side {
+  min-width: 100%;
+  padding: 0 1rem;
+}

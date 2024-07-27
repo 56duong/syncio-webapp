@@ -69,6 +69,27 @@
                   "with": "src/environments/environment.development.ts"
                 }
               ]
+            },
+            "android": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.android.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "3mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "outputHashing": "all"
             }
           },
           "defaultConfiguration": "production"
@@ -81,6 +102,9 @@
             },
             "development": {
               "browserTarget": "frontend:build:development"
+            },
+            "android": {
+              "browserTarget": "frontend:build:android"
             }
           },
           "defaultConfiguration": "development"

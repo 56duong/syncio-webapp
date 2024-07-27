@@ -3,11 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { UserHomeRoutingModule } from './user-home-routing.module';
 import { UserHomeComponent } from './user-home.component';
-import { CreatePostComponent } from './create-post/create-post.component';
 import { FeedComponent } from './feed/feed.component';
-import { LeftMenuComponent } from './left-menu/left-menu.component';
 import { PrimengModule } from 'src/app/primeng/primeng.module';
-import { TopMenuComponent } from './top-menu/top-menu.component';
 import { CoreModule } from 'src/app/core/core.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ProfileComponent } from './profile/profile.component';
@@ -24,14 +21,12 @@ import { FollowerDialogComponent } from './profile/follower-dialog/follower-dial
 import { FollowingDialogComponent } from './profile/following-dialog/following-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { SettingComponent } from './setting/setting.component';
+import { MenuModule } from './menu/menu.module';
 
 @NgModule({
   declarations: [
     UserHomeComponent,
-    CreatePostComponent,
     FeedComponent,
-    LeftMenuComponent,
-    TopMenuComponent,
     ProfileComponent,
     SearchComponent,
     StoryListComponent,
@@ -52,7 +47,8 @@ import { SettingComponent } from './setting/setting.component';
     CoreModule,
     SharedModule,
     PickerComponent,
-    TranslateModule
+    TranslateModule,
+    MenuModule
   ],
 })
 export class UserHomeModule {}

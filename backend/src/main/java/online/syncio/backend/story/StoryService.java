@@ -36,6 +36,7 @@ public class StoryService {
 
     public UserStoryDTO findUserWithAtLeastOneStoryAfterCreatedDate(final UUID userId, final LocalDateTime createdDate) {
         final User user = storyRepository.findUserWithAtLeastOneStoryAfterCreatedDate(userId, createdDate);
+        if(user == null) return null;
         final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
         return storyMapper.mapToUserStoryDTO(user, new UserStoryDTO(), currentUserId);
     }

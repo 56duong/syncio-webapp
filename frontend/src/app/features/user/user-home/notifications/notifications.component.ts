@@ -12,6 +12,7 @@ import { TokenService } from 'src/app/core/services/token.service';
 
 export class NotificationsComponent {
   @Input() showNotifications: boolean = false;
+  @Input() isMobile: boolean = false;
   @Output() onClose = new EventEmitter<void>(); 
   
   currentUserId: string = ''; // The id of the current logged-in user

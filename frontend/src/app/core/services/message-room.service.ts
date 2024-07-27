@@ -48,7 +48,11 @@ export class MessageRoomService {
   constructor(
     private http: HttpClient,
     private tokenService: TokenService
-  ) {}
+  ) { 
+    if (environment.android) {
+      this.webSocketURL = this.webSocketURL.replace(environment.apiUrl, window.localStorage.getItem('apiUrl') || environment.apiUrl);
+    }
+  }
 
 
   connectWebSocketNewMessageGroup() {
@@ -58,7 +62,10 @@ export class MessageRoomService {
     this.stompClientNewMessageGroup.connect({id: this.tokenService.extractUserIdFromToken()}, () => {    
       this.newMessageGroupSubscription = this.stompClientNewMessageGroup.subscribe(`/user/queue/newMessageRoom`, (messageContent: IMessage) => {
         this.newMessageGroupSubject.next(JSON.parse(messageContent.body));
-      });
+      }),
+      (error: any) => {
+        console.error(error);
+      }
     });
   }
 
