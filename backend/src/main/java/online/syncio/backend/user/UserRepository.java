@@ -32,6 +32,11 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("UPDATE User u SET u.status = 'ACTIVE' WHERE u.id = :id")
     void enableUser(UUID id);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE User u SET u.qrCodeUrl = :userQRCode WHERE u.id = :id")
+    void saveQRCODE(@Param("userQRCode") String userQRCode, @Param("id") UUID id);
+
 
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.posts WHERE u.id = :id")
     Optional<User> findByIdWithPosts(@Param("id") UUID id);

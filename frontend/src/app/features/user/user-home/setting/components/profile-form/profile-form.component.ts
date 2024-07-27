@@ -9,17 +9,18 @@ import { ToastService } from 'src/app/core/services/toast.service';
   templateUrl: './profile-form.component.html',
   styleUrls: ['./profile-form.component.scss'],
 })
-
 export class ProfileFormComponent {
   data_id: any;
   profilePic: string | null = null;
   profileForm: FormGroup = new FormGroup({});
   userResponse?: UserResponse | null =
     this.userService.getUserResponseFromLocalStorage();
-
+  qrCodeUrl: string = ''; // URL of the QR code image
+  qrCodeDialogVisible: boolean = false;
+  profileId: string = ''; // user id from route params
   constructor(
     private userService: UserService,
-    private toastService: ToastService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -28,10 +29,10 @@ export class ProfileFormComponent {
         `${this.userResponse?.username}`,
         Validators.required
       ),
-      email: new FormControl({ value: `${this.userResponse?.email}`, disabled: true}, [
-        Validators.required,
-        Validators.email,
-      ]),
+      email: new FormControl(
+        { value: `${this.userResponse?.email}`, disabled: true },
+        [Validators.required, Validators.email]
+      ),
       bio: new FormControl(`${this.userResponse?.bio || ''}`),
     });
     console.log('this.userResponse', this.userResponse);
@@ -47,7 +48,10 @@ export class ProfileFormComponent {
               ...response.data,
             };
             this.userService.saveUserResponseToLocalStorage(this.userResponse);
-            this.toastService.showSuccess('Success', 'Profile updated successfully');
+            this.toastService.showSuccess(
+              'Success',
+              'Profile updated successfully'
+            );
           },
           error: (error) => {
             console.log('error', error);
@@ -56,6 +60,20 @@ export class ProfileFormComponent {
         });
     } else {
       this.toastService.showError('Error', 'Please fill email and username');
+    }
+  }
+  showQrCode() {
+    const userId = this.userResponse?.id;
+    if (userId) {
+      this.userService.getQrCodeFromUser(userId).subscribe({
+        next: (response) => {
+          this.qrCodeUrl = response;
+          this.qrCodeDialogVisible = true;
+        },
+        error: (error) => {
+          console.error('Error getting QR code', error);
+        },
+      });
     }
   }
 }

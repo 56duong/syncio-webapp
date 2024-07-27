@@ -1,6 +1,7 @@
 package online.syncio.backend.auth;
 
 
+import com.google.zxing.WriterException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.exception.DataNotFoundException;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -79,7 +81,7 @@ public class TokenService {
 
 
     @Transactional
-    public ResponseEntity<?> confirmToken(String token) {
+    public ResponseEntity<?> confirmToken(String token) throws IOException, WriterException {
         Token confirmationToken = tokenRepository.findByToken(token);
         if(confirmationToken == null) {
             throw new IllegalStateException("Token not found");
@@ -92,8 +94,10 @@ public class TokenService {
         if (expiredAt.isBefore(LocalDateTime.now())) {
             throw new IllegalStateException("token expired");
         }
-
         confirmationToken.setRevoked(true);
+        String qrCodeText = confirmationToken.getUser().getId().toString();
+        String qrCodeUrl = userService.generateQRCodeAndUploadToFirebase(qrCodeText, 300, 300);
+        userService.saveQRcode(qrCodeUrl,confirmationToken.getUser().getId());
         tokenRepository.save(confirmationToken);
         userService.enableUser(confirmationToken.getUser().getId());
         return ResponseEntity.ok("Confirmed");

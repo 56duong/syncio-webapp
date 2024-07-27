@@ -16,7 +16,7 @@ const routes: Routes = [
     path: '',
     component: FeedComponent,
   },
-  
+
   {
     path: 'profile/:userId',
     component: ProfileComponent,
@@ -27,13 +27,13 @@ const routes: Routes = [
     loadChildren: () =>
       import('./messages/messages.module').then((m) => m.MessagesModule),
     canActivate: [authGuard],
-    data: { requiredRoles: [RoleEnum.USER] }
+    data: { requiredRoles: [RoleEnum.USER] },
   },
   {
     path: 'create-post',
     component: CreatePostComponent,
     canActivate: [authGuard],
-    data: { requiredRoles: [RoleEnum.USER] }
+    data: { requiredRoles: [RoleEnum.USER] },
   },
   {
     path: 'post/:id',
@@ -41,13 +41,14 @@ const routes: Routes = [
   },
   {
     path: 'labels-shop',
-    component: LabelsShopComponent
+    component: LabelsShopComponent,
   },
   {
     path: 'payment-info',
     component: PaymentInfoComponent,
     canActivate: [authGuard],
-    data: { requiredRoles: [RoleEnum.USER] }
+
+    data: { requiredRoles: [RoleEnum.USER] },
   },
   {
     path: 'account',
@@ -56,7 +57,7 @@ const routes: Routes = [
     data: { requiredRoles: [RoleEnum.USER] },
     loadChildren: () =>
       import('./setting/setting.module').then((m) => m.SettingModule),
-  }
+  },
 ];
 
 @NgModule({
