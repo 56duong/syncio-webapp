@@ -1,0 +1,11 @@
+.left-side ::ng-deep {
+  .p-button-label {
+    flex: none;
+  }
+
+  .menu-active .p-button {
+    background: rgba(100, 116, 139, 0.16);
+    border-color: transparent;
+    color: #64748B;
+  }
+}

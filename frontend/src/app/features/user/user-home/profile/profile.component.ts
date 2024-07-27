@@ -168,10 +168,6 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  public handleEditProfile(): void {
-    this.router.navigate(['/edit-profile']);
-  }
-
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
     if (file) {
@@ -209,6 +205,10 @@ export class ProfileComponent implements OnInit {
    * @param targetId the user id to follow/unfollow
    */
   toggleFollow(targetId: string | undefined) {
+    if (!this.currentUserId) {
+      this.router.navigate(['/login']);
+      return;
+    }
     if (!targetId) return;
     this.userFollowService.toggleFollow(targetId).subscribe({
       next: (response) => {

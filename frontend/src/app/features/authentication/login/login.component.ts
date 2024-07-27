@@ -11,12 +11,15 @@ import { TokenService } from 'src/app/core/services/token.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LangService } from 'src/app/core/services/lang.service';
+import { LoadingService } from 'src/app/core/services/loading.service';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   providers: [MessageService],
 })
+
 export class LoginComponent implements OnInit {
   @ViewChild('loginForm') loginForm!: NgForm;
   isActive = false;
@@ -57,7 +60,8 @@ export class LoginComponent implements OnInit {
     private toastService: ToastService,
     private route: ActivatedRoute,
     private translateService: TranslateService,
-    public langService: LangService
+    public langService: LangService,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit() {
@@ -96,7 +100,10 @@ export class LoginComponent implements OnInit {
     const loginDTO: LoginDTO = {
       email: this.email,
       password: this.password,
+      role_name: 'USER',
     };
+
+    this.loadingService.show();
 
     this.userService.login(loginDTO).subscribe({
       next: (response: LoginResponse) => {
@@ -105,6 +112,8 @@ export class LoginComponent implements OnInit {
 
         this.userService.getUserDetail(token).subscribe({
           next: (response: any) => {
+            this.loadingService.hide();
+
             this.userResponse = {
               ...response,
             };
@@ -119,6 +128,7 @@ export class LoginComponent implements OnInit {
           },
           complete: () => {},
           error: (error: any) => {
+            this.loadingService.hide();
             let errorMessage = '';
             if(error.error.subErrors) {
               const subErrors = error.error.subErrors;
@@ -135,6 +145,7 @@ export class LoginComponent implements OnInit {
       },
       complete: () => {},
       error: (error: any) => {
+        this.loadingService.hide();
         let errorMessage = '';
         if(error.error.subErrors) {
           const subErrors = error.error.subErrors;

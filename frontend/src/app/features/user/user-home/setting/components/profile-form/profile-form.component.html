@@ -1,0 +1,38 @@
+<div
+  class="col-8 m-auto flex flex-column justify-content-center align-items-center"
+>
+  <app-avatar [width]="128" [userId]="userResponse?.id"></app-avatar>
+
+  <p-button label="QR Code" class="mt-4" (click)="showQrCode()"></p-button>
+
+  <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+    <label for="email">Email</label>
+    <input formControlName="email" type="email" required />
+
+    <label for="username">Username</label>
+    <input formControlName="username" type="text" required />
+
+    <label for="bio">Bio:</label>
+    <textarea formControlName="bio" rows="4" required></textarea>
+
+    <p-button
+      label="Submit"
+      type="submit"
+      class="block text-right mt-6"
+      styleClass="col-4"
+    ></p-button>
+  </form>
+</div>
+<p-dialog
+  [(visible)]="qrCodeDialogVisible"
+  [modal]="true"
+  header="QR Code"
+  [style]="{ width: '50vw' }"
+>
+  <img [src]="qrCodeUrl" alt="QR Code" style="width: 70%; height: auto" />
+  <p-button
+    label="Close"
+    icon="pi pi-times"
+    (click)="qrCodeDialogVisible = false"
+  ></p-button>
+</p-dialog>

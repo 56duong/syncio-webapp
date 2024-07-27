@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
 import { MessageRoomMember } from 'src/app/core/interfaces/message-room-member';
 import { User } from 'src/app/core/interfaces/user';
@@ -37,7 +38,7 @@ export class MessageRoomDetailComponent {
 
   _editMemberDialogItems: DialogItem[] = [
     { 
-      label: 'Remove from group',
+      label: this.translateService.instant('removeFromGroup'),
       bold: 7,
       color: 'red', 
       action: () => this.removeMember(this.selectedMember)
@@ -50,7 +51,7 @@ export class MessageRoomDetailComponent {
       items = [
         ...items,
         { 
-          label: 'Make admin',
+          label: this.translateService.instant('makeAdmin'),
           action: () => this.makeAdmin(this.selectedMember)
         }
       ];
@@ -59,7 +60,7 @@ export class MessageRoomDetailComponent {
       items = [
         ...items,
         { 
-          label: 'Remove admin',
+          label: this.translateService.instant('removeAdmin'),
           action: () => this.removeAdmin(this.selectedMember)
         }
       ];
@@ -67,22 +68,22 @@ export class MessageRoomDetailComponent {
     return [
       ...items,
       { 
-        label: 'Cancel',
+        label: this.translateService.instant('cancel'),
         action: () => this.isVisibleEditMember = false
       }
     ];
   }
 
   isVisibleLeaveChat: boolean = false; // Indicates if the leave chat dialog is visible
-  leaveChatDialogItems = [
+  leaveChatDialogItems: any = [
     { 
-      label: 'Leave chat',
+      label: this.translateService.instant('leaveChat'),
       color: 'red', 
       bold: 7,
       action: () => this.leaveChat()
     },
     { 
-      label: 'Cancel',
+      label: this.translateService.instant('cancel'),
       action: () => this.isVisibleLeaveChat = false
     }
   ]; // Dialog items for the leave chat dialog
@@ -90,7 +91,8 @@ export class MessageRoomDetailComponent {
   constructor(
     private messageRoomService: MessageRoomService,
     private messageRoomMemberService: MessageRoomMemberService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private translateService: TranslateService
   ) { }
 
   ngOnInit() {

@@ -21,19 +21,17 @@ public class ImageToText {
         this.accessToken = accessToken;
     }
 
-    public String execute(String photoUrl) throws ExecutionException, InterruptedException, URISyntaxException {
+    public String execute(String photoUrl) throws ExecutionException, InterruptedException {
         return fetchAndProcessPhoto(photoUrl).get();
     }
 
-    public CompletableFuture<String> fetchAndProcessPhoto(String photoUrl) throws URISyntaxException {
-        URI photoURI = new URI(null, null, photoUrl, null);
-        String finalPhotoUrl = photoURI.toASCIIString();
+    public CompletableFuture<String> fetchAndProcessPhoto(String photoUrl) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                byte[] imageData = HttpUtil.fetchPhoto(finalPhotoUrl);
+                byte[] imageData = HttpUtil.fetchPhoto(photoUrl);
                 return generateText(imageData);
             } catch (Exception e) {
-                throw new RuntimeException("Failed to process photo from URL: " + finalPhotoUrl, e);
+                throw new RuntimeException("Failed to process photo from URL: " + photoUrl, e);
             }
         });
     }

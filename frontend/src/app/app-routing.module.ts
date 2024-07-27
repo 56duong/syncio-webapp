@@ -9,7 +9,6 @@ import { ToastModule } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
 import { ChangePasswordComponent } from './features/authentication/changepassword/changepassword.component';
 import { AdminComponent } from './features/admin/admin.component';
-import { ProfileFormComponent } from './features/user/user-home/profile-form/profile-form.component';
 import { SearchComponent } from './features/user/user-home/search/search.component';
 import { PrimengModule } from './primeng/primeng.module';
 import { RegisterComponent } from './features/authentication/register/register.component';
@@ -18,16 +17,18 @@ import { RoleEnum } from './core/interfaces/user';
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 import { NotAuthorizedComponent } from './shared/components/not-authorized/not-authorized.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from "./shared/shared.module";
 
 @NgModule({
-  declarations: [ProfileFormComponent],
+  declarations: [],
   imports: [
     // other modules
     ToastModule,
     DialogModule,
     FormsModule,
     ReactiveFormsModule,
-  ],
+    SharedModule
+],
   // providers, bootstrap, etc.
 })
 export class YourModule {}
@@ -71,13 +72,6 @@ const routes: Routes = [
     path: 'confirm-user-register',
     title: 'confirm-user-register',
     component: LoginComponent,
-  },
-  {
-    path: 'edit-profile',
-    title: 'edit-profile',
-    component: ProfileFormComponent,
-    canActivate: [authGuard],
-    data: { requiredRoles: [RoleEnum.USER] }
   },
   { path: 'search', component: SearchComponent },
   {

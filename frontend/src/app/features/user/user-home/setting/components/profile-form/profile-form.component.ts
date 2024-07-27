@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../../../core/services/user.service';
-import { User } from 'src/app/core/interfaces/user';
+import { UserService } from '../../../../../../core/services/user.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
-import { MessageService } from 'primeng/api';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-profile-form',
@@ -17,12 +15,12 @@ export class ProfileFormComponent {
   profileForm: FormGroup = new FormGroup({});
   userResponse?: UserResponse | null =
     this.userService.getUserResponseFromLocalStorage();
+  qrCodeUrl: string = ''; // URL of the QR code image
+  qrCodeDialogVisible: boolean = false;
+  profileId: string = ''; // user id from route params
   constructor(
-    private ar: ActivatedRoute,
-    private ds: UserService,
-    private route: Router,
     private userService: UserService,
-    private messageService: MessageService
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -31,26 +29,15 @@ export class ProfileFormComponent {
         `${this.userResponse?.username}`,
         Validators.required
       ),
-      email: new FormControl(`${this.userResponse?.email}`, [
-        Validators.required,
-        Validators.email,
-      ]),
+      email: new FormControl(
+        { value: `${this.userResponse?.email}`, disabled: true },
+        [Validators.required, Validators.email]
+      ),
       bio: new FormControl(`${this.userResponse?.bio || ''}`),
     });
     console.log('this.userResponse', this.userResponse);
   }
-  showError(message: string) {
-    this.messageService.add({
-      severity: 'error',
-      detail: message,
-    });
-  }
-  showSuccess(message: string) {
-    this.messageService.add({
-      severity: 'success',
-      detail: message,
-    });
-  }
+
   updateProfile(): void {
     if (this.profileForm) {
       this.userService
@@ -61,14 +48,32 @@ export class ProfileFormComponent {
               ...response.data,
             };
             this.userService.saveUserResponseToLocalStorage(this.userResponse);
-            this.showSuccess('Profile updated successfully');
+            this.toastService.showSuccess(
+              'Success',
+              'Profile updated successfully'
+            );
           },
           error: (error) => {
-            this.showError(error.error);
+            console.log('error', error);
+            this.toastService.showError('Error', error.error);
           },
         });
     } else {
-      this.showError('Please fill email and username');
+      this.toastService.showError('Error', 'Please fill email and username');
+    }
+  }
+  showQrCode() {
+    const userId = this.userResponse?.id;
+    if (userId) {
+      this.userService.getQrCodeFromUser(userId).subscribe({
+        next: (response) => {
+          this.qrCodeUrl = response;
+          this.qrCodeDialogVisible = true;
+        },
+        error: (error) => {
+          console.error('Error getting QR code', error);
+        },
+      });
     }
   }
 }

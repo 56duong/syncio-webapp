@@ -94,11 +94,12 @@
           <!-- Logged in -->
           <div>
             <p-button *ngIf="currentUserId" 
-              [id]="'ProfileButton'" class="text-left" styleClass="shadow-none" [text]="true" [plain]="true"
-              routerLinkActive="menu-active"
-              [routerLink]="['profile', currentUserId]"
-              [label]="currentUsername">
-              <app-avatar [userId]="currentUserId" [width]="32" style="margin-right: 4px;"></app-avatar>
+                      [id]="'ProfileButton'" class="text-left profile-button" styleClass="shadow-none" [text]="true" [plain]="true"
+                      routerLinkActive="menu-active"
+                      [routerLink]="['profile', currentUserId]">
+                <app-avatar class="avatar" [userId]="currentUserId" [width]="32" style="margin-right: 4px;"></app-avatar>
+                <span class="p-button-label">{{ currentUsername }}</span>
+                <app-username-label class="user-label" [userId]="currentUserId" [username]="" [fontWeight]="" [fontSize]=""></app-username-label>
             </p-button>
           </div>
         </li>

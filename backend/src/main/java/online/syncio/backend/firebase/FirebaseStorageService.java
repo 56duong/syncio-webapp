@@ -25,7 +25,6 @@ public class FirebaseStorageService {
     @Value("${firebase.storage.bucket.url}")
     private String bucketName;
 
-
     @Value("${firebase.service.account.key.path}")
     private String serviceAccount;
 
@@ -88,6 +87,17 @@ public class FirebaseStorageService {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public boolean deleteFile(String fileName) {
+        try {
+            StorageClient.getInstance().bucket().get(fileName).delete();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

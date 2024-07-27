@@ -1,52 +1,80 @@
+import { debounceTime, distinctUntilChanged, Subject, Subscription, switchMap } from 'rxjs';
 import { UserService } from './../../../../core/services/user.service';
 import {
-  ChangeDetectorRef,
   Component,
-  ElementRef,
   EventEmitter,
-  HostListener,
   Input,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { Search } from 'src/app/core/interfaces/search';
+import { UserSettingService } from 'src/app/core/services/user-setting.service';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
 })
+
 export class SearchComponent implements OnInit {
   @Input() showSearch: boolean = true;
   @Output() onClose = new EventEmitter<void>();
-  public clickInput: boolean = false;
   public dataFetched: boolean = false;
-  public searchKey: string = '';
-  public imgUrl: string = '/assets/img/userdata/';
-  public suggestions: Search[] = [];
-  userResponse?: UserResponse | null =
-    this.userService.getUserResponseFromLocalStorage();
+  public suggestions: Search[] = []; // Array to store the suggestions
+  userResponse?: UserResponse | null = this.userService.getUserResponseFromLocalStorage();
+  private searchTerms = new Subject<string>(); // Subject to handle the search terms
+  private searchSubscription: Subscription = new Subscription(); // Subscription to handle the search
+  isLoading: boolean = false; // Flag to indicate if the data is being fetched
+  @ViewChild('searchInput') searchInput: any;
 
   constructor(
     private userService: UserService,
-    private cdRef: ChangeDetectorRef,
-    private elRef: ElementRef
+    private userSettingService: UserSettingService,
+    private toastService: ToastService
   ) {}
+
+
+  ngOnInit(): void {
+    this.getRecommendations(this.userResponse?.username);
+    // add debounce time to search input
+    this.searchSubscription = this.searchTerms.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((term: string) => {
+        this.isLoading = true;
+        return this.userService.searchUsersByUsername(term);
+      }),
+    ).subscribe(suggestions => {
+      this.isLoading = false
+      this.suggestions = suggestions.map(suggestion => ({
+        id: suggestion.id,
+        username: suggestion.username,
+        followerCount: suggestion.followerCount,
+      }));
+    });
+  }
+
+
+  ngOnDestroy() {
+    this.searchSubscription.unsubscribe();
+  }
+  
+
   closeSearch(): void {
     this.showSearch = false;
     this.onClose.emit();
   }
 
-  ngOnInit(): void {
-    this.getRecommendations(this.userResponse?.username);
-  }
 
   private getRecommendations(username: string | undefined) {
     if (!username) {
       console.error('Username is undefined');
       return;
     }
+    this.isLoading = true;
     this.userService.getUsersRecommend(username).subscribe({
       next: (response) => {
         this.suggestions = response.map((item) => ({
@@ -54,47 +82,58 @@ export class SearchComponent implements OnInit {
           username: item.username,
           // avatar: item.avtURL,
         }));
-        this.dataFetched = true; // Update the state to show that data has been fetched
+        this.isLoading = false;
       },
       error: (error) => {
         console.error('Error fetching recommendations:', error);
-        this.dataFetched = false; // Update the state to indicate that fetching data failed
+        this.isLoading = false;
       },
     });
   }
 
-  public onClickInput() {
-    const searchInput = document.getElementById('nav-search-input');
-    if (searchInput) {
-      searchInput.focus();
-    }
-    this.clickInput = true;
-    this.dataFetched = true;
+
+  /** When type in the search input */
+  public handleKeyup(event: any) {
+    this.searchTerms.next(event.target.value);
   }
 
-  public handleKeyup(e: any) {
-    this.dataFetched = false;
-    this.searchKey = e.target.value;
-    this.userService.searchUsersByUsername(e.target.value).subscribe((suggestions) => {
-      this.dataFetched = true;
-      this.suggestions;
-      this.suggestions.splice(0, this.suggestions.length);
-      for (let i = 0; i < suggestions.length; i++) {
-        this.suggestions.push({
-          id: suggestions[i].id,
-          username: suggestions[i].username,
-          // avatar: suggestions[i].avtURL,
-          followerCount: suggestions[i].followerCount,
-        });
-      }
-    });
-  }
 
-  public clickSuggestion(e: any) {}
-
-  public clickClearInput(e: any) {
-    this.searchKey = '';
-    this.clickInput = false;
+  /** Clear the input field and the suggestions */
+  public clickClearInput() {
+    this.searchInput.nativeElement.value = '';
     this.suggestions = [];
   }
+
+
+  /**
+   * On upload image face to search
+   * @param event 
+   */
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.isLoading = true;
+      this.clickClearInput();
+
+      const fd = new FormData();
+      fd.append('file', file);
+
+      this.userSettingService.searchByImage(fd).subscribe({
+        next: (response: any) => {
+          this.isLoading = false;
+          this.suggestions = response.map((item: any) => ({
+            id: item.id,
+            username: item.username,
+            followerCount: item.followerCount,
+          }));
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.toastService.showError('Error', error.error.message);
+          console.error('Error updating image search:', error);
+        }
+      });
+    }
+  }
+
 }

@@ -12,6 +12,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { MessageItemContentComponent } from './message-item-content/message-item-content.component';
 import { SelectUserDialogComponent } from './select-user-dialog/select-user-dialog.component';
 import { MessageRoomDetailComponent } from './message-room-detail/message-room-detail.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { MessageRoomDetailComponent } from './message-room-detail/message-room-d
     CoreModule,
     PrimengModule,
     PickerComponent,
-    SharedModule
+    SharedModule,
+    TranslateModule
   ]
 })
 export class MessagesModule { }

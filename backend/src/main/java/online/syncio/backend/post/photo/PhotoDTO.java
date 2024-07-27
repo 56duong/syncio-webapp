@@ -2,7 +2,6 @@ package online.syncio.backend.post.photo;
 
 import lombok.Data;
 import online.syncio.backend.utils.Constants;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,6 +22,7 @@ public class PhotoDTO {
 
 
     private String cleanUrl(String url) {
+        System.out.println("imageurl: " + url);
         String prefixToRemove = Constants.BACKEND_URL + "/api/v1/posts/images/";
         if (url.startsWith(prefixToRemove)) {
             return url.substring(prefixToRemove.length());

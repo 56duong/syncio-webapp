@@ -1,8 +1,6 @@
 package online.syncio.backend.payment.vnpay;
 
 import lombok.Getter;
-import online.syncio.backend.utils.Constants;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import java.text.SimpleDateFormat;
@@ -10,12 +8,9 @@ import java.util.*;
 
 @Configuration
 public class VNPayConfig {
-
-
-
     @Getter
     public String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public String vnp_ReturnUrl = Constants.BACKEND_URL + "/api/v1/payment/vnpay-callback";
+    public String vnp_ReturnUrl = "http://localhost:8080/api/v1/payment/vnpay-callback";
     public String vnp_TmnCode = "FT91TB2X";
     @Getter
     public String secretKey = "MF98URJP1EVWBE9PHV96QFLLRW16KQ2M";

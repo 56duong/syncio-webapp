@@ -7,7 +7,6 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class SearchSuggestionComponent implements OnInit {
   @Input() suggestion: any;
-  @Input() imgUrl: any;
   constructor() {}
 
   ngOnInit(): void {}

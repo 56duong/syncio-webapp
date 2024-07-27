@@ -31,12 +31,12 @@
       <div class="flex align-items-center gap-3">
         <!-- Username -->
         <!-- <h1 class="font-normal text-2xl my-0 mr-3">{{ userProfile.username }}</h1> -->
-        <app-username-label
+
+        <app-username-label 
           [userId]="currentUserId"
           [username]="userProfile.username"
-          [fontSize]="'28px'"
-          [color]="''"
-        >
+          [fontSize]="'1.5rem'"
+          [color]="''">
         </app-username-label>
         <!-- Follow button -->
         <p-button
@@ -63,13 +63,11 @@
         <!-- Edit profile/ Setting -->
         <ng-container *ngIf="isOwnerProfile">
           <!-- Edit profile -->
-          <a *ngIf="isOwnerProfile" href="/edit-profile">
-            <p-button
-              (click)="handleEditProfile()"
-              label="Edit Profile"
-              severity="my-custom-secondary"
-            ></p-button>
-          </a>
+
+          <div *ngIf="isOwnerProfile" routerLink="/account/edit-profile">
+            <p-button label="Edit Profile" severity="my-custom-secondary"></p-button>
+          </div>
+
           <!-- choose Label -->
           <p-button
             class="ml-2"
@@ -80,11 +78,8 @@
           </p-button>
 
           <!-- Setting -->
-          <i
-            *ngIf="isOwnerProfile"
-            class="pi pi-cog cursor-pointer"
-            style="font-size: 1.5rem"
-          ></i>
+
+          <i *ngIf="isOwnerProfile" routerLink="/account/edit-profile" class="pi pi-cog cursor-pointer" style="font-size: 1.5rem"></i>
         </ng-container>
       </div>
 
@@ -163,7 +158,7 @@
           <img
             height="100%"
             width="100%"
-            [src]="post.photos[0].url"
+            [src]="post.photos[0].url | constructImageUrl"
             [alt]="post.photos[0].altText"
             style="object-fit: cover; display: block"
           />
@@ -278,3 +273,4 @@
     (click)="qrCodeDialogVisible = false"
   ></p-button>
 </p-dialog>
+

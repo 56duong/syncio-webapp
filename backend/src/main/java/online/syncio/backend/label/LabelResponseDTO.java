@@ -1,15 +1,16 @@
 package online.syncio.backend.label;
 
 import lombok.Data;
+
 import online.syncio.backend.utils.Constants;
 import org.springframework.beans.factory.annotation.Value;
+
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 public class LabelResponseDTO {
-
     private UUID id;
     private String name;
     private Long price;
@@ -27,6 +28,7 @@ public class LabelResponseDTO {
     }
 
     public String getLabelURL() {
+
         return labelURL = Constants.BACKEND_URL + "/api/v1/posts/images/" + labelURL;
     }
 }

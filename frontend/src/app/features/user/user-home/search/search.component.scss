@@ -50,7 +50,6 @@ $white : white;
 
     h2 {
         color: $black;
-        padding-bottom: 1em;
         font-size: 25px;
     }
 
@@ -118,4 +117,15 @@ $white : white;
 
 .search__wrap::ng-deep .p-divider.p-divider-horizontal {
     margin: 1.25rem 0;
+}
+
+.nav-search-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.5rem;
+}
+
+.search-result ::ng-deep app-search-suggestion:hover {
+    background-color: var(--gray-200);
 }

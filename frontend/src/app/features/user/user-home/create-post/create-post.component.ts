@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Post, Visibility } from 'src/app/core/interfaces/post';
+import { LoadingService } from 'src/app/core/services/loading.service';
 import { PostService } from 'src/app/core/services/post.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { TokenService } from 'src/app/core/services/token.service';
@@ -52,6 +53,7 @@ export class CreatePostComponent {
     private cdr: ChangeDetectorRef,
     private tokenService: TokenService,
     private toastService: ToastService,
+    private loadingService: LoadingService,
     private router: Router
   ) {}
 
@@ -105,6 +107,8 @@ export class CreatePostComponent {
       return; // Stop execution if validation fails
     }
 
+    this.loadingService.show();
+
     //add post to form data
     formData.append(
       'post',
@@ -125,6 +129,8 @@ export class CreatePostComponent {
 
     this.postService.createPost(formData).subscribe({
       next: (response: any) => {
+        this.loadingService.hide();
+
         post.id = response.body;
         post.createdBy = this.currentUserId;
         this.postService.setNewPostCreated(post);
@@ -136,6 +142,11 @@ export class CreatePostComponent {
         this.isVisible = false;
       },
       error: (error) => {
+        this.loadingService.hide();
+        this.toastService.showError(
+          'Error',
+          'An error occurred while creating the post'
+        );
         console.error(error);
       },
     });

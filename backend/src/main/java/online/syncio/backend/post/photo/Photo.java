@@ -1,13 +1,10 @@
 package online.syncio.backend.post.photo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import online.syncio.backend.post.Post;
-import online.syncio.backend.utils.Constants;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.nio.file.Files;
@@ -20,7 +17,6 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 @Data
 public class Photo {
-
     @Id
     @Column(nullable = false, updatable = false)
     @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
@@ -35,19 +31,22 @@ public class Photo {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    public String getUrl() {
+        if (url == null) return null;
+        return "posts/" + url;
+    }
+
     @JsonIgnore
     public String getImageUrl(String storageType) {
         if("firebase".equals(storageType)) {
-            return "https://firebasestorage.googleapis.com/v0/b/syncio-bf6ca.appspot.com/o/" + url.replaceAll("/", "%2F") + "?alt=media";
+            return "https://firebasestorage.googleapis.com/v0/b/syncio-bf6ca.appspot.com/o/" + getUrl().replaceAll("/", "%2F") + "?alt=media";
         }
         else {
-            Path imagePath = Paths.get("uploads/" + url);
+            Path imagePath = Paths.get("uploads/" + getUrl());
             if (Files.exists(imagePath)) {
-                return Constants.BACKEND_URL + "/api/v1/posts/images/" + url;
+                return "http://localhost:8080/api/v1/images/" + getUrl();
             }
-            else {
-                return "https://your-s3-bucket-name.s3.your-region.amazonaws.com/" + url;
-            }
+            return null;
         }
     }
 }
