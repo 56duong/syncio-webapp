@@ -15,9 +15,19 @@ export class ConstructImageUrlPipe implements PipeTransform {
   transform(value: string | undefined): string {
     if(!value) return '';
     const isProduction = environment.production;
-    const url = isProduction 
-                  ? `https://firebasestorage.googleapis.com/v0/b/syncio-bf6ca.appspot.com/o/${value.replaceAll("/", "%2F")}?alt=media`
-                  : `http://localhost:8080/api/v1/images/${value}`;
+    const isAndroid = environment.android;
+
+    var url = '';
+    if(isAndroid) {
+      url = isProduction 
+                    ? `https://firebasestorage.googleapis.com/v0/b/syncio-bf6ca.appspot.com/o/${value.replaceAll("/", "%2F")}?alt=media`
+                    : (window.localStorage.getItem('apiUrl') || environment.apiUrl) + 'api/v1/images/' + value;
+    }
+    else {
+      url = isProduction 
+                    ? `https://firebasestorage.googleapis.com/v0/b/syncio-bf6ca.appspot.com/o/${value.replaceAll("/", "%2F")}?alt=media`
+                    : `http://localhost:8080/api/v1/images/${value}`;
+    }
 
     return url;
   }
