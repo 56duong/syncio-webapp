@@ -140,6 +140,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "owner")
     private Set<Billing> ownedItems;
 
+    @Column(nullable = true)
+    private String qrCodeUrl;
+
     @Column(name = "username_last_modified")
     private LocalDateTime usernameLastModified;
     @Override

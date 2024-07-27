@@ -1,5 +1,11 @@
 package online.syncio.backend.user;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import jakarta.validation.Valid;
 import online.syncio.backend.auth.responses.LoginResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
@@ -14,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -168,6 +176,22 @@ public class UserController {
     @GetMapping("/outstanding")
     public ResponseEntity<List<UserDTO>> getOutstandingUsers() {
         return ResponseEntity.ok(userService.getOutstandingUsers());
+    }
+
+    @GetMapping("/generateUserQRCode/{userId}")
+    public String generateUserQRCode(@PathVariable UUID userId) throws WriterException, IOException {
+        String qrCodeText = userId.toString();
+        String qrCodeUrl = userService.generateQRCodeAndUploadToFirebase(qrCodeText, 300, 300);
+
+        userService.saveQRcode(qrCodeUrl,userId);
+
+        return "QR code generated and saved at " + qrCodeUrl;
+    }
+
+    //getQrcode
+    @GetMapping("/getQrcode/{userId}")
+    public String getQrcode(@PathVariable UUID userId) {
+        return userService.getQrcode(userId);
     }
 
 }

@@ -23,7 +23,6 @@ public class PhotoDTO {
 
 
     private String cleanUrl(String url) {
-        System.out.println("imageurl: " + url);
         String prefixToRemove = Constants.BACKEND_URL + "/api/v1/posts/images/";
         if (url.startsWith(prefixToRemove)) {
             return url.substring(prefixToRemove.length());

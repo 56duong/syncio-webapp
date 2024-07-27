@@ -28,7 +28,7 @@ export class UserService {
     headers: this.httpUtilService.createHeaders(),
   };
   private readonly TOKEN_KEY = 'access_token';
-  
+
   constructor(
     private http: HttpClient,
     private httpUtilService: HttpUtilService
@@ -148,7 +148,9 @@ export class UserService {
   }
 
   searchUsersByUsername(username?: string): Observable<UserProfile[]> {
-    const url = username ? `${this.apiURL}/search-by-username?username=${username}` : this.apiURL;
+    const url = username
+      ? `${this.apiURL}/search-by-username?username=${username}`
+      : this.apiURL;
     return this.http.get<UserProfile[]>(url);
   }
 
@@ -189,8 +191,8 @@ export class UserService {
   /**
    * Get User Profile By Id.
    * Use for case when the user already logged in.
-   * @param userId 
-   * @returns 
+   * @param userId
+   * @returns
    */
   getUserProfile2(userId: any): Observable<UserProfile> {
     const url = `${this.apiURL}/profile/${userId}`;
@@ -220,7 +222,10 @@ export class UserService {
     const url = `${this.apiURL}/${userId}/username`;
     return this.http.get<Object>(url);
   }
-
+  getQrCodeFromUser(userId: string): Observable<any> {
+    const url = `${this.apiURL}/getQrcode/${userId}`;
+    return this.http.get(url, { responseType: 'text' });
+  }
   /**
    * Search users by username or email.
    * @param username - The username to search if exists.
@@ -265,14 +270,16 @@ export class UserService {
     return this.getUsers().pipe(map((users) => users.length));
   }
 
-
   logout(): Observable<any> {
     const token = localStorage.getItem(this.TOKEN_KEY);
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     });
-    return this.http.post<any>(`${this.apiURL}/logout`, {}, { headers: headers });
+    return this.http.post<any>(
+      `${this.apiURL}/logout`,
+      {},
+      { headers: headers }
+    );
   }
-
 }
