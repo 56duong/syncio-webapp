@@ -1,5 +1,6 @@
 package online.syncio.backend.user;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,7 +27,11 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     public User findByResetPasswordToken(String token);
 
-    List<User> findTop20ByUsernameContainingOrEmailContaining(String username, String email);
+    @Query("SELECT u.id, u.username, size(u.followers) " +
+            "FROM User u " +
+            "WHERE u.username LIKE %:username% OR u.email LIKE %:email% " +
+            "ORDER BY CASE WHEN u.username = :username THEN 0 WHEN u.email = :email THEN 1 ELSE 2 END, u.username, u.email")
+    List<Object[]> findTop20ByUsernameContainingOrEmailContaining(@Param("username") String username, @Param("email") String email, Pageable pageable);
 
     @Modifying
     @Query("UPDATE User u SET u.status = 'ACTIVE' WHERE u.id = :id")

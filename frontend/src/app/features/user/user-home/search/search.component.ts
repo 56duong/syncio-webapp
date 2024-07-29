@@ -46,7 +46,7 @@ export class SearchComponent implements OnInit {
       distinctUntilChanged(),
       switchMap((term: string) => {
         this.isLoading = true;
-        return this.userService.searchUsersByUsername(term);
+        return this.userService.searchUsers(term, term);
       }),
     ).subscribe(suggestions => {
       this.isLoading = false

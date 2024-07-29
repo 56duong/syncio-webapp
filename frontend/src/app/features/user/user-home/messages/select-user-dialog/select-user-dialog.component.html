@@ -19,6 +19,15 @@
       [multiple]="true"
       [placeholder]="dialogDescription"
       styleClass="p-3">
+      <ng-template let-user pTemplate="item">
+        <div class="flex align-items-center gap-2">
+          <app-avatar [userId]="user.id" [width]="48" [userStory]="user"></app-avatar>
+          <div>
+            <div>{{ user.username }}</div>
+            <small class="text-gray-500">{{ user.followerCount }} followers</small>
+          </div>
+        </div>
+      </ng-template>
     </p-autoComplete> 
   </span>
 

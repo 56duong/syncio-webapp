@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { MessageContent, MessageContentTypeEnum } from 'src/app/core/interfaces/message-content';
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
 import { User } from 'src/app/core/interfaces/user';
+import { UserSearch } from 'src/app/core/interfaces/user-search';
 import { MessageContentService } from 'src/app/core/services/message-content.service';
 import { MessageRoomMemberService } from 'src/app/core/services/message-room-member.service';
 import { MessageRoomService } from 'src/app/core/services/message-room.service';
@@ -22,7 +23,7 @@ export class MessagesComponent {
   currentUser!: User; // Current user logged in.
   
   isDialogVisible: boolean = false;
-  selectedUserMembers: User[] = []; // Array of selected user members to create a message room.
+  selectedUserMembers: UserSearch[] = []; // Array of selected user members to create a message room.
 
   selectedMessageRoom!: MessageRoom; // Selected message room to display the messages content.
   
@@ -274,7 +275,7 @@ export class MessagesComponent {
   /**
    * Check and create a new message room with selected user members.
    */
-  chat(event: User[]) {
+  chat(event: UserSearch[]) {
     this.selectedUserMembers = event;
 
     if(this.selectedUserMembers.length <= 0) return;

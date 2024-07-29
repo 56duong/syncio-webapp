@@ -9,6 +9,7 @@ import { LoginDTO } from 'src/app/features/authentication/login/login.dto';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
 import { FogotPasswordDTO } from 'src/app/features/authentication/forgotpassword/forgotpassword.dto';
 import { UserProfile } from '../interfaces/user-profile';
+import { UserSearch } from '../interfaces/user-search';
 
 @Injectable({
   providedIn: 'root',
@@ -226,15 +227,16 @@ export class UserService {
     const url = `${this.apiURL}/getQrcode/${userId}`;
     return this.http.get(url, { responseType: 'text' });
   }
+  
   /**
    * Search users by username or email.
    * @param username - The username to search if exists.
    * @param email - The email to search if exists.
-   * @returns array of users.
+   * @returns top 20 users that match the search criteria.
    */
-  searchUsers(username: string, email: string): Observable<User[]> {
+  searchUsers(username: string, email: string): Observable<UserSearch[]> {
     const url = `${this.apiURL}/search?username=${username}&email=${email}`;
-    return this.http.get<User[]>(url);
+    return this.http.get<UserSearch[]>(url);
   }
 
   changeAvatar(formData: FormData): Observable<void> {

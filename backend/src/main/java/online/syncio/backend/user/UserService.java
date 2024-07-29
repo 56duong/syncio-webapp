@@ -18,6 +18,8 @@ import online.syncio.backend.post.PostRepository;
 import online.syncio.backend.utils.AuthUtils;
 import online.syncio.backend.utils.Constants;
 import online.syncio.backend.utils.FileUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +35,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -114,11 +117,15 @@ public class UserService {
 
     }
 
-    public List<UserDTO> findTop20ByUsernameContainingOrEmailContaining (final String username, final String email) {
-        final List<User> users = userRepository.findTop20ByUsernameContainingOrEmailContaining(username, email);
+    public List<UserSearchDTO> findTop20ByUsernameContainingOrEmailContaining (final String username, final String email) {
+        Pageable topTwenty = PageRequest.of(0, 20);
+        final List<Object[]> users = userRepository.findTop20ByUsernameContainingOrEmailContaining(username, email, topTwenty);
         return users.stream()
-                    .map(user -> userMapper.mapToDTO(user, new UserDTO()))
-                    .toList();
+                .map(user -> new UserSearchDTO(
+                        (UUID) user[0],
+                        (String) user[1],
+                        ((Number) user[2]).longValue()))
+                .collect(Collectors.toList());
     }
 
     public String getUsernameById(final UUID id) {

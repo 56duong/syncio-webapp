@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<UserDTO>> searchUsers (@RequestParam(name = "username", required = false) final String username,
+    public ResponseEntity<List<UserSearchDTO>> searchUsers (@RequestParam(name = "username", required = false) final String username,
                                                       @RequestParam(name = "email", required = false) final String email) {
         return ResponseEntity.ok(userService.findTop20ByUsernameContainingOrEmailContaining(username, email));
     }
