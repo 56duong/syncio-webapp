@@ -90,6 +90,27 @@
                 }
               ],
               "outputHashing": "all"
+            },
+            "windows": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.windows.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "3mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "outputHashing": "all"
             }
           },
           "defaultConfiguration": "production"
@@ -105,6 +126,9 @@
             },
             "android": {
               "browserTarget": "frontend:build:android"
+            },
+            "windows": {
+              "browserTarget": "frontend:build:windows"
             }
           },
           "defaultConfiguration": "development"

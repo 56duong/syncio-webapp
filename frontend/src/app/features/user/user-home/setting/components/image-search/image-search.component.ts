@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ConstructImageUrlPipe } from 'src/app/core/pipes/construct-image-url.pipe';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserSettingService } from 'src/app/core/services/user-setting.service';
@@ -18,6 +19,7 @@ export class ImageSearchComponent {
     private tokenService: TokenService, 
     private toastService: ToastService,
     private userSettingService: UserSettingService,
+    private redirectService: RedirectService
   ) { }
 
 
@@ -58,7 +60,7 @@ export class ImageSearchComponent {
         next: () => {
           this.toastService.showSuccess('Success', 'Image search Updated successfully');
           setTimeout(() => {
-            window.location.reload();
+            this.redirectService.reloadPage();
           }, 1500);
         },
         error: (error) => {
@@ -75,7 +77,7 @@ export class ImageSearchComponent {
         if(response) {
           this.toastService.showSuccess('Success', 'Image search Deleted successfully');
           setTimeout(() => {
-            window.location.reload();
+            this.redirectService.reloadPage();
           }, 1500);
         }
         else {

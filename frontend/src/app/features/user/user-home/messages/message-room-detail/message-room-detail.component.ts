@@ -5,6 +5,7 @@ import { MessageRoomMember } from 'src/app/core/interfaces/message-room-member';
 import { User } from 'src/app/core/interfaces/user';
 import { MessageRoomMemberService } from 'src/app/core/services/message-room-member.service';
 import { MessageRoomService } from 'src/app/core/services/message-room.service';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { DialogItem } from 'src/app/shared/components/global-dialog/global-dialog.component';
 
@@ -95,7 +96,8 @@ export class MessageRoomDetailComponent {
     private messageRoomService: MessageRoomService,
     private messageRoomMemberService: MessageRoomMemberService,
     private toastService: ToastService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private redirectService: RedirectService
   ) { }
 
   ngOnInit() {
@@ -147,7 +149,7 @@ export class MessageRoomDetailComponent {
             next: () => {
               this.messageRoom.members = this.messageRoom.members?.filter(m => m.userId !== this.currentUser.id);
               this.leaveChatEvent.emit(this.currentUser.id);
-              window.location.replace('/messages');
+              this.redirectService.redirectAndReload('/messages');
             },
             error: (error) => {
               console.log(error);

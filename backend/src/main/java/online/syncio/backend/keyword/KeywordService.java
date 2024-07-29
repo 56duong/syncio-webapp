@@ -1,5 +1,7 @@
 package online.syncio.backend.keyword;
 
+import online.syncio.backend.post.Post;
+import online.syncio.backend.user.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -83,6 +85,43 @@ public class KeywordService {
         // Join the keywords with a comma and return
         return Stream.concat(keywordsLength1.stream(), keywordsLength2.stream())
                 .collect(Collectors.toSet());
+    }
+
+
+    /**
+     * Generate a set of keywords based on the user's interest keywords and the post's keywords.
+     * If the user already has the maximum number of keywords, the last keyword is removed.
+     * @param post
+     * @param user
+     * @return
+     */
+    public static Set<String> generateUpdateKeywords(Post post, User user) {
+        String[] postKeywords;
+        String[] userKeywords;
+        LinkedList<String> updatedKeywords = new LinkedList<>();
+
+        // Get the user's interest keywords
+        if(user.getInterestKeywords() != null && !user.getInterestKeywords().isBlank()) {
+            userKeywords = user.getInterestKeywords().split(", ");
+            updatedKeywords = new LinkedList<>(Arrays.asList(userKeywords));
+        }
+
+        // Get the post's keywords
+        if(post.getKeywords() != null && !post.getKeywords().isBlank()) {
+            postKeywords = post.getKeywords().split(", ");
+
+            // Add the post's keywords to the user's keywords
+            for (String keyword : postKeywords) {
+                // If the user already has the maximum number of keywords, remove the last keyword
+                if (updatedKeywords.size() >= 30) {
+                    updatedKeywords.removeLast();
+                }
+                // Add the new keyword at the beginning of the list
+                updatedKeywords.addFirst(keyword);
+            }
+        }
+
+        return new HashSet<>(updatedKeywords);
     }
 
 }

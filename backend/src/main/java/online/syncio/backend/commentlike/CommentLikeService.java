@@ -1,12 +1,7 @@
 package online.syncio.backend.commentlike;
 
 import lombok.AllArgsConstructor;
-import online.syncio.backend.comment.Comment;
-import online.syncio.backend.comment.CommentRepository;
 import online.syncio.backend.exception.AppException;
-import online.syncio.backend.exception.NotFoundException;
-import online.syncio.backend.user.User;
-import online.syncio.backend.user.UserRepository;
 import online.syncio.backend.utils.AuthUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -20,19 +15,17 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CommentLikeService {
     private final CommentLikeRepository commentLikeRepository;
-    private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
     private final AuthUtils authUtils;
+    private final CommentLikeMapper commentLikeMapper;
 
 
-
-//    CRUD
     public List<CommentLikeDTO> findAll() {
         final List<CommentLike> commentLikes = commentLikeRepository.findAll(Sort.by("createdDate"));
         return commentLikes.stream()
-                .map(commentLike -> mapToDTO(commentLike, new CommentLikeDTO()))
+                .map(commentLike -> commentLikeMapper.mapToDTO(commentLike, new CommentLikeDTO()))
                 .toList();
     }
+
 
     public boolean hasCommentLiked(UUID commentId) {
         final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
@@ -44,9 +37,11 @@ public class CommentLikeService {
         return commentLikeOptional.isPresent();
     }
 
+
     public Long countByCommentId(final UUID commentId) {
         return commentLikeRepository.countByCommentId(commentId);
     }
+
 
     public void toggleLike(UUID commentId) {
         UUID currentLoggedInUserId = authUtils.getCurrentLoggedInUserId();
@@ -66,27 +61,9 @@ public class CommentLikeService {
             commentLikeDTO.setCommentId(commentId);
             commentLikeDTO.setUserId(currentLoggedInUserId);
             CommentLike commentLike = new CommentLike();
-            mapToEntity(commentLikeDTO, commentLike);
+            commentLikeMapper.mapToEntity(commentLikeDTO, commentLike);
             commentLikeRepository.save(commentLike);
         }
     }
 
-
-
-//    MAPPER
-    private CommentLikeDTO mapToDTO(final CommentLike commentLike, final CommentLikeDTO commentLikeDTO) {
-        commentLikeDTO.setCommentId(commentLike.getComment().getId());
-        commentLikeDTO.setUserId(commentLike.getUser().getId());
-        return commentLikeDTO;
-    }
-
-    private CommentLike mapToEntity(final CommentLikeDTO commentLikeDTO, final CommentLike commentLike) {
-        final Comment comment = commentLikeDTO.getCommentId() == null ? null : commentRepository.findById(commentLikeDTO.getCommentId())
-                .orElseThrow(() -> new NotFoundException(Comment.class, "id", commentLikeDTO.getCommentId().toString()));
-        commentLike.setComment(comment);
-        final User user = commentLikeDTO.getUserId() == null ? null : userRepository.findById(commentLikeDTO.getUserId())
-                .orElseThrow(() -> new NotFoundException(User.class, "id", commentLikeDTO.getUserId().toString()));
-        commentLike.setUser(user);
-        return commentLike;
-    }
 }

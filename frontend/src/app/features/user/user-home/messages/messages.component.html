@@ -4,10 +4,10 @@
   <!-- Left  -->
   <div class="left col-3 p-0 flex flex-column">
     <!-- Username Header -->
-    <div class="flex justify-content-between align-items-center p-2">
+    <div *ngIf="currentUser" class="flex justify-content-between align-items-center p-2">
       <div class="flex justify-content-between align-items-center gap-2">
-        <app-avatar [userId]="currentUser?.id" [width]="48"></app-avatar>
-        <h3>{{currentUser?.username}}</h3>
+        <app-avatar [userId]="currentUser.id" [width]="48"></app-avatar>
+        <h3>{{currentUser.username}}</h3>
       </div>
       <i (click)="isDialogVisible = true" class="fa-regular fa-pen-to-square cursor-pointer"></i>
     </div>
@@ -38,15 +38,15 @@
                 <small *ngIf="!messageroom.lastMessage?.type?.startsWith('NOTIFICATION') && messageroom.lastMessage?.type == MessageContentTypeEnum.TEXT" 
                   style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
                   class="line-clamp"
-                  [innerHTML]="messageroom.lastMessage?.message">
+                  [innerHTML]="messageroom.lastMessage.message">
                 </small>
                 <!-- if type is not text, show user sent a sticker or photo -->
                 <small *ngIf="!messageroom.lastMessage?.type?.startsWith('NOTIFICATION') && messageroom.lastMessage?.type != MessageContentTypeEnum.TEXT" 
                   style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
                   <ng-container>
-                    {{messageroom.lastMessage?.user?.username == this.currentUser.username ? 'You' : messageroom.lastMessage?.user?.username}}
+                    {{messageroom.lastMessage.user?.username == this.currentUser.username ? 'You' : messageroom.lastMessage.user?.username}}
                     sent a 
-                    {{messageroom.lastMessage?.type == MessageContentTypeEnum.STICKER ? 'sticker' : 'photo'}}.
+                    {{messageroom.lastMessage.type == MessageContentTypeEnum.STICKER ? 'sticker' : 'photo'}}.
                   </ng-container>
                 </small>
                 <!-- if type is notification, show notification -->
@@ -60,7 +60,7 @@
                 </ng-container>
                 <small>·</small>
                 <!-- date sent -->
-                <small class="white-space-nowrap">{{messageroom.lastMessage?.dateSent | dateAgoPipe: 'mth'}}</small>
+                <small class="white-space-nowrap">{{messageroom.lastMessage.dateSent | dateAgoPipe: 'mth'}}</small>
               </div>
             </div>
             <!-- unSeenCount -->

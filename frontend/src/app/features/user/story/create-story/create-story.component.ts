@@ -2,6 +2,7 @@ import { Component, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import html2canvas from 'html2canvas';
 import { LoadingService } from 'src/app/core/services/loading.service';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 import { StoryService } from 'src/app/core/services/story.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 
@@ -39,7 +40,8 @@ export class CreateStoryComponent {
     private router: Router,
     private toastService: ToastService,
     private elementRef: ElementRef,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private redirectService: RedirectService
   ) { }
 
   ngOnInit() {
@@ -169,7 +171,7 @@ export class CreateStoryComponent {
             this.loadingService.hide();
             this.toastService.showSuccess('Success', 'Story created successfully');
             setTimeout(() => {
-              window.location.href = '/';
+              this.redirectService.redirectAndReload('/');
             }, 3000);
           },
           error: (error) => {

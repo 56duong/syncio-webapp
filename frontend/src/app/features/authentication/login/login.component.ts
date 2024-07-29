@@ -12,6 +12,7 @@ import { ToastService } from 'src/app/core/services/toast.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LangService } from 'src/app/core/services/lang.service';
 import { LoadingService } from 'src/app/core/services/loading.service';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 
 @Component({
   selector: 'app-login',
@@ -61,7 +62,8 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private translateService: TranslateService,
     public langService: LangService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private redirectService: RedirectService
   ) {}
 
   ngOnInit() {
@@ -97,14 +99,14 @@ export class LoginComponent implements OnInit {
 
   switchLang(lang: string) {
     this.langService.setLang(lang);
-    window.location.reload();
+    this.redirectService.reloadPage('/login');
   }
 
   createAccount() {
-    this.router.navigate(['/register']);
+    this.redirectService.redirectAndReload('/register');
   }
   navigateToForgotPassword() {
-    this.router.navigate(['/forgot_password']);
+    this.redirectService.redirectAndReload('/forgot_password');
   }
 
   login() {
@@ -144,8 +146,9 @@ export class LoginComponent implements OnInit {
             if (this.userResponse?.role == 'ADMIN') {
               this.router.navigate(['/admin']);
             } else if (this.userResponse?.role == 'USER') {
+              this.redirectService.redirectAndReload('/');
               // this.router.navigate(['/']);
-              window.location.href = '/';
+              // window.location.href = '/';
             }
           },
           complete: () => {},

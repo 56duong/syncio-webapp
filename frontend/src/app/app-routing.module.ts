@@ -19,20 +19,8 @@ import { NotAuthorizedComponent } from './shared/components/not-authorized/not-a
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from "./shared/shared.module";
 import { UpdateIpComponent } from './shared/components/update-ip/update-ip.component';
+import { environment } from 'src/environments/environment';
 
-@NgModule({
-  declarations: [],
-  imports: [
-    // other modules
-    ToastModule,
-    DialogModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SharedModule
-],
-  // providers, bootstrap, etc.
-})
-export class YourModule {}
 const routes: Routes = [
   {
     path: '',
@@ -103,11 +91,13 @@ const routes: Routes = [
     FormsModule,
     CommonModule,
     BrowserModule,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes, { useHash: environment.windows ? true : false }), // useHash(#) for Windows app
     ToastModule,
     DialogModule,
     PrimengModule,
-    TranslateModule
+    TranslateModule,
+    ReactiveFormsModule,
+    SharedModule
   ],
   exports: [RouterModule],
 })

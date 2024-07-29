@@ -71,12 +71,12 @@
   <p-toast></p-toast>
 </div> -->
 
-<div class="wrapper">
+<div class="wrapper" style="background-image: url('assets/images/login-background.png');">
   <!-- lang -->
   <div class="absolute top-0 right-0 p-4 flex align-items-center gap-4" style="color: var(--surface-900);">
     <p (click)="switchLang('en')" class="underline cursor-pointer">English</p>
     <p (click)="switchLang('vi')" class="underline cursor-pointer">Tiếng Việt</p>
-    <span class="pi pi-question-circle" routerLink="/help" style="font-size: 1.25rem;"></span>
+    <span class="pi pi-question-circle cursor-pointer" routerLink="/help" style="font-size: 1.25rem;"></span>
   </div>
 
   <div class="form flex col-12 sm:col-8 p-0 align-items-stretch px-4">
@@ -126,7 +126,7 @@
     <div class="col-6 p-0 hidden sm:block">
       <img
         class="w-full h-full"
-        src="/assets/images/login-mockup.jpg"
+        src="assets/images/login-mockup.jpg"
         style="object-fit: cover"
         alt=""
       />

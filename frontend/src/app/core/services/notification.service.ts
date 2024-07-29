@@ -22,7 +22,7 @@ export class NotificationService {
   private isConnected = false; // Check if the WebSocket is connected. Cause the connectWebSocket method to be called only once for each user.
 
   constructor(private http: HttpClient) {  
-    if (environment.android) {
+    if (environment.android || environment.windows) {
       this.webSocketURL = this.webSocketURL.replace(environment.apiUrl, window.localStorage.getItem('apiUrl') || environment.apiUrl);
     }
   }

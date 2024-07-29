@@ -4,6 +4,7 @@ import { LangService } from 'src/app/core/services/lang.service';
 import { CreatePostComponent } from '../../create-post/create-post.component';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 
 @Component({
   selector: 'app-mobile-top-menu',
@@ -25,7 +26,7 @@ export class MobileTopMenuComponent {
           command: () => {
             const lang = this.langService.getLang() === 'en' ? 'vi' : 'en';
             this.langService.setLang(lang);
-            window.location.reload();
+            this.redirectService.reloadPage();
           },
         },
         {
@@ -62,6 +63,7 @@ export class MobileTopMenuComponent {
     private translateService: TranslateService,
     private tokenService: TokenService,
     private userService: UserService,
+    public redirectService: RedirectService
   ) { }
 
 
@@ -81,11 +83,6 @@ export class MobileTopMenuComponent {
   }
 
 
-  reloadPage() {
-    window.location.reload();
-  }
-
-
   onCreateClick() {
     this.createPostComponent.showDialog();
   }
@@ -96,13 +93,13 @@ export class MobileTopMenuComponent {
       next: () => {
         this.userService.removeUserFromLocalStorage();
         this.tokenService.removeToken();
-        window.location.href = '/login';
+        this.redirectService.redirectAndReload('/login');
       },
       error: (error) => {
         console.log(JSON.stringify(error));
         this.userService.removeUserFromLocalStorage();
         this.tokenService.removeToken();
-        window.location.href = '/login';
+        this.redirectService.redirectAndReload('/login');
       }
     });
   }

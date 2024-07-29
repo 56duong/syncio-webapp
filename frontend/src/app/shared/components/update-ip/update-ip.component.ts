@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 
 @Component({
   selector: 'app-update-ip',
@@ -9,12 +10,14 @@ import { Component } from '@angular/core';
 export class UpdateIpComponent {
   newIp: string = '';
 
-  constructor() {}
+  constructor(
+    private redirectService: RedirectService,
+  ) {}
 
   updateIp(): void {
     const newUrl = `http://${this.newIp}:8080/`;
     window.localStorage.setItem('apiUrl', newUrl);
     alert(`API URL updated to: ${newUrl}`);
-    window.location.href = '/';
+    this.redirectService.redirectAndReload('/');
   }
 }

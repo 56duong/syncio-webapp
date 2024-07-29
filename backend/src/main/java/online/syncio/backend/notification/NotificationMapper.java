@@ -41,7 +41,7 @@ public class NotificationMapper {
                 break;
             case COMMENT_POST, COMMENT_REPLY:
                 notificationDTO.setActionPerformedId(notification.getActionPerformedId());
-                notificationDTO.setPreviewText(commentRepository.getTextById(notification.getActionPerformedId())
+                notificationDTO.setPreviewText(notification.getActionPerformedId() == null ? null : commentRepository.getTextById(notification.getActionPerformedId())
                                                     .orElseThrow(() -> new NotFoundException(Comment.class, "id", notification.getActionPerformedId().toString())));
                 if(notification.getActionType() == ActionEnum.COMMENT_POST) {
                     actorCount = commentRepository.countDistinctUsersByPostId(notification.getTargetId());

@@ -20,7 +20,7 @@ export class CommentService {
   private subscription: any
 
   constructor(private http: HttpClient) { 
-    if (environment.android) {
+    if (environment.android || environment.windows) {
       this.webSocketURL = this.webSocketURL.replace(environment.apiUrl, window.localStorage.getItem('apiUrl') || environment.apiUrl);
     }
   }

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { LangService } from 'src/app/core/services/lang.service';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
 
@@ -46,7 +47,7 @@ export class AdminComponent {
           command: () => {
             const lang = this.langService.getLang() === 'en' ? 'vi' : 'en';
             this.langService.setLang(lang);
-            window.location.reload();
+            this.redirectService.reloadPage();
           },
         },
         {
@@ -70,6 +71,7 @@ export class AdminComponent {
     private userService: UserService,
     private tokenService: TokenService,
     private langService: LangService,
+    private redirectService: RedirectService
   ) {}
 
   logout(): void {
@@ -77,7 +79,7 @@ export class AdminComponent {
       next: () => {
         this.userService.removeUserFromLocalStorage();
         this.tokenService.removeToken();
-        window.location.href = '/login';
+        this.redirectService.redirectAndReload('/login');
       },
       error: (error) => {
         console.error(error);

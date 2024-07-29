@@ -124,6 +124,7 @@ export class CreatePostComponent {
         this.selectedPhotos = []; // Clear selected photos display
         this.selectedPhotoFile = [];
         this.selectedAudioFile = null;
+        this.audioInput.nativeElement.value = ''; // Clear the audio input
         this.isVisible = false;
       },
       error: (error) => {

@@ -49,7 +49,7 @@ export class MessageRoomService {
     private http: HttpClient,
     private tokenService: TokenService
   ) { 
-    if (environment.android) {
+    if (environment.android || environment.windows) {
       this.webSocketURL = this.webSocketURL.replace(environment.apiUrl, window.localStorage.getItem('apiUrl') || environment.apiUrl);
     }
   }

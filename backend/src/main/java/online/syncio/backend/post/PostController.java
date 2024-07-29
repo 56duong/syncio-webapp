@@ -2,8 +2,7 @@ package online.syncio.backend.post;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import online.syncio.backend.exception.ReferencedException;
-import online.syncio.backend.exception.ReferencedWarning;
+import online.syncio.backend.like.LikeService;
 import online.syncio.backend.user.EngagementMetricsDTO;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
@@ -26,6 +25,7 @@ import java.util.UUID;
 public class PostController {
 
     private final PostService postService;
+    private final LikeService likeService;
 
 
     // new - get 10 post/page
@@ -89,20 +89,10 @@ public class PostController {
         return ResponseEntity.ok(id);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable(name = "id") final UUID id) {
-        final ReferencedWarning referencedWarning = postService.getReferencedWarning(id);
-        if (referencedWarning != null) {
-            throw new ReferencedException(referencedWarning);
-        }
-        postService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
     @PostMapping("/{id}/{userId}/like")
     public ResponseEntity<?> likePost(@PathVariable(name = "id") final UUID id,
                                            @PathVariable(name = "userId") final UUID userId) {
-        return postService.toggleLike(id, userId);
-
+        return likeService.toggleLike(id, userId);
     }
 
     @GetMapping("/images/{imageName}")

@@ -16,6 +16,7 @@ import { UserLabelInfo } from 'src/app/core/interfaces/user-label-info';
 import { LabelUpdateService } from 'src/app/core/services/label-update.service';
 import { UserStory } from 'src/app/core/interfaces/user-story';
 import { StoryService } from 'src/app/core/services/story.service';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 
 @Component({
   selector: 'app-profile',
@@ -92,7 +93,8 @@ export class ProfileComponent implements OnInit {
     private toastService: ToastService,
     private userLabelInfoService: UserLabelInfoService,
     private labelUpdateService: LabelUpdateService,
-    private storyService: StoryService
+    private storyService: StoryService,
+    private redirectService: RedirectService
   ) {
     this.isMobile = window.innerWidth < 768;
   }
@@ -195,7 +197,7 @@ export class ProfileComponent implements OnInit {
             'Avatar changed successfully'
           );
           setTimeout(() => {
-            window.location.reload();
+            this.redirectService.reloadPage();
           }, 1000);
         },
         error: (error) => {

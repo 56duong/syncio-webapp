@@ -24,7 +24,7 @@ export class AppComponent {
     translate.use(defaultLang);
 
     // set for android to enter the ip address of the server, for development purposes
-    if(environment.android) {
+    if(environment.android || environment.windows) {
       const hasChecked = sessionStorage.getItem('hasChecked'); // make sure to check only once when the app is opened
       if(hasChecked) return;
       

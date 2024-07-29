@@ -23,7 +23,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from './shared/shared.module';
 import { environment } from 'src/environments/environment';
-import { AndroidInterceptor } from './core/interceptors/android.interceptor';
+import { AppInterceptor } from './core/interceptors/app.interceptor';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -66,7 +66,9 @@ export function HttpLoaderFactory(http: HttpClient) {
       multi: true,
     },
     { provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
-    ...(environment.android ? [{ provide: HTTP_INTERCEPTORS, useClass: AndroidInterceptor, multi: true }] : [])
+    ...((environment.android || environment.windows) 
+        ? [{ provide: HTTP_INTERCEPTORS, useClass: AppInterceptor, multi: true }] 
+        : [])
   ],
   bootstrap: [AppComponent],
 })

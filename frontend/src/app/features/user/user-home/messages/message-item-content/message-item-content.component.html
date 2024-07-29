@@ -8,7 +8,7 @@
   <div *ngSwitchCase="MessageContentTypeEnum.STICKER" 
     class="message-content message-content-sticker">
     <img [src]="messageContent.message | constructImageUrl"
-      onerror="this.onerror=null; this.src='/assets/images/no-image-available.jpg';" 
+      onerror="this.onerror=null; this.src='assets/images/no-image-available.jpg';" 
       style="width: 130px; height: 130px; object-fit: cover;">
   </div>
   <!-- Image -->
@@ -16,7 +16,7 @@
     class="message-content message-content-image">
     <p-image *ngFor="let img of messageContent.message?.split(',')" 
       [src]="'messages/' + img | constructImageUrl" #image
-      (onImageError)="image.src='/assets/images/no-image-available.jpg';"
+      (onImageError)="image.src='assets/images/no-image-available.jpg';"
       [preview]="true" />
   </div>
 </ng-container>

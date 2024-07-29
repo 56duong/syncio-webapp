@@ -1,4 +1,4 @@
-import {Component, HostListener, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import { lastValueFrom, Subscription } from 'rxjs';
 import { Post } from 'src/app/core/interfaces/post';
 import { PostService } from 'src/app/core/services/post.service';
@@ -50,7 +50,6 @@ export class FeedComponent {
       // check if this post is created by the current user
       if(post.createdBy === this.tokenService.extractUserIdFromToken()) {
         this.isReceivedNewPost = true;
-        this.newPostCreatedSubscription.unsubscribe();
       }
       else {
         // check if this post is from the user i followings

@@ -7,6 +7,7 @@ import { RegisterDTO } from './register.dto';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LangService } from 'src/app/core/services/lang.service';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 
 @Component({
   selector: 'app-register',
@@ -19,7 +20,8 @@ export class RegisterComponent {
     private userService: UserService,
     private toastService: ToastService,
     private translateService: TranslateService,
-    private langService: LangService
+    private langService: LangService,
+    private redirectService: RedirectService
   ) {}
 
   isLoading: boolean = false;
@@ -35,7 +37,7 @@ export class RegisterComponent {
 
   switchLang(lang: string) {
     this.langService.setLang(lang);
-    window.location.reload();
+    this.redirectService.reloadPage('/register');
   }
 
   register() {

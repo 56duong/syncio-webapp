@@ -102,7 +102,7 @@
           <td style="width: 6rem;">
             <img *ngIf="sticker.id" 
               [src]="sticker.imageUrl | constructImageUrl"
-              onerror="this.onerror=null; this.src='/assets/images/no-image-available.jpg';"
+              onerror="this.onerror=null; this.src='assets/images/no-image-available.jpg';"
               [alt]="sticker.name" 
               width="50" 
               class="shadow-4" />
@@ -176,7 +176,7 @@
   <div class="mb-4 text-center">
     <img *ngIf="selectedSticker.imageUrl"
       [src]="selectedSticker.imageUrl | constructImageUrl"
-      onerror="this.onerror=null; this.src='/assets/images/no-image-available.jpg';"
+      onerror="this.onerror=null; this.src='assets/images/no-image-available.jpg';"
       [alt]="selectedSticker.name" 
       width="50" 
       class="shadow-4" />

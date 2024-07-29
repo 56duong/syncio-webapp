@@ -46,7 +46,7 @@ export class LeftMenuComponent {
     private translateService: TranslateService,
     private langService: LangService,
     private userLabelInfoService: UserLabelInfoService,
-    private redirectService: RedirectService,
+    public redirectService: RedirectService,
   ) { }
 
 
@@ -116,7 +116,7 @@ export class LeftMenuComponent {
             command: () => {
               const lang = this.langService.getLang() === 'en' ? 'vi' : 'en';
               this.langService.setLang(lang);
-              window.location.reload();
+              this.redirectService.reloadPage();
             },
           },
           {
@@ -180,17 +180,12 @@ export class LeftMenuComponent {
       next: () => {
         this.userService.removeUserFromLocalStorage();
         this.tokenService.removeToken();
-        window.location.href = '/login';
+        this.redirectService.redirectAndReload('/login');
       },
       error: (error) => {
         console.error(error);
       },
     });
-  }
-
-
-  reloadPage() {
-    window.location.reload();
   }
   
 }
