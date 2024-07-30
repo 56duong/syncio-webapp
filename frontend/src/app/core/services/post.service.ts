@@ -199,19 +199,45 @@ export class PostService {
     return this.http.get<boolean>(url);
   }
 
-  getPostsByUserId(userId: string): Observable<Post[]> {
-    const url = `${this.apiURL}/${userId}/posts`;
+  getAllPostsByUserId(userId: string): Observable<Post[]> {
+    const url = `${this.apiURL}/all-posts/${userId}`;
     return this.http.get<Post[]>(url);
+  }
+
+  /**
+   * 
+   * @param userId 
+   * @param pageNumber 
+   * @param pageSize 
+   * @param isDesc false for ascending order, true for descending order 
+   * @returns 
+   */
+  getPostsByUserId(userId: string, pageNumber: number, pageSize: number, isDesc: boolean): Observable<any> {
+    const params = { 
+      pageNumber: pageNumber.toString(), 
+      pageSize: pageSize.toString(),
+      isDesc: isDesc.toString()
+    };
+    const url = `${this.apiURL}/${userId}/posts`;
+    return this.http.get<any>(url, { params });
   }
 
   /**
    * Get posts by user id for not login user
    * @param userId 
+   * @param pageNumber 
+   * @param pageSize 
+   * @param isDesc false for ascending order, true for descending order 
    * @returns 
    */
-  getPostsByUserId2(userId: string): Observable<Post[]> {
+  getPostsByUserIdNotLoggedIn(userId: string, pageNumber: number, pageSize: number, isDesc: boolean): Observable<any> {
+    const params = { 
+      pageNumber: pageNumber.toString(), 
+      pageSize: pageSize.toString(),
+      isDesc: isDesc.toString()
+    };
     const url = `${this.apiURL}/user/not-login/${userId}`;
-    return this.http.get<Post[]>(url);
+    return this.http.get<any>(url, { params });
   }
 
 }

@@ -5,7 +5,6 @@ import { ActionEnum } from 'src/app/core/interfaces/notification';
 import { Post } from 'src/app/core/interfaces/post';
 import { UserProfile } from 'src/app/core/interfaces/user-profile';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { PostService } from 'src/app/core/services/post.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserCloseFriendService } from 'src/app/core/services/user-close-friend.service';
@@ -80,6 +79,18 @@ export class ProfileComponent implements OnInit {
 
   userStory: UserStory | undefined;
 
+  isVisibleChooseViewMode: boolean = false; // show/hide the choose view mode dialog
+  viewMode: 'grid' | 'list' = 'grid'; // view mode of the posts
+  sortMode: 'newest' | 'oldest' = 'newest'; // sort mode of the posts
+  viewOptions = [
+    { id: 'grid', label: 'Grid', icon: 'pi pi-table' },
+    { id: 'list', label: 'List', icon: 'pi pi-bars' }
+  ];
+  sortOptions = [
+    { id: 'desc', label: 'Latest', value: 'newest', icon: 'pi pi-arrow-up' },
+    { id: 'asc', label: 'Oldest', value: 'list', icon: 'pi pi-arrow-down' }
+  ];
+
   constructor(
     private notificationService: NotificationService,
     private userService: UserService,
@@ -87,7 +98,6 @@ export class ProfileComponent implements OnInit {
     private router: Router,
     private location: Location,
     private tokenService: TokenService,
-    private postService: PostService,
     private userFollowService: UserFollowService,
     private userCloseFriendService: UserCloseFriendService,
     private toastService: ToastService,
@@ -112,7 +122,6 @@ export class ProfileComponent implements OnInit {
       this.profileId = params['userId'];
       this.getUserStory();
       this.getUserProfile();
-      this.getPosts();
     });
   }
 
@@ -150,28 +159,6 @@ export class ProfileComponent implements OnInit {
         this.dialogItems[0].label = response.isCloseFriend
           ? 'Remove from Close Friends'
           : 'Add to Close Friends';
-      });
-    }
-  }
-
-  getPosts() {
-    if (this.currentUserId) {
-      this.postService.getPostsByUserId(this.profileId).subscribe({
-        next: (response) => {
-          this.userProfile.posts = response;
-        },
-        error: (error) => {
-          console.error('Error getting user posts', error);
-        },
-      });
-    } else {
-      this.postService.getPostsByUserId2(this.profileId).subscribe({
-        next: (response) => {
-          this.userProfile.posts = response;
-        },
-        error: (error) => {
-          console.error('Error getting user posts', error);
-        },
       });
     }
   }

@@ -181,7 +181,7 @@ export class UsersManagementComponent implements OnInit {
 
     async getPosts(userId: string) {
         try {
-            const response = await lastValueFrom(this.postService.getPostsByUserId(userId));
+            const response = await lastValueFrom(this.postService.getAllPostsByUserId(userId));
             this.posts = response;
             console.log(this.posts);
             this.postOfUserDialog = true;

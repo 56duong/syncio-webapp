@@ -22,6 +22,7 @@ import { FollowingDialogComponent } from './profile/following-dialog/following-d
 import { TranslateModule } from '@ngx-translate/core';
 import { SettingComponent } from './setting/setting.component';
 import { MenuModule } from './menu/menu.module';
+import { PostListComponent } from './profile/post-list/post-list.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { MenuModule } from './menu/menu.module';
     NotificationsItemComponent,
     FollowerDialogComponent,
     FollowingDialogComponent,
-    SettingComponent
+    SettingComponent,
+    PostListComponent
   ],
   imports: [
     CommonModule,

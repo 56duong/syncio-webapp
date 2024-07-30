@@ -2,7 +2,6 @@
   [(visible)]="isVisible"
   [modal]="true"
   [dismissableMask]="true"
-  [closable]="false"
   [responsive]="true"
   [style]="{ width: isMobile? '100vw' : '80vw', maxWidth: '900px' }"
   [baseZIndex]="10000"
@@ -163,8 +162,8 @@
   header="Audience"
   [modal]="true"
   [(visible)]="isVisibleVisibility"
-  [style]="{ width: '23.5rem' }"
-  [closable]="false">
+  [dismissableMask]="true"
+  [style]="{ width: '23.5rem' }">
 
   <p-divider></p-divider>
   

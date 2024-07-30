@@ -15,6 +15,8 @@ export class AvatarComponent {
   @Input() width: number | undefined;
   /** The height of the avatar in pixels, if not provided, it will be the same as the width */
   @Input() height: number | undefined;
+  /** On error image URL */
+  @Input() onError: string | undefined;
   
   @Input() userStory: UserStory | undefined;
   

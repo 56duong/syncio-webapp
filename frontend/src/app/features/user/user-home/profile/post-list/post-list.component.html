@@ -1,0 +1,31 @@
+<!-- Grid -->
+<article *ngIf="viewMode === 'grid'" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px">
+  <ng-container *ngFor="let post of posts">
+    <div *ngIf="post.photos && post.photos.length > 0" 
+      style="aspect-ratio: 1/1; cursor: pointer;"
+      (click)="handleShowPostDetail(post)">
+      <img height="100%"
+        width="100%"
+        [src]="post.photos[0].url | constructImageUrl"
+        [alt]="post.photos[0].altText"
+        style="object-fit: cover; display: block;" />
+    </div>
+  </ng-container>
+
+  <!-- Loading -->
+  <div *ngIf="!endOfPosts" class="mx-auto w-fit my-2" style="grid-column: span 3;">
+    <i #loading class="pi pi-spin pi-spinner" style="font-size: 1.5rem; color: var(--primary-color);"></i>
+  </div>
+</article>
+
+<!-- List -->
+<article *ngIf="viewMode === 'list'" class="w-full">
+  <ng-container *ngFor="let post of posts">
+    <app-post [post]="post"></app-post>
+  </ng-container>
+
+  <!-- Loading -->
+  <div *ngIf="!endOfPosts" class="mx-auto w-fit my-2">
+    <i #loading class="pi pi-spin pi-spinner" style="font-size: 1.5rem; color: var(--primary-color);"></i>
+  </div>
+</article>

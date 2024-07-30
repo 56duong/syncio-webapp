@@ -32,6 +32,8 @@ export class SelectUserDialogComponent {
     this.userService.searchUsers(searchText, searchText).subscribe({
       next: (users) => {
         users = users.filter(user => !this.expectedUsers?.includes(user.id || ''));
+        //filter out the users that are already selected
+        users = users.filter(user => !this.selectedUsers.map(selectedUser => selectedUser.id).includes(user.id));
         this.searchedUsers = users;
       },
       error: (error) => {

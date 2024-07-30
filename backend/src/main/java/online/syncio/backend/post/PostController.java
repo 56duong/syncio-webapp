@@ -7,6 +7,7 @@ import online.syncio.backend.user.EngagementMetricsDTO;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -154,14 +155,27 @@ public class PostController {
         return postService.getPostUnFlagged(PageRequest.of(pageNumber, pageSize));
     }
 
+    @GetMapping("/all-posts/{id}")
+    public ResponseEntity<List<PostDTO>> getAllPostsByUserId(@PathVariable(name = "id") final UUID id) {
+        return ResponseEntity.ok(postService.getAllPostsByUserId(id));
+    }
+
     @GetMapping("/{id}/posts")
-    public ResponseEntity<List<PostDTO>> getPostsByUserId(@PathVariable(name = "id") final UUID id) {
-        return ResponseEntity.ok(postService.getPostsByUserId(id));
+    public ResponseEntity<Page<PostDTO>> getPostsByUserId(@PathVariable(name = "id") final UUID id,
+                                                          @RequestParam(defaultValue = "0") final int pageNumber,
+                                                          @RequestParam(defaultValue = "12") final int pageSize,
+                                                          @RequestParam(defaultValue = "true") final boolean isDesc) {
+        final PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, isDesc ? Sort.by("created_date").descending() : Sort.by("created_date").ascending());
+        return ResponseEntity.ok(postService.getPostsByUserId(id, pageRequest));
     }
 
     @GetMapping("/user/not-login/{id}")
-    public ResponseEntity<List<PostDTO>> getPostsByUserId2(@PathVariable(name = "id") final UUID id) {
-        return ResponseEntity.ok(postService.getPostsByVisibility(id));
+    public ResponseEntity<Page<PostDTO>> getPostsByUserIdNotLoggedIn(@PathVariable(name = "id") final UUID id,
+                                                           @RequestParam(defaultValue = "0") final int pageNumber,
+                                                           @RequestParam(defaultValue = "12") final int pageSize,
+                                                           @RequestParam(defaultValue = "true") final boolean isDesc) {
+        final PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, isDesc ? Sort.by("created_date").descending() : Sort.by("created_date").ascending());
+        return ResponseEntity.ok(postService.getPostsByVisibility(id, pageRequest));
     }
 
 }

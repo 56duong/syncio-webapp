@@ -8,6 +8,10 @@ p-dialog ::ng-deep {
     display: none;
   }
 
+  .p-dialog .p-dialog-header-icons {
+    display: none;
+  }
+
   .p-dialog .p-dialog-content {
     border-radius: 8px;
     padding: 0;

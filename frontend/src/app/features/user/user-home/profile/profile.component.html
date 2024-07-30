@@ -177,7 +177,7 @@
   </header>
   
   <div class="mt-6 border-top-1 border-gray-300 flex justify-content-center align-items-center">
-    <div class="py-3 border-top-1 flex justify-content-center align-items-center">
+    <div (click)="isVisibleChooseViewMode = true" title="View mode" class="py-3 border-top-1 flex justify-content-center align-items-center cursor-pointer">
       <i class="pi pi-table mr-2" style="font-size: 1rem"></i>
       <span class="text-xs font-semibold">POSTS</span>
     </div>
@@ -185,19 +185,13 @@
 
   <!-- Post list -->
   <div class="content">
-    <article style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px">
-      <ng-container *ngFor="let post of userProfile.posts">
-        <div *ngIf="post.photos && post.photos.length > 0" 
-          style="aspect-ratio: 1/1; cursor: pointer;"
-          (click)="handleShowPostDetail(true, post)">
-          <img height="100%"
-            width="100%"
-            [src]="post.photos[0].url | constructImageUrl"
-            [alt]="post.photos[0].altText"
-            style="object-fit: cover; display: block;" />
-        </div>
-      </ng-container>
-    </article>
+    <app-post-list 
+      [userProfileId]="profileId"
+      [currentUserId]="currentUserId"
+      [viewMode]="viewMode"
+      [sortMode]="sortMode"
+      (showPostDetailEvent)="handleShowPostDetail(true, $event)">
+    </app-post-list>
   </div>
 </main>
 
@@ -279,3 +273,47 @@ styleClass="p-fluid">
   ></p-button>
 </p-dialog>
 
+
+<!-- View and sort -->
+<p-dialog
+  class="viewmode-dialog"
+  header="View mode"
+  [modal]="true"
+  [(visible)]="isVisibleChooseViewMode"
+  [dismissableMask]="true"
+  [style]="{ width: '24rem' }">
+
+  <p-divider></p-divider>
+  
+  <div class="modal-content p-3">
+    <!-- view -->
+    <span class="block mb-2 mt-2 text-gray-500 text-sm">View</span>
+
+    <div *ngFor="let option of viewOptions" class="field-checkbox mb-2">
+      <p-radioButton 
+        [inputId]="option.id"
+        name="view" 
+        [value]="option.id" 
+        [(ngModel)]="viewMode" />
+      <label [for]="option.id" class="gap-1 flex align-items-center cursor-pointer">
+        <p-button class="close-friend" [icon]="option.icon" [text]="true" severity="secondary" size="small" />
+        {{ option.label }}
+      </label>
+    </div>
+
+    <!-- sorting -->
+    <span class="block mb-2 mt-3 text-gray-500 text-sm">Sorting</span>
+
+    <div *ngFor="let option of sortOptions" class="field-checkbox mb-2">
+      <p-radioButton 
+        [inputId]="option.id"
+        name="sort" 
+        [value]="option.value" 
+        [(ngModel)]="sortMode" />
+      <label [for]="option.id" class="gap-1 flex align-items-center cursor-pointer">
+        <p-button class="close-friend" [icon]="option.icon" [text]="true" severity="secondary" size="small" />
+        {{ option.label }}
+      </label>
+    </div>
+  </div>
+</p-dialog>

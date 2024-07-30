@@ -3,6 +3,10 @@ p-dialog ::ng-deep {
   .p-dialog-header {
     padding: 0;
   }
+  
+  .p-dialog .p-dialog-header-icons {
+    display: none;
+  }
 
   .modal-header {
     padding: 2px 5px;

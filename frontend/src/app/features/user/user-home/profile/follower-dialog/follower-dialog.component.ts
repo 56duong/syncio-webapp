@@ -103,7 +103,6 @@ export class FollowerDialogComponent {
           this.pageNumber++;
         }
         this.loading = false;
-        
       },
       error: (error) => {
         console.error('Error getting followers sorted by mutual follow', error);

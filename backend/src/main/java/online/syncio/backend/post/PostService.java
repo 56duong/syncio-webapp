@@ -281,20 +281,25 @@ public class PostService {
     }
 
 
-    public List<PostDTO> getPostsByUserId(UUID userId) {
+    public List<PostDTO> getAllPostsByUserId(UUID userId) {
         final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
-        List<Post> posts = postRepository.findPostsByUser(userId, currentUserId);
+        List<Post> posts = postRepository.findAllPostsByUser(userId, currentUserId);
         return posts.stream()
                 .map(post -> postMapper.mapToDTO(post, new PostDTO()))
                 .collect(Collectors.toList());
     }
 
 
-    public List<PostDTO> getPostsByVisibility(UUID userId) {
-        List<Post> posts = postRepository.findPostsByVisibilityAndUserId(PostEnum.PUBLIC.toString(), userId);
-        return posts.stream()
-                .map(post -> postMapper.mapToDTO(post, new PostDTO()))
-                .collect(Collectors.toList());
+    public Page<PostDTO> getPostsByUserId(UUID userId, Pageable pageable) {
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        Page<Post> posts = postRepository.findPostsByUser(userId, currentUserId, pageable);
+        return posts.map(post -> postMapper.mapToDTO(post, new PostDTO()));
+    }
+
+
+    public Page<PostDTO> getPostsByVisibility(UUID userId, Pageable pageable) {
+        Page<Post> posts = postRepository.findPostsByVisibilityAndUserId(PostEnum.PUBLIC.toString(), userId, pageable);
+        return posts.map(post -> postMapper.mapToDTO(post, new PostDTO()));
     }
 
 

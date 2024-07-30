@@ -24,7 +24,7 @@
           routerLinkActive="active"
           class="message-item py-3 px-2">
           <div class="flex align-items-center gap-2">
-            <app-avatar [userId]="messageroom.avatarURL" [width]="48"></app-avatar>
+            <app-avatar [userId]="messageroom.avatarURL" [width]="48" [onError]="messageroom.group ? 'assets/images/avatar-group.jpg' : ''"></app-avatar>
             <div class="w-full" [ngStyle]="{ 'max-width': (messageroom.unSeenCount && messageroom.unSeenCount > 0) ? 'calc(100% - 48px - 0.5rem - 20px - 0.5rem)' : 'calc(100% - 48px - 0.5rem)'}">
               <p *ngIf="currentUser.username"
                 title="{{messageroom.name}}"
