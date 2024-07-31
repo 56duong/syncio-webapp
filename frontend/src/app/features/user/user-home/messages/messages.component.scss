@@ -4,7 +4,7 @@
 
 .message-item:hover,
 .message-item.active {
-  background-color: #f5f5f5;
+  background-color: var(--surface-100);
   cursor: pointer;
   transition: .2s;
 }

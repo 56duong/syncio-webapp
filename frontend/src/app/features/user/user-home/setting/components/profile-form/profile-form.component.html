@@ -4,17 +4,17 @@
   <p-button label="QR Code" class="mt-4" (click)="showQrCode()"></p-button>
 
   <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
-    <label for="email">Email</label>
+    <label for="email">{{'email' | translate}}</label>
     <input formControlName="email" type="email" required />
 
     <label for="username">Username</label>
     <input formControlName="username" type="text" required />
 
-    <label for="bio">Bio:</label>
+    <label for="bio">{{'bio' | translate}}:</label>
     <textarea formControlName="bio" rows="4" required></textarea>
 
     <p-button
-      label="Submit"
+      [label]="'submit' | translate"
       type="submit"
       class="block text-right mt-6"
       styleClass="col-4"

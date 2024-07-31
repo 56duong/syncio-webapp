@@ -4,6 +4,7 @@ import { LangService } from './core/services/lang.service';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { ThemeService } from './core/services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -17,8 +18,12 @@ export class AppComponent {
     private translate: TranslateService,
     private langService: LangService,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private themeService: ThemeService
   ) {
+    let currentTheme = localStorage.getItem('theme') || 'theme-light';
+    this.themeService.applyTheme(currentTheme);
+
     const defaultLang = langService.getLang() || 'en';
     translate.setDefaultLang(defaultLang);
     translate.use(defaultLang);

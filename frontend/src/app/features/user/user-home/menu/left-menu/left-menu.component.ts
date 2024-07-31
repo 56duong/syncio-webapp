@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { LangService } from 'src/app/core/services/lang.service';
 import { UserLabelInfoService } from'src/app/core/services/user-label-info.service';
 import { RedirectService } from 'src/app/core/services/redirect.service';
+import { ThemeService } from 'src/app/core/services/theme.service';
 
 @Component({
   selector: 'app-left-menu',
@@ -39,6 +40,8 @@ export class LeftMenuComponent {
 
   gifUrl: string = '';
 
+  currentTheme: string = 'theme-light';
+
   constructor(
     private router: Router,
     private tokenService: TokenService,
@@ -47,12 +50,14 @@ export class LeftMenuComponent {
     private langService: LangService,
     private userLabelInfoService: UserLabelInfoService,
     public redirectService: RedirectService,
+    private themeService: ThemeService,
   ) { }
 
 
   ngOnInit() {
     this.currentUserId = this.tokenService.extractUserIdFromToken();
     this.currentUsername = this.tokenService.extractUsernameFromToken();
+    this.currentTheme = this.themeService.getCurrentTheme();
 
     this.menus = [
       {
@@ -111,6 +116,14 @@ export class LeftMenuComponent {
         icon: 'pi pi-cog',
         items: [
           {
+            label: this.currentTheme === 'theme-light' ? 'Dark mode' : 'Light mode',
+            icon: 'pi ' + (this.currentTheme === 'theme-light' ? 'pi-moon' : 'pi-sun'),
+            command: () => {
+              this.themeService.switchTheme(this.currentTheme === 'theme-light' ? 'theme-dark' : 'theme-light');
+              this.updateTheme()
+            },
+          },
+          {
             label: this.langService.getLang() === 'en' ? 'Tiếng Việt' : 'English',
             icon: 'pi pi-globe',
             command: () => {
@@ -158,6 +171,19 @@ export class LeftMenuComponent {
         this.gifUrl = ''; // gifUrl là undefined nếu có lỗi
       }
     });
+  }
+
+  updateTheme() {
+    this.currentTheme = this.themeService.getCurrentTheme();
+    this.settingSubmenuItems[0].items[0] = {
+      label: this.currentTheme === 'theme-light' ? 'Dark mode' : 'Light mode',
+      icon: 'pi ' + (this.currentTheme === 'theme-light' ? 'pi-moon' : 'pi-sun'),
+      command: () => {
+        this.themeService.switchTheme(this.currentTheme === 'theme-light' ? 'theme-dark' : 'theme-light');
+        this.updateTheme()
+      },
+    }
+    this.settingSubmenuItems = [...this.settingSubmenuItems];
   }
 
   onCreateClick() {

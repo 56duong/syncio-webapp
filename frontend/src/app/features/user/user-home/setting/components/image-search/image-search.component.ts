@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { ConstructImageUrlPipe } from 'src/app/core/pipes/construct-image-url.pipe';
 import { RedirectService } from 'src/app/core/services/redirect.service';
 import { ToastService } from 'src/app/core/services/toast.service';
@@ -19,7 +20,8 @@ export class ImageSearchComponent {
     private tokenService: TokenService, 
     private toastService: ToastService,
     private userSettingService: UserSettingService,
-    private redirectService: RedirectService
+    private redirectService: RedirectService,
+    private translateService: TranslateService
   ) { }
 
 
@@ -58,7 +60,10 @@ export class ImageSearchComponent {
 
       this.userSettingService.updateImageSearch(fd).subscribe({
         next: () => {
-          this.toastService.showSuccess('Success', 'Image search Updated successfully');
+          this.toastService.showSuccess(
+            this.translateService.instant('success'), 
+            this.translateService.instant('imageSearchUpdatedSuccessfully')
+          );
           setTimeout(() => {
             this.redirectService.reloadPage();
           }, 1500);
@@ -75,7 +80,10 @@ export class ImageSearchComponent {
     this.userSettingService.deleteImageSearch().subscribe({
       next: (response) => {
         if(response) {
-          this.toastService.showSuccess('Success', 'Image search Deleted successfully');
+          this.toastService.showSuccess(
+            this.translateService.instant('success'), 
+            this.translateService.instant('imageSearchDeletedSuccessfully')
+          );
           setTimeout(() => {
             this.redirectService.reloadPage();
           }, 1500);

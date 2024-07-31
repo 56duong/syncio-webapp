@@ -8,6 +8,7 @@ import { CoreModule } from 'src/app/core/core.module';
 import { ProfileFormComponent } from './components/profile-form/profile-form.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     PrimengModule,
     CoreModule,
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslateModule
   ]
 })
 export class SettingModule { }

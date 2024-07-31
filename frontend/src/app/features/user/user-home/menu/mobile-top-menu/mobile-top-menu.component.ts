@@ -5,6 +5,7 @@ import { CreatePostComponent } from '../../create-post/create-post.component';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
 import { RedirectService } from 'src/app/core/services/redirect.service';
+import { ThemeService } from 'src/app/core/services/theme.service';
 
 @Component({
   selector: 'app-mobile-top-menu',
@@ -15,11 +16,21 @@ import { RedirectService } from 'src/app/core/services/redirect.service';
 export class MobileTopMenuComponent {
   @ViewChild(CreatePostComponent) createPostComponent: any;
   currentUserId: string = '';
+
+  currentTheme: string = this.themeService.getCurrentTheme();
   
   settingSubmenuItems: any[] = [
     {
       icon: 'pi pi-cog',
       items: [
+        {
+          label: this.currentTheme === 'theme-light' ? 'Dark mode' : 'Light mode',
+          icon: 'pi ' + (this.currentTheme === 'theme-light' ? 'pi-moon' : 'pi-sun'),
+          command: () => {
+            this.themeService.switchTheme(this.currentTheme === 'theme-light' ? 'theme-dark' : 'theme-light');
+            this.updateTheme()
+          },
+        },
         {
           label: this.langService.getLang() === 'en' ? 'Tiếng Việt' : 'English',
           icon: 'pi pi-globe',
@@ -63,7 +74,8 @@ export class MobileTopMenuComponent {
     private translateService: TranslateService,
     private tokenService: TokenService,
     private userService: UserService,
-    public redirectService: RedirectService
+    public redirectService: RedirectService,
+    private themeService: ThemeService,
   ) { }
 
 
@@ -80,6 +92,20 @@ export class MobileTopMenuComponent {
         },
       });
     }
+  }
+
+
+  updateTheme() {
+    this.currentTheme = this.themeService.getCurrentTheme();
+    this.settingSubmenuItems[0].items[0] = {
+      label: this.currentTheme === 'theme-light' ? 'Dark mode' : 'Light mode',
+      icon: 'pi ' + (this.currentTheme === 'theme-light' ? 'pi-moon' : 'pi-sun'),
+      command: () => {
+        this.themeService.switchTheme(this.currentTheme === 'theme-light' ? 'theme-dark' : 'theme-light');
+        this.updateTheme()
+      },
+    }
+    this.settingSubmenuItems = [...this.settingSubmenuItems];
   }
 
 

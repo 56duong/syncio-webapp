@@ -2,6 +2,7 @@
   "LOGIN-----------------------------------------------------------------": "",
   "login": "Log in",
   "email": "Email",
+  "bio": "Bio",
   "password": "Password",
   "forgotPassword": "Forgot password?",
   "dontHaveAnAccount": "Don't have an account?",
@@ -139,6 +140,85 @@
   "success": "Success",
   "copyLink": "Copy link",
   "linkCopiedToClipboard": "Link copied to clipboard",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+
+
+  "NOTIFICATION-----------------------------------------------------------------": "",
+  "thisMonth": "This month",
+  "and": "and",
+  "other": {
+    "one": "other",
+    "other": "others"
+  },
+  "commentedOnYourPost": "commented on your post",
+  "likedYourPost": "liked your post",
+  "startedFollowingYou": "started following you",
+  "repliedToYourComment": "replied to your comment",
+
+
+  "CREATE NEW POST-----------------------------------------------------------------": "",
+  "createNewPost": "Create new post",
+  "share": "Share",
+  "selectFromComputer": "Select from computer",
+  "writeACaption": "Write a caption",
+  "audio": "Audio",
+  "audience": "Audience",
+  "whoWouldYouLikeToShareYourPostWith": "Who would you like to share your post with",
+  "public": "Public",
+  "private": "Private",
+  "closeFriends": "Close friends",
+  "voiceRecorder": "Voice recorder",
+  "aPostMustHaveAtLeastOneImageOrOneAudioOrCaption": "A post must have at least one image or one audio or caption",
+
+
+  "PROFILE-----------------------------------------------------------------": "",
+  "uploadAvatar": "Upload avatar",
+  "editProfile": "Edit profile",
+  "follow": "Follow",
+  "unfollow": "Unfollow",
+  "followers": "Followers",
+  "following": "Following",
+  "posts": "Posts",
+  "chooseLabel": "Choose label",
+  "viewMode": "View mode",
+  "grid": "Grid",
+  "list": "List",
+  "sort": "Sort",
+  "newest": "Newest",
+  "oldest": "Oldest",
+  "addToCloseFriends": "Add to close friends",
+  "removeFromCloseFriends": "Remove from close friends",
+  "remove": "Remove",
+  "avatarUpdatedSuccessfully": "Avatar updated successfully",
+
+
+  "SETTING-----------------------------------------------------------------": "",
+  "howYouUseSyncio": "How you use Syncio",
+  "howPeopleFindAndContactYou": "How people find and contact you",
+  "imageSearch": "Image search",
+  "imageSearchDescription": "Image search allows other users to find you by searching for images of your face",
+  "uploadNewImage": "Upload new image",
+  "deleteImage": "Delete image",
+  "imageSearchUpdatedSuccessfully": "Image search updated successfully",
+  "imageSearchDeletedSuccessfully": "Image search deleted successfully",
+  "profileUpdatedSuccessfully": "Profile updated successfully",
+  "confirm": "Confirm",
+
+
+  "LABELSHOPPING-----------------------------------------------------------------": "",
+  "priceHighToLow": "Price high to low",
+  "priceLowToHigh": "Price low to high",
+  "purchaseHistory": "Purchase history",
+  "outOfStock": "Out of stock",
+  "inStock": "In stock",
+  "buy": "Buy",
+  "gift": "Gift",
+  "receiver": "Receiver",
+  "payment": "Payment",
+  "paymentDetails": "Payment details",
+  "name": "Name",
+  "price": "Price",
+  "buyed": "Buyed"
+
 
 }

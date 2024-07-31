@@ -1,0 +1,27 @@
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+
+/* Custom button styles
+  Example usage:
+  <p-button label="Primary" severity="my-custom-secondary"></p-button>
+*/
+// button-secondary
+.p-button-my-custom-secondary {
+  color: var(--surface-900);
+  background-color: var(--gray-200);
+  border: 1px solid var(--gray-200);
+  height: 32px;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.p-button-my-custom-secondary .p-button-label {
+  font-weight: 500;
+}
+
+.p-button-my-custom-secondary:focus {
+  box-shadow: none;
+}
+
+.p-button-my-custom-secondary:hover {
+  background-color: var(--gray-300);
+}

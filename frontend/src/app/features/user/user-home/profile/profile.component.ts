@@ -16,6 +16,7 @@ import { LabelUpdateService } from 'src/app/core/services/label-update.service';
 import { UserStory } from 'src/app/core/interfaces/user-story';
 import { StoryService } from 'src/app/core/services/story.service';
 import { RedirectService } from 'src/app/core/services/redirect.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile',
@@ -53,15 +54,15 @@ export class ProfileComponent implements OnInit {
   dialogVisible: boolean = false; // show/hide the unfollow dialog
   dialogItems: any = [
     {
-      label: 'Add to Close Friends',
+      label: this.translateService.instant('addToCloseFriends'),
       action: () => this.toggleCloseFriend(this.userProfile.id),
     },
     {
-      label: 'Unfollow',
+      label: this.translateService.instant('unfollow'),
       action: () => this.toggleFollow(this.userProfile.id),
     },
     {
-      label: 'Cancel',
+      label: this.translateService.instant('cancel'),
       action: () => (this.dialogVisible = false),
     },
     {
@@ -83,12 +84,12 @@ export class ProfileComponent implements OnInit {
   viewMode: 'grid' | 'list' = 'grid'; // view mode of the posts
   sortMode: 'newest' | 'oldest' = 'newest'; // sort mode of the posts
   viewOptions = [
-    { id: 'grid', label: 'Grid', icon: 'pi pi-table' },
-    { id: 'list', label: 'List', icon: 'pi pi-bars' }
+    { id: 'grid', label: this.translateService.instant('grid'), icon: 'pi pi-table' },
+    { id: 'list', label: this.translateService.instant('list'), icon: 'pi pi-bars' }
   ];
   sortOptions = [
-    { id: 'desc', label: 'Latest', value: 'newest', icon: 'pi pi-arrow-up' },
-    { id: 'asc', label: 'Oldest', value: 'list', icon: 'pi pi-arrow-down' }
+    { id: 'desc', label: this.translateService.instant('newest'), value: 'newest', icon: 'pi pi-arrow-up' },
+    { id: 'asc', label: this.translateService.instant('oldest'), value: 'list', icon: 'pi pi-arrow-down' }
   ];
 
   constructor(
@@ -104,7 +105,8 @@ export class ProfileComponent implements OnInit {
     private userLabelInfoService: UserLabelInfoService,
     private labelUpdateService: LabelUpdateService,
     private storyService: StoryService,
-    private redirectService: RedirectService
+    private redirectService: RedirectService,
+    private translateService: TranslateService
   ) {
     this.isMobile = window.innerWidth < 768;
   }
@@ -145,8 +147,8 @@ export class ProfileComponent implements OnInit {
         next: (response) => {
           this.userProfile = { ...this.userProfile, ...response };
           this.dialogItems[0].label = response.isCloseFriend
-            ? 'Remove from Close Friends'
-            : 'Add to Close Friends';
+            ? this.translateService.instant('removeFromCloseFriends')
+            : this.translateService.instant('addToCloseFriends');
         },
         error: (error) => {
           console.error('Error getting user profile', error);
@@ -157,8 +159,8 @@ export class ProfileComponent implements OnInit {
       this.userService.getUserProfile(this.profileId).subscribe((response) => {
         this.userProfile = { ...this.userProfile, ...response };
         this.dialogItems[0].label = response.isCloseFriend
-          ? 'Remove from Close Friends'
-          : 'Add to Close Friends';
+          ? this.translateService.instant('removeFromCloseFriends')
+          : this.translateService.instant('addToCloseFriends');
       });
     }
   }
@@ -180,8 +182,8 @@ export class ProfileComponent implements OnInit {
       this.userService.changeAvatar(fd).subscribe({
         next: () => {
           this.toastService.showSuccess(
-            'Success',
-            'Avatar changed successfully'
+            this.translateService.instant('success'),
+            this.translateService.instant('avatarUpdatedSuccessfully')
           );
           setTimeout(() => {
             this.redirectService.reloadPage();
@@ -226,8 +228,8 @@ export class ProfileComponent implements OnInit {
               next: (response) => {
                 this.userProfile.isCloseFriend = !response;
                 this.dialogItems[0].label = response
-                  ? 'Add to Close Friends'
-                  : 'Remove from Close Friends';
+                  ? this.translateService.instant('addToCloseFriends')
+                  : this.translateService.instant('removeFromCloseFriends');
               },
               error: (error) => {
                 console.error('Error removing close friends', error);
@@ -252,8 +254,8 @@ export class ProfileComponent implements OnInit {
       next: (response) => {
         this.userProfile.isCloseFriend = response;
         this.dialogItems[0].label = response
-          ? 'Remove from Close Friends'
-          : 'Add to Close Friends';
+          ? this.translateService.instant('removeFromCloseFriends')
+          : this.translateService.instant('addToCloseFriends');
       },
       error: (error) => {
         console.error('Error toggling close friends', error);

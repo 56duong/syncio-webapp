@@ -108,8 +108,12 @@
 } 
 
 .main ::ng-deep .p-tieredmenu .p-menuitem.p-highlight.p-focus > .p-menuitem-content {
-    background: #e9ecef;
+    background: var(--surface-200);
     color: #6c757d;
+}
+
+.main ::ng-deep .p-tieredmenu .p-menuitem.p-highlight > .p-menuitem-content {
+  border-radius: 8px;
 }
 
 .main .setting ::ng-deep .p-tieredmenu .p-menuitem-active>p-tieredmenusub>.p-submenu-list {

@@ -1,4 +1,5 @@
 import { Component, ViewChild, ChangeDetectorRef, ElementRef, Input } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Post, Visibility } from 'src/app/core/interfaces/post';
 import { LoadingService } from 'src/app/core/services/loading.service';
 import { PostService } from 'src/app/core/services/post.service';
@@ -50,7 +51,8 @@ export class CreatePostComponent {
     private cdr: ChangeDetectorRef,
     private tokenService: TokenService,
     private toastService: ToastService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit() {
@@ -88,7 +90,7 @@ export class CreatePostComponent {
 
     //validate
     if (!post.caption && this.selectedPhotoFile.length === 0 && !this.selectedAudioFile) {
-      this.toastService.showError('Error', 'A post must have either a caption or at least one image or a audio.');
+      this.toastService.showError(this.translateService.instant('error'), this.translateService.instant('aPostMustHaveAtLeastOneImageOrOneAudioOrCaption'));
       return; // Stop execution if validation fails
     }
 
@@ -129,7 +131,7 @@ export class CreatePostComponent {
       },
       error: (error) => {
         this.loadingService.hide();
-        this.toastService.showError('Error', 'An error occurred while creating the post');
+        this.toastService.showError(this.translateService.instant('error'), 'An error occurred while creating the post');
         console.error(error);
       },
     });
@@ -170,11 +172,11 @@ export class CreatePostComponent {
   getVisibilityLabel(visibility: Visibility): string {
     switch (visibility) {
       case Visibility.PUBLIC:
-        return 'Everyone';
+        return this.translateService.instant('public');
       case Visibility.PRIVATE:
-        return 'Only me';
+        return this.translateService.instant('private');
       case Visibility.CLOSE_FRIENDS:
-        return 'Close Friends';
+        return this.translateService.instant('closeFriends');
       default:
         return 'Set Visibility'; // Label mặc định
     }

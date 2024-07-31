@@ -16,7 +16,7 @@
         justify-content: space-between;
         align-items: center;
         width: 100%;
-        border-bottom: 1px solid #ccc;">
+        border-bottom: 1px solid var(--surface-border);">
       <div>
         <button
           pButton
@@ -27,13 +27,13 @@
         ></button>
       </div>
       <div>
-        <p style="margin: 0; font-weight: 600;">Create New Post</p>
+        <p style="margin: 0; font-weight: 600;">{{ 'createNewPost' | translate }}</p>
       </div>
       <div>
         <button
           pButton
           type="button"
-          label="Share"
+          [label]="'share' | translate"
           (click)="createPost()"
           class="p-button-text"
         ></button>
@@ -50,7 +50,7 @@
             #fileUploader
             name="photo[]"
             mode="basic"
-            chooseLabel="Select from computer"
+            [chooseLabel]="'selectFromComputer' | translate"
             chooseIcon="pi pi-upload"
             (onSelect)="onPhotoSelected($event)"
             [multiple]="true"
@@ -109,7 +109,7 @@
             pInputTextarea
             [(ngModel)]="post.caption"
             [autoResize]="true"
-            placeholder="Write a caption..."
+            [placeholder]="('writeACaption' | translate) + '...'"
             class="border-0 outline-none p-0 shadow-none"
             style="max-height: 154px;"
           ></textarea>
@@ -142,7 +142,7 @@
 
         <!-- Audio -->
         <div class="flex justify-content-between align-items-center">
-          <p>Audio</p>
+          <p>{{ 'audio' | translate }}</p>
           <div class="relative">
             <p-speedDial [model]="audioItems" direction="up" />
             <input #audioInput type="file" accept="audio/*" (change)="onAudioSelected($event)" hidden />
@@ -159,7 +159,7 @@
 <!-- Visibility modal -->
 <p-dialog
   class="visibility-dialog"
-  header="Audience"
+  [header]="'audience' | translate"
   [modal]="true"
   [(visible)]="isVisibleVisibility"
   [dismissableMask]="true"

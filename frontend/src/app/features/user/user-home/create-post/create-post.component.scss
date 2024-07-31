@@ -17,6 +17,11 @@ p-dialog ::ng-deep {
     overflow: unset;
   }
 
+  textarea.p-inputtext {
+    background-color: transparent;
+    border: 0;
+  }
+
 }
 
 p-fileupload ::ng-deep {
@@ -159,7 +164,7 @@ p-speedDial ::ng-deep {
     width: 2.5rem;
     height: 2.5rem;
     background: var(--surface-200);
-    color: #475569;
+    color: var(--surface-800);
   }
 
   .p-speeddial-direction-up {

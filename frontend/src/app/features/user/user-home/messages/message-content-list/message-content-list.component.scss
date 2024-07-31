@@ -36,7 +36,7 @@
 }
 
 p-fileUpload ::ng-deep .p-button {
-  color: black;
+  color: var(--surface-900);
   background-color: transparent;
   padding: 0;
   border: none;

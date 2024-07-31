@@ -1,4 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting',
@@ -11,20 +12,20 @@ export class SettingComponent {
   isMobile: boolean = false;
   menus = [
     {
-      title: 'How you use Syncio',
+      title: this.translateService.instant('howYouUseSyncio'),
       items: [
         {
-          label: 'Edit profile',
+          label: this.translateService.instant('editProfile'),
           icon: 'pi pi-user',
           link: 'edit-profile',
         }
       ]
     },
     {
-      title: 'How people find and contact you',
+      title: this.translateService.instant('howPeopleFindAndContactYou'),
       items: [
         {
-          label: 'Image Search',
+          label: this.translateService.instant('imageSearch'),
           icon: 'pi pi-image',
           link: 'image-search',
         }
@@ -32,7 +33,9 @@ export class SettingComponent {
     }
   ];
 
-  constructor() {
+  constructor(
+    private translateService: TranslateService,
+  ) {
     this.isMobile = window.innerWidth < 768;
   }
 

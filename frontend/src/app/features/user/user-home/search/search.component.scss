@@ -9,7 +9,6 @@ $black : rgb(38, 38, 38);
 $gray-color : rgb(142, 142, 142);
 $edit-button : rgb(239, 239, 239);
 $gray : rgb(239, 239, 239);
-$white : white;
 
 // .search__wrap {
 //     position: relative;
@@ -33,7 +32,7 @@ $white : white;
     top: 0;
     left: -20em;
     position: fixed;
-    background-color: $white;
+    background-color: var(--surface-0);
     width: 350px;
     border-right: 1px solid #cccccc;
     border-radius: 0 10px 10px 0;
@@ -49,12 +48,11 @@ $white : white;
     height: 100vh;
 
     h2 {
-        color: $black;
         font-size: 25px;
     }
 
     form {
-        background-color: $gray;
+        border: 1px solid var(--surface-border);
         border-radius: 5px;
         padding: 5px;
         margin-bottom: 1.5em;
@@ -126,8 +124,12 @@ $white : white;
     padding: 0.5rem;
 }
 
+.search-result ::ng-deep app-search-suggestion {
+    transition: all 0.2s ease;
+}
+
 .search-result ::ng-deep app-search-suggestion:hover {
-    background-color: var(--gray-200);
+    background-color: var(--surface-100);
 }
 
 .mobile {

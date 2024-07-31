@@ -1,4 +1,4 @@
-<p-dialog header="Following" 
+<p-dialog [header]="'following' | translate" 
   [modal]="true"
   [dismissableMask]="true" 
   [(visible)]="isVisibleFollowing" 
@@ -25,8 +25,8 @@
         </div>
       </div>
       <!-- Follow/Unfollow button -->
-      <p-button *ngIf="currentUserId != userFollow.targetId && !userFollow.following" (click)="addFollow(userFollow)" label="Follow" severity="my-custom-primary"></p-button>
-      <p-button *ngIf="currentUserId != userFollow.targetId && userFollow.following" (click)="unFollow(userFollow)" label="Unfollow" severity="my-custom-secondary"></p-button>
+      <p-button *ngIf="currentUserId != userFollow.targetId && !userFollow.following" (click)="addFollow(userFollow)" [label]="'follow' | translate" severity="my-custom-primary"></p-button>
+      <p-button *ngIf="currentUserId != userFollow.targetId && userFollow.following" (click)="unFollow(userFollow)" [label]="'unfollow' | translate" severity="my-custom-secondary"></p-button>
     </div>
 
     <!-- Loading -->

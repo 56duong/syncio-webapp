@@ -3,6 +3,7 @@ import { UserService } from '../../../../../../core/services/user.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
 import { ToastService } from 'src/app/core/services/toast.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile-form',
@@ -20,7 +21,8 @@ export class ProfileFormComponent {
   profileId: string = ''; // user id from route params
   constructor(
     private userService: UserService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -49,8 +51,8 @@ export class ProfileFormComponent {
             };
             this.userService.saveUserResponseToLocalStorage(this.userResponse);
             this.toastService.showSuccess(
-              'Success',
-              'Profile updated successfully'
+              this.translateService.instant('success'),
+              this.translateService.instant('profileUpdatedSuccessfully')
             );
           },
           error: (error) => {
