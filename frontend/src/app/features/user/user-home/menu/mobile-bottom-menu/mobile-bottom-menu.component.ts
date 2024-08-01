@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 import { TokenService } from 'src/app/core/services/token.service';
 
 @Component({
@@ -34,6 +35,7 @@ export class MobileBottomMenuComponent {
 
   constructor(
     private tokenService: TokenService,
+    private redirectService: RedirectService
   ) { }
 
   ngOnInit(): void {
@@ -42,10 +44,12 @@ export class MobileBottomMenuComponent {
   }
 
   toggleSearch(): void {
+    if(!this.currentUserId) this.redirectService.needLogin();
     this.actionToggle.emit('search');
   }
 
   toggleNotifications(): void {
+    if(!this.currentUserId) this.redirectService.needLogin();
     this.actionToggle.emit('notifications');
   }
 

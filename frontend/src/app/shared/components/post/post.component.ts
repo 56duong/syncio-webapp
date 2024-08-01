@@ -1,5 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { tap } from 'rxjs';
 import { Post, Visibility } from 'src/app/core/interfaces/post';
@@ -53,7 +54,8 @@ export class PostComponent {
     private reportService: ReportService,
     private translateService: TranslateService,
     private tokenService: TokenService,
-    private redirectService: RedirectService
+    private redirectService: RedirectService,
+    private router: Router
   ) {}
 
   hideDialog() {
@@ -170,6 +172,24 @@ export class PostComponent {
 
   onHidePost(): void {
     this.hidePostEvent.emit(this.post.id);
+  }
+
+
+  /**
+   * Handle the click event on the post caption.
+   * @param event 
+   */
+  handleClick(event: MouseEvent) {
+    // Check if the click event target is a .profile-link element
+    const target = event.target as HTMLElement;
+    if (target.tagName === 'A' && target.getAttribute('data-link')) {
+      event.preventDefault();
+      const profileUrl = target.getAttribute('data-link');
+      this.router.navigate([profileUrl]);
+    }
+  
+    // Toggle isViewMore if not clicked on a .profile-link
+    this.isViewMore = !this.isViewMore;
   }
 
 }

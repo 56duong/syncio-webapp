@@ -181,23 +181,12 @@ export class UserService {
 
   /**
    * Get User Profile By Id.
-   * @param userId - The userId to search if exists.
-   * @returns Object users.
-   */
-  getUserProfile(userId: any): Observable<UserProfile> {
-    const url = `${this.apiURL}/profile/${userId}`;
-    return this.http.get<UserProfile>(url);
-  }
-
-  /**
-   * Get User Profile By Id.
-   * Use for case when the user already logged in.
    * @param userId
    * @returns
    */
-  getUserProfile2(userId: any): Observable<UserProfile> {
+  getUserProfile(userId: any): Observable<UserProfile> {
     const url = `${this.apiURL}/profile/${userId}`;
-    return this.http.post<UserProfile>(url, {});
+    return this.http.get<UserProfile>(url, {});
   }
 
   updateUser(user: User, userId: any): Observable<User> {
@@ -223,6 +212,28 @@ export class UserService {
     const url = `${this.apiURL}/${userId}/username`;
     return this.http.get<Object>(url);
   }
+
+  
+
+  /**
+   * Get user id by username.
+   * @param userId
+   * @returns response object containing the userId.
+   * @example
+   * this.userService.getUserIdByUsername(userId).subscribe({
+   *  next: (response) => {
+   *   this.userId = response.userId;
+   *  },
+   *  error: (error) => {
+   *   console.error(error);
+   *  }
+   * })
+   */
+  getUserIdByUsername(username: string): Observable<any> {
+    const url = `${this.apiURL}/username/${username}`;
+    return this.http.get<any>(url);
+  }
+
   getQrCodeFromUser(userId: string): Observable<any> {
     const url = `${this.apiURL}/getQrcode/${userId}`;
     return this.http.get(url, { responseType: 'text' });

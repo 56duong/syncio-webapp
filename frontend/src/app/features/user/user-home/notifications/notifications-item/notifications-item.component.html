@@ -138,7 +138,33 @@
       <small class="ml-1 text-xs text-gray-500">{{notification.createdDate | dateAgoPipe}}</small>
     
     </div>
+  </div>
 
+  <!-- POST_TAG -->
+  <div *ngSwitchCase="ActionEnum.POST_TAG"
+    class="flex align-items-center gap-1">
+
+    <!-- Actor avatar -->
+    <app-avatar [userId]="notification.actorId" [width]="48"></app-avatar>
+
+    <div class="flex-1">
+      <div class="line-clamp-2 text-sm">
+        <!-- Actor username -->
+        <span *ngIf="notification.actorId" class="font-semibold">
+          {{notification.actorId | userIdToName | async}}
+        </span>
+        
+        <!-- Action -->
+        <span> {{ 'taggedYouInAPost' | translate }}.</span>
+      </div>
+
+      <!-- Created date -->
+      <small class="ml-1 text-xs text-gray-500">{{notification.createdDate | dateAgoPipe}}</small>
+    
+    </div>
+
+    <!-- First photo of the post if it exists  -->
+    <img *ngIf="notification.imageURL" [src]="notification.imageURL | constructImageUrl" style="width: 48px; height: 49px; object-fit: cover;">
   </div>
 
 </div>

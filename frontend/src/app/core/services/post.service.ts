@@ -205,7 +205,7 @@ export class PostService {
   }
 
   /**
-   * 
+   * Get posts by user id
    * @param userId 
    * @param pageNumber 
    * @param pageSize 
@@ -218,25 +218,7 @@ export class PostService {
       pageSize: pageSize.toString(),
       isDesc: isDesc.toString()
     };
-    const url = `${this.apiURL}/${userId}/posts`;
-    return this.http.get<any>(url, { params });
-  }
-
-  /**
-   * Get posts by user id for not login user
-   * @param userId 
-   * @param pageNumber 
-   * @param pageSize 
-   * @param isDesc false for ascending order, true for descending order 
-   * @returns 
-   */
-  getPostsByUserIdNotLoggedIn(userId: string, pageNumber: number, pageSize: number, isDesc: boolean): Observable<any> {
-    const params = { 
-      pageNumber: pageNumber.toString(), 
-      pageSize: pageSize.toString(),
-      isDesc: isDesc.toString()
-    };
-    const url = `${this.apiURL}/user/not-login/${userId}`;
+    const url = `${this.apiURL}/user-posts/${userId}`;
     return this.http.get<any>(url, { params });
   }
 

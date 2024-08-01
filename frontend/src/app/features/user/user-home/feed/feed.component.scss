@@ -26,3 +26,9 @@
     margin-right: 4px;
   }
 }
+
+::ng-deep .profile-link {
+  cursor: pointer;
+  color: var(--primary-color);
+  font-weight: 500;
+}

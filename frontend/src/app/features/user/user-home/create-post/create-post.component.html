@@ -112,6 +112,9 @@
             [placeholder]="('writeACaption' | translate) + '...'"
             class="border-0 outline-none p-0 shadow-none"
             style="max-height: 154px;"
+            [mentionConfig]="mentionConfig"
+            [mentionListTemplate]="mentionListTemplate"
+            (input)="onCaptionChange($event)"
           ></textarea>
         </div>
         <!-- Emoji -->
@@ -168,7 +171,7 @@
   <p-divider></p-divider>
   
   <div class="modal-content p-2">
-    <span class="block text-center mb-3 mt-2 font-semibold">Who would you like to share your post with?</span>
+    <span class="block text-center mb-3 mt-2 font-semibold">{{'whoWouldYouLikeToShareYourPostWith' | translate}}?</span>
 
     <div *ngFor="let visibility of visibilityOptions | keyvalue" class="field-checkbox mb-3">
       <p-radioButton 
@@ -195,3 +198,15 @@
   (submitAudioEvent)="submitAudio($event)"
   (closeRecorderEvent)="isVisibleRecorder = false">
 </app-voice-recorder-dialog>
+
+<!-- Mention list template -->
+<ng-template #mentionListTemplate let-user="item">
+  <!-- each item -->
+  <div class="flex justify-content-start align-content-center gap-2 cursor-pointer">
+    <app-avatar [userId]="user.id" [width]="36"></app-avatar>
+    <div class="flex flex-column">
+      <span style="line-height: 1.3em;">{{user.username}}</span>
+      <small class="text-gray-500" style="line-height: 1.3em;">{{user.followerCount}} followers</small>
+    </div>
+  </div>
+</ng-template>

@@ -160,22 +160,13 @@ public class PostController {
         return ResponseEntity.ok(postService.getAllPostsByUserId(id));
     }
 
-    @GetMapping("/{id}/posts")
+    @GetMapping("/user-posts/{id}")
     public ResponseEntity<Page<PostDTO>> getPostsByUserId(@PathVariable(name = "id") final UUID id,
                                                           @RequestParam(defaultValue = "0") final int pageNumber,
                                                           @RequestParam(defaultValue = "12") final int pageSize,
                                                           @RequestParam(defaultValue = "true") final boolean isDesc) {
         final PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, isDesc ? Sort.by("created_date").descending() : Sort.by("created_date").ascending());
         return ResponseEntity.ok(postService.getPostsByUserId(id, pageRequest));
-    }
-
-    @GetMapping("/user/not-login/{id}")
-    public ResponseEntity<Page<PostDTO>> getPostsByUserIdNotLoggedIn(@PathVariable(name = "id") final UUID id,
-                                                           @RequestParam(defaultValue = "0") final int pageNumber,
-                                                           @RequestParam(defaultValue = "12") final int pageSize,
-                                                           @RequestParam(defaultValue = "true") final boolean isDesc) {
-        final PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, isDesc ? Sort.by("created_date").descending() : Sort.by("created_date").ascending());
-        return ResponseEntity.ok(postService.getPostsByVisibility(id, pageRequest));
     }
 
 }

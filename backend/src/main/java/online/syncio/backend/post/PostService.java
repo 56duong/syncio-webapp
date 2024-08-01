@@ -292,13 +292,13 @@ public class PostService {
 
     public Page<PostDTO> getPostsByUserId(UUID userId, Pageable pageable) {
         final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
-        Page<Post> posts = postRepository.findPostsByUser(userId, currentUserId, pageable);
-        return posts.map(post -> postMapper.mapToDTO(post, new PostDTO()));
-    }
-
-
-    public Page<PostDTO> getPostsByVisibility(UUID userId, Pageable pageable) {
-        Page<Post> posts = postRepository.findPostsByVisibilityAndUserId(PostEnum.PUBLIC.toString(), userId, pageable);
+        Page<Post> posts;
+        if(currentUserId == null) {
+            posts = postRepository.findPostsByVisibilityAndUserId(PostEnum.PUBLIC.toString(), userId, pageable);
+        }
+        else {
+            posts = postRepository.findPostsByUser(userId, currentUserId, pageable);
+        }
         return posts.map(post -> postMapper.mapToDTO(post, new PostDTO()));
     }
 

@@ -77,7 +77,7 @@ public class AuthController {
     ) throws Exception {
         // Kiểm tra thông tin đăng nhập và sinh token
         String token = authService.login(
-                userLoginDTO.getEmail(),
+                userLoginDTO.getEmailOrUsername(),
                 userLoginDTO.getPassword()
         );
 
@@ -183,13 +183,15 @@ public class AuthController {
 
     @PostMapping("/confirm-user-register")
     public ResponseEntity<?> confirm(@RequestParam("token") String token) throws IOException, WriterException {
-                tokenService.confirmToken(token);
-        return  ResponseEntity.ok(
-                ResponseObject.builder()
-                        .message("User confirmed successfully")
-                        .data("")
-                        .status(HttpStatus.OK)
-                        .build())  ;
+        tokenService.confirmToken(token);
+        String message = messageSource.getMessage("user.confirmed.success", null, LocaleContextHolder.getLocale());
+        return ResponseEntity.ok(
+                    ResponseObject.builder()
+                            .message(message)
+                            .data("")
+                            .status(HttpStatus.OK)
+                            .build()
+                );
 
 
     }

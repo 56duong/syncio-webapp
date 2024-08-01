@@ -24,7 +24,7 @@ public class Notification {
     private UUID targetId;
 
     /**
-     * The id of the action that was performed. Example: when a user comments on a post, the relatedEntityId will be the id of the comment.
+     * The id of the action that was performed. Example: when a user comments on a post, the actionPerformedId will be the id of the comment.
      */
     private UUID actionPerformedId;
 

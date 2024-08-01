@@ -79,11 +79,11 @@
                         [color]="''">
       </app-username-label>
     </small>
-    <p class="inline m-0" style="white-space: pre-line;"
-      (click)="isViewMore = !isViewMore" 
-      [title]="isViewMore ? 'View less' : 'View more'">
-      {{ post.caption }}
-    </p>
+    <div class="inline m-0" style="white-space: pre-line;"
+      (click)="handleClick($event)"
+      [title]="isViewMore ? 'View less' : 'View more'"
+      [innerHTML]="post.caption | tagToLink | async">
+    </div>
   </div>
 
   <!-- Like -->

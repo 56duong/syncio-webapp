@@ -110,20 +110,25 @@ public class AuthService {
 
 
     public String login(
-            String email,
+            String emailOrUsername,
             String password
     ) throws Exception {
         Optional<User> optionalUser = Optional.empty();
         String subject = null;
-        if(optionalUser.isEmpty() && email != null) {
-            optionalUser =   userRepository.findByEmail(email);
-            subject = email;
+        if(emailOrUsername != null) {
+            if(emailOrUsername.contains("@")) {
+                optionalUser = userRepository.findByEmail(emailOrUsername);
+            } else {
+                optionalUser = userRepository.findByUsername(emailOrUsername);
+            }
         }
 
         String message = messageSource.getMessage("user.login.failed", null, LocaleContextHolder.getLocale());
         if(optionalUser.isEmpty()) {
             throw new DataNotFoundException(message);
         }
+
+        subject = optionalUser.get().getEmail();
 
         User existingUser = optionalUser.get();
 

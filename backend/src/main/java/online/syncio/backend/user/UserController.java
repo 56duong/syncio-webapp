@@ -102,20 +102,7 @@ public class UserController {
 
 
     @GetMapping("/profile/{id}")
-    @ResponseBody
     public ResponseEntity<UserProfile> getUserProfile (@PathVariable(name = "id") final UUID id) {
-        return ResponseEntity.ok(userService.getUserProfile(id));
-    }
-
-    /**
-     * Get the profile of a user by their id.
-     * Use for case when the user already logged in.
-     * @param id
-     * @return
-     */
-    @PostMapping("/profile/{id}")
-    @ResponseBody
-    public ResponseEntity<UserProfile> getUserProfile2 (@PathVariable(name = "id") final UUID id) {
         return ResponseEntity.ok(userService.getUserProfile(id));
     }
 
@@ -175,6 +162,13 @@ public class UserController {
     @GetMapping("/getQrcode/{userId}")
     public String getQrcode(@PathVariable UUID userId) {
         return userService.getQrcode(userId);
+    }
+
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<Map<String, UUID>> getUserIdByUsername (@PathVariable(name = "username") final String username) {
+        final UUID userId = userService.getUserIdByUsername(username);
+        return ResponseEntity.ok(Collections.singletonMap("userId", userId));
     }
 
 }

@@ -23,6 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SettingComponent } from './setting/setting.component';
 import { MenuModule } from './menu/menu.module';
 import { PostListComponent } from './profile/post-list/post-list.component';
+import { TagToLinkPipe } from 'src/app/core/pipes/tag-to-link.pipe';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,9 @@ import { PostListComponent } from './profile/post-list/post-list.component';
     PickerComponent,
     TranslateModule,
     MenuModule
+  ],
+  providers: [
+    TagToLinkPipe
   ],
 })
 export class UserHomeModule {}

@@ -88,6 +88,13 @@
     width: 0.5rem;
     border-radius: 50%;
   }
+
+  // caption
+  .profile-link {
+    cursor: pointer;
+    color: var(--primary-color);
+    font-weight: 500;
+  }
 }
 
 .h-5\/6 {

@@ -14,10 +14,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserLoginDTO {
-    @JsonProperty("email")
+    @JsonProperty("emailOrUsername")
     @NotBlank(message = "{user.login.email.blank}")
-    @Email(message = "{user.login.email.invalid}")
-    private String email;
+    private String emailOrUsername;
 
     @NotBlank(message = "{user.login.password.blank}")
     @Size(min = 6, max = 100, message = "{user.login.password.length}")

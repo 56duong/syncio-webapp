@@ -8,6 +8,7 @@ import { CreatePostComponent } from '../create-post/create-post.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { MobileTopMenuComponent } from './mobile-top-menu/mobile-top-menu.component';
 import { MobileBottomMenuComponent } from './mobile-bottom-menu/mobile-bottom-menu.component';
+import { MentionModule } from 'angular-mentions';
 
 
 
@@ -24,6 +25,7 @@ import { MobileBottomMenuComponent } from './mobile-bottom-menu/mobile-bottom-me
     TranslateModule,
     SharedModule,
     PickerComponent,
+    MentionModule
   ],
   exports: [
     LeftMenuComponent,

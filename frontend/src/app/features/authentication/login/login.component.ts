@@ -34,17 +34,17 @@ export class LoginComponent implements OnInit {
 
   activate() {
     this.isActive = true;
-    this.email = '';
+    this.emailOrUsername = '';
     this.password = '';
   }
 
   deactivate() {
     this.isActive = false;
-    this.email = '';
+    this.emailOrUsername = '';
     this.password = '';
   }
   username: string = '';
-  email: string = '';
+  emailOrUsername: string = '';
   password: string = '';
   retypePassword: string = '';
   showPassword: boolean = false;
@@ -110,9 +110,9 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    console.log('login', this.email);
+    console.log('login', this.emailOrUsername);
     let errorText = this.translateService.instant('error');
-    if (this.email == null || this.email == '') {
+    if (this.emailOrUsername == null || this.emailOrUsername == '') {
       this.toastService.showError(errorText, this.translateService.instant('emailIsRequired'));
       return;
     }
@@ -122,7 +122,7 @@ export class LoginComponent implements OnInit {
     }
     
     const loginDTO: LoginDTO = {
-      email: this.email,
+      emailOrUsername: this.emailOrUsername,
       password: this.password,
       role_name: 'USER',
     };
@@ -207,12 +207,12 @@ export class LoginComponent implements OnInit {
     }
 
     //validate email
-    if (!emailRegex.test(this.email)) {
-      if (!this.email.includes('@')) {
+    if (!emailRegex.test(this.emailOrUsername)) {
+      if (!this.emailOrUsername.includes('@')) {
         this.toastService.showError('Error', 'Email should contain an "@" symbol.');
         return;
       }
-      if (!this.email.includes('.')) {
+      if (!this.emailOrUsername.includes('.')) {
         this.toastService.showError('Error', 'Email should contain a domain name with a "."');
         return;
       }
@@ -221,7 +221,7 @@ export class LoginComponent implements OnInit {
     }
     const registerDTO: RegisterDTO = {
       username: this.username,
-      email: this.email,
+      email: this.emailOrUsername,
 
       password: this.password,
       retype_password: this.retypePassword,
@@ -244,7 +244,7 @@ export class LoginComponent implements OnInit {
     this.userService.confirmUserRegister(token).subscribe({
       next: (response: any) => {
         console.log('Registration confirmed:', response);
-        this.toastService.showSuccess('Success', response.message);
+        this.toastService.showSuccess(this.translateService.instant('success'), response.message);
       },
       complete: () => {},
       error: (error: any) => {

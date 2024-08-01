@@ -49,6 +49,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("SELECT u.username FROM User u WHERE u.id = :id")
     String findUsernameById(UUID id);
 
+    @Query("SELECT u.id FROM User u WHERE u.username = :username")
+    UUID findUserIdByUsername(String username);
+
     @Query("SELECT DATE(u.createdDate) as date, COUNT(u) as count " +
             "FROM User u " +
             "WHERE u.createdDate >= :startDate " +

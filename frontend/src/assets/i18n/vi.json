@@ -2,6 +2,7 @@
   "LOGIN-----------------------------------------------------------------": "",
   "login": "Đăng nhập",
   "email": "Email",
+  "emailOrUsername": "Email hoặc Username",
   "bio": "Tiểu sử",
   "password": "Mật khẩu",
   "forgotPassword": "Quên mật khẩu?",
@@ -154,6 +155,7 @@
   "likedYourPost": "đã thích bài viết của bạn",
   "startedFollowingYou": "đã theo dõi bạn",
   "repliedToYourComment": "đã trả lời bình luận của bạn",
+  "taggedYouInAPost": "đã nhắc đến bạn trong một bài viết",
 
 
   "CREATE NEW POST-----------------------------------------------------------------": "",

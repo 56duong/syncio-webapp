@@ -37,6 +37,7 @@
     "@stomp/stompjs": "^7.0.0",
     "@types/chart.js": "^2.9.41",
     "@types/sockjs-client": "^1.5.4",
+    "angular-mentions": "^1.5.0",
     "chart.js": "^4.4.3",
     "chartjs-adapter-date-fns": "^3.0.0",
     "class-validator": "^0.14.1",

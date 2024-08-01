@@ -2,6 +2,7 @@
   "LOGIN-----------------------------------------------------------------": "",
   "login": "Log in",
   "email": "Email",
+  "emailOrUsername": "Email or Username",
   "bio": "Bio",
   "password": "Password",
   "forgotPassword": "Forgot password?",
@@ -154,6 +155,7 @@
   "likedYourPost": "liked your post",
   "startedFollowingYou": "started following you",
   "repliedToYourComment": "replied to your comment",
+  "taggedYouInAPost": "tagged you in a post",
 
 
   "CREATE NEW POST-----------------------------------------------------------------": "",

@@ -17,6 +17,7 @@ import { UserStory } from 'src/app/core/interfaces/user-story';
 import { StoryService } from 'src/app/core/services/story.service';
 import { RedirectService } from 'src/app/core/services/redirect.service';
 import { TranslateService } from '@ngx-translate/core';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -120,8 +121,16 @@ export class ProfileComponent implements OnInit {
     this.notificationService.connectWebSocket(this.currentUserId);
 
     // subscribe to route params to get user id
-    this.route.params.subscribe((params) => {
-      this.profileId = params['userId'];
+    this.route.params.subscribe(async (params) => {
+      let user = params['userId']; // user may be username or user id
+      //check if the profileId is a username
+      if(user.indexOf('-') === -1) {
+        const { userId } = await lastValueFrom(this.userService.getUserIdByUsername(user));
+        this.profileId = userId;
+      }
+      else {
+        this.profileId = user;
+      }
       this.getUserStory();
       this.getUserProfile();
     });
@@ -141,28 +150,13 @@ export class ProfileComponent implements OnInit {
   }
 
   getUserProfile() {
-    if (this.currentUserId) {
-      // if user is logged in, use getUserProfile2 to get with token
-      this.userService.getUserProfile2(this.profileId).subscribe({
-        next: (response) => {
-          this.userProfile = { ...this.userProfile, ...response };
-          this.dialogItems[0].label = response.isCloseFriend
-            ? this.translateService.instant('removeFromCloseFriends')
-            : this.translateService.instant('addToCloseFriends');
-        },
-        error: (error) => {
-          console.error('Error getting user profile', error);
-        },
-      });
-    } else {
-      // if user is not logged in, use getUserProfile to get without token
-      this.userService.getUserProfile(this.profileId).subscribe((response) => {
-        this.userProfile = { ...this.userProfile, ...response };
-        this.dialogItems[0].label = response.isCloseFriend
-          ? this.translateService.instant('removeFromCloseFriends')
-          : this.translateService.instant('addToCloseFriends');
-      });
-    }
+    this.userService.getUserProfile(this.profileId).subscribe((response) => {
+      this.location.replaceState('/profile/' + response.username);
+      this.userProfile = { ...this.userProfile, ...response };
+      this.dialogItems[0].label = response.isCloseFriend
+        ? this.translateService.instant('removeFromCloseFriends')
+        : this.translateService.instant('addToCloseFriends');
+    });
   }
 
   onFileSelected(event: any): void {

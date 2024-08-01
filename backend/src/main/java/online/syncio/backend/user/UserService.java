@@ -273,5 +273,11 @@ public class UserService {
                 .map(User::getQrCodeUrl)
                 .orElseThrow(() -> new NotFoundException(User.class, "id", userId.toString()));
     }
+
+
+    public UUID getUserIdByUsername(final String username) {
+        return userRepository.findUserIdByUsername(username);
+    }
+
 }
 

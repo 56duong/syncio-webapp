@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { firstValueFrom, Subscription } from 'rxjs';
 import { Comment } from 'src/app/core/interfaces/comment';
@@ -36,7 +36,8 @@ export class CommentListComponent {
     private activatedRoute: ActivatedRoute,
     private notificationService: NotificationService,
     private route: ActivatedRoute,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private router: Router
   ) { 
     this.subscribeToQueryParams();
   }
@@ -317,6 +318,21 @@ export class CommentListComponent {
    */
   onReply(commentId: string, ownerParentCommentId: string) {
     this.onReplyEvent.emit({ commentId: commentId, ownerParentCommentId: ownerParentCommentId});
+  }
+
+
+  /**
+   * Handle the click event on the post caption.
+   * @param event 
+   */
+  handleClick(event: MouseEvent) {
+    // Check if the click event target is a .profile-link element
+    const target = event.target as HTMLElement;
+    if (target.tagName === 'A' && target.getAttribute('data-link')) {
+      event.preventDefault();
+      const profileUrl = target.getAttribute('data-link');
+      this.router.navigate([profileUrl]);
+    }
   }
 
 }

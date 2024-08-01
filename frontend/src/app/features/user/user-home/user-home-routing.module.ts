@@ -16,7 +16,6 @@ const routes: Routes = [
     path: '',
     component: FeedComponent,
   },
-
   {
     path: 'profile/:userId',
     component: ProfileComponent,

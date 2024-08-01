@@ -91,28 +91,24 @@ export class PostListComponent {
    * @param pageSize 
    */
   getPosts(pageNumber: number, pageSize: number, isDesc: boolean = true) {
-    const postServiceMethod = this.currentUserId 
-        ? this.postService.getPostsByUserId(this.userProfileId, pageNumber, pageSize, isDesc)
-        : this.postService.getPostsByUserIdNotLoggedIn(this.userProfileId, pageNumber, pageSize, isDesc);
-
-    postServiceMethod.subscribe({
-        next: (response) => {
-          this.posts.push(...response.content);
-          if (response.last) {
-            this.endOfPosts = true;
-            this.observer?.unobserve(this.loadingElement.nativeElement);
-          } 
-          else {
-            this.pageNumber++;
-          }
-          this.loading = false;
-          setTimeout(() => {
-            this.getMorePosts();
-          }, 500);
-        },
-        error: (error) => {
-          console.error('Error getting user posts', error);
-        },
+    this.postService.getPostsByUserId(this.userProfileId, pageNumber, pageSize, isDesc).subscribe({
+      next: (response) => {
+        this.posts.push(...response.content);
+        if (response.last) {
+          this.endOfPosts = true;
+          this.observer?.unobserve(this.loadingElement.nativeElement);
+        } 
+        else {
+          this.pageNumber++;
+        }
+        this.loading = false;
+        setTimeout(() => {
+          this.getMorePosts();
+        }, 500);
+      },
+      error: (error) => {
+        console.error('Error getting user posts', error);
+      },
     });
   }
 

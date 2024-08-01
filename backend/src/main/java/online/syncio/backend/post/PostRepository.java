@@ -41,13 +41,14 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
      */
     @Query(value = "SELECT p.*, ucf.user_id AS ucf_user_id " +
             "FROM post p " +
-            "LEFT JOIN user_close_friend ucf ON p.user_id = ucf.user_id " +
+                "LEFT JOIN user_close_friend ucf ON p.user_id = ucf.user_id " +
             "WHERE p.flag = true " +
-            "AND p.user_id = :userId " +
-            "AND (p.user_id = :currentUserId OR " +
-            "p.visibility = 'PUBLIC' OR " +
-            "(p.visibility = 'CLOSE_FRIENDS' AND ucf.close_friend_id = :currentUserId) OR " +
-            "(p.visibility = 'PRIVATE' AND p.user_id = :currentUserId))", nativeQuery = true)
+                "AND p.user_id = :userId " +
+                "AND (p.user_id = :currentUserId OR " +
+                    "p.visibility = 'PUBLIC' OR " +
+                    "(p.visibility = 'CLOSE_FRIENDS' AND ucf.close_friend_id = :currentUserId) OR " +
+                    "(p.visibility = 'PRIVATE' AND p.user_id = :currentUserId)) " +
+            "GROUP BY p.id", nativeQuery = true)
     Page<Post> findPostsByUser(@Param("userId") UUID userId, @Param("currentUserId") UUID currentUserId, Pageable pageable);
 
     /**
@@ -97,7 +98,8 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
                     "p.visibility = 'PUBLIC' OR " +
                     "(p.visibility = 'CLOSE_FRIENDS' AND ucf.close_friend_id = :userId) OR " +
                     "(p.visibility = 'PRIVATE' AND p.user_id = :userId)) " +
-                "ORDER BY p.created_date DESC", nativeQuery = true)
+            "GROUP BY p.id " +
+            "ORDER BY p.created_date DESC", nativeQuery = true)
     Page<Post> findPostsByUserFollowing(Pageable pageable, @Param("userId") UUID userId, @Param("users") Set<UUID> users, @Param("daysAgo") LocalDateTime daysAgo);
 
     /**
