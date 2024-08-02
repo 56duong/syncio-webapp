@@ -23,6 +23,14 @@ export class UsernameLabelComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.getUrlLabel();
+
+    this.labelUpdateService.currentGifUrl.subscribe(() => {
+      this.getUrlLabel();
+    });
+  }
+
+  getUrlLabel(){
     if (!this.userId) {
       console.warn('UserId is not provided or is null');
       return; // Không thực hiện bất kỳ hành động nào nếu userId là null hoặc undefined
@@ -37,10 +45,6 @@ export class UsernameLabelComponent implements OnInit {
         console.error('Error fetching label URL', error);
         this.gifUrl = undefined; // gifUrl là undefined nếu có lỗi
       }
-    });
-
-    this.labelUpdateService.currentGifUrl.subscribe((gifUrl) => {
-      this.gifUrl = gifUrl ? gifUrl : undefined;
     });
   }
 }
