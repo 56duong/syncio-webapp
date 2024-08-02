@@ -35,6 +35,9 @@ export class LabelsShopComponent {
   sortField!: string;
   sortKey!: string;
 
+  filteredLabels: any[] = [];
+  searchTerm: string = '';
+
   constructor(
     private labelService: LabelService,
     private userService: UserService,
@@ -49,6 +52,7 @@ export class LabelsShopComponent {
         next: (data) => {
           console.log(data);
           this.labels = data;
+          this.filteredLabels = this.labels;
           this.dateNow = Date.now();
           this.labels.forEach(
             (label) =>
@@ -67,6 +71,10 @@ export class LabelsShopComponent {
     this.sortOptions = [
       { label: 'Price High to Low', value: '!price' },
       { label: 'Price Low to High', value: 'price' },
+      { label: 'A-Z', value: 'name' },
+      { label: 'Z-A', value: '!name' },
+      { label: 'Have owned', value: '!purcharse' },
+      { label: 'Not owned', value: 'purcharse' },
     ];
   }
 
@@ -176,5 +184,12 @@ export class LabelsShopComponent {
       default:
         return 'info';
     }
+  }
+
+  filterNameLabels() {
+    this.filteredLabels = this.labels.filter(label => 
+      label !== undefined && label.name !== undefined && 
+      label.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
 }

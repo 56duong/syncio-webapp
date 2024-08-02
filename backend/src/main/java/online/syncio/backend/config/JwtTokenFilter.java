@@ -138,7 +138,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/payment/vnpay-callback", apiPrefix), "GET"),
 
                 // Welcome page
-                Pair.of("/welcome-page", "GET")
+                Pair.of("/welcome-page", "GET"),
+
+                // Get URL Label
+                Pair.of(String.format("%s/user-label-infos/labelURL", apiPrefix), "GET")
         );
 
         String requestPath = request.getServletPath();

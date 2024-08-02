@@ -4,6 +4,7 @@
       <ng-template pTemplate="left">
         <div class="flex flex-column md:flex-row md:justify-content-between">
           <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By Price" (onChange)="onSortChange($event)" styleClass="mb-2 md:mb-0"></p-dropdown>
+          <input type="text" pInputText placeholder="Search By Name" [(ngModel)]="searchTerm" (input)="filterNameLabels()" class="ml-2"/>
       </div>
       </ng-template>
 
@@ -11,10 +12,11 @@
       <ng-template pTemplate="right">
         <button pButton pRipple label="Purchase History" icon="pi pi-history" class="p-button-help"
           (click)="openPurchaseHistory()"></button>
+          
       </ng-template>
     </p-toolbar>
 
-    <p-dataView #dv [value]="labels" [layout]="'grid'" [rows]="8" [paginator]="false" paginatorPosition="top" [sortField]="sortField" [sortOrder]="sortOrder" styleClass="p-2" >
+    <p-dataView #dv [value]="filteredLabels" [layout]="'grid'" [rows]="8" [paginator]="false" paginatorPosition="top" [sortField]="sortField" [sortOrder]="sortOrder" styleClass="p-2" >
       <ng-template let-label pTemplate="gridItem">
         <div class="card col-12 sm:col-6 lg:col-4 xl:col-3 p-3">
           
@@ -43,43 +45,6 @@
               <p-button *ngIf="label.purcharse" [disabled]="true" label="Buyed" icon="pi pi-check-circle" severity="my-custom-primary" class="flex-1" styleClass="w-full"></p-button>
             </div>
           </div>
-
-          <!-- <div class="p-4 border-1 surface-border surface-card border-round">
-            <div class="flex flex-wrap align-items-center justify-content-between gap-2">
-              <span class="flex align-items-center gap-2">
-                <i class="pi pi-tag"></i>
-                <span class="font-semibold">{{ label.type }}</span>
-              </span>
-              <p-tag *ngIf="label.status === 'ENABLED'" [severity]="'success'">IN STOCK</p-tag>
-              <p-tag *ngIf="label.status === 'DISABLED'" [severity]="'danger'">OUT OF STOCK</p-tag>
-            </div>
-            
-            <div class="flex flex-column align-items-center gap-3 py-5">
-              <img class="w-9 shadow-2 border-round" src="{{ label.labelURL + '?view=' + dateNow }}" width="160"
-                height="160" [alt]="label.name" />
-              <div class="text-lg font-bold">{{ label.name }}</div>
-            </div>
-
-            <div class="flex align-items-center justify-content-between">
-              <span class="text-lg font-semibold">{{
-                label.price + " VND"
-                }}</span>
-              <div>
-                <button [disabled]="label.status == 'DISABLED'" (click)="gift(label)" pButton
-                  class="p-button-rounded mr-1">
-                  <i class="pi pi-gift"></i>
-                </button>
-                <button *ngIf="!label.purcharse" [disabled]="label.status == 'DISABLED'" (click)="buyNow(label)" pButton
-                  class="p-button-rounded">
-                  Mua ngay
-                </button>
-                <button *ngIf="label.purcharse" disabled pButton class="p-button-rounded">
-                  <span class="pi pi-check-circle" style="margin-right: 5px">
-                  </span>Đã mua
-                </button>
-              </div>
-            </div>
-          </div> -->
         </div>
       </ng-template>
     </p-dataView>
