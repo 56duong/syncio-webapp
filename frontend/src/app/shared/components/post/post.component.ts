@@ -47,6 +47,10 @@ export class PostComponent {
 
   Visibility = Visibility
 
+  collectionVisible: boolean = false;
+
+  currentUserId: string = '';
+
   constructor(
     private location: Location,
     private textUtils: TextUtils,
@@ -63,6 +67,7 @@ export class PostComponent {
   }
   
   ngOnInit(): void {
+    this.currentUserId = this.tokenService.extractUserIdFromToken();
     this.dialogItems = [
       { 
         label: this.translateService.instant('report'), 
@@ -74,6 +79,10 @@ export class PostComponent {
         label: this.translateService.instant('copyLink'),
         action: () => this.copyLink()
       },
+      ...(this.post.createdBy === this.currentUserId ? [{ 
+        label: this.translateService.instant('saveToCollection'),
+        action: () => this.collectionVisible = true
+      }] : []),
       { 
         label: this.translateService.instant('cancel'),
         action: () => this.dialogVisible = false

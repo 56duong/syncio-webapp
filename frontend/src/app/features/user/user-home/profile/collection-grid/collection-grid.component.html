@@ -1,0 +1,71 @@
+<div *ngIf="currentUserId === userProfileId" class="flex justify-content-end mb-4">
+  <!-- new collection button -->
+  <p-button (click)="newCollection()" [label]="'newCollection' | translate" icon="pi pi-plus" [text]="true"></p-button>
+</div>
+
+<!-- list of collections -->
+<article style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px">
+  <ng-container *ngFor="let collection of collections">
+    <div class="collection relative" style="aspect-ratio: 1/1; cursor: pointer;">
+      <!-- image -->
+      <img [src]="getCollectionImage(collection.imageUrl)"
+        onerror="this.src='assets/images/no-image-available.jpg';"
+        style="object-fit: cover; display: block; width: 100%; height: 100%;" />
+      <div [routerLink]="['/profile', userProfileId, collection.id]" 
+        class="absolute bottom-0 left-0 w-full h-full flex justify-content-start align-items-end p-3"
+        style="background-image: linear-gradient(to top, rgba(108, 108, 108, 0.6) 0%, rgba(255, 255, 255, 0) 50%);">
+        <!-- name -->
+        <h3 class="my-0 text-white font-normal text-3xl">{{collection.name}}</h3>
+      </div>
+      <!-- edit  -->
+      <span *ngIf="currentUserId === collection.createdById" (click)="editCollection(collection)" class="hidden pi pi-pen-to-square absolute top-0 right-0 p-3 cursor-pointer text-white"></span>
+    </div>
+  </ng-container>
+</article>
+
+
+<!-- Add collection -->
+<p-dialog [header]="(selectedCollection.id ? 'editCollection' : 'newCollection') | translate" 
+  [modal]="true"
+  [dismissableMask]="true" 
+  [(visible)]="isVisibleAddCollection" 
+  [style]="{ width: '40vw', minWidth: '320px' }">
+  <p-divider></p-divider>
+
+  <!-- image show -->
+  <img *ngIf="selectedImageDataUrl" 
+    [src]="selectedImageDataUrl"
+    onerror="this.style.display='none';"
+    style="object-fit: cover; display: block; aspect-ratio: 1/1;"
+    class="col-4 m-auto" />
+
+  <div class="flex gap-3 align-items-center w-full p-3">
+    <!-- upload image -->
+    <p-fileUpload *ngIf="!selectedImage"
+      mode="basic" 
+      [chooseLabel]="'uploadImage' | translate" 
+      chooseIcon="pi pi-upload"
+      accept="image/*" 
+      [maxFileSize]="1000000" 
+      (onSelect)="onSelectImage($event)"
+      styleClass="m-auto block w-full"
+      class="flex-1" />
+
+    <!-- delete image -->
+    <p-button severity="danger" *ngIf="selectedImageDataUrl && !this.selectedImage" (click)="deleteImage()" [label]="'deleteImage' | translate" class="flex-1" styleClass="w-full" />
+  </div>
+
+  <!-- Input -->
+  <div class="flex flex-column align-items-stretch gap-3 p-3 pt-0">
+    <input [(ngModel)]="selectedCollection.name" pInputText id="name" [maxlength]="255" [placeholder]="'name' | translate" class="flex-auto" autocomplete="off" />
+    <textarea [(ngModel)]="selectedCollection.description" [maxLength]="2000" pInputText id="description" [placeholder]="'description' | translate" class="flex-auto" autocomplete="off"></textarea>
+  </div>
+
+  <p-divider></p-divider>
+
+  <!-- Button -->
+  <div class="p-fluid w-full p-3">
+    <p-button [label]="'done' | translate" (click)="saveCollection()" />
+  </div>
+
+</p-dialog>

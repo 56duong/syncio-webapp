@@ -24,6 +24,7 @@ import { SettingComponent } from './setting/setting.component';
 import { MenuModule } from './menu/menu.module';
 import { PostListComponent } from './profile/post-list/post-list.component';
 import { TagToLinkPipe } from 'src/app/core/pipes/tag-to-link.pipe';
+import { CollectionGridComponent } from './profile/collection-grid/collection-grid.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { TagToLinkPipe } from 'src/app/core/pipes/tag-to-link.pipe';
     FollowerDialogComponent,
     FollowingDialogComponent,
     SettingComponent,
-    PostListComponent
+    PostListComponent,
+    CollectionGridComponent
   ],
   imports: [
     CommonModule,

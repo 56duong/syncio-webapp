@@ -72,6 +72,7 @@
   "viewReplies": "View replies",
   "addAComment": "Add a comment",
   "postComment": "Post",
+  "saveToCollection": "Save to collection",
 
 
   "DATETIME-----------------------------------------------------------------": "",
@@ -192,6 +193,15 @@
   "removeFromCloseFriends": "Remove from close friends",
   "remove": "Remove",
   "avatarUpdatedSuccessfully": "Avatar updated successfully",
+  "collections": "Collections",
+  "newCollection": "New collection",
+  "uploadImage": "Upload image",
+  "done": "Xong",
+  "collectionCreatedSuccessfully": "Collection created successfully",
+  "updateCollectionSuccessfully": "Update collection successfully",
+  "collectionImageDeletedSuccessfully": "Collection image deleted successfully",
+  "noPostsAddedToCollectionYet": "No posts added to collection yet",
+  "editCollection": "Edit collection",
 
 
   "SETTING-----------------------------------------------------------------": "",

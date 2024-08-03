@@ -37,7 +37,7 @@ public class StickerGroupController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Long> findById(@PathVariable final Long id, @RequestBody StickerGroupDTO stickerGroupDTO) {
+    public ResponseEntity<Long> update(@PathVariable final Long id, @RequestBody StickerGroupDTO stickerGroupDTO) {
         stickerGroupService.update(id, stickerGroupDTO);
         return ResponseEntity.ok(stickerGroupDTO.getId());
     }
