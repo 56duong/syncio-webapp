@@ -9,7 +9,6 @@ $black : rgb(38, 38, 38);
 $gray-color : rgb(142, 142, 142);
 $edit-button : rgb(239, 239, 239);
 $gray : rgb(239, 239, 239);
-$white : white;
 
 // .search__wrap {
 //     position: relative;
@@ -33,7 +32,7 @@ $white : white;
     top: 0;
     left: -20em;
     position: fixed;
-    background-color: $white;
+    background-color: var(--surface-0);
     width: 350px;
     border-right: 1px solid #cccccc;
     border-radius: 0 10px 10px 0;
@@ -49,13 +48,11 @@ $white : white;
     height: 100vh;
 
     h2 {
-        color: $black;
-        padding-bottom: 1em;
         font-size: 25px;
     }
 
     form {
-        background-color: $gray;
+        border: 1px solid var(--surface-border);
         border-radius: 5px;
         padding: 5px;
         margin-bottom: 1.5em;
@@ -106,6 +103,10 @@ $white : white;
     }
 }
 
+::ng-deep body:has(.hide-menu-label) .search_section.show {
+    left: 5.4rem;
+}
+
 @media screen and (max-width: 992px) {
     .search_section.show {
         left: 5.4em !important;
@@ -114,4 +115,31 @@ $white : white;
 
 .search__wrap::ng-deep .p-divider.p-divider-horizontal {
     margin: 1.25rem 0;
+}
+
+.nav-search-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.5rem;
+}
+
+.search-result ::ng-deep app-search-suggestion {
+    transition: all 0.2s ease;
+}
+
+.search-result ::ng-deep app-search-suggestion:hover {
+    background-color: var(--surface-100);
+}
+
+.mobile {
+    width: 100%;
+    height: calc(100vh - var(--mobile-top-menu-height) - var(--mobile-bottom-menu-height));
+    top: var(--mobile-top-menu-height);
+    border-radius: 0;
+    left: 100%;
+}
+
+.mobile.search_section.show {
+    left: 0 !important;
 }

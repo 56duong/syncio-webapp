@@ -71,22 +71,23 @@
   <p-toast></p-toast>
 </div> -->
 
-<div class="wrapper">
+<div class="wrapper" style="background-image: url('assets/images/login-background.png');">
   <!-- lang -->
-  <div class="absolute top-0 right-0 p-4 flex gap-4 text-white">
+  <div class="absolute top-0 right-0 p-4 flex align-items-center gap-4" style="color: var(--surface-900);">
     <p (click)="switchLang('en')" class="underline cursor-pointer">English</p>
     <p (click)="switchLang('vi')" class="underline cursor-pointer">Tiếng Việt</p>
+    <span class="pi pi-question-circle cursor-pointer" routerLink="/help" style="font-size: 1.25rem;"></span>
   </div>
 
-  <div class="form flex col-8 p-0 bg-white align-items-stretch shadow-1">
-    <form class="col-6 flex flex-column gap-5 justify-content-center align-items-center">
+  <div class="form flex col-12 sm:col-8 p-0 align-items-stretch px-4">
+    <form class="col-12 sm:col-6 flex flex-column gap-5 justify-content-center align-items-center shadow-1">
       <h1>{{ 'login' | translate }}</h1>
       <div class="flex flex-column gap-4 w-full">
         <div class="w-full">
           <input
-            [placeholder]="'email' | translate"
+            [placeholder]="'emailOrUsername' | translate"
             type="email"
-            [(ngModel)]="email"
+            [(ngModel)]="emailOrUsername"
             name="email"
             (input)="onEmailChange()"
           />
@@ -122,10 +123,10 @@
         </p>
       </div>
     </form>
-    <div class="col-6 p-0">
+    <div class="col-6 p-0 hidden sm:block">
       <img
         class="w-full h-full"
-        src="/assets/images/login-mockup.jpg"
+        src="assets/images/login-mockup.jpg"
         style="object-fit: cover"
         alt=""
       />

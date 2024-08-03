@@ -1,0 +1,59 @@
+<!-- Add collection -->
+<p-dialog [header]="'saveToCollection' | translate" 
+  [modal]="true"
+  [dismissableMask]="true" 
+  [(visible)]="isVisible" 
+  [style]="{ width: '40vw', minWidth: '320px', maxHeight: '80vh', overflowY: 'scroll' }"
+  (onHide)="closeDialog()">
+  
+  <p-divider></p-divider>
+
+  <div class="p-3">
+    <!-- list of collections -->
+    <div *ngFor="let collection of collections" class="field-checkbox cursor-pointer">
+      <p-checkbox 
+        [(ngModel)]="selectedCollectionIds"
+        [label]="collection.name" 
+        name="collection" 
+        [value]="collection.id" />
+    </div>
+    
+    <!-- new collection button -->
+    <p-button *ngIf="!isShowNewCollection" (click)="isShowNewCollection = true" [label]="'newCollection' | translate" icon="pi pi-plus" [text]="true" />
+
+    <!-- new collection section -->
+    <div *ngIf="isShowNewCollection" class="flex flex-column gap-2">
+      <p-divider></p-divider>
+
+      <img *ngIf="selectedImageDataUrl" [src]="selectedImageDataUrl"
+        style="object-fit: cover; display: block; aspect-ratio: 1/1;"
+        class="col-4 m-auto" />
+
+      <!-- upload button -->
+      <p-fileUpload *ngIf="!selectedImageDataUrl"
+        mode="basic" 
+        [chooseLabel]="'uploadImage' | translate" 
+        chooseIcon="pi pi-upload"
+        accept="image/*" 
+        [maxFileSize]="1000000" 
+        (onSelect)="onSelectImage($event)"
+        styleClass="m-auto mt-2 mb-3 block col-4" />
+
+      <!-- Input -->
+      <div class="flex flex-column align-items-stretch gap-3 p-3 pt-0">
+        <input [(ngModel)]="newCollection.name" pInputText id="name" [maxlength]="255" [placeholder]="'name' | translate" class="flex-auto" autocomplete="off" />
+        <textarea [(ngModel)]="newCollection.description" [maxLength]="2000" pInputText id="description" [placeholder]="'description' | translate" class="flex-auto" autocomplete="off"></textarea>
+      </div>
+    </div>
+
+  </div>
+
+  <p-divider></p-divider>
+
+  <!-- Button -->
+  <div class="p-fluid w-full p-3">
+    <p-button *ngIf="isShowNewCollection" [disabled]="!newCollection.name" [label]="'save' | translate" (click)="create()" />
+    <p-button *ngIf="!isShowNewCollection" [label]="'done' | translate" (click)="save()" />
+  </div>
+
+</p-dialog>

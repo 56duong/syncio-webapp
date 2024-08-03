@@ -1,5 +1,14 @@
 package online.syncio.backend.user;
 
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
+import com.google.firebase.cloud.StorageClient;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.comment.CommentRepository;
 import online.syncio.backend.exception.AppException;
@@ -7,18 +16,26 @@ import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.like.LikeRepository;
 import online.syncio.backend.post.PostRepository;
 import online.syncio.backend.utils.AuthUtils;
+import online.syncio.backend.utils.Constants;
 import online.syncio.backend.utils.FileUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -100,11 +117,15 @@ public class UserService {
 
     }
 
-    public List<UserDTO> findTop20ByUsernameContainingOrEmailContaining (final String username, final String email) {
-        final List<User> users = userRepository.findTop20ByUsernameContainingOrEmailContaining(username, email);
+    public List<UserSearchDTO> findTop20ByUsernameContainingOrEmailContaining (final String username, final String email) {
+        Pageable topTwenty = PageRequest.of(0, 20);
+        final List<Object[]> users = userRepository.findTop20ByUsernameContainingOrEmailContaining(username, email, topTwenty);
         return users.stream()
-                    .map(user -> userMapper.mapToDTO(user, new UserDTO()))
-                    .toList();
+                .map(user -> new UserSearchDTO(
+                        (UUID) user[0],
+                        (String) user[1],
+                        ((Number) user[2]).longValue()))
+                .collect(Collectors.toList());
     }
 
     public String getUsernameById(final UUID id) {
@@ -115,14 +136,6 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .map(user -> userMapper.mapToDTO(user, new UserDTO()))
                 .orElseThrow(() -> new NotFoundException(User.class, "username", username));
-    }
-
-    public List<UserStoryDTO> findAllUsersWithAtLeastOneStoryAfterCreatedDate(final LocalDateTime createdDate) {
-        final List<User> users = userRepository.findAllUsersWithAtLeastOneStoryAfterCreatedDate(createdDate);
-        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
-        return users.stream()
-                .map(user -> userMapper.mapToUserStoryDTO(user, new UserStoryDTO(), currentUserId))
-                .toList();
     }
 
     public UUID create(final UserDTO userDTO) {
@@ -211,4 +224,60 @@ public class UserService {
                 recentComments >= InteractionCriteria.MIN_COMMENTS;
     }
 
+
+    public String generateQRCodeAndUploadToFirebase(String text, int width, int height) throws WriterException, IOException {
+
+        String baseUrl = Constants.BACKEND_URL + "/api/v1/userfollows/toggle-follow/";
+        String fullUrl = baseUrl + text;
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
+        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+
+        BitMatrix bitMatrix = qrCodeWriter.encode(fullUrl, BarcodeFormat.QR_CODE, width, height, hints);
+
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                image.setRGB(x, y, bitMatrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF);
+            }
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", baos);
+        byte[] imageData = baos.toByteArray();
+
+        // Upload to Firebase Storage
+        Bucket bucket = StorageClient.getInstance().bucket();
+        String fileName = "qr_codes/" + UUID.randomUUID() + ".png";
+        Blob blob = bucket.create(fileName, new ByteArrayInputStream(imageData), "image/png");
+
+        // Construct the URL in the desired format
+        String bucketName = bucket.getName();
+        String encodedFileName = java.net.URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+        String fileUrl = "https://firebasestorage.googleapis.com/v0/b/" + bucketName + "/o/" + encodedFileName + "?alt=media";
+
+        return fileUrl;
+    }
+
+    public void saveQRcode(String userQRCode, UUID userId) {
+        userRepository.saveQRCODE(userQRCode, userId);
+       {
+
+    }
+
+
 }
+
+    public String getQrcode(UUID userId) {
+        return userRepository.findById(userId)
+                .map(User::getQrCodeUrl)
+                .orElseThrow(() -> new NotFoundException(User.class, "id", userId.toString()));
+    }
+
+
+    public UUID getUserIdByUsername(final String username) {
+        return userRepository.findUserIdByUsername(username);
+    }
+
+}
+

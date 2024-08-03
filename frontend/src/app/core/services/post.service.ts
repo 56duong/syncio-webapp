@@ -99,7 +99,7 @@ export class PostService {
    * @returns the post object. 
    */
   getPostById(id: string): Observable<Post> {
-    const url = `${this.apiURL}/${id}`;
+    const url = `${this.apiURL}/details/${id}`;
     return this.http.get<Post>(url);
   }
   
@@ -199,19 +199,27 @@ export class PostService {
     return this.http.get<boolean>(url);
   }
 
-  getPostsByUserId(userId: string): Observable<Post[]> {
-    const url = `${this.apiURL}/${userId}/posts`;
+  getAllPostsByUserId(userId: string): Observable<Post[]> {
+    const url = `${this.apiURL}/all-posts/${userId}`;
     return this.http.get<Post[]>(url);
   }
 
   /**
-   * Get posts by user id for not login user
+   * Get posts by user id
    * @param userId 
+   * @param pageNumber 
+   * @param pageSize 
+   * @param isDesc false for ascending order, true for descending order 
    * @returns 
    */
-  getPostsByUserId2(userId: string): Observable<Post[]> {
-    const url = `${this.apiURL}/user/not-login/${userId}`;
-    return this.http.get<Post[]>(url);
+  getPostsByUserId(userId: string, pageNumber: number, pageSize: number, isDesc: boolean): Observable<any> {
+    const params = { 
+      pageNumber: pageNumber.toString(), 
+      pageSize: pageSize.toString(),
+      isDesc: isDesc.toString()
+    };
+    const url = `${this.apiURL}/user-posts/${userId}`;
+    return this.http.get<any>(url, { params });
   }
 
 }

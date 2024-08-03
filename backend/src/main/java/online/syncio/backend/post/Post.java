@@ -5,6 +5,7 @@ import lombok.Data;
 import online.syncio.backend.comment.Comment;
 import online.syncio.backend.like.Like;
 import online.syncio.backend.post.photo.Photo;
+import online.syncio.backend.postcollectiondetail.PostCollectionDetail;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.user.User;
 import org.hibernate.annotations.GenericGenerator;
@@ -68,6 +69,16 @@ public class Post {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PostEnum visibility;
+
+//    Collection Detail
+    @OneToMany(mappedBy = "post")
+    private Set<PostCollectionDetail> postCollectionDetails;
+
+    public String getAudioURL() {
+        if (audioURL == null) return null;
+        return "posts/" + audioURL;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);

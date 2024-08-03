@@ -19,11 +19,11 @@
     
         <!-- Others count if there are more than one actor -->
         <span *ngIf="notification.actorCount && notification.actorCount > 1">
-          and {{notification.actorCount - 1}} other<ng-container *ngIf="notification.actorCount - 1 > 1">s</ng-container>
+          {{ 'and' | translate }} {{notification.actorCount - 1}} {{ (notification.actorCount - 1 > 1 ? 'other.other' : 'other.one' ) | translate }}
         </span>
         
         <!-- Action -->
-        <span> liked your post</span>
+        <span> {{ 'likedYourPost' | translate }}</span>
 
         <!-- if post has caption(previewText), show : caption -->
          <span *ngIf="notification.previewText">: {{notification.previewText}}</span>
@@ -37,7 +37,7 @@
     </div>
 
     <!-- First photo of the post if it exists  -->
-    <img *ngIf="notification.imageURL" [src]="notification.imageURL" style="width: 48px; height: 49px; object-fit: cover;">
+    <img *ngIf="notification.imageURL" [src]="notification.imageURL | constructImageUrl" style="width: 48px; height: 49px; object-fit: cover;">
   </div>
 
 
@@ -57,11 +57,11 @@
     
         <!-- Others count if there are more than one actor -->
         <span *ngIf="notification.actorCount && notification.actorCount > 1">
-          and {{notification.actorCount - 1}} other<ng-container *ngIf="notification.actorCount - 1 > 1">s</ng-container>
+          {{ 'and' | translate }} {{notification.actorCount - 1}} {{ (notification.actorCount - 1 > 1 ? 'other.other' : 'other.one' ) | translate }}
         </span>
         
         <!-- Action -->
-        <span> commented on your post</span>
+        <span> {{ 'commentedOnYourPost' | translate }}</span>
 
         <!-- if has comment.text(previewText), show : comment.text -->
         <span *ngIf="notification.previewText">: {{notification.previewText}}</span>
@@ -75,7 +75,7 @@
     </div>
 
     <!-- First photo of the post if it exists  -->
-    <img *ngIf="notification.imageURL" [src]="notification.imageURL" style="width: 48px; height: 49px; object-fit: cover;">
+    <img *ngIf="notification.imageURL" [src]="notification.imageURL | constructImageUrl" style="width: 48px; height: 49px; object-fit: cover;">
   </div>
 
 
@@ -95,11 +95,11 @@
     
         <!-- Others count if there are more than one actor -->
         <span *ngIf="notification.actorCount && notification.actorCount > 1">
-          and {{notification.actorCount - 1}} other<ng-container *ngIf="notification.actorCount - 1 > 1">s</ng-container>
+          {{ 'and' | translate }} {{notification.actorCount - 1}} {{ (notification.actorCount - 1 > 1 ? 'other.other' : 'other.one' ) | translate }}
         </span>
         
         <!-- Action -->
-        <span> replied to your comment</span>
+        <span> {{ 'repliedToYourComment' | translate }}</span>
   
         <!-- if has comment.text(previewText), show : comment.text -->
         <span *ngIf="notification.previewText">: {{notification.previewText}}</span>
@@ -113,7 +113,7 @@
     </div>
 
     <!-- First photo of the post if it exists  -->
-    <img *ngIf="notification.imageURL" [src]="notification.imageURL" style="width: 48px; height: 49px; object-fit: cover;">
+    <img *ngIf="notification.imageURL" [src]="notification.imageURL | constructImageUrl" style="width: 48px; height: 49px; object-fit: cover;">
   </div>
 
   <!-- FOLLOW -->
@@ -131,7 +131,31 @@
         </span>
     
         <!-- Action -->
-        <span> started following you.</span>
+        <span> {{ 'startedFollowingYou' | translate }}.</span>
+      </div>
+
+      <!-- Created date -->
+      <small class="ml-1 text-xs text-gray-500">{{notification.createdDate | dateAgoPipe}}</small>
+    
+    </div>
+  </div>
+
+  <!-- POST_TAG -->
+  <div *ngSwitchCase="ActionEnum.POST_TAG"
+    class="flex align-items-center gap-1">
+
+    <!-- Actor avatar -->
+    <app-avatar [userId]="notification.actorId" [width]="48"></app-avatar>
+
+    <div class="flex-1">
+      <div class="line-clamp-2 text-sm">
+        <!-- Actor username -->
+        <span *ngIf="notification.actorId" class="font-semibold">
+          {{notification.actorId | userIdToName | async}}
+        </span>
+        
+        <!-- Action -->
+        <span> {{ 'taggedYouInAPost' | translate }}.</span>
       </div>
 
       <!-- Created date -->
@@ -139,6 +163,8 @@
     
     </div>
 
+    <!-- First photo of the post if it exists  -->
+    <img *ngIf="notification.imageURL" [src]="notification.imageURL | constructImageUrl" style="width: 48px; height: 49px; object-fit: cover;">
   </div>
 
 </div>

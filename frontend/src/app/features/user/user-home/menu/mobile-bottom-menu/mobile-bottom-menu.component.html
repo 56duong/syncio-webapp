@@ -1,0 +1,32 @@
+<div class="container px-2 py-3">
+  <nav>
+    <ul class="flex align-items-center justify-content-between p-0 m-0 list-none">
+      <li *ngFor="let menu of menus">
+        <p-button [icon]="menu.icon" 
+          [id]="menu.id"
+          [plain]="true" 
+          [text]="true"
+          [routerLink]="menu.routerLink"
+          routerLinkActive="menu-active"
+          (click)="menu.id === 'SearchButton' ? toggleSearch() : menu.id === 'NotificationsButton' ? toggleNotifications() : null" />
+      </li>
+      <!-- profile -->
+      <li>
+        <!-- Not logged in -->
+        <p-button *ngIf="!currentUserId" 
+          [id]="'ProfileButton'" class="text-left" styleClass="shadow-none" [text]="true" [plain]="true"
+          [icon]="'pi pi-user'"
+          [routerLink]="['login']" />
+        <!-- Logged in -->
+        <div>
+          <p-button *ngIf="currentUserId" 
+            [id]="'ProfileButton'" class="text-left profile-button" styleClass="shadow-none" [text]="true" [plain]="true"
+            routerLinkActive="menu-active"
+            [routerLink]="['profile', currentUserId]">
+            <app-avatar class="avatar" [userId]="currentUserId" [width]="32" style="margin-right: 4px;"></app-avatar>
+          </p-button>
+        </div>
+      </li>
+    </ul>
+  </nav>
+</div>

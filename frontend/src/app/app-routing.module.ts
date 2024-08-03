@@ -9,7 +9,6 @@ import { ToastModule } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
 import { ChangePasswordComponent } from './features/authentication/changepassword/changepassword.component';
 import { AdminComponent } from './features/admin/admin.component';
-import { ProfileFormComponent } from './features/user/user-home/profile-form/profile-form.component';
 import { SearchComponent } from './features/user/user-home/search/search.component';
 import { PrimengModule } from './primeng/primeng.module';
 import { RegisterComponent } from './features/authentication/register/register.component';
@@ -18,19 +17,10 @@ import { RoleEnum } from './core/interfaces/user';
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 import { NotAuthorizedComponent } from './shared/components/not-authorized/not-authorized.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from "./shared/shared.module";
+import { UpdateIpComponent } from './shared/components/update-ip/update-ip.component';
+import { environment } from 'src/environments/environment';
 
-@NgModule({
-  declarations: [ProfileFormComponent],
-  imports: [
-    // other modules
-    ToastModule,
-    DialogModule,
-    FormsModule,
-    ReactiveFormsModule,
-  ],
-  // providers, bootstrap, etc.
-})
-export class YourModule {}
 const routes: Routes = [
   {
     path: '',
@@ -59,7 +49,7 @@ const routes: Routes = [
   },
   {
     path: 'forgot_password',
-    title: 'forgot',
+    title: 'Forgot Password',
     component: ForgotpasswordComponent,
   },
   {
@@ -72,13 +62,6 @@ const routes: Routes = [
     title: 'confirm-user-register',
     component: LoginComponent,
   },
-  {
-    path: 'edit-profile',
-    title: 'edit-profile',
-    component: ProfileFormComponent,
-    canActivate: [authGuard],
-    data: { requiredRoles: [RoleEnum.USER] }
-  },
   { path: 'search', component: SearchComponent },
   {
     path: "not-found",
@@ -89,6 +72,11 @@ const routes: Routes = [
     path: "not-authorized",
     title: "Not Authorized",
     component: NotAuthorizedComponent
+  },
+  {
+    path: "update-ip",
+    title: "Update IP",
+    component: UpdateIpComponent
   }
 ];
 
@@ -103,11 +91,13 @@ const routes: Routes = [
     FormsModule,
     CommonModule,
     BrowserModule,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes, { useHash: environment.windows ? true : false }), // useHash(#) for Windows app
     ToastModule,
     DialogModule,
     PrimengModule,
-    TranslateModule
+    TranslateModule,
+    ReactiveFormsModule,
+    SharedModule
   ],
   exports: [RouterModule],
 })

@@ -15,13 +15,20 @@ public interface StoryViewRepository extends JpaRepository<StoryView, PkUserStor
     Optional<StoryView> findByUserIdAndStoryId(UUID userId, UUID storyId);
 
     /**
-     * Check if there is any story created by 'creatorId' since 'startDate' that has not been seen by 'viewerId'
+     * Count the number of stories created by a user since a given date
+     * @param userId the user id
+     * @return the number of stories created by the user
+     */
+    @Query("SELECT COUNT(s) FROM Story s WHERE s.createdBy.id = :userId AND s.createdDate > :startDate")
+    Long countByUserId(UUID userId, LocalDateTime startDate);
+
+    /**
+     * Count the number of stories created by a user since a given date that have been viewed
      * @param creatorId the creator id
      * @param viewerId the viewer id
-     * @param startDate the start date from which to check for unseen stories
-     * @return true if there is any unseen story, false otherwise
+     * @return the number of stories created by the user that have been viewed
      */
-    @Query("SELECT COUNT(s) > 0 FROM Story s WHERE s.createdBy.id = :creatorId AND s.createdDate > :startDate AND NOT EXISTS (SELECT sv FROM StoryView sv WHERE sv.story.id = s.id AND sv.user.id = :viewerId)")
-    boolean hasUnseenStoriesFromCreatorSinceDate(UUID creatorId, UUID viewerId, LocalDateTime startDate);
+    @Query("SELECT COUNT(s) FROM Story s WHERE s.createdBy.id = :creatorId AND s.createdDate > :startDate AND EXISTS (SELECT sv FROM StoryView sv WHERE sv.story.id = s.id AND sv.user.id = :viewerId)")
+    Long countByUserIdAndViewed(UUID creatorId, UUID viewerId, LocalDateTime startDate);
 
 }

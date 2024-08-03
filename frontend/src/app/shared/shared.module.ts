@@ -17,6 +17,11 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import { NotAuthorizedComponent } from './components/not-authorized/not-authorized.component';
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { UsernameLabelComponent } from './components/username-label/username-label.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { LoadingComponent } from './components/loading/loading.component';
+import { UpdateIpComponent } from './components/update-ip/update-ip.component';
+import { CollectionListComponent } from './components/collection-list/collection-list.component';
+import { CollectionDetailComponent } from './components/collection-detail/collection-detail.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +37,11 @@ import { UsernameLabelComponent } from './components/username-label/username-lab
     NotFoundComponent,
     NotAuthorizedComponent,
     AvatarComponent,
-    UsernameLabelComponent
+    UsernameLabelComponent,
+    LoadingComponent,
+    UpdateIpComponent,
+    CollectionListComponent,
+    CollectionDetailComponent
   ],
   imports: [
     PickerComponent,
@@ -40,7 +49,8 @@ import { UsernameLabelComponent } from './components/username-label/username-lab
     CoreModule,
     PrimengModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslateModule
   ],
   exports: [
     PostComponent,
@@ -50,7 +60,9 @@ import { UsernameLabelComponent } from './components/username-label/username-lab
     GlobalDialogComponent,
     VoiceRecorderDialogComponent,
     AvatarComponent,
-    UsernameLabelComponent
+    UsernameLabelComponent,
+    LoadingComponent,
+    CollectionListComponent
   ],
 })
 export class SharedModule {}

@@ -1,4 +1,4 @@
-<p-dialog header="Following" 
+<p-dialog [header]="'following' | translate" 
   [modal]="true"
   [dismissableMask]="true" 
   [(visible)]="isVisibleFollowing" 
@@ -9,16 +9,24 @@
     <div *ngFor="let userFollow of userFollowing" class="flex justify-content-between align-items-center">
       <div class="flex gap-2">
         <!-- avatar -->
-        <app-avatar [userId]="userFollow.targetId" [width]="48"></app-avatar> 
+        <app-avatar (click)="isVisibleFollowing = false" [userId]="userFollow.targetId" [width]="48"></app-avatar> 
         
         <div class="flex gap-1 align-items-center">
           <!-- username -->
-          <span (click)="navigateToProfile(userFollow.targetId)" class="font-semibold cursor-pointer">{{ userFollow.targetUsername }}</span>
+          <span (click)="navigateToProfile(userFollow.targetId)" class="font-semibold cursor-pointer">
+            <!-- {{ userFollow.targetUsername }} -->
+            <app-username-label 
+              [userId]="userFollow.targetId"
+              [username]="userFollow.targetUsername"
+              [fontSize]=""
+              [color]="''">
+            </app-username-label>
+          </span>
         </div>
       </div>
       <!-- Follow/Unfollow button -->
-      <p-button *ngIf="currentUserId != userFollow.targetId && !userFollow.following" (click)="addFollow(userFollow)" label="Follow" severity="my-custom-primary"></p-button>
-      <p-button *ngIf="currentUserId != userFollow.targetId && userFollow.following" (click)="unFollow(userFollow)" label="Unfollow" severity="my-custom-secondary"></p-button>
+      <p-button *ngIf="currentUserId != userFollow.targetId && !userFollow.following" (click)="addFollow(userFollow)" [label]="'follow' | translate" severity="my-custom-primary"></p-button>
+      <p-button *ngIf="currentUserId != userFollow.targetId && userFollow.following" (click)="unFollow(userFollow)" [label]="'unfollow' | translate" severity="my-custom-secondary"></p-button>
     </div>
 
     <!-- Loading -->

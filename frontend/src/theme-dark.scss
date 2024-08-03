@@ -1,0 +1,78 @@
+@import "primeng/resources/themes/lara-dark-blue/theme.css";
+
+:root {
+  --surface-card: #18181b;
+  --surface-border: #27272a;
+}
+
+/* Custom button styles
+  Example usage:
+  <p-button label="Primary" severity="my-custom-secondary"></p-button>
+*/
+// button-secondary
+.p-button-my-custom-secondary {
+  color: var(--surface-800);
+  background-color: #363636;
+  border: 1px solid #363636;
+  height: 32px;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.p-button-my-custom-secondary .p-button-label {
+  font-weight: 500;
+}
+
+.p-button-my-custom-secondary:focus {
+  box-shadow: none;
+}
+
+.p-button-my-custom-secondary:hover {
+  background-color: #262626;
+}
+
+body {
+  background-color: #000000;
+}
+
+.main.left-menu {
+  background-color: #000000 !important;
+}
+
+p-dialog .p-dialog,
+p-dialog .p-dialog-footer,
+.p-autocomplete-panel,
+.p-toolbar,
+.p-sidebar,
+.p-tieredmenu .p-submenu-list,
+.p-inputtext,
+.p-panelmenu .p-panelmenu-header .p-panelmenu-header-content,
+.p-panelmenu .p-panelmenu-content,
+.p-dropdown {
+  background-color: #18181b;
+  border: 1px solid #3f3f46;
+}
+
+.p-dataview .p-dataview-content,
+.p-tabview .p-tabview-nav li .p-tabview-nav-link,
+.p-tabview .p-tabview-panels,
+p-dialog .p-dialog-header,
+p-dialog .p-dialog-content {
+  background-color: #18181b;
+}
+
+p-divider .p-divider.p-divider-horizontal:before {
+  border-top: 1px solid #3f3f46;
+}
+
+p-divider .p-divider.p-divider-vertical:before {
+  border-left: 1px solid #3f3f46;
+}
+
+.left-menu .p-tieredmenu {
+  background-color: transparent;
+}
+
+.p-tieredmenu .p-menuitem.p-highlight > .p-menuitem-content {
+  background: rgba(255, 255, 255, 0.16);
+}

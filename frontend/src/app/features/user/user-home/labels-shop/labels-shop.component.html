@@ -16,7 +16,7 @@
 
     <p-dataView #dv [value]="labels" [layout]="'grid'" [rows]="8" [paginator]="false" paginatorPosition="top" [sortField]="sortField" [sortOrder]="sortOrder" styleClass="p-2" >
       <ng-template let-label pTemplate="gridItem">
-        <div class="card col-6 sm:col-6 lg:col-4 xl:col-3 p-3">
+        <div class="card col-12 sm:col-6 lg:col-4 xl:col-3 p-3">
           
           <div class="flex flex-column gap-3 p-3 border-1 surface-border surface-card border-round">
             <div class="flex justify-content-between align-items-center">
@@ -39,7 +39,8 @@
             
             <div class="flex justify-content-between gap-2">
               <p-button (click)="gift(label)" label="Gift" icon="pi pi-gift" severity="my-custom-secondary danger" class="flex-1" styleClass="w-full"></p-button>
-              <p-button (click)="buyNow(label)" label="Buy" icon="pi pi-check-circle" severity="my-custom-primary" class="flex-1" styleClass="w-full"></p-button>
+              <p-button *ngIf="!label.purcharse" [disabled]="label.status == 'DISABLED'" (click)="buyNow(label)" label="Buy" icon="pi pi-check-circle" severity="my-custom-primary" class="flex-1" styleClass="w-full"></p-button>
+              <p-button *ngIf="label.purcharse" [disabled]="true" label="Buyed" icon="pi pi-check-circle" severity="my-custom-primary" class="flex-1" styleClass="w-full"></p-button>
             </div>
           </div>
 

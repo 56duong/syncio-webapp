@@ -13,13 +13,20 @@ import { StoryService } from 'src/app/core/services/story.service';
 })
 
 export class ViewStoryComponent {
-  @Input() userIdInput: string = ''; // If userIdInput is true, the story view was opened from the FeedComponent. Otherwise, it was opened from a direct link.
-  @Output() storyViewedAll = new EventEmitter<void>(); // Event emitted when all stories have been viewed
+  isMobile: boolean = false;
+  /** If userIdInput is true, the story view was opened from the FeedComponent. Otherwise, it was opened from a direct link. */
+  @Input() userIdInput: string = '';
+  /** Emit the viewed story count */
+  @Output() storyViewedCount = new EventEmitter<number>();
+  /** When the close button is clicked */
   @Output() close = new EventEmitter<void>();
-
-  stories: Story[] = []; // List of stories of userIdInput
-  firstUnreadStoryIndex = 0; // Index of the first unread story
-  viewedStoriesWillSave: StoryView[] = []; // List of stories that have been viewed
+  
+  /** List of stories of userIdInput */
+  stories: Story[] = [];
+  /** Index of the first unread story */
+  firstUnreadStoryIndex = 0;
+  /** List of stories that have been viewed */
+  viewedStoriesWillSave: StoryView[] = [];
 
   constructor(
     private storyService: StoryService,
@@ -27,8 +34,10 @@ export class ViewStoryComponent {
     private route: ActivatedRoute,
     private location: Location,
     private router: Router
-  ) { }
-
+  ) { 
+    this.isMobile = window.innerWidth < 768;
+  }
+  
   ngOnInit() {
     if(this.userIdInput) {
       // get stories by userId
@@ -64,10 +73,12 @@ export class ViewStoryComponent {
   }
 
   closeViewStory() {
-    // Check if all stories have been viewed, then emit the storyViewedAll event to change border color
-    if(this.stories.findIndex(story => !story.viewed) === -1) {
-      this.storyViewedAll.emit();
-    }
+    //count the number of stories that have been viewed
+    let count = 0;
+    this.stories.forEach(story => {
+      if(story.viewed) count++;
+    });
+    this.storyViewedCount.emit(count);
 
     // Close the story view
     if(this.userIdInput) {

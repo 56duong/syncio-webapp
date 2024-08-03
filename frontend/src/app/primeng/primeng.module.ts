@@ -33,10 +33,12 @@ import { CardModule } from 'primeng/card';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { SpeedDialModule } from 'primeng/speeddial';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
   declarations: [],
   exports: [
+    CheckboxModule,
     SpeedDialModule,
     InputSwitchModule,
     ImageModule,

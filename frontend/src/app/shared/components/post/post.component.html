@@ -7,7 +7,7 @@
     <p-button label="View Report Reasons" icon="pi pi-info-circle" (click)="showReasonCountsDialog()"></p-button>
   </div>
 
-  <div class="flex justify-content-between align-items-center">
+  <div class="flex justify-content-between align-items-center px-2">
     <div class="flex align-items-center gap-2">
       <app-avatar [userId]="post.createdBy" [width]="40"></app-avatar>
       <div class="flex align-items-center gap-1">
@@ -27,15 +27,18 @@
       </div>
     </div>
 
-    <p-button *ngIf="isReportedPostsPage" label="Hide" severity="danger" (click)="onHidePost()"></p-button>
-    <p-button *ngIf="isHiddenPostsPage" label="Active" severity="primary" (click)="onActivePost()"></p-button>
-
-    <!-- Visibility -->
-    <div class="flex align-items-center gap-2">
-      <p-button *ngIf="post.visibility === Visibility.PRIVATE" class="close-friend" icon="pi pi-lock" severity="secondary" size="small" />
-      <p-button *ngIf="post.visibility === Visibility.CLOSE_FRIENDS" class="close-friend" icon="pi pi-star-fill" severity="success" size="small" />
+    <div class="flex justify-content-center align-items-center gap-2">
+      <!-- Visibility -->
+      <div *ngIf="post.visibility === Visibility.PRIVATE || post.visibility === Visibility.CLOSE_FRIENDS" class="flex align-items-center gap-2">
+        <p-button *ngIf="post.visibility === Visibility.PRIVATE" class="close-friend" icon="pi pi-lock" severity="secondary" size="small" />
+        <p-button *ngIf="post.visibility === Visibility.CLOSE_FRIENDS" class="close-friend" icon="pi pi-star-fill" severity="success" size="small" />
+      </div>
+      
       <!-- 3 dots -->
       <span *ngIf="!isReportedPostsPage && !isHiddenPostsPage" class="pi pi-ellipsis-h cursor-pointer" (click)="dialogVisible = !dialogVisible"></span>
+
+      <p-button *ngIf="isReportedPostsPage" label="Hide" severity="danger" (click)="onHidePost()"></p-button>
+      <p-button *ngIf="isHiddenPostsPage" label="Active" severity="primary" (click)="onActivePost()"></p-button>
     </div>
 
   </div>
@@ -49,15 +52,15 @@
       [style]="{ height: '100%', position: 'relative' }"
       [ngClass]="post.photos.length == 1 ? 'hide-slide-control' : ''">
       <ng-template let-photo pTemplate="item">
-        <img src="{{ photo.url }}" 
-          alt="{{ photo.altText }}"
+        <img [src]="photo.url | constructImageUrl" 
+          [alt]="photo.altText"
           class="w-full h-full"
           style="object-fit: cover; max-height: 500px;" />
       </ng-template>
     </p-carousel>
   </div>
 
-  <div *ngIf="post.audioURL">
+  <div *ngIf="post.audioURL" class="px-2">
     <audio controls class="w-full">
       <source [src]="'http://localhost:8080/api/v1/audio/' + post.audioURL" type="audio/mpeg">
       <source [src]="'https://firebasestorage.googleapis.com/v0/b/syncio-bf6ca.appspot.com/o/' + post.audioURL.replace('/', '%2F') + '?alt=media'" type="audio/mpeg">
@@ -66,7 +69,7 @@
   </div>
 
   <!-- caption -->
-  <div *ngIf="post.caption" class="line-clamp flex align-items-center gap-1"
+  <div *ngIf="post.caption" class="line-clamp px-2"
     [ngStyle]="{ '-webkit-line-clamp': isViewMore ? 'unset' : '3'}">
     <small *ngIf="post.createdBy && post.photos?.length" class="font-bold mr-1">
       <!-- {{ post.username }} -->
@@ -76,18 +79,19 @@
                         [color]="''">
       </app-username-label>
     </small>
-    <p class="inline m-0"
-      (click)="isViewMore = !isViewMore" 
-      [title]="isViewMore ? 'View less' : 'View more'">
-      {{ post.caption }}
-    </p>
+    <div class="inline m-0" style="white-space: pre-line;"
+      (click)="handleClick($event)"
+      [title]="isViewMore ? 'View less' : 'View more'"
+      [innerHTML]="post.caption | tagToLink | async">
+    </div>
   </div>
 
   <!-- Like -->
   <app-like *ngIf="post.id && post.createdBy"
     [postId]="post.id"
     [createdBy]="post.createdBy"
-    (visibleChange)="showPostDetail($event)">
+    (visibleChange)="showPostDetail($event)"
+    class="px-2">
   </app-like>
 </div>
 
@@ -123,4 +127,11 @@
   [items]="dialogItems"
   (displayChange)="hideDialog()">
 </app-global-dialog>
+
+<app-collection-list *ngIf="post.id && post.createdBy === currentUserId"
+  [postId]="post.id"
+  [currentUserId]="currentUserId"
+  [isVisible]="collectionVisible"
+  (closeDialogEvent)="collectionVisible = false">
+</app-collection-list>
 

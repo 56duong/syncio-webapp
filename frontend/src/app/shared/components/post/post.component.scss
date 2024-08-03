@@ -1,6 +1,6 @@
 
 .post {
-  width: min(470px, calc(100vw - 1rem));
+  width: min(470px, 100vw);
 
   ::ng-deep {
     // Photos
@@ -59,4 +59,8 @@ p-carousel.hide-slide-control ::ng-deep {
   .p-carousel .p-carousel-indicators {
     display: none;
   }
+}
+
+app-username-label ::ng-deep > div {
+  display: inline !important;
 }

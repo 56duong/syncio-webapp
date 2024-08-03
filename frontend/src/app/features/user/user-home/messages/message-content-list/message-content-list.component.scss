@@ -36,7 +36,7 @@
 }
 
 p-fileUpload ::ng-deep .p-button {
-  color: black;
+  color: var(--surface-900);
   background-color: transparent;
   padding: 0;
   border: none;
@@ -56,4 +56,21 @@ p-fileUpload ::ng-deep .p-button {
   cursor: pointer;
   border-radius: 8px;
   font-size: 0.875rem;
+}
+
+.container ::ng-deep .material-symbols-outlined.active {
+  font-variation-settings: "FILL" 1, "wght" 300, "GRAD" 0, "opsz" 24;
+}
+
+
+
+// mobile
+.mobile.container {
+  overflow: hidden;
+  scroll-behavior: smooth;
+}
+
+.mobile .message-content-container,
+.mobile .show-detail {
+  width: 100% !important;
 }

@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
 import { MessageRoomMember } from 'src/app/core/interfaces/message-room-member';
 import { User } from 'src/app/core/interfaces/user';
 import { MessageRoomMemberService } from 'src/app/core/services/message-room-member.service';
 import { MessageRoomService } from 'src/app/core/services/message-room.service';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { DialogItem } from 'src/app/shared/components/global-dialog/global-dialog.component';
 
@@ -14,6 +16,9 @@ import { DialogItem } from 'src/app/shared/components/global-dialog/global-dialo
 })
 
 export class MessageRoomDetailComponent {
+  @Input() isMobile: boolean = false; // Flag to indicate if the device is mobile
+  @Output() backToMessageContentListEvent = new EventEmitter<void>(); // Event emitter to close the message room
+
   @Input() messageRoom: MessageRoom = {}; // current message room
   @Input() currentUser!: User; // Current user logged in.
 
@@ -37,7 +42,7 @@ export class MessageRoomDetailComponent {
 
   _editMemberDialogItems: DialogItem[] = [
     { 
-      label: 'Remove from group',
+      label: this.translateService.instant('removeFromGroup'),
       bold: 7,
       color: 'red', 
       action: () => this.removeMember(this.selectedMember)
@@ -50,7 +55,7 @@ export class MessageRoomDetailComponent {
       items = [
         ...items,
         { 
-          label: 'Make admin',
+          label: this.translateService.instant('makeAdmin'),
           action: () => this.makeAdmin(this.selectedMember)
         }
       ];
@@ -59,7 +64,7 @@ export class MessageRoomDetailComponent {
       items = [
         ...items,
         { 
-          label: 'Remove admin',
+          label: this.translateService.instant('removeAdmin'),
           action: () => this.removeAdmin(this.selectedMember)
         }
       ];
@@ -67,22 +72,22 @@ export class MessageRoomDetailComponent {
     return [
       ...items,
       { 
-        label: 'Cancel',
+        label: this.translateService.instant('cancel'),
         action: () => this.isVisibleEditMember = false
       }
     ];
   }
 
   isVisibleLeaveChat: boolean = false; // Indicates if the leave chat dialog is visible
-  leaveChatDialogItems = [
+  leaveChatDialogItems: any = [
     { 
-      label: 'Leave chat',
+      label: this.translateService.instant('leaveChat'),
       color: 'red', 
       bold: 7,
       action: () => this.leaveChat()
     },
     { 
-      label: 'Cancel',
+      label: this.translateService.instant('cancel'),
       action: () => this.isVisibleLeaveChat = false
     }
   ]; // Dialog items for the leave chat dialog
@@ -90,7 +95,9 @@ export class MessageRoomDetailComponent {
   constructor(
     private messageRoomService: MessageRoomService,
     private messageRoomMemberService: MessageRoomMemberService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private translateService: TranslateService,
+    private redirectService: RedirectService
   ) { }
 
   ngOnInit() {
@@ -142,7 +149,7 @@ export class MessageRoomDetailComponent {
             next: () => {
               this.messageRoom.members = this.messageRoom.members?.filter(m => m.userId !== this.currentUser.id);
               this.leaveChatEvent.emit(this.currentUser.id);
-              window.location.replace('/messages');
+              this.redirectService.redirectAndReload('/messages');
             },
             error: (error) => {
               console.log(error);
@@ -202,6 +209,14 @@ export class MessageRoomDetailComponent {
         console.log(error);
       }
     });
+  }
+
+
+  /**
+   * When device is mobile, click on the back button to close the message room detail
+   */
+  backToMessageContentList() {
+    this.backToMessageContentListEvent.emit();
   }
 
 }

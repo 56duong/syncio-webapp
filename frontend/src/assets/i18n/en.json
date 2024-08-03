@@ -1,18 +1,37 @@
 {
+  "LOGIN-----------------------------------------------------------------": "",
   "login": "Log in",
   "email": "Email",
+  "emailOrUsername": "Email or Username",
+  "bio": "Bio",
   "password": "Password",
   "forgotPassword": "Forgot password?",
   "dontHaveAnAccount": "Don't have an account?",
   "signUp": "Sign up",
   "continueAsGuest": "Continue as guest",
+  "youNeedToLoginFirst": "You need to login first",
 
-  "error": "Error",
+
+  "REGISTER-----------------------------------------------------------------": "",
+  "passwordConfirm": "Confirm password",
+  "haveAnAccount": "Have an account?",
+  "usernameOnlyContain": "Username only contain letters, numbers and underscore",
+  "usernameShouldBeAtLeast3CharactersAndAtMost30Characters": "Username should be at least 3 characters and at most 30 characters",
+  "emailShouldContain": "Email should contain @ symbol",
+  "emailShouldContainADot": "Email should contain a domain name with at least one dot",
+  "emailInvalid": "Email is invalid",
+  "passwordShouldBeAtLeast6CharactersAndAtMost100Characters": "Password should be at least 6 characters and at most 100 characters",
+
+
+  "VALIDATE-----------------------------------------------------------------": "",
   "emailIsRequired": "Email is required",
   "passwordIsRequired": "Password is required",
 
+
+  "LEFT MENU-----------------------------------------------------------------": "",
   "home": "Home",
   "search": "Search",
+  "searchByUsernameOrEmail": "Search by username or email",
   "messages": "Messages",
   "notifications": "Notifications",
   "labelShopping": "Label Shopping",
@@ -21,5 +40,197 @@
   "story": "Story",
   "settings": "Settings",
   "help": "Help",
-  "logout": "Log out"
+  "logout": "Log out",
+
+
+  "STORY-----------------------------------------------------------------": "",
+  "expandStories": "Expand stories",
+  "collapseStories": "Collapse stories",
+  "yourStory": "Your story",
+
+
+  "HOME-----------------------------------------------------------------": "",
+  "suggestedForYou": "Suggested for you",
+  "youReachTheEnOfTheFeed": "You reach the end of the feed",
+
+
+  "POST-----------------------------------------------------------------": "",
+  "viewAll": "View all",
+  "like": {
+    "one": "Like",
+    "other": "Likes"
+  },
+  "comment": {
+    "one": "Comment",
+    "other": "Comments"
+  },
+
+
+  "POST_DETAIL-----------------------------------------------------------------": "",
+  "reply": "Reply",
+  "hideReplies": "Hide replies",
+  "viewReplies": "View replies",
+  "addAComment": "Add a comment",
+  "postComment": "Post",
+  "saveToCollection": "Save to collection",
+
+
+  "DATETIME-----------------------------------------------------------------": "",
+  "justNow": "Just now",
+  "y": "y",
+  "mth": "mth",
+  "w": "w",
+  "d": "d",
+  "h": "h",
+  "m": "m",
+  "s": "s",
+
+
+  "REPORT-----------------------------------------------------------------": "",
+  "report": "Report",
+  "reason": "Reason",
+  "selectAReason": "Select a reason",
+  "description": "Description",
+  "submit": "Submit",
+  "spam": "Spam",
+  "nude": "Nude",
+  "harassment": "Harassment",
+  "violence": "Violence",
+  "inappropriateContent": "Inappropriate content",
+  "thanksForLettingUsKnow": "Thanks for letting us know",
+  "yourFeedbackIsImportantInHelpingUsKeepTheCommunitySafe": "Your feedback is important in helping us keep the community safe",
+
+
+  "SEARCH-----------------------------------------------------------------": "",
+  "byImage": "By image",
+  "recent": "Recent",
+  "clearAll": "Clear all",
+  "suggestForYou": "Suggest for you",
+  "follower": {
+    "one": "follower",
+    "other": "followers"
+  },
+
+
+  "MESSAGE-----------------------------------------------------------------": "",
+  "yourMessages": "Your messages",
+  "sendAMessageToStartAChat": "Send a message to start a chat",
+  "sendMessage": "Send message",
+  "newMessage": "New message",
+  "to": "To",
+  "chat": "Chat",
+  "details": "Details",
+  "changeGroupName": "Change group name",
+  "change": "Change",
+  "members": "Members",
+  "addPeople": "Add people",
+  "admin": "Admin",
+  "changingTheNameOfTheGroupWillChangeTheNameForAllMembers": "Changing the name of the group will change the name for all members",
+  "save": "Save",
+  "leaveChat": "Leave chat",
+  "youWontBeAbleToSendOrReceiveMessagesUnlessSomeoneAddsYouBackToTheChat": "You won't be able to send or receive messages unless someone adds you back to the chat",
+  "add": "Add",
+  "removeFromGroup": "Remove from group",
+  "makeAdmin": "Make admin",
+  "removeAdmin": "Remove admin",
+  "send": "Gửi",
+  "viewProfile": "View profile",
+
+
+  "OTHERS-----------------------------------------------------------------": "",
+  "error": "Error",
+  "success": "Success",
+  "copyLink": "Copy link",
+  "linkCopiedToClipboard": "Link copied to clipboard",
+  "cancel": "Cancel",
+
+
+  "NOTIFICATION-----------------------------------------------------------------": "",
+  "thisMonth": "This month",
+  "and": "and",
+  "other": {
+    "one": "other",
+    "other": "others"
+  },
+  "commentedOnYourPost": "commented on your post",
+  "likedYourPost": "liked your post",
+  "startedFollowingYou": "started following you",
+  "repliedToYourComment": "replied to your comment",
+  "taggedYouInAPost": "tagged you in a post",
+
+
+  "CREATE NEW POST-----------------------------------------------------------------": "",
+  "createNewPost": "Create new post",
+  "share": "Share",
+  "selectFromComputer": "Select from computer",
+  "writeACaption": "Write a caption",
+  "audio": "Audio",
+  "audience": "Audience",
+  "whoWouldYouLikeToShareYourPostWith": "Who would you like to share your post with",
+  "public": "Public",
+  "private": "Private",
+  "closeFriends": "Close friends",
+  "voiceRecorder": "Voice recorder",
+  "aPostMustHaveAtLeastOneImageOrOneAudioOrCaption": "A post must have at least one image or one audio or caption",
+
+
+  "PROFILE-----------------------------------------------------------------": "",
+  "uploadAvatar": "Upload avatar",
+  "editProfile": "Edit profile",
+  "follow": "Follow",
+  "unfollow": "Unfollow",
+  "followers": "Followers",
+  "following": "Following",
+  "posts": "Posts",
+  "chooseLabel": "Choose label",
+  "viewMode": "View mode",
+  "grid": "Grid",
+  "list": "List",
+  "sort": "Sort",
+  "newest": "Newest",
+  "oldest": "Oldest",
+  "addToCloseFriends": "Add to close friends",
+  "removeFromCloseFriends": "Remove from close friends",
+  "remove": "Remove",
+  "avatarUpdatedSuccessfully": "Avatar updated successfully",
+  "collections": "Collections",
+  "newCollection": "New collection",
+  "uploadImage": "Upload image",
+  "done": "Xong",
+  "collectionCreatedSuccessfully": "Collection created successfully",
+  "updateCollectionSuccessfully": "Update collection successfully",
+  "collectionImageDeletedSuccessfully": "Collection image deleted successfully",
+  "noPostsAddedToCollectionYet": "No posts added to collection yet",
+  "editCollection": "Edit collection",
+
+
+  "SETTING-----------------------------------------------------------------": "",
+  "howYouUseSyncio": "How you use Syncio",
+  "howPeopleFindAndContactYou": "How people find and contact you",
+  "imageSearch": "Image search",
+  "imageSearchDescription": "Image search allows other users to find you by searching for images of your face",
+  "uploadNewImage": "Upload new image",
+  "deleteImage": "Delete image",
+  "imageSearchUpdatedSuccessfully": "Image search updated successfully",
+  "imageSearchDeletedSuccessfully": "Image search deleted successfully",
+  "profileUpdatedSuccessfully": "Profile updated successfully",
+  "confirm": "Confirm",
+
+
+  "LABELSHOPPING-----------------------------------------------------------------": "",
+  "priceHighToLow": "Price high to low",
+  "priceLowToHigh": "Price low to high",
+  "purchaseHistory": "Purchase history",
+  "outOfStock": "Out of stock",
+  "inStock": "In stock",
+  "buy": "Buy",
+  "gift": "Gift",
+  "receiver": "Receiver",
+  "payment": "Payment",
+  "paymentDetails": "Payment details",
+  "name": "Name",
+  "price": "Price",
+  "buyed": "Buyed"
+
+
 }

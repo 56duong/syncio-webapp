@@ -1,7 +1,7 @@
 package online.syncio.backend.auth;
 
+import com.google.zxing.WriterException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.auth.request.ForgotPasswordForm;
@@ -12,34 +12,21 @@ import online.syncio.backend.auth.responses.AuthResponse;
 import online.syncio.backend.auth.responses.LoginResponse;
 import online.syncio.backend.auth.responses.RegisterResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
-
 import online.syncio.backend.exception.DataNotFoundException;
-import online.syncio.backend.post.AvatarUpdateDTO;
 import online.syncio.backend.setting.SettingService;
 import online.syncio.backend.user.User;
-import online.syncio.backend.auth.responses.RegisterResponse;
-import online.syncio.backend.utils.ConstantsMessage;
 import online.syncio.backend.utils.CustomerForgetPasswordUtil;
-
-
-
-import online.syncio.backend.utils.ValidationUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.UUID;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("${api.prefix}/users")
@@ -73,10 +60,11 @@ public class AuthController {
         User user = authService.createUser(registerDTO);
 
 //        rabbitMQService.sendMessage("New user registered: " + user.getEmail());
+        String message = messageSource.getMessage("user.register.verify.account", null, LocaleContextHolder.getLocale());
         return ResponseEntity.ok(ResponseObject.builder()
                 .status(HttpStatus.CREATED)
                 .data(RegisterResponse.fromUser(user))
-                .message("Vui lòng xác thực tài khoản qua Email")
+                .message(message)
                 .build());
     }
 
@@ -89,7 +77,7 @@ public class AuthController {
     ) throws Exception {
         // Kiểm tra thông tin đăng nhập và sinh token
         String token = authService.login(
-                userLoginDTO.getEmail(),
+                userLoginDTO.getEmailOrUsername(),
                 userLoginDTO.getPassword()
         );
 
@@ -194,14 +182,16 @@ public class AuthController {
 
 
     @PostMapping("/confirm-user-register")
-    public ResponseEntity<?> confirm(@RequestParam("token") String token) {
-                tokenService.confirmToken(token);
-        return  ResponseEntity.ok(
-                ResponseObject.builder()
-                        .message("User confirmed successfully")
-                        .data("")
-                        .status(HttpStatus.OK)
-                        .build())  ;
+    public ResponseEntity<?> confirm(@RequestParam("token") String token) throws IOException, WriterException {
+        tokenService.confirmToken(token);
+        String message = messageSource.getMessage("user.confirmed.success", null, LocaleContextHolder.getLocale());
+        return ResponseEntity.ok(
+                    ResponseObject.builder()
+                            .message(message)
+                            .data("")
+                            .status(HttpStatus.OK)
+                            .build()
+                );
 
 
     }
@@ -248,4 +238,8 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+
+
+
 }

@@ -17,6 +17,7 @@ export enum ActionEnum {
   COMMENT_POST = 'COMMENT_POST',
   COMMENT_REPLY = 'COMMENT_REPLY',
   FOLLOW = 'FOLLOW',
+  POST_TAG = 'POST_TAG',
 }
 
 export enum StateEnum {

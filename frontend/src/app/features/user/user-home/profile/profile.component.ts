@@ -1,29 +1,31 @@
 import { Location } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActionEnum } from 'src/app/core/interfaces/notification';
 import { Post } from 'src/app/core/interfaces/post';
 import { UserProfile } from 'src/app/core/interfaces/user-profile';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { PostService } from 'src/app/core/services/post.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserCloseFriendService } from 'src/app/core/services/user-close-friend.service';
 import { UserFollowService } from 'src/app/core/services/user-follow.service';
 import { UserService } from 'src/app/core/services/user.service';
-import { UserResponse } from 'src/app/features/authentication/login/user.response';
 import { UserLabelInfoService } from 'src/app/core/services/user-label-info.service';
-import { LabelService } from 'src/app/core/services/label.service';
 import { UserLabelInfo } from 'src/app/core/interfaces/user-label-info';
 import { LabelUpdateService } from 'src/app/core/services/label-update.service';
+import { UserStory } from 'src/app/core/interfaces/user-story';
+import { StoryService } from 'src/app/core/services/story.service';
+import { RedirectService } from 'src/app/core/services/redirect.service';
+import { TranslateService } from '@ngx-translate/core';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
-
 export class ProfileComponent implements OnInit {
+  isMobile: boolean = false;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   public userProfile: UserProfile = {
     id: '',
@@ -33,8 +35,11 @@ export class ProfileComponent implements OnInit {
     bio: '',
     posts: [],
     isFollowing: false,
-    isCloseFriend: false
+    isCloseFriend: false,
   };
+
+  qrCodeDialogVisible: boolean = false; // show/hide the QR code dialog
+  qrCodeUrl: string = ''; // URL of the QR code image
 
   profileId: string = ''; // user id from route params
 
@@ -49,18 +54,22 @@ export class ProfileComponent implements OnInit {
 
   dialogVisible: boolean = false; // show/hide the unfollow dialog
   dialogItems: any = [
-    { 
-      label: 'Add to Close Friends',
-      action: () => this.toggleCloseFriend(this.userProfile.id)
+    {
+      label: this.translateService.instant('addToCloseFriends'),
+      action: () => this.toggleCloseFriend(this.userProfile.id),
     },
-    { 
-      label: 'Unfollow',
-      action: () => this.toggleFollow(this.userProfile.id)
+    {
+      label: this.translateService.instant('unfollow'),
+      action: () => this.toggleFollow(this.userProfile.id),
     },
-    { 
-      label: 'Cancel',
-      action: () => this.dialogVisible = false
-    }
+    {
+      label: this.translateService.instant('cancel'),
+      action: () => (this.dialogVisible = false),
+    },
+    {
+      label: 'Qr Code',
+      action: () => this.showQrCode(),
+    },
   ]; // unfollow dialog items
 
   isVisibleFollowers: boolean = false; // show/hide the followers modal
@@ -70,6 +79,22 @@ export class ProfileComponent implements OnInit {
   chooseLableDialog: boolean = false;
   userLabelInfos!: UserLabelInfo[];
 
+  userStory: UserStory | undefined;
+
+  isVisibleChooseViewMode: boolean = false; // show/hide the choose view mode dialog
+  viewMode: 'grid' | 'list' = 'grid'; // view mode of the posts
+  sortMode: 'newest' | 'oldest' = 'newest'; // sort mode of the posts
+  viewOptions = [
+    { id: 'grid', label: this.translateService.instant('grid'), icon: 'pi pi-table' },
+    { id: 'list', label: this.translateService.instant('list'), icon: 'pi pi-bars' }
+  ];
+  sortOptions = [
+    { id: 'desc', label: this.translateService.instant('newest'), value: 'newest', icon: 'pi pi-arrow-up' },
+    { id: 'asc', label: this.translateService.instant('oldest'), value: 'list', icon: 'pi pi-arrow-down' }
+  ];
+
+  selectedTab: number = 0;
+
   constructor(
     private notificationService: NotificationService,
     private userService: UserService,
@@ -77,75 +102,63 @@ export class ProfileComponent implements OnInit {
     private router: Router,
     private location: Location,
     private tokenService: TokenService,
-    private postService: PostService,
     private userFollowService: UserFollowService,
     private userCloseFriendService: UserCloseFriendService,
     private toastService: ToastService,
     private userLabelInfoService: UserLabelInfoService,
-    private labelUpdateService: LabelUpdateService
+    private labelUpdateService: LabelUpdateService,
+    private storyService: StoryService,
+    private redirectService: RedirectService,
+    private translateService: TranslateService
+  ) {
+    this.isMobile = window.innerWidth < 768;
+  }
 
-  ) {}
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isMobile = window.innerWidth < 768;
+  }
 
   ngOnInit(): void {
     this.notificationService.connectWebSocket(this.currentUserId);
 
     // subscribe to route params to get user id
-    this.route.params.subscribe((params) => {
-      this.profileId = params['userId'];
+    this.route.params.subscribe(async (params) => {
+      let user = params['userId']; // user may be username or user id
+      //check if the profileId is a username
+      if(user.indexOf('-') === -1) {
+        const { userId } = await lastValueFrom(this.userService.getUserIdByUsername(user));
+        this.profileId = userId;
+      }
+      else {
+        this.profileId = user;
+      }
+      this.getUserStory();
       this.getUserProfile();
-      this.getPosts();
     });
   }
 
-  
+  getUserStory() {
+    if (this.currentUserId) {
+      this.storyService.getUserStory(this.profileId).subscribe({
+        next: (response) => {
+          this.userStory = response;
+        },
+        error: (error) => {
+          console.error('Error getting user story', error);
+        },
+      });
+    }
+  }
+
   getUserProfile() {
-    if(this.currentUserId) {
-      // if user is logged in, use getUserProfile2 to get with token
-      this.userService.getUserProfile2(this.profileId).subscribe({
-        next: (response) => {
-          this.userProfile = {...this.userProfile, ...response}
-          this.dialogItems[0].label = response.isCloseFriend ? 'Remove from Close Friends' : 'Add to Close Friends';
-        },
-        error: (error) => {
-          console.error('Error getting user profile', error);
-        },
-      });
-    }
-    else {
-      // if user is not logged in, use getUserProfile to get without token
-      this.userService.getUserProfile(this.profileId).subscribe((response) => {
-        this.userProfile = {...this.userProfile, ...response}
-        this.dialogItems[0].label = response.isCloseFriend ? 'Remove from Close Friends' : 'Add to Close Friends';
-      });
-    }
-  }
-
-
-  getPosts() {
-    if(this.currentUserId) {
-      this.postService.getPostsByUserId(this.profileId).subscribe({
-        next: (response) => {
-          this.userProfile.posts = response;
-        },
-        error: (error) => {
-          console.error('Error getting user posts', error);
-        }
-      });
-    }
-    else {
-      this.postService.getPostsByUserId2(this.profileId).subscribe({
-        next: (response) => {
-          this.userProfile.posts = response;
-        },
-        error: (error) => {
-          console.error('Error getting user posts', error);
-        }
-      });
-    }
-  }
-
-  public handleEditProfile(): void {
-    this.router.navigate(['/edit-profile']);
+    this.userService.getUserProfile(this.profileId).subscribe((response) => {
+      this.location.replaceState('/profile/' + response.username);
+      this.userProfile = { ...this.userProfile, ...response };
+      this.dialogItems[0].label = response.isCloseFriend
+        ? this.translateService.instant('removeFromCloseFriends')
+        : this.translateService.instant('addToCloseFriends');
+    });
   }
 
   onFileSelected(event: any): void {
@@ -154,25 +167,30 @@ export class ProfileComponent implements OnInit {
       let newAvatarFileNames = this.currentUserId + '.jpg';
       // Append and rename the file with user id
       const fd = new FormData();
-      fd.append('file', new File([file], newAvatarFileNames, {
-        type: file.type,
-        lastModified: file.lastModified,
-      }));
+      fd.append(
+        'file',
+        new File([file], newAvatarFileNames, {
+          type: file.type,
+          lastModified: file.lastModified,
+        })
+      );
 
       this.userService.changeAvatar(fd).subscribe({
         next: () => {
-          this.toastService.showSuccess('Success', 'Avatar changed successfully');
+          this.toastService.showSuccess(
+            this.translateService.instant('success'),
+            this.translateService.instant('avatarUpdatedSuccessfully')
+          );
           setTimeout(() => {
-            window.location.reload();
+            this.redirectService.reloadPage();
           }, 1000);
         },
         error: (error) => {
           console.error('Error changing avatar', error);
-        }
+        },
       });
     }
   }
-
 
   /**
    * Toggle follow/unfollow user.
@@ -180,14 +198,18 @@ export class ProfileComponent implements OnInit {
    * @param targetId the user id to follow/unfollow
    */
   toggleFollow(targetId: string | undefined) {
-    if(!targetId) return;
+    if (!this.currentUserId) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    if (!targetId) return;
     this.userFollowService.toggleFollow(targetId).subscribe({
       next: (response) => {
         this.userProfile.isFollowing = response;
         // update follower count
         this.userProfile.followerCount += response ? 1 : -1;
         // if action is follow, send notification to followed user
-        if(response) {
+        if (response) {
           this.notificationService.sendNotification({
             targetId: targetId,
             actorId: this.currentUserId,
@@ -195,49 +217,50 @@ export class ProfileComponent implements OnInit {
             redirectURL: `/profile/${this.currentUserId}`,
             recipientId: targetId,
           });
-        }
-        else {
+        } else {
           // if action is unfollow, also remove close friend
-          if(this.userProfile.isCloseFriend) {
+          if (this.userProfile.isCloseFriend) {
             this.userCloseFriendService.removeCloseFriend(targetId).subscribe({
               next: (response) => {
                 this.userProfile.isCloseFriend = !response;
-                this.dialogItems[0].label = response ? 'Add to Close Friends' : 'Remove from Close Friends';
+                this.dialogItems[0].label = response
+                  ? this.translateService.instant('addToCloseFriends')
+                  : this.translateService.instant('removeFromCloseFriends');
               },
               error: (error) => {
                 console.error('Error removing close friends', error);
-              }
+              },
             });
           }
         }
       },
       error: (error) => {
         console.error('Error following user', error);
-      }
+      },
     });
   }
-
-  
 
   /**
    * Toggle close friend.
    * @param targetId the user id to add/remove from close friends
    */
   toggleCloseFriend(targetId: string | undefined) {
-    if(!targetId) return;
+    if (!targetId) return;
     this.userCloseFriendService.toggleCloseFriend(targetId).subscribe({
       next: (response) => {
         this.userProfile.isCloseFriend = response;
-        this.dialogItems[0].label = response ? 'Remove from Close Friends' : 'Add to Close Friends';
+        this.dialogItems[0].label = response
+          ? this.translateService.instant('removeFromCloseFriends')
+          : this.translateService.instant('addToCloseFriends');
       },
       error: (error) => {
         console.error('Error toggling close friends', error);
-      }
+      },
     });
   }
   /**
    * Send follow notification to target user.
-   * @param targetId 
+   * @param targetId
    */
   sendFollowNotification(targetId: string) {
     this.notificationService.sendNotification({
@@ -249,16 +272,14 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-
   /**
    * Show post detail modal.
-   * @param event 
+   * @param event
    */
   showPostDetail(event: any) {
     this.visible = event;
     this.location.replaceState('/post/' + this.post.id);
   }
-
 
   handleShowPostDetail(visible: any, post: Post) {
     this.post = post;
@@ -269,21 +290,25 @@ export class ProfileComponent implements OnInit {
   showChooseLabelDialog() {
     this.chooseLableDialog = true;
     if (this.userProfile.id) {
-      this.userLabelInfoService.getLabelsByUserId(this.userProfile.id).subscribe({
-        next: (response) => {
-          this.userLabelInfos = response;
-        },
-        error: (error) => {
-          console.error('Error getting labels', error);
-        },
-      });
+      this.userLabelInfoService
+        .getLabelsByUserId(this.userProfile.id)
+        .subscribe({
+          next: (response) => {
+            this.userLabelInfos = response;
+          },
+          error: (error) => {
+            console.error('Error getting labels', error);
+          },
+        });
     }
   }
 
   confirm(userLabelInfo: any) {
     const userId = userLabelInfo.userId;
     let curLabelId = '';
-    const userLabelInfoWithShow = this.userLabelInfos.find(i => i.isShow === true);
+    const userLabelInfoWithShow = this.userLabelInfos.find(
+      (i) => i.isShow === true
+    );
 
     if (userLabelInfoWithShow) {
       curLabelId = userLabelInfoWithShow?.labelId ?? '';
@@ -291,15 +316,38 @@ export class ProfileComponent implements OnInit {
 
     const newLabelId = userLabelInfo.labelId;
 
-    this.userLabelInfoService.update_isShow(userId, curLabelId, newLabelId).subscribe({
+    this.userLabelInfoService
+      .update_isShow(userId, curLabelId, newLabelId)
+      .subscribe({
+        next: (response) => {
+          // response chứa URL mới
+          this.labelUpdateService.updateGifUrl(response);
+          this.chooseLableDialog = false;
+        },
+        error: (error) => {
+          console.error('Error updating label info', error);
+        },
+      });
+  }
+  showQrCode() {
+    const userId = this.userProfile.id;
+    this.userService.getQrCodeFromUser(userId).subscribe({
       next: (response) => {
-        // response chứa URL mới
-        this.labelUpdateService.updateGifUrl(response);
-        this.chooseLableDialog = false;
+        this.qrCodeUrl = response;
+        this.qrCodeDialogVisible = true;
       },
       error: (error) => {
-        console.error('Error updating label info', error);
+        console.error('Error getting QR code', error);
       },
     });
   }
+
+  
+  selectTab(tab: number) {
+    if(this.selectedTab === tab && tab === 0) {
+      this.isVisibleChooseViewMode = true;
+    }
+    this.selectedTab = tab;
+  }
+
 }

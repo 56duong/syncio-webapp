@@ -23,7 +23,7 @@ export class MessageItemContentComponent {
    */
   handleImageError(event: any, img: string) {
     if (!this.fallbackAttemptedImages.has(img)) {
-      event.target.src = '/assets/images/no-image-available.jpg'; // Set the fallback URL
+      event.target.src = 'assets/images/no-image-available.jpg'; // Set the fallback URL
       this.fallbackAttemptedImages.add(img); // Mark the fallback as attempted
     } 
     else {

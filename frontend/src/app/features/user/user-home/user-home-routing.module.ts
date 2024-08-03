@@ -9,13 +9,14 @@ import { PaymentInfoComponent } from './payment-info/payment-info.component';
 import { PostDetailComponent } from 'src/app/shared/components/post-detail/post-detail.component';
 import { authGuard } from 'src/app/core/guards/auth.guard';
 import { RoleEnum } from 'src/app/core/interfaces/user';
+import { SettingComponent } from './setting/setting.component';
+import { CollectionDetailComponent } from 'src/app/shared/components/collection-detail/collection-detail.component';
 
 const routes: Routes = [
   {
     path: '',
     component: FeedComponent,
   },
-  
   {
     path: 'profile/:userId',
     component: ProfileComponent,
@@ -26,13 +27,13 @@ const routes: Routes = [
     loadChildren: () =>
       import('./messages/messages.module').then((m) => m.MessagesModule),
     canActivate: [authGuard],
-    data: { requiredRoles: [RoleEnum.USER] }
+    data: { requiredRoles: [RoleEnum.USER] },
   },
   {
     path: 'create-post',
     component: CreatePostComponent,
     canActivate: [authGuard],
-    data: { requiredRoles: [RoleEnum.USER] }
+    data: { requiredRoles: [RoleEnum.USER] },
   },
   {
     path: 'post/:id',
@@ -40,14 +41,29 @@ const routes: Routes = [
   },
   {
     path: 'labels-shop',
-    component: LabelsShopComponent
+    component: LabelsShopComponent,
   },
   {
     path: 'payment-info',
     component: PaymentInfoComponent,
     canActivate: [authGuard],
-    data: { requiredRoles: [RoleEnum.USER] }
-  }
+
+    data: { requiredRoles: [RoleEnum.USER] },
+  },
+  {
+    path: 'account',
+    component: SettingComponent,
+    canActivate: [authGuard],
+    data: { requiredRoles: [RoleEnum.USER] },
+    loadChildren: () =>
+      import('./setting/setting.module').then((m) => m.SettingModule),
+  },
+  {
+    path: 'profile/:userId/:collectionId',
+    component: CollectionDetailComponent,
+    canActivate: [authGuard],
+    data: { requiredRoles: [RoleEnum.USER, RoleEnum.ADMIN] },
+  },
 ];
 
 @NgModule({

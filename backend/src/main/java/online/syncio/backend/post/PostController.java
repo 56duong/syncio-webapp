@@ -2,12 +2,12 @@ package online.syncio.backend.post;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import online.syncio.backend.exception.ReferencedException;
-import online.syncio.backend.exception.ReferencedWarning;
+import online.syncio.backend.like.LikeService;
 import online.syncio.backend.user.EngagementMetricsDTO;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +26,7 @@ import java.util.UUID;
 public class PostController {
 
     private final PostService postService;
+    private final LikeService likeService;
 
 
     // new - get 10 post/page
@@ -62,7 +63,7 @@ public class PostController {
         return ResponseEntity.ok(postService.isPostCreatedByUserIFollow(userId));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/details/{id}")
     public ResponseEntity<PostDTO> getPost(@PathVariable(name = "id") final UUID id) {
         return ResponseEntity.ok(postService.get(id));
     }
@@ -89,20 +90,10 @@ public class PostController {
         return ResponseEntity.ok(id);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable(name = "id") final UUID id) {
-        final ReferencedWarning referencedWarning = postService.getReferencedWarning(id);
-        if (referencedWarning != null) {
-            throw new ReferencedException(referencedWarning);
-        }
-        postService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
     @PostMapping("/{id}/{userId}/like")
     public ResponseEntity<?> likePost(@PathVariable(name = "id") final UUID id,
                                            @PathVariable(name = "userId") final UUID userId) {
-        return postService.toggleLike(id, userId);
-
+        return likeService.toggleLike(id, userId);
     }
 
     @GetMapping("/images/{imageName}")
@@ -164,14 +155,18 @@ public class PostController {
         return postService.getPostUnFlagged(PageRequest.of(pageNumber, pageSize));
     }
 
-    @GetMapping("/{id}/posts")
-    public ResponseEntity<List<PostDTO>> getPostsByUserId(@PathVariable(name = "id") final UUID id) {
-        return ResponseEntity.ok(postService.getPostsByUserId(id));
+    @GetMapping("/all-posts/{id}")
+    public ResponseEntity<List<PostDTO>> getAllPostsByUserId(@PathVariable(name = "id") final UUID id) {
+        return ResponseEntity.ok(postService.getAllPostsByUserId(id));
     }
 
-    @GetMapping("/user/not-login/{id}")
-    public ResponseEntity<List<PostDTO>> getPostsByUserId2(@PathVariable(name = "id") final UUID id) {
-        return ResponseEntity.ok(postService.getPostsByVisibility(id));
+    @GetMapping("/user-posts/{id}")
+    public ResponseEntity<Page<PostDTO>> getPostsByUserId(@PathVariable(name = "id") final UUID id,
+                                                          @RequestParam(defaultValue = "0") final int pageNumber,
+                                                          @RequestParam(defaultValue = "12") final int pageSize,
+                                                          @RequestParam(defaultValue = "true") final boolean isDesc) {
+        final PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, isDesc ? Sort.by("created_date").descending() : Sort.by("created_date").ascending());
+        return ResponseEntity.ok(postService.getPostsByUserId(id, pageRequest));
     }
 
 }

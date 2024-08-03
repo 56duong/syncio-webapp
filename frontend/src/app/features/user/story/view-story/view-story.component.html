@@ -1,6 +1,6 @@
-<div>
-  <!-- Header -->
-  <div class="p-3 absolute top-0 left-0 w-full text-white flex justify-content-between align-items-center">
+<div [class.mobile]="isMobile">
+  <!-- Header desktop -->
+  <div *ngIf="!isMobile" class="p-3 absolute top-0 left-0 w-full text-white flex justify-content-between align-items-center">
     <!-- Logo -->
     <div>
       <h1 style="font-weight: 900;" class="text-2xl">SYNCIO</h1>
@@ -10,6 +10,11 @@
       <p-button (click)="closeViewStory()" icon="pi pi-times" [text]="true" size="large" styleClass="text-white shadow-none"></p-button>
     </div>
   </div>
+  <!-- Header mobile -->
+  <div *ngIf="isMobile" class="p-3 absolute top-0 right-0 w-fit text-white z-1" style="padding: 32px 16px 28px 16px !important;">
+    <!-- X button -->
+    <p-button (click)="closeViewStory()" icon="pi pi-times" [text]="true" size="large" styleClass="text-white shadow-none p-0"></p-button>
+  </div>
 
   <!-- Story -->
   <div class="bg-black-alpha-90 container flex justify-content-center align-items-center" style="min-height: 100vh;">
@@ -17,17 +22,27 @@
       <div class="story" style="width: 390px; height: 694px;">
         <p-carousel [value]="stories" class="block w-full h-full"
           (onPage)="onPageChange($event)" 
-          [numVisible]="1" [numScroll]="1" [page]="firstUnreadStoryIndex">
+          [numVisible]="1" [numScroll]="1" [page]="firstUnreadStoryIndex"
+          [ngClass]="stories.length == 1 ? 'hide-slide-control' : ''">
           <ng-template let-story pTemplate="item">
             <!-- Story item -->
             <div class="item relative border-round text-center overflow-hidden">
               <!-- Header -->
               <div class="header text-white flex align-items-center gap-1">
+                <app-avatar [userId]="story.createdBy" [width]="32"></app-avatar>
                 <small *ngIf="story.createdBy" class="font-bold">
-                  {{ story.createdBy | userIdToName | async }}
+                  <!-- {{ story.createdBy | userIdToName | async }} -->
+                  <app-username-label 
+                    [userId]="story.createdBy"
+                    [username]="(story.createdBy | userIdToName | async) ?? ''"
+                    [fontSize]=""
+                    [fontWeight]="''"
+                    [color]="''">
+                  </app-username-label>
                 </small>
                 <small class="text-gray-400">
-                  {{ story.createdDate | dateAgoPipe }}</small>
+                  {{ story.createdDate | dateAgoPipe }}
+                </small>
               </div>
               <!-- Content -->
               <div>

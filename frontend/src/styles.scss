@@ -86,7 +86,7 @@ body {
 
 /* Track */
 .primary-scrollbar::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: var(--surface-100); 
 }
 
 /* Handle */
@@ -95,31 +95,6 @@ body {
   border-radius: 5px;
 }
 
-/* Custom button styles
-  Example usage:
-  <p-button label="Primary" severity="my-custom-secondary"></p-button>
-*/
-// button-secondary
-.p-button-my-custom-secondary {
-  color: #000000;
-  background-color: var(--gray-200);
-  border: 1px solid var(--gray-200);
-  height: 32px;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-}
-
-.p-button-my-custom-secondary .p-button-label {
-  font-weight: 500;
-}
-
-.p-button-my-custom-secondary:focus {
-  box-shadow: none;
-}
-
-.p-button-my-custom-secondary:hover {
-  background-color: var(--gray-300);
-}
 
 // button-primary
 .p-button-my-custom-primary {
@@ -138,7 +113,6 @@ body {
 .p-button-my-custom-primary:focus {
   box-shadow: none;
 }
-
 
 
 .p-inputtext {

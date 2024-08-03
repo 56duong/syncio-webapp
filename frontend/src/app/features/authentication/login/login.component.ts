@@ -11,12 +11,16 @@ import { TokenService } from 'src/app/core/services/token.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LangService } from 'src/app/core/services/lang.service';
+import { LoadingService } from 'src/app/core/services/loading.service';
+import { RedirectService } from 'src/app/core/services/redirect.service';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   providers: [MessageService],
 })
+
 export class LoginComponent implements OnInit {
   @ViewChild('loginForm') loginForm!: NgForm;
   isActive = false;
@@ -30,17 +34,17 @@ export class LoginComponent implements OnInit {
 
   activate() {
     this.isActive = true;
-    this.email = '';
+    this.emailOrUsername = '';
     this.password = '';
   }
 
   deactivate() {
     this.isActive = false;
-    this.email = '';
+    this.emailOrUsername = '';
     this.password = '';
   }
   username: string = '';
-  email: string = '';
+  emailOrUsername: string = '';
   password: string = '';
   retypePassword: string = '';
   showPassword: boolean = false;
@@ -57,7 +61,9 @@ export class LoginComponent implements OnInit {
     private toastService: ToastService,
     private route: ActivatedRoute,
     private translateService: TranslateService,
-    public langService: LangService
+    public langService: LangService,
+    private loadingService: LoadingService,
+    private redirectService: RedirectService
   ) {}
 
   ngOnInit() {
@@ -66,25 +72,47 @@ export class LoginComponent implements OnInit {
       if (token) {
         this.confirmRegistration(token);
       }
+
+      let message = params['message'];
+      let type = params['type'];
+      if (message) {
+        let errorText = this.translateService.instant('error');
+        switch (type) {
+          case 'success':
+            this.toastService.showSuccess('Success', message);
+            break;
+          case 'error':
+            this.toastService.showError(errorText, message);
+            break;
+          case 'info':
+            this.toastService.showInfo('Info', message);
+            break;
+          case 'warn':
+            this.toastService.showWarn('Warning', message);
+            break;
+          default:
+            this.toastService.showInfo('Info', message);
+        }
+      }
     });
   }
 
   switchLang(lang: string) {
     this.langService.setLang(lang);
-    window.location.reload();
+    this.redirectService.reloadPage('/login');
   }
 
   createAccount() {
-    this.router.navigate(['/register']);
+    this.redirectService.redirectAndReload('/register');
   }
   navigateToForgotPassword() {
-    this.router.navigate(['/forgot_password']);
+    this.redirectService.redirectAndReload('/forgot_password');
   }
 
   login() {
-    console.log('login', this.email);
+    console.log('login', this.emailOrUsername);
     let errorText = this.translateService.instant('error');
-    if (this.email == null || this.email == '') {
+    if (this.emailOrUsername == null || this.emailOrUsername == '') {
       this.toastService.showError(errorText, this.translateService.instant('emailIsRequired'));
       return;
     }
@@ -94,10 +122,12 @@ export class LoginComponent implements OnInit {
     }
     
     const loginDTO: LoginDTO = {
-      email: this.email,
+      emailOrUsername: this.emailOrUsername,
       password: this.password,
       role_name: 'USER',
     };
+
+    this.loadingService.show();
 
     this.userService.login(loginDTO).subscribe({
       next: (response: LoginResponse) => {
@@ -106,6 +136,8 @@ export class LoginComponent implements OnInit {
 
         this.userService.getUserDetail(token).subscribe({
           next: (response: any) => {
+            this.loadingService.hide();
+
             this.userResponse = {
               ...response,
             };
@@ -114,11 +146,15 @@ export class LoginComponent implements OnInit {
             if (this.userResponse?.role == 'ADMIN') {
               this.router.navigate(['/admin']);
             } else if (this.userResponse?.role == 'USER') {
-              this.router.navigate(['/']);
+              this.redirectService.redirectAndReload('/');
+              // this.router.navigate(['/']);
+              // window.location.href = '/';
             }
           },
           complete: () => {},
           error: (error: any) => {
+            console.log('error', error);
+            this.loadingService.hide();
             let errorMessage = '';
             if(error.error.subErrors) {
               const subErrors = error.error.subErrors;
@@ -135,6 +171,8 @@ export class LoginComponent implements OnInit {
       },
       complete: () => {},
       error: (error: any) => {
+        console.log('error', error);
+        this.loadingService.hide();
         let errorMessage = '';
         if(error.error.subErrors) {
           const subErrors = error.error.subErrors;
@@ -169,12 +207,12 @@ export class LoginComponent implements OnInit {
     }
 
     //validate email
-    if (!emailRegex.test(this.email)) {
-      if (!this.email.includes('@')) {
+    if (!emailRegex.test(this.emailOrUsername)) {
+      if (!this.emailOrUsername.includes('@')) {
         this.toastService.showError('Error', 'Email should contain an "@" symbol.');
         return;
       }
-      if (!this.email.includes('.')) {
+      if (!this.emailOrUsername.includes('.')) {
         this.toastService.showError('Error', 'Email should contain a domain name with a "."');
         return;
       }
@@ -183,7 +221,7 @@ export class LoginComponent implements OnInit {
     }
     const registerDTO: RegisterDTO = {
       username: this.username,
-      email: this.email,
+      email: this.emailOrUsername,
 
       password: this.password,
       retype_password: this.retypePassword,
@@ -206,7 +244,7 @@ export class LoginComponent implements OnInit {
     this.userService.confirmUserRegister(token).subscribe({
       next: (response: any) => {
         console.log('Registration confirmed:', response);
-        this.toastService.showSuccess('Success', response.message);
+        this.toastService.showSuccess(this.translateService.instant('success'), response.message);
       },
       complete: () => {},
       error: (error: any) => {

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { User } from 'src/app/core/interfaces/user';
-import { UserService } from 'src/app/core/services/user.service';
+import { StoryService } from 'src/app/core/services/story.service';
 
 @Component({
   selector: 'app-story',
@@ -12,7 +12,7 @@ export class StoryComponent {
   usersWithStories: User[] = [];
 
   constructor(
-    private userService: UserService
+    private storyService: StoryService,
   ) { }
 
   ngOnInit() {
@@ -20,7 +20,7 @@ export class StoryComponent {
   }
 
   getUsersWithStories() {
-    this.userService.getUsersWithStories().subscribe({
+    this.storyService.getUsersWithStories().subscribe({
       next: (users) => {
         this.usersWithStories = users;
       },

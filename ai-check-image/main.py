@@ -61,7 +61,8 @@ def read_root():
 async def process_image(image_url: str):
     try:
         image_url = image_url.replace('localhost', 'host.docker.internal')
-        
+        if 'firebasestorage' in image_url:
+            image_url = image_url.replace('users/','users%2F')
         response = requests.get(image_url)
         response.raise_for_status()
         image = Image.open(BytesIO(response.content))

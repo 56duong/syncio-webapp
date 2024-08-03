@@ -1,5 +1,5 @@
 .newpost {
-  position: sticky;
+  position: fixed;
   width: fit-content;
   top: 40px;
   left: 50%;
@@ -25,4 +25,10 @@
     height: 8px;
     margin-right: 4px;
   }
+}
+
+::ng-deep .profile-link {
+  cursor: pointer;
+  color: var(--primary-color);
+  font-weight: 500;
 }

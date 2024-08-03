@@ -19,7 +19,11 @@ export class CommentService {
   private commentSubject: BehaviorSubject<Comment> = new BehaviorSubject<Comment>({}); // BehaviorSubject of Comment type. You can know when a new comment is received.
   private subscription: any
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+    if (environment.android || environment.windows) {
+      this.webSocketURL = this.webSocketURL.replace(environment.apiUrl, window.localStorage.getItem('apiUrl') || environment.apiUrl);
+    }
+  }
 
 
 
@@ -45,7 +49,10 @@ export class CommentService {
     this.stompClient.connect({}, () => {
       this.subscription = this.stompClient.subscribe(`/topic/comment/${postId}`, (comment: IMessage) => {
         this.commentSubject.next(JSON.parse(comment.body));
-      });
+      }),
+      (error: any) => {
+        console.error(error);
+      }
     });
   }
 

@@ -1,0 +1,26 @@
+.dash-border {
+  --dash-count: 5;
+  --viewed-count: 0;
+  --dash-spacing: 8deg;
+  --border-thickness: 3px;
+  --active-ratio: calc(1 / var(--dash-count) * var(--viewed-count));
+  --active-color: var(--primary-color);
+  --unactive-color: var(--blue-100);
+  --border-color: conic-gradient(
+        var(--unactive-color) 0 calc(var(--active-ratio) * 360deg), 
+        var(--active-color) calc(var(--active-ratio) * 360deg) 
+        360deg);
+  width: 120px;
+  position: relative;
+}
+
+.dash-border::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: var(--border-thickness);
+  background: var(--border-color);
+  mask: linear-gradient(#0000 0 0) content-box, repeating-conic-gradient(from calc(var(--dash-spacing) / 2), #000 0 calc(360deg / var(--dash-count) - var(--dash-spacing)), #0000 0 calc(360deg / var(--dash-count)));
+  mask-composite: intersect;
+}

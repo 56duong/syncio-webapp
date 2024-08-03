@@ -1,4 +1,4 @@
-<div class="main">
+<div class="main" style="padding-bottom: calc(1rem + 65px)">
   
   <!-- New post notification -->
   <a *ngIf="isReceivedNewPost" 
@@ -19,15 +19,20 @@
     <app-post *ngFor="let post of posts" [post]="post"></app-post>
     
     <div *ngIf="endOfFollowing" class="text-gray-500" style="width: min(470px, 100vw - 1rem); margin: 2rem auto;">
-      <p>Suggested for you</p>
+      <p>{{ 'suggestedForYou' | translate }}</p>
     </div>
     
     <!-- Suggested posts -->
     <app-post *ngFor="let post of suggestedPosts" [post]="post"></app-post>
 
+    <!-- Loading -->
+    <div #loading *ngIf="!showLoading" class="text-center" style="width: min(470px, 100vw - 1rem); margin: 2rem auto;">
+      <i class="pi pi-spin pi-spinner text-primary" style="font-size: 2rem"></i>
+    </div>
+
     <!-- End of feed -->
-    <div #endOfFeed class="text-gray-500 text-center" style="width: min(470px, 100vw - 1rem); margin: 2rem auto;">
-      <small *ngIf="endOfFeed">You have reached the end of the feed!</small> 
+    <div #endOfFeed *ngIf="endOfFeed" class="text-gray-500 text-center" style="width: min(470px, 100vw - 1rem); margin: 2rem auto;">
+      <small *ngIf="endOfFeed">{{ 'youReachTheEnOfTheFeed' | translate }}!</small> 
     </div>
 
   </div>

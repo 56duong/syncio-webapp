@@ -21,6 +21,9 @@ import { RouteReuseStrategy } from '@angular/router';
 import { LangInterceptor } from './core/interceptors/lang.interceptor';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from './shared/shared.module';
+import { environment } from 'src/environments/environment';
+import { AppInterceptor } from './core/interceptors/app.interceptor';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -47,6 +50,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ToastModule,
     FormsModule,
     ReactiveFormsModule,
+    SharedModule
   ],
   providers: [
     MessageService,
@@ -61,7 +65,10 @@ export function HttpLoaderFactory(http: HttpClient) {
       useClass: LangInterceptor,
       multi: true,
     },
-    { provide: RouteReuseStrategy, useClass: CustomReuseStrategy }
+    { provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
+    ...((environment.android || environment.windows) 
+        ? [{ provide: HTTP_INTERCEPTORS, useClass: AppInterceptor, multi: true }] 
+        : [])
   ],
   bootstrap: [AppComponent],
 })

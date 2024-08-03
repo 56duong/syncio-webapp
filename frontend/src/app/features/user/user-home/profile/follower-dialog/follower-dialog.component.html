@@ -1,4 +1,4 @@
-<p-dialog header="Followers" 
+<p-dialog [header]="'followers' | translate" 
   [modal]="true"
   [dismissableMask]="true" 
   [(visible)]="isVisibleFollowers" 
@@ -9,25 +9,34 @@
     <div *ngFor="let userFollow of userFollowers" class="flex justify-content-between align-items-center">
       <div class="flex gap-2">
         <!-- avatar -->
-        <app-avatar [userId]="userFollow.actorId" [width]="48"></app-avatar> 
+        <app-avatar (click)="isVisibleFollowers = false" [userId]="userFollow.actorId" [width]="48"></app-avatar> 
         <div class="flex gap-1 align-items-center">
           <!-- username -->
-          <span (click)="navigateToProfile(userFollow.actorId)" class="font-semibold cursor-pointer">{{ userFollow.actorUsername }}</span>
+          <span (click)="navigateToProfile(userFollow.actorId)" class="font-semibold cursor-pointer">
+            <!-- {{ userFollow.actorUsername }} -->
+            <app-username-label 
+              [userId]="userFollow.actorId"
+              [username]="userFollow.actorUsername"
+              [fontSize]=""
+              [fontWeight]="'bold'"
+              [color]="''">
+            </app-username-label>
+          </span>
           <!-- follow button if not following and is owner profile -->
           <ng-container *ngIf="isOwnerProfile && !userFollow.following && userFollow.actorId != currentUserId">
             <span>·</span>
-            <span (click)="addFollow(userFollow)" style="font-size: 0.75rem;" class="text-primary font-semibold cursor-pointer">Follow</span>
+            <span (click)="addFollow(userFollow)" style="font-size: 0.75rem;" class="text-primary font-semibold cursor-pointer">{{'follow' | translate}}</span>
           </ng-container>
         </div>
       </div>
       <!-- Remove follower -->
       <ng-container *ngIf="isOwnerProfile">
-        <p-button (click)="removeFollower(userFollow.actorId)" label="Remove" severity="my-custom-secondary"></p-button>
+        <p-button (click)="removeFollower(userFollow.actorId)" [label]="'remove' | translate" severity="my-custom-secondary"></p-button>
       </ng-container>
       <!-- Follow/Unfollow button if not following and not owner profile -->
       <ng-container *ngIf="userFollow.actorId != currentUserId && !isOwnerProfile">
-        <p-button *ngIf="!userFollow.following" (click)="addFollow(userFollow)" label="Follow" severity="my-custom-primary"></p-button>
-        <p-button *ngIf="userFollow.following" (click)="unFollow(userFollow)" label="Unfollow" severity="my-custom-secondary"></p-button>
+        <p-button *ngIf="!userFollow.following" (click)="addFollow(userFollow)" [label]="'follow' | translate" severity="my-custom-primary"></p-button>
+        <p-button *ngIf="userFollow.following" (click)="unFollow(userFollow)" [label]="'unfollow' | translate" severity="my-custom-secondary"></p-button>
       </ng-container>
     </div>
 

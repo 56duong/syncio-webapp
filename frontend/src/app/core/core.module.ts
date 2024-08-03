@@ -6,16 +6,18 @@ import { RemoveMyUsernamePipe } from './pipes/remove-my-username.pipe';
 import { DateAgoPipePipe } from './pipes/date-ago-pipe.pipe';
 import { UrlifyPipe } from './pipes/urlify.pipe';
 import { ConstructImageUrlPipe } from './pipes/construct-image-url.pipe';
+import { TagToLinkPipe } from './pipes/tag-to-link.pipe';
 
 @NgModule({
-  declarations: [UserIdToNamePipe, RemoveMyUsernamePipe, DateAgoPipePipe, UrlifyPipe, ConstructImageUrlPipe],
+  declarations: [UserIdToNamePipe, RemoveMyUsernamePipe, DateAgoPipePipe, UrlifyPipe, ConstructImageUrlPipe, TagToLinkPipe],
   imports: [CommonModule, FormsModule],
   exports: [
     UserIdToNamePipe, 
     RemoveMyUsernamePipe, 
     DateAgoPipePipe,
     UrlifyPipe,
-    ConstructImageUrlPipe
+    ConstructImageUrlPipe,
+    TagToLinkPipe
   ],
 })
 

@@ -13,11 +13,11 @@
   [ngClass]="isDirectPost ? 'direct-post-dialog' : ''"
   [style]="{ width: '80vw', height: '100%', zIndex: '999999' }"
   [draggable]="false"
-  [resizable]="false">
+  [resizable]="false"
+  [class.mobile]="isMobile">
   <div class="flex h-full lg:flex-row xl:flex-row flex-column">
     <!-- Left side (Photos) -->
-    <div class="left col-12 lg:h-full xl:h-full h-5/6 p-0"
-      [ngClass]="post.photos && post.photos.length && post.photos.length > 0 ? 'lg:col-8 xl:col-8' : 'max-w-0'">
+    <div *ngIf="post.photos && post.photos?.length" class="left col-12 lg:h-full xl:h-full h-5/6 p-0 lg:col-8 xl:col-8">
       <p-carousel *ngIf="post.photos && post.photos?.length"
         [value]="post.photos"
         [numVisible]="1"
@@ -26,7 +26,7 @@
         [style]="{ height: '100%', position: 'relative' }"
         [ngClass]="post.photos.length == 1 ? 'hide-slide-control' : ''">
         <ng-template let-photo pTemplate="item">
-          <img src="{{ photo.url }}"
+          <img [src]="photo.url | constructImageUrl"
             [alt]="photo.altText"
             class="w-full h-full"
             style="object-fit: contain" />
@@ -61,6 +61,14 @@
         </div>
         <!-- 3 dots -->
         <span (click)="dialogVisible = !dialogVisible" class="pi pi-ellipsis-h cursor-pointer"></span>
+      </div>
+
+      <div *ngIf="post.audioURL" class="px-3 pb-3">
+        <audio controls class="w-full">
+          <source [src]="'http://localhost:8080/api/v1/audio/' + post.audioURL" type="audio/mpeg">
+          <source [src]="'https://firebasestorage.googleapis.com/v0/b/syncio-bf6ca.appspot.com/o/' + post.audioURL.replace('/', '%2F') + '?alt=media'" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
       </div>
 
       <p-divider></p-divider>
@@ -110,14 +118,14 @@
           [style]="{ maxHeight: '40px' }">
           <ng-template pTemplate="header" hidden></ng-template>
         </p-editor> -->
-        <textarea [(ngModel)]="comment.text" rows="1" pInputTextarea placeholder="Add a comment..." 
+        <textarea [(ngModel)]="comment.text" rows="1" pInputTextarea [placeholder]="('addAComment' | translate) + '...'" 
                     style="width: 100%; resize: none;" 
                     class="flex-1 text-sm border-0 py-1 outline-none shadow-none"></textarea>
 
         <!-- Post button -->
         <p-button [disabled]="!comment.text || comment.text.trim().length <= 0"
           (click)="postComment(); isEmojiPickerVisible = false"
-          label="Post"
+          [label]="('postComment' | translate)"
           size="small"
           [text]="true"
           styleClass="shadow-none"
@@ -138,3 +146,10 @@
   [items]="dialogItems"
   (displayChange)="hideDialog()">
 </app-global-dialog>
+
+<app-collection-list *ngIf="post.id && post.createdBy === currentUserId"
+  [postId]="post.id"
+  [currentUserId]="currentUserId"
+  [isVisible]="collectionVisible"
+  (closeDialogEvent)="collectionVisible = false">
+</app-collection-list>

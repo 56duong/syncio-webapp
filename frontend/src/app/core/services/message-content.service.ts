@@ -18,7 +18,11 @@ export class MessageContentService {
 
   private connections: Map<string, any> = new Map(); // Map to store the connections for each message room ID.
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { 
+    if (environment.android || environment.windows) {
+      this.webSocketURL = this.webSocketURL.replace(environment.apiUrl, window.localStorage.getItem('apiUrl') || environment.apiUrl);
+    }
+  }
 
 
 
@@ -50,6 +54,7 @@ export class MessageContentService {
         this.connections.set(messageRoomId, { stompClient, subscription, messageContentSubject });
         resolve(); // Resolve the promise here
       }, (error: any) => {
+        console.error(error);
         reject(error); // Reject the promise on error
       });
     });

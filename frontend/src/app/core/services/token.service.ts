@@ -3,6 +3,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserService } from './user.service';
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,8 @@ export class TokenService {
 
     constructor(
         private userService: UserService,
-        private router: Router
+        private router: Router,
+        private translateService: TranslateService
     ){ }
     
     //getter/setter
@@ -129,7 +131,12 @@ export class TokenService {
     canActivate(requiredRoles: string[]): boolean {
         let userRole = this.extractUserRoleFromToken();
         if(!userRole) {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/login'], { 
+                queryParams: { 
+                    type: 'error',
+                    message: this.translateService.instant('youNeedToLoginFirst')
+                } 
+            });
             return false;
         }
         if (!requiredRoles.includes(userRole)) {

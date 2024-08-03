@@ -42,8 +42,4 @@ public class NotificationDTO {
      */
     private String previewText;
 
-    public String getImageURL() {
-        return imageURL == null ? null : "http://localhost:8080/api/v1/images/" + imageURL;
-    }
-
 }

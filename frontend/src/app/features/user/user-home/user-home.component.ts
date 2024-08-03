@@ -10,16 +10,27 @@ export class UserHomeComponent {
   @ViewChild(SearchComponent) appSearch: SearchComponent | undefined;
   showSearch: boolean = false;
   showNotifications: boolean = false;
+  isHideMenuLabel: boolean = false;
+  isMobile: boolean = false;
 
-  constructor(private elementRef: ElementRef) {}
+  constructor() {
+    this.isMobile = window.innerWidth < 768;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isMobile = window.innerWidth < 768;
+  }
 
   actionToggle(event: any) {
     switch (event) {
       case 'search':
         this.showSearch = !this.showSearch;
+        this.showNotifications = false;
         break;
       case 'notifications':
         this.showNotifications = !this.showNotifications;
+        this.showSearch = false;
         break;
       default:
         break;
