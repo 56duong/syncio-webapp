@@ -41,7 +41,7 @@ export class UserService {
       .set('token', token)
       .set('password', password);
 
-    return this.http.post(this.apiResetPassword, {}, { params });
+    return this.http.post(this.apiResetPassword, null, { params });
   }
   register(registerDTO: RegisterDTO): Observable<any> {
     return this.http.post(this.apiRegister, registerDTO, this.apiConfig);
@@ -81,7 +81,6 @@ export class UserService {
 
     return this.http.post(this.apiUserDetail, {}, { headers: headers });
   }
-
   saveUserResponseToLocalStorage(userResponse?: UserResponse | null) {
     try {
       if (userResponse == null || !userResponse) {
@@ -270,10 +269,6 @@ export class UserService {
   getOutstandingUsers(): Observable<User[]> {
     const url = `${this.apiURL}/outstanding`;
     return this.http.get<User[]>(url);
-  }
-
-  getUserCount(): Observable<number> {
-    return this.getUsers().pipe(map((users) => users.length));
   }
 
 

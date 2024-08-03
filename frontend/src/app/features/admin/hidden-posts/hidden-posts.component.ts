@@ -31,17 +31,28 @@ export class HiddenPostsComponent {
         let url = val.url;
         console.log('URL:', url);
         this.isHiddenPostsPage = url.includes('hidden-posts');
+        
       }
     });
 
     this.getPosts();
 
     // Subscribe to the new post created event to add the new post to the top of the feed.
-    this.postService.getPostReportedInAdmin().subscribe({
+    // this.postService.getPostReportedInAdmin().subscribe({
+    //   next: (post) => {
+    //     console.log('Post:', post);
+    //     if (post) {
+    //       this.posts.unshift(post);
+    //     }
+    //   },
+    // });
+    this.postReportedInAdminSubscription = this.postService.getPostReportedInAdmin().subscribe({
       next: (post) => {
-        console.log('Post:', post);
         if (post) {
-          this.posts.unshift(post);
+          const postExists = this.posts.some(existingPost => existingPost.id === post.id);
+          if (!postExists) {
+            this.posts.unshift(post);
+          }
         }
       },
     });
@@ -59,14 +70,14 @@ export class HiddenPostsComponent {
       return;
     }
     this.loading = true;
-
     this.postService.getPostHidden(this.pageNumber, this.pageSize).subscribe({
       next: (posts) => {
         if (Array.isArray(posts)) {
           if (posts.length === 0) {
             this.endOfFeed = true;
           } else {
-            this.posts.push(...posts);
+            const newPosts = posts.filter(post => !this.posts.some(existingPost => existingPost.id === post.id));
+            this.posts.push(...newPosts);
             this.pageNumber++;
           }
         } else {
@@ -94,6 +105,7 @@ export class HiddenPostsComponent {
         const post = this.posts.find(post => post.id === postId);
         this.postService.setPostReportedInAdmin(post);
         this.posts = this.posts.filter(post => post.id !== postId);
+        
       },
       error: (error) => {
         console.log(error)
