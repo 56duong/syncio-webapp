@@ -45,49 +45,49 @@ public class RabbitMQConfig implements RabbitListenerConfigurer {
     @Value("${spring.rabbitmq.password}")
     private String rabitPassword;
 
-//
-//
-//
-//    private CachingConnectionFactory getCachingConnectionFactoryCommon() {
-//        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(this.rabitHost, this.rabitPort);
-//        connectionFactory.setUsername(this.rabitUsername);
-//        connectionFactory.setPassword(this.rabitPassword);
-//        return connectionFactory;
-//    }
-//
-//    @Primary
-//    @Bean
-//    public AmqpAdmin amqpAdmin(ConnectionFactory connectionFactory) {
-//        RabbitAdmin rabbitAdmin = new RabbitAdmin(connectionFactory);
-//        return rabbitAdmin;
-//    }
-//
-//    @Primary
-//    @Bean
-//    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-//        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-//        rabbitTemplate.setMessageConverter(jsonMessageConverter());
-//        return new RabbitTemplate(connectionFactory);
-//    }
-//
-//    @Primary
-//    @Bean
-//    public ConnectionFactory connectionFactory() {
-//        CachingConnectionFactory connectionFactory = this.getCachingConnectionFactoryCommon();
-//
-//        return connectionFactory;
-//    }
-//
-//    @Primary
-//    @Bean("rabbitListenerContainerFactory")
-//    public SimpleRabbitListenerContainerFactory containerFactory(ConnectionFactory connectionFactory) {
-//        final SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-//        factory.setDefaultRequeueRejected(false);
-//        factory.setConnectionFactory(connectionFactory);
-//        factory.setDefaultRequeueRejected(false);
-//        factory.setMessageConverter(jsonMessageConverter());
-//        return factory;
-//    }
+
+
+
+    private CachingConnectionFactory getCachingConnectionFactoryCommon() {
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(this.rabitHost, this.rabitPort);
+        connectionFactory.setUsername(this.rabitUsername);
+        connectionFactory.setPassword(this.rabitPassword);
+        return connectionFactory;
+    }
+
+    @Primary
+    @Bean
+    public AmqpAdmin amqpAdmin(ConnectionFactory connectionFactory) {
+        RabbitAdmin rabbitAdmin = new RabbitAdmin(connectionFactory);
+        return rabbitAdmin;
+    }
+
+    @Primary
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(jsonMessageConverter());
+        return new RabbitTemplate(connectionFactory);
+    }
+
+    @Primary
+    @Bean
+    public ConnectionFactory connectionFactory() {
+        CachingConnectionFactory connectionFactory = this.getCachingConnectionFactoryCommon();
+
+        return connectionFactory;
+    }
+
+    @Primary
+    @Bean("rabbitListenerContainerFactory")
+    public SimpleRabbitListenerContainerFactory containerFactory(ConnectionFactory connectionFactory) {
+        final SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setDefaultRequeueRejected(false);
+        factory.setConnectionFactory(connectionFactory);
+        factory.setDefaultRequeueRejected(false);
+        factory.setMessageConverter(jsonMessageConverter());
+        return factory;
+    }
 
 //    public static final String EXCHANGE = "imageVerificationExchange";
 //    public static final String ROUTING_KEY = "imageVerify";

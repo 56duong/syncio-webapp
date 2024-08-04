@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import online.syncio.backend.setting.Setting;
 import online.syncio.backend.setting.SettingCategory;
 import online.syncio.backend.setting.SettingRepository;
-import online.syncio.backend.user.RoleEnum;
-import online.syncio.backend.user.StatusEnum;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @SpringBootApplication
 @EnableJpaAuditing
@@ -36,9 +32,9 @@ public class BackendApplication {
 	}
 
 
-		@Bean
-	public CommandLineRunner commandLineRunner() {
-		return args -> {
+//		@Bean
+//	public CommandLineRunner commandLineRunner() {
+//		return args -> {
 //			try {
 //				Setting MAIL_HOST = new Setting();
 //				MAIL_HOST.setSettingKey("MAIL_HOST");
@@ -96,17 +92,7 @@ public class BackendApplication {
 //			} catch (Exception e) {
 //				e.getStackTrace();
 //			}
-
-			//insert admin
-//			User user = new User();
-//			user.setEmail("admin@gmail.com");
-//			user.setPassword(passwordEncoder.encode("123456"));
-//			user.setId(UUID.randomUUID());
-//			user.setUsername("admin");
-//			user.setCreatedDate(LocalDateTime.now());
-//			user.setStatus(StatusEnum.ACTIVE);
-//			user.setRole(RoleEnum.ADMIN);
-		};
-	}
+//		};
+//	}
 
 }
