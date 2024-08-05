@@ -105,7 +105,7 @@ export class MessagesComponent {
     this.messageRoomService.getNewMessageGroupObservable().subscribe({
       next: (messageRoom) => {
         if(!messageRoom.id) return; 
-        if(messageRoom.createdBy == this.currentUser.id) {
+        if(messageRoom.createdBy !== this.currentUser.id) {
           // when a new message room is created, add it to the message rooms array
           this.messageRooms = [messageRoom, ...this.messageRooms];
         }
@@ -131,7 +131,7 @@ export class MessagesComponent {
         if(!messageRoom.id) return;
         if(messageRoom.createdBy != this.currentUser.id) {
           if(!messageRoom.group) {
-            messageRoom.avatarURL = messageRoom.members?.filter((member: any) => member.userId != this.currentUser.id)[0].userId;
+            messageRoom.avatarURL = messageRoom.createdBy; // update avatar is the created by user id
             this.messageRooms = [messageRoom, ...this.messageRooms];
           }
         }
@@ -297,6 +297,8 @@ export class MessagesComponent {
           // if not exists, create a new room
           this.messageRoomService.createMessageRoomWithUsers(userIds).subscribe({
             next: (messageRoom) => {
+              // update the avatarURL of the message room if the room is a direct message between two users
+              if(userIds.length === 2) messageRoom.avatarURL = this.currentUser.id;
               this.messageRooms = [messageRoom, ...this.messageRooms];
               this.selectMessageRoom(messageRoom);
               this.isDialogVisible = false;

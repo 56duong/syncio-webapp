@@ -86,8 +86,6 @@ export class FeedComponent {
       next: (post) => {
         if (Object.keys(post).length !== 0) {
           this.isReceivedNewPost = true;
-          this.postService.disconnectNewPost();
-          this.newPostCreatedSubscription.unsubscribe();
         }
       },
       error: (error) => {
@@ -183,10 +181,6 @@ export class FeedComponent {
     this.postIds = [];
     this.isReceivedNewPost = false;
     this.getPosts();
-    if(this.currentUserId) {
-      this.postService.connectWebSocketNewPost();
-      this.postService.getNewPostObservable();
-    }
   }
 
 }

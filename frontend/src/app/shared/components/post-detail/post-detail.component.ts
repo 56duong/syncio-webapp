@@ -193,6 +193,17 @@ export class PostDetailComponent {
             createdDate: 'Just now',
           };
 
+          // send notification to owner of the parent comment
+          if (this.ownerParentCommentId != this.currentUserId) {
+            this.notificationService.sendNotification({
+              targetId: this.post.id,
+              actorId: this.currentUserId,
+              actionType: ActionEnum.COMMENT_REPLY,
+              redirectURL: `/post/${this.post.id}?commentId=${this.comment.parentCommentId}`,
+              recipientId: this.ownerParentCommentId,
+            });
+          }
+
           if (this.comment.parentCommentId) {
             // make change to this to let child component know that a new reply has been added
             this.newReply = this.comment;

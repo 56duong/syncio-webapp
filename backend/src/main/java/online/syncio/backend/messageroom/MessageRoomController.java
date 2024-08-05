@@ -68,6 +68,7 @@ public class MessageRoomController {
                 String messageRoomName = messageRoomService.convertMessageRoomName(messageRoomDTO.getId(), userId);
                 MessageRoomDTO sendToUser = messageRoomDTO;
                 sendToUser.setName(messageRoomName);
+                sendToUser.setUnSeenCount(1L);
                 simpMessagingTemplate.convertAndSendToUser(userId.toString(), "/queue/newMessageRoom", sendToUser);
             });
         }
