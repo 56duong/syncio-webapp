@@ -40,7 +40,7 @@ export class UserService {
       .set('token', token)
       .set('password', password);
 
-    return this.http.post(this.apiResetPassword, {}, { params });
+    return this.http.post(this.apiResetPassword, null, { params });
   }
   register(registerDTO: RegisterDTO): Observable<any> {
     return this.http.post(this.apiRegister, registerDTO, this.apiConfig);
@@ -80,7 +80,6 @@ export class UserService {
 
     return this.http.post(this.apiUserDetail, {}, { headers: headers });
   }
-
   saveUserResponseToLocalStorage(userResponse?: UserResponse | null) {
     try {
       if (userResponse == null || !userResponse) {
@@ -255,20 +254,20 @@ export class UserService {
     return this.http.post<void>(url, formData);
   }
 
-  getNewUsersLast30Days(): Observable<any> {
-    const url = `${this.apiURL}/last30days`;
-    return this.http.get<any>(url);
-  }
+  // getNewUsersLast30Days(): Observable<any> {
+  //   const url = `${this.apiURL}/last30days`;
+  //   return this.http.get<any>(url);
+  // }
 
-  getNewUsersLast7Days(): Observable<any> {
-    const url = `${this.apiURL}/last7days`;
-    return this.http.get<any>(url);
-  }
+  // getNewUsersLast7Days(): Observable<any> {
+  //   const url = `${this.apiURL}/last7days`;
+  //   return this.http.get<any>(url);
+  // }
 
-  getNewUsersLast100Days(): Observable<any> {
-    const url = `${this.apiURL}/last100days`;
-    return this.http.get<any>(url);
-  }
+  // getNewUsersLast100Days(): Observable<any> {
+  //   const url = `${this.apiURL}/last100days`;
+  //   return this.http.get<any>(url);
+  // }
 
   getNewUsersLastNDays(days: number): Observable<any> {
     return this.http.get(`${this.apiURL}/last/${days}`);

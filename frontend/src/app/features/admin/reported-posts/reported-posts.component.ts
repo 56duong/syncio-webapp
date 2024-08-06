@@ -33,16 +33,28 @@ export class ReportedPostsComponent {
         let url = val.url;
         console.log('URL:', url);
         this.isReportedPostsPage = url.includes('reported-posts');
+        
       }
     });
    
     this.getPosts();
 
     // Subscribe to the new post created event to add the new post to the top of the feed.
-    this.postService.getPostReportedInAdmin().subscribe({
+    // this.postService.getPostReportedInAdmin().subscribe({
+    //   next: (post) => {
+    //     if (post) {
+    //       this.posts.unshift(post);
+    //     }
+    //   },
+    // });
+    // Subscribe to the new post created event to add the new post to the top of the feed.
+    this.postReportedInAdminSubscription = this.postService.getPostReportedInAdmin().subscribe({
       next: (post) => {
         if (post) {
-          this.posts.unshift(post);
+          const postExists = this.posts.some(existingPost => existingPost.id === post.id);
+          if (!postExists) {
+            this.posts.unshift(post);
+          }
         }
       },
     });
@@ -68,7 +80,8 @@ export class ReportedPostsComponent {
           if (posts.length === 0) {
             this.endOfFeed = true;
           } else {
-            this.posts.push(...posts);
+            const newPosts = posts.filter(post => !this.posts.some(existingPost => existingPost.id === post.id));
+            this.posts.push(...newPosts);
             this.pageNumber++;
           }
         } else {

@@ -23,10 +23,10 @@
         </span>
         
         <!-- Action -->
-        <span> {{ 'likedYourPost' | translate }}</span>
+        <span>{{ 'likedYourPost' | translate }}{{notification.previewText ? ': ' : ''}}</span>
 
         <!-- if post has caption(previewText), show : caption -->
-         <span *ngIf="notification.previewText">: {{notification.previewText}}</span>
+        <span *ngIf="notification.previewText" [innerHTML]="notification.previewText | tagToLink | async"></span>
         <!-- If post doesn't have caption, show dot -->
         <span *ngIf="!notification.previewText">.</span>
       </div>
@@ -61,10 +61,10 @@
         </span>
         
         <!-- Action -->
-        <span> {{ 'commentedOnYourPost' | translate }}</span>
+        <span> {{ 'commentedOnYourPost' | translate }}{{notification.previewText ? ': ' : ''}}</span>
 
         <!-- if has comment.text(previewText), show : comment.text -->
-        <span *ngIf="notification.previewText">: {{notification.previewText}}</span>
+        <span *ngIf="notification.previewText" [innerHTML]="notification.previewText | tagToLink | async"></span>
         <!-- If post doesn't have caption, show dot -->
         <span *ngIf="!notification.previewText">.</span>
       </div>
@@ -99,10 +99,10 @@
         </span>
         
         <!-- Action -->
-        <span> {{ 'repliedToYourComment' | translate }}</span>
+        <span> {{ 'repliedToYourComment' | translate }}{{notification.previewText ? ': ' : ''}}</span>
   
         <!-- if has comment.text(previewText), show : comment.text -->
-        <span *ngIf="notification.previewText">: {{notification.previewText}}</span>
+        <span *ngIf="notification.previewText" [innerHTML]="notification.previewText | tagToLink | async"></span>
         <!-- If post doesn't have caption, show dot -->
         <span *ngIf="!notification.previewText">.</span>
       </div>

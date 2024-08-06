@@ -176,15 +176,21 @@
      </div>
   </header>
   
-  <div class="mt-6 border-top-1 border-gray-300 flex justify-content-center align-items-center">
-    <div (click)="isVisibleChooseViewMode = true" title="View mode" class="py-3 border-top-1 flex justify-content-center align-items-center cursor-pointer">
-      <i class="pi pi-table mr-2" style="font-size: 1rem"></i>
+  <div class="border-top-1 border-gray-300 mt-6 flex justify-content-center align-items-center gap-4">
+    <!-- POSTS -->
+    <div (click)="selectTab(0)" [ngStyle]="{'border-top': selectedTab == 0 ? '1px solid' : ''}" title="View mode" class="transition-duration-200 py-3 flex justify-content-center align-items-center cursor-pointer">
+      <i class="pi pi-table mr-1" style="font-size: 1rem"></i>
       <span class="text-xs font-semibold uppercase">{{'posts' | translate}}</span>
+    </div>
+    <!-- COLLECTIONS -->
+    <div (click)="selectTab(1)" [ngStyle]="{'border-top': selectedTab == 1 ? '1px solid' : ''}" class="transition-duration-200 py-3 flex justify-content-center align-items-center cursor-pointer">
+      <i class="pi pi-objects-column mr-1" style="font-size: 1rem"></i>
+      <span class="text-xs font-semibold uppercase">{{'collections' | translate}}</span>
     </div>
   </div>
 
   <!-- Post list -->
-  <div class="content">
+  <div [ngClass]="{'hidden': selectedTab != 0}" class="content">
     <app-post-list 
       [userProfileId]="profileId"
       [currentUserId]="currentUserId"
@@ -192,6 +198,13 @@
       [sortMode]="sortMode"
       (showPostDetailEvent)="handleShowPostDetail(true, $event)">
     </app-post-list>
+  </div>
+  <!-- Collection list -->
+  <div [ngClass]="{'hidden': selectedTab != 1}" class="content">
+    <app-collection-grid 
+      [userProfileId]="profileId"
+      [currentUserId]="currentUserId">
+    </app-collection-grid>
   </div>
 </main>
 

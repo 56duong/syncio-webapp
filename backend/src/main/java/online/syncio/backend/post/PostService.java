@@ -81,7 +81,7 @@ public class PostService {
 
 
     @Transactional
-    public ResponseEntity<?> create (final CreatePostDTO createPostDTO) throws IOException {
+    public PostDTO create (final CreatePostDTO createPostDTO) throws IOException {
         Post post = new Post();
 
         //Upload image
@@ -90,7 +90,7 @@ public class PostService {
 
         if (files != null && !files.isEmpty()) {
             if (files.size() > 6) {
-                return ResponseEntity.badRequest().body("You can upload a maximum of 6 images");
+                throw new AppException(HttpStatus.PAYLOAD_TOO_LARGE, "Maximum 6 images allowed", null);
             }
 
             for (MultipartFile file : files) {
@@ -161,7 +161,7 @@ public class PostService {
         post.setFlag(createPostDTO.getFlag());
 
         Post savedPost = postRepository.save(post);
-        return ResponseEntity.ok(savedPost.getId());
+        return postMapper.mapToDTO(savedPost, new PostDTO());
     }
 
 

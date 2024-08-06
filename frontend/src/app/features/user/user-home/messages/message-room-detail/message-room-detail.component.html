@@ -9,18 +9,18 @@
   <p-divider></p-divider>
 
   <!-- Change group name -->
-  <div *ngIf="messageRoom.group" class="flex align-items-center justify-content-between py-4 px-3">
+  <div *ngIf="messageRoom.group && isAdmin" class="flex align-items-center justify-content-between py-4 px-3">
     <p>{{ 'changeGroupName' | translate }}</p>
     <p-button (click)="isVisibleChangeGroupName = true" [label]="'change' | translate" severity="my-custom-secondary"></p-button>
   </div>
   
-  <p-divider></p-divider>
+  <p-divider *ngIf="isAdmin"></p-divider>
 
   <!-- Message room members -->
   <div class="py-4 flex flex-column flex-1 overflow-hidden">
     <div class="flex justify-content-between align-items-center mb-3 px-3">
       <p>{{ 'members' | translate }}</p>
-      <span *ngIf="messageRoom.group" 
+      <span *ngIf="messageRoom.group && isAdmin" 
         (click)="isVisibleAddPeople = true" 
         class="text-primary cursor-pointer font-semibold">
         {{ 'addPeople' | translate }}
@@ -35,12 +35,12 @@
           <app-avatar [userId]="member.userId" [width]="48"></app-avatar>
           <!-- username and is admin -->
           <div class="flex flex-column gap-2">
-            <p [title]="member.username" class="my-0 line-clamp" style="word-break: break-word;">{{member.username}}</p>
+            <p [title]="member.username ? member.username : (member.userId || '' | userIdToName | async)" class="my-0 line-clamp" style="word-break: break-word;">{{member.username ? member.username : (member.userId || '' | userIdToName | async)}}</p>
             <p *ngIf="member.admin" class="text-gray-500 my-0 text-sm">{{ 'admin' | translate }}</p>
           </div>
           <!-- 3 dots -->
-          <i *ngIf="messageRoom.group && member.userId !== currentUser.id && member.userId !== messageRoom.createdBy" 
-            (click)="isVisibleEditMember = true; selectedMember = member;"
+          <i *ngIf="messageRoom.group && member.userId !== currentUser.id && member.userId !== messageRoom.createdBy && isAdmin" 
+            (click)="selectMemberToEdit(member)"
             class="pi pi-ellipsis-v ml-auto text-gray-700 cursor-pointer" 
             style="font-size: 1rem"></i>
         </div>

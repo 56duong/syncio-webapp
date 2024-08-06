@@ -139,12 +139,11 @@ export class CreatePostComponent {
     }
 
     this.postService.createPost(formData).subscribe({
-      next: (response: any) => {
+      next: (response) => {
         this.loadingService.hide();
         
-        post.id = response.body;
+        post.id = response.id;
         post.createdBy = this.currentUserId;
-        this.postService.setNewPostCreated(post);
 
         // send notification to tagged users
         if(taggedUserIds.length > 0) {

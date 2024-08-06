@@ -93,6 +93,8 @@ export class ProfileComponent implements OnInit {
     { id: 'asc', label: this.translateService.instant('oldest'), value: 'list', icon: 'pi pi-arrow-down' }
   ];
 
+  selectedTab: number = 0;
+
   constructor(
     private notificationService: NotificationService,
     private userService: UserService,
@@ -339,4 +341,13 @@ export class ProfileComponent implements OnInit {
       },
     });
   }
+
+  
+  selectTab(tab: number) {
+    if(this.selectedTab === tab && tab === 0) {
+      this.isVisibleChooseViewMode = true;
+    }
+    this.selectedTab = tab;
+  }
+
 }

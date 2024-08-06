@@ -11,6 +11,7 @@ import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messageroommember.MessageRoomMember;
 import online.syncio.backend.notification.Notification;
 import online.syncio.backend.post.Post;
+import online.syncio.backend.postcollection.PostCollection;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.story.Story;
 import online.syncio.backend.storyview.StoryView;
@@ -150,6 +151,10 @@ public class User implements UserDetails {
 //    UserSetting
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private UserSetting userSetting;
+
+//    Collection
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
+    private Set<PostCollection> postCollections;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

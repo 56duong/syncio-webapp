@@ -72,6 +72,7 @@
   "viewReplies": "Xem câu trả lời",
   "addAComment": "Thêm bình luận",
   "postComment": "Đăng",
+  "saveToCollection": "Lưu vào bộ sưu tập",
 
 
   "DATETIME-----------------------------------------------------------------": "",
@@ -192,6 +193,15 @@
   "removeFromCloseFriends": "Xóa khỏi bạn thân",
   "remove": "Xóa",
   "avatarUpdatedSuccessfully": "Avatar updated successfully",
+  "collections": "Bộ sưu tập",
+  "newCollection": "Bộ sưu tập mới",
+  "uploadImage": "Tải ảnh lên",
+  "done": "Xong",
+  "collectionCreatedSuccessfully": "Tạo bộ sưu tập thành công",
+  "updateCollectionSuccessfully": "Cập nhật bộ sưu tập thành công",
+  "collectionImageDeletedSuccessfully": "Xóa ảnh của bộ sưu tập thành công",
+  "noPostsAddedToCollectionYet": "Chưa có bài viết nào được thêm vào bộ sưu tập",
+  "editCollection": "Chỉnh sửa bộ sưu tập",
 
 
   "SETTING-----------------------------------------------------------------": "",

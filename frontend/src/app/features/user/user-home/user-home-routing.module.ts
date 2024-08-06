@@ -10,6 +10,7 @@ import { PostDetailComponent } from 'src/app/shared/components/post-detail/post-
 import { authGuard } from 'src/app/core/guards/auth.guard';
 import { RoleEnum } from 'src/app/core/interfaces/user';
 import { SettingComponent } from './setting/setting.component';
+import { CollectionDetailComponent } from 'src/app/shared/components/collection-detail/collection-detail.component';
 
 const routes: Routes = [
   {
@@ -56,6 +57,12 @@ const routes: Routes = [
     data: { requiredRoles: [RoleEnum.USER] },
     loadChildren: () =>
       import('./setting/setting.module').then((m) => m.SettingModule),
+  },
+  {
+    path: 'profile/:userId/:collectionId',
+    component: CollectionDetailComponent,
+    canActivate: [authGuard],
+    data: { requiredRoles: [RoleEnum.USER, RoleEnum.ADMIN] },
   },
 ];
 
