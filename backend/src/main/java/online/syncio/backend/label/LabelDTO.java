@@ -13,7 +13,6 @@ public class LabelDTO {
         @NotNull
         private String name;
 
-        @NotNull
         private String description;
 
         @NotNull

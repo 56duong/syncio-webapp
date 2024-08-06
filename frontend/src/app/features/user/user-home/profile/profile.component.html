@@ -20,7 +20,7 @@
         <!-- Username -->
         <!-- <h1 class="font-normal text-2xl my-0 mr-3">{{ userProfile.username }}</h1> -->
         <app-username-label 
-          [userId]="currentUserId"
+          [userId]="userProfile.id"
           [username]="userProfile.username"
           [fontSize]="'1.5rem'"
           [color]="''">
@@ -101,7 +101,7 @@
         <div class="flex align-items-center gap-3">
           <!-- Username -->
           <app-username-label 
-            [userId]="currentUserId"
+            [userId]="userProfile.id"
             [username]="userProfile.username"
             [fontSize]="'1.5rem'"
             [color]="''">
