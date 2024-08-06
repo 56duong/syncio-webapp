@@ -146,7 +146,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of("/welcome-page", "GET"),
 
                 // Get URL Label
-                Pair.of(String.format("%s/user-label-infos/labelURL", apiPrefix), "GET")
+                Pair.of(String.format("%s/user-label-infos/labelURL", apiPrefix), "GET"),
           
                 //swagger
                 Pair.of("/api-docs", "GET"),
