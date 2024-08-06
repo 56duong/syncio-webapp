@@ -17,14 +17,16 @@ public class LabelResponseDTO {
     private String labelURL;
     private StatusEnum status;
     private boolean isPurcharse;
+    private int quantitySold;
 
-    public LabelResponseDTO(Label label, boolean isPurcharse) {
+    public LabelResponseDTO(Label label, boolean isPurcharse, int quantitySold) {
         this.id = label.getId();
         this.name = label.getName();
         this.price = label.getPrice();
         this.labelURL = label.getLabelURL();
         this.status = label.getStatus();
         this.isPurcharse = isPurcharse;
+        this.quantitySold = quantitySold;
     }
 
     public String getLabelURL() {

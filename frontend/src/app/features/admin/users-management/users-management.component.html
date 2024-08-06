@@ -58,10 +58,12 @@
             <ng-template pTemplate="body" let-user>
                 <tr [pSelectableRow]="user">
                     <td>
-                        <app-username-label [userId]="user.id"
-                        [fontSize]="'16px'"
-                        [color]="''">
-                      </app-username-label>
+                        <app-username-label 
+                            [userId]="user.id"
+                            [username]="user.username"
+                            [fontSize]=""
+                            [color]="''">
+                        </app-username-label>
                     </td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.createdDate | date : "HH:mm:ss dd/MM/yyyy" }}</td>

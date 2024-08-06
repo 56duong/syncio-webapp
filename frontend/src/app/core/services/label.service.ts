@@ -38,10 +38,10 @@ export class LabelService {
         return this.http.get<LabelResponse[]>(`${this.apiURL}/buy`, { params });
     }
 
-    getLabelsUserPurchased(user_id: string): Observable<LabelResponse[]> {
-        const params = new HttpParams().set('user_id', user_id);
-        return this.http.get<LabelResponse[]>(`${this.apiURL}/buyed`, { params });
-    }
+    // getLabelsUserPurchased(user_id: string): Observable<LabelResponse[]> {
+    //     const params = new HttpParams().set('user_id', user_id);
+    //     return this.http.get<LabelResponse[]>(`${this.apiURL}/buyed`, { params });
+    // }
 
     getLabel(id: string): Observable<Label> {
         const url = `${this.apiURL}/${id}`;

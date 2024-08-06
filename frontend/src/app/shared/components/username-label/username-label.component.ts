@@ -23,29 +23,28 @@ export class UsernameLabelComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if (this.userId){
-      this.id = this.userId;
-      this.userLabelInfoService.getLabelURL(this.userId).subscribe({
-        next: (resp) => {
-          if (resp) {
-            this.gifUrl = resp;
-          } else {
-            this.gifUrl = undefined; // gifUrl là undefined nếu resp là null
-          }
-        },
-        error: (error) => {
-          this.gifUrl = undefined; // gifUrl là undefined nếu có lỗi
-        }
-      });
+    this.getUrlLabel();
 
-      this.labelUpdateService.currentGifUrl.subscribe((gifUrl) => {
-        if (gifUrl) {
-          this.gifUrl = gifUrl;
-        } else {
-          this.gifUrl = undefined;
-        }
-      });
+    this.labelUpdateService.currentGifUrl.subscribe(() => {
+      this.getUrlLabel();
+    });
+  }
+
+  getUrlLabel(){
+    if (!this.userId) {
+      console.warn('UserId is not provided or is null');
+      return; // Không thực hiện bất kỳ hành động nào nếu userId là null hoặc undefined
     }
-    
+
+    this.id = this.userId;
+    this.userLabelInfoService.getLabelURL(this.userId).subscribe({
+      next: (resp) => {
+        this.gifUrl = resp ? resp : undefined;
+      },
+      error: (error) => {
+        console.error('Error fetching label URL', error);
+        this.gifUrl = undefined; // gifUrl là undefined nếu có lỗi
+      }
+    });
   }
 }
