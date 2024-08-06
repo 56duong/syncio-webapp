@@ -5,6 +5,9 @@ import { Post } from '../interfaces/post';
 import { environment } from 'src/environments/environment';
 import {map} from "rxjs/operators";
 import { EngagementMetricsDTO } from '../interfaces/engagement-metrics';
+import { CompatClient, IMessage, Stomp } from '@stomp/stompjs';
+import * as SockJS from 'sockjs-client';
+import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,9 +16,12 @@ import { EngagementMetricsDTO } from '../interfaces/engagement-metrics';
 export class PostService {
   private apiURL = environment.apiUrl + 'api/v1/posts';
 
-  private newPostCreated = new BehaviorSubject<any>(null); // Observable to notify the FeedComponent to add the new post to the top of the feed.
   private postReported = new BehaviorSubject<any>(null); // Observable to notify the FeedComponent to add the new post to the top of the feed.
-  constructor(private http: HttpClient) {}
+  
+  constructor(
+    private http: HttpClient,
+    private tokenService: TokenService
+  ) {}
 
   // new - load 10 posts at a time
   getPosts(pageNumber: number, pageSize: number): Observable<Post[]> {
@@ -154,32 +160,8 @@ export class PostService {
    * @param post
    * @returns id of the created post.
    */
-  createPost(formData: FormData): Observable<string> {
-    return this.http.post<string>(this.apiURL, formData);
-  }
-
-  /**
-   * Set the new post created to notify the FeedComponent to add the new post to the top of the feed.
-   * @param post - The post object.
-   */
-  setNewPostCreated(post: any) {
-    this.newPostCreated.next(post);
-  }
-
-  /**
-   * Get the new post created observable.
-   * @returns the new post created observable.
-   * @example
-   * this.postService.getNewPostCreated().subscribe({
-   *   next: (post) => {
-   *    if (post) {
-   *     this.posts.unshift(post);
-   *    }
-   *   }
-   * })
-   */
-  getNewPostCreated(): Observable<any> {
-    return this.newPostCreated.asObservable();
+  createPost(formData: FormData): Observable<Post> {
+    return this.http.post<Post>(this.apiURL, formData);
   }
 
   getEngagementMetrics(days: number): Observable<EngagementMetricsDTO> {
@@ -221,5 +203,53 @@ export class PostService {
     const url = `${this.apiURL}/user-posts/${userId}`;
     return this.http.get<any>(url, { params });
   }
+
+
+
+  /* ----------------------- NEW POST REAL TIME SECTION ----------------------- */
+
+  private webSocketURL = environment.apiUrl + 'live'; // WebSocket URL with 'live' is the endpoint for the WebSocket configuration in the backend. In WebSocketConfig.java, the endpoint is '/live'.
+  /** WebSocket client for new post. */
+  private stompClientNewPost: CompatClient = {} as CompatClient;
+  /** Subscription for new post. */
+  private newPostSubscription: any;
+  /** BehaviorSubject of Post type. You can know when a new post is received. */
+  private newPostSubject: BehaviorSubject<Post> = new BehaviorSubject<Post>({});
+
+  connectWebSocketNewPost() {
+    const socket = new SockJS(this.webSocketURL);
+    this.stompClientNewPost = Stomp.over(socket);
+
+    this.stompClientNewPost.connect({id: this.tokenService.extractUserIdFromToken()}, () => {    
+      this.newPostSubscription = this.stompClientNewPost.subscribe(`/user/queue/newPost`, (messageContent: IMessage) => {
+        this.newPostSubject.next(JSON.parse(messageContent.body));
+      }),
+      (error: any) => {
+        console.error(error);
+      }
+    });
+  }
+
+
+  /**
+   * Get the new post observable.
+   * This observable will emit new post whenever a new post is received.
+   * Remember to call connectWebSocketNewPost() before calling this method.
+   * @returns 
+   */
+  getNewPostObservable(): Observable<Post> {
+    return this.newPostSubject.asObservable();
+  }
+
+
+  disconnectNewPost() {
+    if(this.newPostSubscription) this.newPostSubscription.unsubscribe();
+    if(Object.keys(this.stompClientNewPost).length) {
+      this.stompClientNewPost.deactivate();
+      this.stompClientNewPost.disconnect();
+    }
+  }
+
+  /* -------------------- END - NEW POST REAL TIME SECTION -------------------- */
 
 }

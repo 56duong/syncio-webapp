@@ -35,33 +35,23 @@ export class FeedComponent {
 
   audioUrl: string | null = null;
 
+  currentUserId: string = this.tokenService.extractUserIdFromToken();
+
   constructor(
     private postService: PostService,
     private tokenService: TokenService
   ) {}
 
+
   ngOnInit() {
     this.getPosts();
-
-    // Subscribe to the new post created event to add the new post to the top of the feed.
-    this.newPostCreatedSubscription = this.postService.getNewPostCreated().subscribe((post) => {
-      if(!post) return;
-
-      // check if this post is created by the current user
-      if(post.createdBy === this.tokenService.extractUserIdFromToken()) {
-        this.isReceivedNewPost = true;
-      }
-      else {
-        // check if this post is from the user i followings
-        this.postService.isPostCreatedByUserIFollow(post.id).subscribe((isFollowed) => {
-          if (isFollowed) {
-            this.isReceivedNewPost = true;
-            this.newPostCreatedSubscription.unsubscribe();
-          }
-        });
-      }
-    });
+    
+    if(this.currentUserId) {
+      this.postService.connectWebSocketNewPost();
+      this.getNewPostObservable();
+    }
   }
+
 
   ngAfterViewInit() {
     // Create an observer to watch the end of the feed element.
@@ -77,12 +67,31 @@ export class FeedComponent {
     this.observer.observe(this.loadingElement.nativeElement);
   }
 
+
   ngOnDestroy() {
+    this.postService.disconnectNewPost();
     this.newPostCreatedSubscription.unsubscribe();
     // Unobserve the end of the feed element when the component is destroyed.
     if (this.showLoading && this.observer) {
       this.observer.unobserve(this.loadingElement.nativeElement);
     }
+  }
+
+
+  /**
+   * When receive a new post.
+   */
+  getNewPostObservable() {
+    this.newPostCreatedSubscription = this.postService.getNewPostObservable().subscribe({
+      next: (post) => {
+        if (Object.keys(post).length !== 0) {
+          this.isReceivedNewPost = true;
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
 
   /**

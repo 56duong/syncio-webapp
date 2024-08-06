@@ -40,6 +40,7 @@ export class MessageRoomDetailComponent {
     return this.messageRoom?.members?.map(m => m.userId);
   } // list of user ids in the message room
 
+  editMemberDialogItems: DialogItem[] = [];
   _editMemberDialogItems: DialogItem[] = [
     { 
       label: this.translateService.instant('removeFromGroup'),
@@ -49,7 +50,38 @@ export class MessageRoomDetailComponent {
     }
   ]; // Dialog items for the edit member dialog
 
-  get editMemberDialogItems(): DialogItem[] {
+  isVisibleLeaveChat: boolean = false; // Indicates if the leave chat dialog is visible
+  leaveChatDialogItems: any = [
+    { 
+      label: this.translateService.instant('leaveChat'),
+      color: 'red', 
+      bold: 7,
+      action: () => this.leaveChat()
+    },
+    { 
+      label: this.translateService.instant('cancel'),
+      action: () => this.isVisibleLeaveChat = false
+    }
+  ]; // Dialog items for the leave chat dialog
+
+  get isAdmin(): boolean {
+    return this.messageRoom?.members?.find(m => m.userId === this.currentUser.id && m.admin) ? true : false;
+  } // Check if the current user is admin of the message room
+
+  constructor(
+    private messageRoomService: MessageRoomService,
+    private messageRoomMemberService: MessageRoomMemberService,
+    private toastService: ToastService,
+    private translateService: TranslateService,
+    private redirectService: RedirectService
+  ) { }
+
+  ngOnInit() {
+    this.newMessageRoomName = this.messageRoom.name || '';
+    this.updateEditMemberDialogItems();
+  }
+
+  updateEditMemberDialogItems() {
     var items: DialogItem[] = this._editMemberDialogItems;
     if(!this.selectedMember.admin) {
       items = [
@@ -69,7 +101,7 @@ export class MessageRoomDetailComponent {
         }
       ];
     }
-    return [
+    this.editMemberDialogItems = [
       ...items,
       { 
         label: this.translateService.instant('cancel'),
@@ -78,30 +110,10 @@ export class MessageRoomDetailComponent {
     ];
   }
 
-  isVisibleLeaveChat: boolean = false; // Indicates if the leave chat dialog is visible
-  leaveChatDialogItems: any = [
-    { 
-      label: this.translateService.instant('leaveChat'),
-      color: 'red', 
-      bold: 7,
-      action: () => this.leaveChat()
-    },
-    { 
-      label: this.translateService.instant('cancel'),
-      action: () => this.isVisibleLeaveChat = false
-    }
-  ]; // Dialog items for the leave chat dialog
-
-  constructor(
-    private messageRoomService: MessageRoomService,
-    private messageRoomMemberService: MessageRoomMemberService,
-    private toastService: ToastService,
-    private translateService: TranslateService,
-    private redirectService: RedirectService
-  ) { }
-
-  ngOnInit() {
-    this.newMessageRoomName = this.messageRoom.name || '';
+  selectMemberToEdit(member: MessageRoomMember) {
+    this.updateEditMemberDialogItems();
+    this.isVisibleEditMember = true; 
+    this.selectedMember = member;
   }
 
   updateGroupName() {
@@ -125,6 +137,7 @@ export class MessageRoomDetailComponent {
 
     this.messageRoomMemberService.addMessageRoomMembers(this.messageRoom.id, userIds).subscribe({
       next: (messageRoomMembers) => {
+        console.log(messageRoomMembers);
         this.messageRoom.members = [...(this.messageRoom.members || []), ...messageRoomMembers];
         this.addPeopleEvent.emit(userIds.join(', '));
         this.isVisibleAddPeople = false;

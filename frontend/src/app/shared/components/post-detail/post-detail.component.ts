@@ -41,6 +41,8 @@ export class PostDetailComponent {
   dialogVisible: boolean = false;
   dialogItems: any = [];
 
+  collectionVisible: boolean = false;
+
   constructor(
     private postService: PostService,
     private commentService: CommentService,
@@ -58,23 +60,6 @@ export class PostDetailComponent {
   }
 
   ngOnInit() {
-    this.dialogItems = [
-      { 
-        label: this.translateService.instant('report'), 
-        bold: 7,
-        color: 'red', 
-        action: () => this.currentUserId ? this.reportVisible = true : this.redirectService.needLogin()
-      },
-      { 
-        label: this.translateService.instant('copyLink'),
-        action: () => this.copyLink()
-      },
-      { 
-        label: this.translateService.instant('cancel'),
-        action: () => this.dialogVisible = false
-      }
-    ];
-
     this.currentUserId = this.tokenService.extractUserIdFromToken();
 
     // Get the post id from the route if it is not set. Mean the user is viewing the post directly.
@@ -94,6 +79,7 @@ export class PostDetailComponent {
             next: (post) => {
               this.post = { ...post};
               this.post.photos = this.post.photos;
+              this.updateDialogItems();
             },
             error: (error) => {
               console.log(error);
@@ -106,17 +92,40 @@ export class PostDetailComponent {
       setTimeout(() => {
         this.post.photos = this.post.photos;
       }, 0);
+      this.updateDialogItems();
     }
 
     // If user is logged in, connect to the WebSocket for notifications.
     if(this.currentUserId) {
       this.notificationService.connectWebSocket(this.currentUserId);
     }
-    
   }
 
   ngOnDestroy() {
     if(this.currentUserId) this.notificationService.disconnect();
+  }
+
+  updateDialogItems() {
+    this.dialogItems = [
+      { 
+        label: this.translateService.instant('report'), 
+        bold: 7,
+        color: 'red', 
+        action: () => this.currentUserId ? this.reportVisible = true : this.redirectService.needLogin()
+      },
+      { 
+        label: this.translateService.instant('copyLink'),
+        action: () => this.copyLink()
+      },
+      ...(this.post.createdBy === this.currentUserId ? [{ 
+        label: this.translateService.instant('saveToCollection'),
+        action: () => this.collectionVisible = true
+      }] : []),
+      { 
+        label: this.translateService.instant('cancel'),
+        action: () => this.dialogVisible = false
+      }
+    ];
   }
 
   closeDialog() {
@@ -183,6 +192,17 @@ export class PostDetailComponent {
             id: id,
             createdDate: 'Just now',
           };
+
+          // send notification to owner of the parent comment
+          if (this.ownerParentCommentId != this.currentUserId) {
+            this.notificationService.sendNotification({
+              targetId: this.post.id,
+              actorId: this.currentUserId,
+              actionType: ActionEnum.COMMENT_REPLY,
+              redirectURL: `/post/${this.post.id}?commentId=${this.comment.parentCommentId}`,
+              recipientId: this.ownerParentCommentId,
+            });
+          }
 
           if (this.comment.parentCommentId) {
             // make change to this to let child component know that a new reply has been added

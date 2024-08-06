@@ -64,9 +64,7 @@ export class ImageSearchComponent {
             this.translateService.instant('success'), 
             this.translateService.instant('imageSearchUpdatedSuccessfully')
           );
-          setTimeout(() => {
-            this.redirectService.reloadPage();
-          }, 1500);
+          this.currentDateTime = Date.now();
         },
         error: (error) => {
           console.error('Error updating image search:', error);

@@ -1,0 +1,27 @@
+<div *ngIf="collection.id" class="p-2">
+  <!-- back to profile -->
+  <div [routerLink]="['/profile', userId]" class="text-gray-500 cursor-pointer mb-2">< {{userId | userIdToName | async}}</div>
+  
+  <!-- collection detail -->
+  <div class="flex flex-column justify-content-center align-items-center gap-3 m-auto col-8" style="width: min(470px, 100vw);">
+    <img [src]="collection.imageUrl | constructImageUrl"
+      onerror="this.style.display='none'; this.parentElement.style.width='min(470px, 100vw)'; this.nextElementSibling.style.textAlign='center';"
+      class="cursor-pointer mt-2"
+      style="object-fit: cover; display: block; aspect-ratio: 1/1; width: 50%; margin: auto;" />
+    <div class="text-center">
+      <h1 class="mb-0 mt-2">{{collection.name}}</h1>
+      <p class="mt-2">{{collection.description}}</p>
+    </div>
+  </div>
+</div>
+
+<p-divider></p-divider>
+
+<!-- list of posts -->
+<article class="w-full">
+  <div *ngIf="posts.length === 0" class="w-full text-center">{{'noPostsAddedToCollectionYet' | translate}}.</div>
+
+  <ng-container *ngFor="let post of posts">
+    <app-post [post]="post"></app-post>
+  </ng-container>
+</article>

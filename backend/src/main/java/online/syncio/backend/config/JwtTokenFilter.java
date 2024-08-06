@@ -85,22 +85,26 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
              
 
-//
-//                Pair.of(String.format("%s/healthcheck/health", apiPrefix), "GET"),
-//                Pair.of(String.format("%s/actuator/**", apiPrefix), "GET"),
-//
+
+                Pair.of(String.format("%s/healthcheck/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/actuator/**", apiPrefix), "GET"),
+
                 Pair.of(String.format("%s/roles**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/register", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/refreshToken", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/confirm-user-register", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/reset_password", apiPrefix), "POST"),
+                Pair.of(String.format("%s/users/forgot_password", apiPrefix), "POST"),
 
                 // Post
                 Pair.of(String.format("%s/posts/images/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/posts/", apiPrefix), "GET"),
                 Pair.of(String.format("%s/posts/feed", apiPrefix), "POST"),
                 Pair.of(String.format("%s/posts/details/**", apiPrefix), "GET"),
+
+                // PostCollection
+                Pair.of(String.format("%s/postcollections/user/**", apiPrefix), "GET"),
 
                 // Like
                 Pair.of(String.format("%s/likes/count/**", apiPrefix), "GET"),
@@ -113,6 +117,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
                 // User
                 Pair.of(String.format("%s/users/**/username", apiPrefix), "GET"),
+                Pair.of(String.format("%s/users/username/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/search/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/username/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/logout/**", apiPrefix), "POST"),
@@ -141,7 +146,19 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of("/welcome-page", "GET"),
 
                 // Get URL Label
-                Pair.of(String.format("%s/user-label-infos/labelURL", apiPrefix), "GET")
+                Pair.of(String.format("%s/user-label-infos/labelURL", apiPrefix), "GET"),
+          
+                //swagger
+                Pair.of("/api-docs", "GET"),
+                Pair.of("/api-docs/**", "GET"),
+                Pair.of("/swagger-resources", "GET"),
+                Pair.of("/swagger-resources/**", "GET"),
+                Pair.of("/configuration/ui", "GET"),
+                Pair.of("/configuration/security", "GET"),
+                Pair.of("/swagger-ui/**", "GET"),
+                Pair.of("/swagger-ui.html", "GET"),
+                Pair.of("/swagger-ui/index.html", "GET")
+          
         );
 
         String requestPath = request.getServletPath();

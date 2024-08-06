@@ -20,6 +20,8 @@ import { UsernameLabelComponent } from './components/username-label/username-lab
 import { TranslateModule } from '@ngx-translate/core';
 import { LoadingComponent } from './components/loading/loading.component';
 import { UpdateIpComponent } from './components/update-ip/update-ip.component';
+import { CollectionListComponent } from './components/collection-list/collection-list.component';
+import { CollectionDetailComponent } from './components/collection-detail/collection-detail.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,9 @@ import { UpdateIpComponent } from './components/update-ip/update-ip.component';
     AvatarComponent,
     UsernameLabelComponent,
     LoadingComponent,
-    UpdateIpComponent
+    UpdateIpComponent,
+    CollectionListComponent,
+    CollectionDetailComponent
   ],
   imports: [
     PickerComponent,
@@ -57,7 +61,8 @@ import { UpdateIpComponent } from './components/update-ip/update-ip.component';
     VoiceRecorderDialogComponent,
     AvatarComponent,
     UsernameLabelComponent,
-    LoadingComponent
+    LoadingComponent,
+    CollectionListComponent
   ],
 })
 export class SharedModule {}

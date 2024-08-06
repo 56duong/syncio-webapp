@@ -128,3 +128,10 @@
   (displayChange)="hideDialog()">
 </app-global-dialog>
 
+<app-collection-list *ngIf="post.id && post.createdBy === currentUserId"
+  [postId]="post.id"
+  [currentUserId]="currentUserId"
+  [isVisible]="collectionVisible"
+  (closeDialogEvent)="collectionVisible = false">
+</app-collection-list>
+
