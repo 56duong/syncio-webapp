@@ -220,7 +220,7 @@ public class UserService {
 
     public String generateQRCodeAndUploadToFirebase(String text, int width, int height) throws WriterException, IOException {
 
-        String baseUrl = Constants.BACKEND_URL + "/api/v1/userfollows/toggle-follow/";
+        String baseUrl = Constants.FRONTEND_URL + "/profile/";
         String fullUrl = baseUrl + text;
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
