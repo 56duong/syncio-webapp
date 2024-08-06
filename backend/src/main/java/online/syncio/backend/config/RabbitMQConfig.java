@@ -24,10 +24,9 @@ import org.springframework.web.context.support.GenericWebApplicationContext;
 public class RabbitMQConfig implements RabbitListenerConfigurer {
     @Override
     public void configureRabbitListeners(RabbitListenerEndpointRegistrar registrar) {
-
     }
 
-        public static final String EXCHANGE = "imageVerificationExchange";
+    public static final String EXCHANGE = "imageVerificationExchange";
     public static final String ROUTING_KEY = "imageVerify";
 
     @Autowired
@@ -45,13 +44,15 @@ public class RabbitMQConfig implements RabbitListenerConfigurer {
     @Value("${spring.rabbitmq.password}")
     private String rabitPassword;
 
-
+    @Value("${spring.rabbitmq.virtual-host}")
+    private String virtual_host;
 
 
     private CachingConnectionFactory getCachingConnectionFactoryCommon() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory(this.rabitHost, this.rabitPort);
         connectionFactory.setUsername(this.rabitUsername);
         connectionFactory.setPassword(this.rabitPassword);
+        connectionFactory.setVirtualHost(this.virtual_host);
         return connectionFactory;
     }
 
