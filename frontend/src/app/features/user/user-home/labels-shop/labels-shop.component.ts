@@ -67,7 +67,7 @@ export class LabelsShopComponent {
         },
       });
     }
-    this.sortKey = 'price';
+    this.sortKey = '';
     this.sortOptions = [
       { label: 'Price High to Low', value: '!price' },
       { label: 'Price Low to High', value: 'price' },
