@@ -76,7 +76,7 @@ public class PostCollectionController {
     public ResponseEntity<UUID> update(@Valid @RequestPart(value = "photo", required = false) MultipartFile photo,
                                        @RequestPart(value = "postCollection") PostCollectionDTO postCollectionDTO) {
         if(photo != null && !photo.isEmpty()) {
-            postCollectionService.updateImage(photo, postCollectionDTO.getId());
+            postCollectionService.updateImage(photo, postCollectionDTO.getCreatedById());
         }
         postCollectionService.update(postCollectionDTO.getCreatedById(), postCollectionDTO);
         return ResponseEntity.ok(postCollectionDTO.getId());

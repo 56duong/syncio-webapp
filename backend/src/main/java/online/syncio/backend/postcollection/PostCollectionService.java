@@ -94,15 +94,11 @@ public class PostCollectionService {
 
         // For the remaining PostCollectionDetail entities, check if they are already in the database. If not, create new ones.
         final List<PostCollection> collections = postCollectionRepository.findAllById(collectionIds);
-        if (collections.isEmpty()) {
-            return postId;
-        }
-        else {
-            // check if the current user is the creator of the collections
-            for (PostCollection collection : collections) {
-                if (!collection.getCreatedBy().getId().equals(currentUserId)) {
-                    throw new AppException(HttpStatus.UNAUTHORIZED, "User not authorized to modify this collection", null);
-                }
+
+        // check if the current user is the creator of the collections
+        for (PostCollection collection : collections) {
+            if (!collection.getCreatedBy().getId().equals(currentUserId)) {
+                throw new AppException(HttpStatus.UNAUTHORIZED, "User not authorized to modify this collection", null);
             }
         }
 
@@ -169,10 +165,10 @@ public class PostCollectionService {
     }
 
 
-    public String updateImage(MultipartFile photo, UUID collectionId) {
+    public String updateImage(MultipartFile photo, UUID createdById) {
         // check if the current user is the creator of the collection
         final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
-        if (!collectionId.equals(currentUserId)) {
+        if (!createdById.equals(currentUserId)) {
             throw new AppException(HttpStatus.UNAUTHORIZED, "User not authorized to modify this collection", null);
         }
 

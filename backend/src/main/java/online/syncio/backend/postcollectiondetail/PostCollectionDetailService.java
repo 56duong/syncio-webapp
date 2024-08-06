@@ -6,7 +6,6 @@ import online.syncio.backend.post.PostMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -15,14 +14,13 @@ import java.util.stream.Collectors;
 public class PostCollectionDetailService {
 
     private final PostCollectionDetailRepository postCollectionDetailRepository;
-    private final PostCollectionDetailMapper postCollectionDetailMapper;
     private final PostMapper postMapper;
 
-    public Set<PostDTO> findByCollectionId(final UUID collectionId) {
+    public List<PostDTO> findByCollectionId(final UUID collectionId) {
         final List<PostCollectionDetail> postCollectionDetails = postCollectionDetailRepository.findByPostCollectionIdOrderByCreatedDateDesc(collectionId);
         return postCollectionDetails.stream()
                 .map(postCollectionDetail -> postMapper.mapToDTO(postCollectionDetail.getPost(), new PostDTO()))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
 }

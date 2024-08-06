@@ -2,12 +2,11 @@
   p-toast ::ng-deep {
     .p-toast-top-right {
       top: 56px;
-      padding: 1rem;
     }
 
     .p-toast {
-      width: 100%;
-      right: auto;
+      width: calc(100% - 2rem);
+      right: 1rem;
     }
 
     .p-toast .p-toast-message .p-toast-message-content .p-toast-detail {

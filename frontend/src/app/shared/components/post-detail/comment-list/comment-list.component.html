@@ -14,7 +14,7 @@
         </app-username-label>
       </h3>
       <!-- comment text -->
-      <div (click)="handleClick($event)" class="comment-text inline" [innerHTML]="post.caption | tagToLink | async"></div>
+      <div (click)="handleClick($event)" class="comment-text inline" [innerHTML]="post.caption | tagToLink | async" style="white-space: pre-line;"></div>
       <!-- footer -->
       <div class="flex align-items-center gap-3 mt-2">
         <small class="text-gray-500 text-xs" [title]="post.createdDate == 'Just now' ? post.createdDate : post.createdDate | date: 'HH:mm:ss dd/MM/yyyy'">

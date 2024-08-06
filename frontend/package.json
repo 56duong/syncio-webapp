@@ -11,10 +11,15 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+
     "android-build": "ng build --configuration=android && npx cap sync",
+    "build-android-apk": "cd android && gradlew.bat assembleRelease",
+    "build-android-app": "npm run android-build && npm run build-android-apk",
+
     "electron": "electron .",
     "electron-build": "ng build --configuration=windows --base-href index.html && electron .",
-    "electron-pack": "electron-packager ./ Syncio --platform=win32 --ignore=\"/(node_modules|\\.angular|android|src)\" --overwrite --icon=src/assets/logo-256x256.ico --asar"
+    "electron-pack": "electron-packager ./ Syncio --platform=win32 --ignore=\"/(node_modules|\\.angular|android|src)\" --overwrite --icon=src/assets/logo-256x256.ico --asar",
+    "build-windows-app": "npm run electron-build && npm run electron-pack && node build-windows-app.js"
   },
   "private": true,
   "dependencies": {

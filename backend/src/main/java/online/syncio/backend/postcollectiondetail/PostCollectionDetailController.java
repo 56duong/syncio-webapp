@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,8 +21,8 @@ public class PostCollectionDetailController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Set<PostDTO>> findByCollectionId(@PathVariable final UUID id) {
-        final Set<PostDTO> postCollectionDTOs = postCollectionDetailService.findByCollectionId(id);
+    public ResponseEntity<List<PostDTO>> findByCollectionId(@PathVariable final UUID id) {
+        final List<PostDTO> postCollectionDTOs = postCollectionDetailService.findByCollectionId(id);
         return ResponseEntity.ok(postCollectionDTOs);
     }
 
