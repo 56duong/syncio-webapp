@@ -26,7 +26,10 @@
         <span> {{ 'likedYourPost' | translate }}</span>
 
         <!-- if post has caption(previewText), show : caption -->
-         <span *ngIf="notification.previewText">: {{notification.previewText}}</span>
+        <ng-container *ngIf="notification.previewText">
+          : 
+          <span [innerHTML]="notification.previewText | tagToLink | async"></span>
+        </ng-container>
         <!-- If post doesn't have caption, show dot -->
         <span *ngIf="!notification.previewText">.</span>
       </div>
@@ -64,7 +67,10 @@
         <span> {{ 'commentedOnYourPost' | translate }}</span>
 
         <!-- if has comment.text(previewText), show : comment.text -->
-        <span *ngIf="notification.previewText">: {{notification.previewText}}</span>
+        <ng-container *ngIf="notification.previewText">
+          : 
+          <span [innerHTML]="notification.previewText | tagToLink | async"></span>
+        </ng-container>
         <!-- If post doesn't have caption, show dot -->
         <span *ngIf="!notification.previewText">.</span>
       </div>
@@ -102,7 +108,10 @@
         <span> {{ 'repliedToYourComment' | translate }}</span>
   
         <!-- if has comment.text(previewText), show : comment.text -->
-        <span *ngIf="notification.previewText">: {{notification.previewText}}</span>
+        <ng-container *ngIf="notification.previewText">
+          : 
+          <span [innerHTML]="notification.previewText | tagToLink | async"></span>
+        </ng-container>
         <!-- If post doesn't have caption, show dot -->
         <span *ngIf="!notification.previewText">.</span>
       </div>

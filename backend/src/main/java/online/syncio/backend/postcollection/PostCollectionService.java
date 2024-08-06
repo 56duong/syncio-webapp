@@ -74,11 +74,11 @@ public class PostCollectionService {
     }
 
 
-    public Set<PostCollectionDTO> findByCreatedById(final UUID userId) {
+    public List<PostCollectionDTO> findByCreatedById(final UUID userId) {
         final List<PostCollection> posts = postCollectionRepository.findByCreatedByIdOrderByCreatedDateDesc(userId);
         return posts.stream()
                     .map(postCollection -> postCollectionMapper.mapToDTO(postCollection, new PostCollectionDTO()))
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
     }
 
 
@@ -184,20 +184,20 @@ public class PostCollectionService {
     }
 
 
-    public void update(final UUID id, final PostCollectionDTO postCollectionDTO) {
+    public void update(final UUID createdById, final PostCollectionDTO postCollectionDTO) {
         final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
         if (currentUserId == null) {
             throw new AppException(HttpStatus.UNAUTHORIZED, "User not logged in", null);
         }
         else {
             // check if the current user is the creator of the collection
-            if (!id.equals(currentUserId)) {
+            if (!createdById.equals(currentUserId)) {
                 throw new AppException(HttpStatus.UNAUTHORIZED, "User not authorized to modify this collection", null);
             }
             postCollectionDTO.setCreatedById(currentUserId);
         }
-        final PostCollection postCollection = postCollectionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(StickerGroup.class, "id", id.toString()));
+        final PostCollection postCollection = postCollectionRepository.findById(postCollectionDTO.getId())
+                .orElseThrow(() -> new NotFoundException(PostCollection.class, "id", createdById.toString()));
         postCollectionMapper.mapToEntity(postCollectionDTO, postCollection);
         postCollectionRepository.save(postCollection);
     }

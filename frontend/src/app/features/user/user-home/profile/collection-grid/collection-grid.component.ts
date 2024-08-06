@@ -37,7 +37,6 @@ export class CollectionGridComponent {
     // Reset collections when the user profile changes.
     if (changes.userProfileId && changes.userProfileId.currentValue) {
       this.getCollections();
-      console.log(this.currentUserId);
     }
   }
 

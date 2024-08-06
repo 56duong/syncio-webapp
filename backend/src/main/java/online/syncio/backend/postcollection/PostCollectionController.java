@@ -27,8 +27,8 @@ public class PostCollectionController {
 
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<Set<PostCollectionDTO>> findByCreatedById(@PathVariable final UUID id) {
-        final Set<PostCollectionDTO> postCollectionDTOs = postCollectionService.findByCreatedById(id);
+    public ResponseEntity<List<PostCollectionDTO>> findByCreatedById(@PathVariable final UUID id) {
+        final List<PostCollectionDTO> postCollectionDTOs = postCollectionService.findByCreatedById(id);
         return ResponseEntity.ok(postCollectionDTOs);
     }
 
@@ -78,7 +78,7 @@ public class PostCollectionController {
         if(photo != null && !photo.isEmpty()) {
             postCollectionService.updateImage(photo, postCollectionDTO.getId());
         }
-        postCollectionService.update(postCollectionDTO.getId(), postCollectionDTO);
+        postCollectionService.update(postCollectionDTO.getCreatedById(), postCollectionDTO);
         return ResponseEntity.ok(postCollectionDTO.getId());
     }
 

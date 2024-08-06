@@ -15,7 +15,7 @@
         class="absolute bottom-0 left-0 w-full h-full flex justify-content-start align-items-end p-3"
         style="background-image: linear-gradient(to top, rgba(108, 108, 108, 0.6) 0%, rgba(255, 255, 255, 0) 50%);">
         <!-- name -->
-        <h3 class="my-0 text-white font-normal text-3xl">{{collection.name}}</h3>
+        <h3 class="my-0 text-white font-normal collection-name">{{collection.name}}</h3>
       </div>
       <!-- edit  -->
       <span *ngIf="currentUserId === collection.createdById" (click)="editCollection(collection)" class="hidden pi pi-pen-to-square absolute top-0 right-0 p-3 cursor-pointer text-white"></span>

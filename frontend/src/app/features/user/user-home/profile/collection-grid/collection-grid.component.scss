@@ -45,3 +45,13 @@ p-divider ::ng-deep {
 .collection:hover span {
   display: block !important;
 }
+
+.collection-name {
+  font-size: 1.75rem;
+}
+
+@media (max-width: 767px) {
+  .collection-name {
+    font-size: 1.25rem;
+  }
+}
