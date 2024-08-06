@@ -15,7 +15,7 @@
           <span (click)="navigateToProfile(userFollow.actorId)" class="font-semibold cursor-pointer">
             <!-- {{ userFollow.actorUsername }} -->
             <app-username-label 
-              [userId]="userFollow.targetId"
+              [userId]="userFollow.actorId"
               [username]="userFollow.actorUsername"
               [fontSize]=""
               [fontWeight]="'bold'"

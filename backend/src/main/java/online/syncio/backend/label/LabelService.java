@@ -19,11 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -91,11 +87,36 @@ public class LabelService {
                 .map(userLabelInfo -> userLabelInfo.getLabel().getId())
                 .collect(Collectors.toSet());
 
+        // dem so
+        List<UserLabelInfo> listU = userLabelInfoRepository.findAll();
+        List<UUID> listID = listU.stream()
+                .map(b -> b.getLabel().getId())
+                .toList();
+
+        Map<UUID, Integer> countMap = new HashMap<>();
+
+        for (UUID id : listID) {
+            countMap.put(id, countMap.getOrDefault(id, 0) + 1);
+        }
+
+        // TEST IN RA KQ
+        for (Map.Entry<UUID, Integer> entry : countMap.entrySet()) {
+            System.out.println("Số " + entry.getKey() + " xuất hiện " + entry.getValue() + " lần");
+        }
+
+        Set<UUID> a = listU.stream()
+                .map(b -> b.getLabel().getId())
+                .collect(Collectors.toSet());
+
         // tao danh sach DTO de tra ve, moi DTO chua thong tin label va trang thai mua
         return labels.stream().map(
                 label -> {
                     boolean isPurcharse = purcharsedLabelIds.contains(label.getId());
-                    return new LabelResponseDTO(label, isPurcharse);
+                    int quantitySold = 0;
+                    if (countMap.containsKey(label.getId())) {
+                        quantitySold = countMap.get(label.getId());
+                    }
+                    return new LabelResponseDTO(label, isPurcharse, quantitySold);
                 }).collect(Collectors.toList());
     }
 
@@ -210,22 +231,22 @@ public class LabelService {
         return labelIds.contains(labelId);
     }
 
-    public List<LabelResponseDTO> getAllLabelUserPurchased (UUID user_id) {
-        // lay ra tat ca cac label tu db
-        List<Label> labels = labelRepository.findAll();
-
-        // lay thong tin cac label ma nguoi dung da mua
-        List<UserLabelInfo> userLabelInfos = userLabelInfoRepository.findByUserId(user_id);
-
-        // chuyen danh sach UserLabelInfo sang danh sach ID Label ma nguoi dung da mua
-        Set<UUID> purcharsedLabelIds = userLabelInfos.stream()
-                .map(userLabelInfo -> userLabelInfo.getLabel().getId())
-                .collect(Collectors.toSet());
-
-        // tao danh sach DTO de tra ve, moi DTO chua thong tin label va trang thai mua
-        return labels.stream()
-                .filter(label -> purcharsedLabelIds.contains(label.getId())) // Chỉ lấy các label có trong purchasedLabelIds
-                .map(label -> new LabelResponseDTO(label, true)) // Đánh dấu label đã mua
-                .collect(Collectors.toList());
-    }
+//    public List<LabelResponseDTO> getAllLabelUserPurchased (UUID user_id) {
+//        // lay ra tat ca cac label tu db
+//        List<Label> labels = labelRepository.findAll();
+//
+//        // lay thong tin cac label ma nguoi dung da mua
+//        List<UserLabelInfo> userLabelInfos = userLabelInfoRepository.findByUserId(user_id);
+//
+//        // chuyen danh sach UserLabelInfo sang danh sach ID Label ma nguoi dung da mua
+//        Set<UUID> purcharsedLabelIds = userLabelInfos.stream()
+//                .map(userLabelInfo -> userLabelInfo.getLabel().getId())
+//                .collect(Collectors.toSet());
+//
+//        // tao danh sach DTO de tra ve, moi DTO chua thong tin label va trang thai mua
+//        return labels.stream()
+//                .filter(label -> purcharsedLabelIds.contains(label.getId())) // Chỉ lấy các label có trong purchasedLabelIds
+//                .map(label -> new LabelResponseDTO(label, true)) // Đánh dấu label đã mua
+//                .collect(Collectors.toList());
+//    }
 }

@@ -75,6 +75,8 @@ export class LabelsShopComponent {
       { label: 'Z-A', value: '!name' },
       { label: 'Have owned', value: '!purcharse' },
       { label: 'Not owned', value: 'purcharse' },
+      { label: 'High Quantity Sold', value: '!quantitySold' },
+      { label: 'Low Quantity Sold', value: 'quantitySold' }
     ];
   }
 

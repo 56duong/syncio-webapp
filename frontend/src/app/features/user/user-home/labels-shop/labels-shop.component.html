@@ -36,7 +36,10 @@
             
             <div>
               <div class="text-lg font-bold mb-2">{{ label.name }}</div>
-              <span class="text-gray-500 font-semibold" style="font-size: 0.925rem;">{{ label.price + " VND" }}</span>
+              <div class="flex justify-content-between">
+                <span class="text-gray-500 font-semibold" style="font-size: 0.925rem;">{{ label.price + " VND" }}</span>
+                <span class="font-semibold" style="font-size: 0.925rem;">{{ "Đã bán " + label.quantitySold}}</span>
+              </div>
             </div>
             
             <div class="flex justify-content-between gap-2">
