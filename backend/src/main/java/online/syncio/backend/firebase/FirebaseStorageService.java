@@ -25,6 +25,7 @@ public class FirebaseStorageService {
     @Value("${firebase.storage.bucket.url}")
     private String bucketName;
 
+
     @Value("${firebase.service.account.key.path}")
     private String serviceAccount;
 

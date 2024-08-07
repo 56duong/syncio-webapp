@@ -80,14 +80,14 @@ public class UserService {
 
     public UserDTO get (final UUID id) {
         return userRepository.findById(id)
-                             .map(user -> userMapper.mapToDTO(user, new UserDTO()))
-                             .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+                .map(user -> userMapper.mapToDTO(user, new UserDTO()))
+                .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
     }
 
     public UserProfile getUserProfile (final UUID id)  {
         return userRepository.findByIdWithPosts(id)
-                             .map(user -> userMapper.mapToUserProfile(user, new UserProfile()))
-                             .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+                .map(user -> userMapper.mapToUserProfile(user, new UserProfile()))
+                .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
     }
 
     @jakarta.transaction.Transactional
@@ -143,7 +143,7 @@ public class UserService {
         // encode password
         String encodePassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(encodePassword);
-        
+
         final User user = new User();
         userMapper.mapToEntity(userDTO, user);
         return userRepository.save(user).getId();
@@ -151,7 +151,7 @@ public class UserService {
 
     public void update (final UUID id, final UserDTO userDTO) {
         final User user = userRepository.findById(id)
-                                        .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+                .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
 
         String encodePassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(encodePassword);
@@ -162,7 +162,7 @@ public class UserService {
 
     public void delete (final UUID id) {
         final User user = userRepository.findById(id)
-                                        .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+                .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
         userRepository.delete(user);
     }
 
@@ -224,60 +224,4 @@ public class UserService {
                 recentComments >= InteractionCriteria.MIN_COMMENTS;
     }
 
-
-    public String generateQRCodeAndUploadToFirebase(String text, int width, int height) throws WriterException, IOException {
-
-        String baseUrl = Constants.FRONTEND_URL + "/profile/";
-        String fullUrl = baseUrl + text;
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
-        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
-
-        BitMatrix bitMatrix = qrCodeWriter.encode(fullUrl, BarcodeFormat.QR_CODE, width, height, hints);
-
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                image.setRGB(x, y, bitMatrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF);
-            }
-        }
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(image, "png", baos);
-        byte[] imageData = baos.toByteArray();
-
-        // Upload to Firebase Storage
-        Bucket bucket = StorageClient.getInstance().bucket();
-        String fileName = "qr_codes/" + UUID.randomUUID() + ".png";
-        Blob blob = bucket.create(fileName, new ByteArrayInputStream(imageData), "image/png");
-
-        // Construct the URL in the desired format
-        String bucketName = bucket.getName();
-        String encodedFileName = java.net.URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
-        String fileUrl = "https://firebasestorage.googleapis.com/v0/b/" + bucketName + "/o/" + encodedFileName + "?alt=media";
-
-        return fileUrl;
-    }
-
-    public void saveQRcode(String userQRCode, UUID userId) {
-        userRepository.saveQRCODE(userQRCode, userId);
-       {
-
-    }
-
-
 }
-
-    public String getQrcode(UUID userId) {
-        return userRepository.findById(userId)
-                .map(User::getQrCodeUrl)
-                .orElseThrow(() -> new NotFoundException(User.class, "id", userId.toString()));
-    }
-
-
-    public UUID getUserIdByUsername(final String username) {
-        return userRepository.findUserIdByUsername(username);
-    }
-
-}
-

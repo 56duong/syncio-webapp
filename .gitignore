@@ -6,6 +6,9 @@ package-lock.json
 uploads/
 backend/src/main/resources/application-local.properties
 backend/src/main/resources/application-common.properties
+
+backend/src/main/resources/application-local.properties
+
 ai-check-image/main.py
 ai-check-image/test1.py
 
