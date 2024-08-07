@@ -2,6 +2,7 @@ package online.syncio.backend.messageroom;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import online.syncio.backend.utils.AuthUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -16,6 +17,7 @@ public class MessageRoomController {
 
     private final MessageRoomService messageRoomService;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final AuthUtils authUtils;
 
 
     @GetMapping
@@ -66,6 +68,7 @@ public class MessageRoomController {
                 String messageRoomName = messageRoomService.convertMessageRoomName(messageRoomDTO.getId(), userId);
                 MessageRoomDTO sendToUser = messageRoomDTO;
                 sendToUser.setName(messageRoomName);
+                sendToUser.setUnSeenCount(1L);
                 simpMessagingTemplate.convertAndSendToUser(userId.toString(), "/queue/newMessageRoom", sendToUser);
             });
         }
@@ -86,7 +89,11 @@ public class MessageRoomController {
         final MessageRoomDTO messageRoomDTO = messageRoomService.get(messageRoomId);
         messageRoomDTO.setName(messageRoomService.convertMessageRoomName(messageRoomId, userId));
         messageRoomDTO.setUnSeenCount(1L);
+        // send to the receiver
         simpMessagingTemplate.convertAndSendToUser(userId.toString(), "/queue/newMessageRoomNotGroup", messageRoomDTO);
+        // send to the sender
+        UUID senderId = authUtils.getCurrentLoggedInUserId();
+        simpMessagingTemplate.convertAndSendToUser(senderId.toString(), "/queue/newMessageRoomNotGroup", messageRoomDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

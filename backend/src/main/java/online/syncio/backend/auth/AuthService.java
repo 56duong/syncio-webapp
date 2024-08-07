@@ -69,14 +69,17 @@ public class AuthService {
         // Check if the email already exists
         String email = userDTO.getEmail();
         if( userRepository.existsByEmail(email)) {
-            throw new AppException(HttpStatus.BAD_REQUEST,"Email đã tồn tại",null);
+            String message = messageSource.getMessage("user.register.email.exist", null, LocaleContextHolder.getLocale());
+            throw new AppException(HttpStatus.BAD_REQUEST, message, null);
         }
         String username = userDTO.getUsername();
         if( userRepository.existsByUsername(username)) {
-            throw new AppException(HttpStatus.BAD_REQUEST,"username đã tồn tại",null);
+            String message = messageSource.getMessage("user.register.username.exist", null, LocaleContextHolder.getLocale());
+            throw new AppException(HttpStatus.BAD_REQUEST, message, null);
         }
         if (!userDTO.getPassword().equals(userDTO.getRetypePassword())) {
-            throw new AppException(HttpStatus.BAD_REQUEST,"Mật khẩu không khớp",null);
+            String message = messageSource.getMessage("user.register.password.not.match", null, LocaleContextHolder.getLocale());
+            throw new AppException(HttpStatus.BAD_REQUEST, message, null);
         }
 
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
@@ -107,22 +110,25 @@ public class AuthService {
 
 
     public String login(
-            String email,
+            String emailOrUsername,
             String password
     ) throws Exception {
         Optional<User> optionalUser = Optional.empty();
         String subject = null;
-        if(optionalUser.isEmpty() && email != null) {
-            optionalUser =   userRepository.findByEmail(email);
-            subject = email;
+        if(emailOrUsername != null) {
+            if(emailOrUsername.contains("@")) {
+                optionalUser = userRepository.findByEmail(emailOrUsername);
+            } else {
+                optionalUser = userRepository.findByUsername(emailOrUsername);
+            }
         }
 
-        System.out.println(LocaleContextHolder.getLocale());
         String message = messageSource.getMessage("user.login.failed", null, LocaleContextHolder.getLocale());
-        System.out.println(message);
         if(optionalUser.isEmpty()) {
             throw new DataNotFoundException(message);
         }
+
+        subject = optionalUser.get().getEmail();
 
         User existingUser = optionalUser.get();
 

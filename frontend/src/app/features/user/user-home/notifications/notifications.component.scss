@@ -17,9 +17,13 @@
   opacity: 0;
   border-radius: 0 10px 10px 0;
   border-right: 1px solid #cccccc;
-  background-color: #ffffff;
+  background-color: var(--surface-0);
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.5s ease;
+}
+
+::ng-deep body:has(.hide-menu-label) .notifications_section.show {
+    left: 5.4rem;
 }
 
 .notifications_section.show {
@@ -32,4 +36,16 @@
   .notifications_section.show {
     left: 5.4em !important;
   }
+}
+
+.mobile {
+  width: 100%;
+  height: calc(100vh - var(--mobile-top-menu-height) - var(--mobile-bottom-menu-height));
+  top: var(--mobile-top-menu-height);
+  border-radius: 0;
+  left: 100%;
+}
+
+.mobile.notifications_section.show {
+  left: 0 !important;
 }

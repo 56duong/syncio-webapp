@@ -85,7 +85,6 @@ public class StickerService {
         try {
             String filePath = fileUtils.storeFile(photo, "stickers", false);
             String fileName = filePath.replace("stickers/", "");
-            System.out.println("file: " + fileName);
             int lastIndexOfDot = fileName.lastIndexOf(".");
             if (lastIndexOfDot != -1) {
                 return fileName.substring(0, lastIndexOfDot);

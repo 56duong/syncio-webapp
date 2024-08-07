@@ -1,19 +1,33 @@
-<div [routerLink]="['/profile', userId]"
+<div class="border-circle overflow-hidden flex justify-content-center align-items-center cursor-pointer"
+  [ngClass]="{
+    'dash-border': userStory && userStory.storyCount && userStory.storyCount > 0,
+  }"
   [ngStyle]="{
     'width': width + 'px',
-    'height': height + 'px',
-    'padding': '0',
-    'border-radius': '50%',
-    'border': '1px solid var(--gray-200)',
-    'overflow': 'hidden',
-    'cursor': 'pointer'
+    'height': width + 'px',
+    'scroll-snap-align': 'start',
+    'user-select': 'none',
+    '--dash-count': userStory ? userStory.storyCount : 0,
+    '--viewed-count': userStory ? userStory.storyViewedCount : 0,
+    '--dash-spacing': userStory && userStory.storyCount && userStory.storyCount > 1 ? '8deg' : '0deg',
   }">
-  <img [src]="getAvatarURL()"
-    onerror="this.src='/assets/images/avatar.jpg'"
+  <div [routerLink]="['/profile', userId]"
+    [style.width.px]="innerWidth" 
+    [style.height.px]="innerHeight"
     [ngStyle]="{
-      'width': '100%',
-      'height': '100%',
-      'object-fit': 'cover',
-      'border-radius': '50%'
-    }" />
+      'padding': '0',
+      'border-radius': '50%',
+      'border': '1px solid var(--gray-200)',
+      'overflow': 'hidden'
+    }">
+    <img #img [src]="getAvatarURL()"
+      (error)="img.src = (onError ?  onError : 'assets/images/avatar.jpg')"
+      [ngStyle]="{
+        'width': '100%',
+        'height': '100%',
+        'object-fit': 'cover',
+        'border-radius': '50%'
+      }" />
+  </div>
 </div>
+

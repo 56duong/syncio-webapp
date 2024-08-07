@@ -1,20 +1,24 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
 
 @Pipe({
   name: 'dateAgoPipe'
 })
 export class DateAgoPipePipe implements PipeTransform {
 
-  constructor(private datePipe: DatePipe) {}
+  constructor(
+    private datePipe: DatePipe,
+    private translateService: TranslateService
+  ) {}
 
   /**
    * This function transforms a given date into a human-readable format indicating how long ago it was.
    * If the date is less than 60 seconds ago, it returns 'Just now'.
-   * If the date is more than 1 day ago, it returns the date in 'HH:mm:ss dd/MM/yyyy' format.
+   * If the date is more than 1 'type' ago, it returns the date in 'HH:mm:ss dd/MM/yyyy' format.
    * Example: '1 hour ago', '2 hours ago', 'Just now', '12:34:56 01/12/2022'.
    * @param value The date to be transformed.
-   * @param type The type of time interval to be used to display 'HH:mm:ss dd/MM/yyyy' format when more than 1 type ago. Default is 'week'.
+   * @param type The type of time interval to be used to display 'HH:mm:ss dd/MM/yyyy' format when more than 1 type ago. Default is 'week'. Example: 'h', will display 'HH:mm:ss dd/MM/yyyy' format when more than 1 hour ago.
    * @returns A string representing how long ago the date was, or the original value if it's not a valid date.
    * @example
    * {{ post.createdDate | dateAgoPipe }}
@@ -50,8 +54,9 @@ export class DateAgoPipePipe implements PipeTransform {
         // If the count is greater than 0, it means the difference includes the current interval.
         if (counter > 0) {
           // If the count is 1, return the count and the interval in singular form.
-          if (counter === 1 || i !== type) {
-            return counter + i; // 1h, 1d, 3m, 6y
+          if ((counter === 1 || i !== type) && seconds < intervals[type]) {
+            let translationKey = this.translateService.instant(i);
+            return counter + translationKey; // 1h, 1d, 3m, 6y
           } 
           else {
             // If the interval is 'type' (may be day, week, month, year) and the count is more than 1, return the date in 'HH:mm:ss dd/MM/yyyy' format.

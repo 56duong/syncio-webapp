@@ -1,6 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { Comment } from 'src/app/core/interfaces/comment';
 import { ActionEnum } from 'src/app/core/interfaces/notification';
@@ -8,6 +9,7 @@ import { Post } from 'src/app/core/interfaces/post';
 import { CommentService } from 'src/app/core/services/comment.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { PostService } from 'src/app/core/services/post.service';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { TokenService } from 'src/app/core/services/token.service';
 import { TextUtils } from 'src/app/core/utils/text-utils';
@@ -19,6 +21,8 @@ import { TextUtils } from 'src/app/core/utils/text-utils';
 })
 
 export class PostDetailComponent {
+  isMobile: boolean = false; // Check if the user is using a mobile device
+
   @Input() post: Post = {}; // Current post
   @Input() visible: boolean = false;
   @Output() visibleChange: EventEmitter<any> = new EventEmitter(); // Event emitter to close the dialog.
@@ -35,22 +39,9 @@ export class PostDetailComponent {
 
   reportVisible: boolean = false; // Used to show/hide the report modal
   dialogVisible: boolean = false;
-  dialogItems: any = [
-    { 
-      label: 'Report',
-      bold: 7,
-      color: 'red', 
-      action: () => this.reportVisible = true
-    },
-    { 
-      label: 'Copy link',
-      action: () => this.copyLink()
-    },
-    { 
-      label: 'Cancel',
-      action: () => this.dialogVisible = false
-    }
-  ];
+  dialogItems: any = [];
+
+  collectionVisible: boolean = false;
 
   constructor(
     private postService: PostService,
@@ -62,7 +53,11 @@ export class PostDetailComponent {
     private location: Location,
     private textUtils: TextUtils,
     private toastService: ToastService,
-  ) { }
+    private translateService: TranslateService,
+    private redirectService: RedirectService
+  ) { 
+    this.isMobile = window.innerWidth < 768;
+  }
 
   ngOnInit() {
     this.currentUserId = this.tokenService.extractUserIdFromToken();
@@ -84,6 +79,7 @@ export class PostDetailComponent {
             next: (post) => {
               this.post = { ...post};
               this.post.photos = this.post.photos;
+              this.updateDialogItems();
             },
             error: (error) => {
               console.log(error);
@@ -96,17 +92,40 @@ export class PostDetailComponent {
       setTimeout(() => {
         this.post.photos = this.post.photos;
       }, 0);
+      this.updateDialogItems();
     }
 
     // If user is logged in, connect to the WebSocket for notifications.
     if(this.currentUserId) {
       this.notificationService.connectWebSocket(this.currentUserId);
     }
-    
   }
 
   ngOnDestroy() {
     if(this.currentUserId) this.notificationService.disconnect();
+  }
+
+  updateDialogItems() {
+    this.dialogItems = [
+      { 
+        label: this.translateService.instant('report'), 
+        bold: 7,
+        color: 'red', 
+        action: () => this.currentUserId ? this.reportVisible = true : this.redirectService.needLogin()
+      },
+      { 
+        label: this.translateService.instant('copyLink'),
+        action: () => this.copyLink()
+      },
+      ...(this.post.createdBy === this.currentUserId ? [{ 
+        label: this.translateService.instant('saveToCollection'),
+        action: () => this.collectionVisible = true
+      }] : []),
+      { 
+        label: this.translateService.instant('cancel'),
+        action: () => this.dialogVisible = false
+      }
+    ];
   }
 
   closeDialog() {
@@ -131,10 +150,7 @@ export class PostDetailComponent {
   postComment() {
     // Not logged in
     if(this.currentUserId == null) {
-      this.router.navigate(['/login'], { 
-        queryParams: { message: 'Please login to comment' } 
-      });
-      return;
+      this.redirectService.needLogin();
     }
 
     if (!this.post.id) return;
@@ -177,6 +193,17 @@ export class PostDetailComponent {
             createdDate: 'Just now',
           };
 
+          // send notification to owner of the parent comment
+          if (this.ownerParentCommentId != this.currentUserId) {
+            this.notificationService.sendNotification({
+              targetId: this.post.id,
+              actorId: this.currentUserId,
+              actionType: ActionEnum.COMMENT_REPLY,
+              redirectURL: `/post/${this.post.id}?commentId=${this.comment.parentCommentId}`,
+              recipientId: this.ownerParentCommentId,
+            });
+          }
+
           if (this.comment.parentCommentId) {
             // make change to this to let child component know that a new reply has been added
             this.newReply = this.comment;
@@ -192,11 +219,19 @@ export class PostDetailComponent {
 
   async copyLink() {
     await this.textUtils.copyToClipboard(window.location.href + 'post/' + this.post.id);
-    this.toastService.showSuccess('Success', 'Link copied to clipboard');
+    this.toastService.showSuccess(
+      this.translateService.instant('success'), 
+      this.translateService.instant('linkCopiedToClipboard')
+    );
   }
 
   handleReportModalVisibility(event: boolean) {
-    this.reportVisible = event; // Update reportVisible based on the event emitted from ReportComponent
+    if(!this.currentUserId) {
+      this.redirectService.needLogin();
+    }
+    else {
+      this.reportVisible = event; // Update reportVisible based on the event emitted from ReportComponent
+    }
   }
 
   hideDialog() {

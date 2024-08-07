@@ -7,4 +7,5 @@ export interface LabelResponse {
     type?: string;
     owner?: string;
     isPurcharse?: boolean;
+    quantitySold?: number;
   }

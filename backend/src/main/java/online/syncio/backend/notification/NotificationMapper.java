@@ -39,10 +39,12 @@ public class NotificationMapper {
                 actorCount = likeRepository.countByPostId(notification.getTargetId());
                 notificationDTO.setPreviewText(postRepository.getCaptionById(notification.getTargetId()));
                 break;
-            case COMMENT_POST, COMMENT_REPLY:
+            case COMMENT_POST, COMMENT_REPLY, POST_TAG:
                 notificationDTO.setActionPerformedId(notification.getActionPerformedId());
-                notificationDTO.setPreviewText(commentRepository.getTextById(notification.getActionPerformedId())
-                                                    .orElseThrow(() -> new NotFoundException(Comment.class, "id", notification.getActionPerformedId().toString())));
+                if(notification.getActionType() != ActionEnum.POST_TAG) {
+                    notificationDTO.setPreviewText(notification.getActionPerformedId() == null ? null : commentRepository.getTextById(notification.getActionPerformedId())
+                            .orElseThrow(() -> new NotFoundException(Comment.class, "id", notification.getActionPerformedId().toString())));
+                }
                 if(notification.getActionType() == ActionEnum.COMMENT_POST) {
                     actorCount = commentRepository.countDistinctUsersByPostId(notification.getTargetId());
                 }
@@ -56,7 +58,7 @@ public class NotificationMapper {
 
         String firstPhoto = postRepository.findFirstPhotoIdByPostId(notificationDTO.getTargetId());
         if (firstPhoto != null) {
-            notificationDTO.setImageURL(firstPhoto);
+            notificationDTO.setImageURL("posts/" + firstPhoto);
         }
 
         return notificationDTO;
@@ -65,7 +67,7 @@ public class NotificationMapper {
 
     public Notification mapToEntity (final NotificationDTO notificationDTO, final Notification notification) {
         switch (notificationDTO.getActionType()) {
-            case LIKE_POST, COMMENT_POST, COMMENT_REPLY:
+            case LIKE_POST, COMMENT_POST, COMMENT_REPLY, POST_TAG:
                 Post post = postRepository.findById(notificationDTO.getTargetId())
                         .orElseThrow(() -> new NotFoundException(Post.class, "id", notificationDTO.getTargetId().toString()));
                 notification.setTargetId(post.getId());

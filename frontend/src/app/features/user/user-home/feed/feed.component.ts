@@ -1,7 +1,6 @@
-import {Component, HostListener, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import { lastValueFrom, Subscription } from 'rxjs';
 import { Post } from 'src/app/core/interfaces/post';
-import { AudioRecorderService } from 'src/app/core/services/audio-recorder.service';
 import { PostService } from 'src/app/core/services/post.service';
 import { TokenService } from 'src/app/core/services/token.service';
 
@@ -19,9 +18,10 @@ export class FeedComponent {
   pageSize: number = 10; // set số bài viết cần lấy trên 1 trang
   loading: boolean = false;
 
-  endOfFollowing: boolean = false; // Indicates if the end of the posts from the users that the current user is following has been reached.
-  endOfInterests: boolean = false; // Indicates if the end of the posts from the users that the current user is interested in has been reached.
-  endOfFeed: boolean = false; // Indicates if the end of the posts from the feed has been reached.
+  endOfFollowing: boolean = false; // If it already shows all the posts from the users that the current user is following
+  endOfInterests: boolean = false; // If it already shows all the posts from the users that the current user is interested in
+  endOfFeed: boolean = false; // If it already shows all the posts from the feed
+  showLoading: boolean = false; // If it is loading more posts
   postIds: string[] = []; // List of post ids that have been loaded.
 
   newPostCreatedSubscription!: Subscription;
@@ -31,58 +31,67 @@ export class FeedComponent {
 
   observer: IntersectionObserver | undefined; // Observer to watch the end of the feed element.
   @ViewChild('endOfFeed') endOfFeedElement: any; // Reference to the end of the feed element.
+  @ViewChild('loading') loadingElement: any; // Reference to the end of the feed element.
 
   audioUrl: string | null = null;
+
+  currentUserId: string = this.tokenService.extractUserIdFromToken();
 
   constructor(
     private postService: PostService,
     private tokenService: TokenService
   ) {}
 
+
   ngOnInit() {
     this.getPosts();
-
-    // Subscribe to the new post created event to add the new post to the top of the feed.
-    this.newPostCreatedSubscription = this.postService.getNewPostCreated().subscribe((post) => {
-      if(!post) return;
-
-      // check if this post is created by the current user
-      if(post.createdBy === this.tokenService.extractUserIdFromToken()) {
-        this.isReceivedNewPost = true;
-        this.newPostCreatedSubscription.unsubscribe();
-      }
-      else {
-        // check if this post is from the user i followings
-        this.postService.isPostCreatedByUserIFollow(post.id).subscribe((isFollowed) => {
-          if (isFollowed) {
-            this.isReceivedNewPost = true;
-            this.newPostCreatedSubscription.unsubscribe();
-          }
-        });
-      }
-    });
+    
+    if(this.currentUserId) {
+      this.postService.connectWebSocketNewPost();
+      this.getNewPostObservable();
+    }
   }
+
 
   ngAfterViewInit() {
     // Create an observer to watch the end of the feed element.
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         // If the end of the feed element is intersecting, get more posts.
-        if (entry.isIntersecting && !this.loading && !this.endOfFeed) {
+        if (entry.isIntersecting && !this.loading && !this.showLoading) {
           this.getPosts();
         }
       });
     });
     
-    this.observer.observe(this.endOfFeedElement.nativeElement);
+    this.observer.observe(this.loadingElement.nativeElement);
   }
 
+
   ngOnDestroy() {
+    this.postService.disconnectNewPost();
     this.newPostCreatedSubscription.unsubscribe();
     // Unobserve the end of the feed element when the component is destroyed.
-    if (this.endOfFeed && this.observer) {
-      this.observer.unobserve(this.endOfFeedElement.nativeElement);
+    if (this.showLoading && this.observer) {
+      this.observer.unobserve(this.loadingElement.nativeElement);
     }
+  }
+
+
+  /**
+   * When receive a new post.
+   */
+  getNewPostObservable() {
+    this.newPostCreatedSubscription = this.postService.getNewPostObservable().subscribe({
+      next: (post) => {
+        if (Object.keys(post).length !== 0) {
+          this.isReceivedNewPost = true;
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
 
   /**
@@ -145,8 +154,9 @@ export class FeedComponent {
           this.getPosts();
           break;
         case 'FEED':
+          this.showLoading = true;
           this.endOfFeed = true;
-          this.observer?.unobserve(this.endOfFeedElement.nativeElement);
+          this.observer?.unobserve(this.loadingElement.nativeElement);
           break;
       }
     }
@@ -167,7 +177,7 @@ export class FeedComponent {
     this.loading = false;
     this.endOfFollowing = false;
     this.endOfInterests = false;
-    this.endOfFeed = false;
+    this.showLoading = false;
     this.postIds = [];
     this.isReceivedNewPost = false;
     this.getPosts();

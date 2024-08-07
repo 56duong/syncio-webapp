@@ -1,7 +1,7 @@
-<p-dialog header="Report" [modal]="true" [(visible)]="display" [closable]="false" [style]="{ width: '30rem' }">
+<p-dialog [header]="'report' | translate" [modal]="true" [(visible)]="display" [closable]="false" [style]="{ width: '30rem' }">
     <ng-template pTemplate="header">
         <div class="flex justify-content-between align-items-center w-full p-0">
-            <h3 class="p-1 my-0">Report</h3>
+            <h3 class="p-1 my-0">{{ 'report' | translate }}</h3>
             <span (click)="closeModal()"pButton type="button" icon="pi pi-times" class="p-button-text justify-content-end"></span>
         </div>
     </ng-template>
@@ -9,22 +9,22 @@
     <form *ngIf="reportForm" [formGroup]="reportForm" (ngSubmit)="onSubmit()">
         <div class="p-fluid">
             <div class="field">
-                <label for="reason">Reason</label>
+                <label for="reason">{{ 'reason' | translate }}</label>
                 <p-dropdown id="reason" [options]="reasons" formControlName="reason" optionLabel="label"
-                    placeholder="Select a reason"></p-dropdown>
+                    [placeholder]="'selectAReason' | translate"></p-dropdown>
             </div> 
 
             <div class="field">
-                <label for="description">Description</label>
+                <label for="description">{{ 'description' | translate }}</label>
                 <textarea id="description" pInputTextarea formControlName="description" rows="4" cols="30"></textarea>
             </div>
 
             <div class="grid">
                 <div class="col">
-                    <p-button label="Cancel" [outlined]="true" (click)="closeModal()" />
+                    <p-button [label]="'cancel' | translate" [outlined]="true" (click)="closeModal()" />
                 </div>
                 <div class="col">
-                    <button type="submit" pButton label="Submit" [disabled]="!reportForm.valid"></button>
+                    <button type="submit" pButton [label]="'submit' | translate" [disabled]="!reportForm.valid"></button>
                 </div>
             </div>
         </div>

@@ -3,6 +3,10 @@ p-dialog ::ng-deep {
   .p-dialog-header {
     padding: 0;
   }
+  
+  .p-dialog .p-dialog-header-icons {
+    display: none;
+  }
 
   .modal-header {
     padding: 2px 5px;
@@ -11,6 +15,11 @@ p-dialog ::ng-deep {
   .p-dialog-content {
     padding: 0;
     overflow: unset;
+  }
+
+  textarea.p-inputtext {
+    background-color: transparent;
+    border: 0;
   }
 
 }
@@ -155,7 +164,7 @@ p-speedDial ::ng-deep {
     width: 2.5rem;
     height: 2.5rem;
     background: var(--surface-200);
-    color: #475569;
+    color: var(--surface-800);
   }
 
   .p-speeddial-direction-up {
@@ -167,5 +176,39 @@ p-speedDial ::ng-deep {
     width: 1rem;
     height: 1rem;
   }
+}
+
+
+
+// mobile
+.mobile ::ng-deep .p-dialog-mask {
+  align-items: flex-start;
+}
+
+.mobile ::ng-deep .p-dialog {
+  width: 100vw;
+  max-height: calc(100vh - var(--mobile-bottom-menu-height));
+  overflow: scroll;
+  border-radius: 0;
+}
+
+.mobile ::ng-deep .p-dialog-header {
+  border-radius: 0;
+}
+
+.mobile ::ng-deep .p-dialog-content {
+  border-radius: 0;
+}
+
+.mobile ::ng-deep .p-dialog-content > .flex {
+  flex-direction: column;
+}
+
+.mobile ::ng-deep .p-dialog-content > .flex > div {
+  width: 100%;
+}
+
+.mobile ::ng-deep .p-dialog-content > .flex > .p-divider {
+  display: none;
 }
 

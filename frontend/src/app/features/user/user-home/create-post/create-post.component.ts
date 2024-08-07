@@ -1,8 +1,15 @@
-import { Component, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef, ElementRef, Input } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { debounceTime, switchMap } from 'rxjs';
+import { ActionEnum } from 'src/app/core/interfaces/notification';
 import { Post, Visibility } from 'src/app/core/interfaces/post';
+import { UserSearch } from 'src/app/core/interfaces/user-search';
+import { LoadingService } from 'src/app/core/services/loading.service';
+import { NotificationService } from 'src/app/core/services/notification.service';
 import { PostService } from 'src/app/core/services/post.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { TokenService } from 'src/app/core/services/token.service';
+import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-create-post',
@@ -11,6 +18,8 @@ import { TokenService } from 'src/app/core/services/token.service';
 })
 
 export class CreatePostComponent {
+  @Input() isMobile: boolean = false; // Flag to indicate if the device is mobile
+
   @ViewChild('fileUploader') fileUploader: any; // photo upload
   isVisible!: boolean; // Used to show/hide the create post dialog
   post: Post = {}; // The post object to be created
@@ -41,17 +50,30 @@ export class CreatePostComponent {
       }
     }
   ]; // The items for the audio menu
+
+  // Mention
+  /** the config for the mention dropdown */
+  mentionConfig: any;
+  /** the list of users searched to show in the mention dropdown */
+  userSearched: UserSearch[] = [];
+  /** the list of users tagged in the post when mentionSelect is called */
+  taggedUsers: UserSearch[] = []; // The tagged users in the caption
   
   constructor(
     private postService: PostService,
     private cdr: ChangeDetectorRef,
     private tokenService: TokenService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private loadingService: LoadingService,
+    private translateService: TranslateService,
+    private userService: UserService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit() {
     this.currentUsername = this.tokenService.extractUsernameFromToken();
     this.currentUserId = this.tokenService.extractUserIdFromToken();
+    this.updateMentionConfig();
   }
 
   /**
@@ -74,9 +96,17 @@ export class CreatePostComponent {
 
   // create a post
   createPost() {
+    // Replace @username with @id in the post caption
+    let modifiedText!: string;
+    let taggedUserIds: string[] = [];
+
+    if (this.post.caption) {
+      ({ modifiedText, taggedUserIds } = this.replaceMentionWithId(this.post.caption));
+    }
+
     const formData = new FormData();
     const post: Post = {
-      caption: this.post.caption,
+      caption: modifiedText,
       createdDate: new Date().toISOString(),
       flag: true,
       visibility: this.selectedVisibility,
@@ -84,9 +114,11 @@ export class CreatePostComponent {
 
     //validate
     if (!post.caption && this.selectedPhotoFile.length === 0 && !this.selectedAudioFile) {
-      this.toastService.showError('Error', 'A post must have either a caption or at least one image or a audio.');
+      this.toastService.showError(this.translateService.instant('error'), this.translateService.instant('aPostMustHaveAtLeastOneImageOrOneAudioOrCaption'));
       return; // Stop execution if validation fails
     }
+
+    this.loadingService.show();
 
     //add post to form data
     formData.append(
@@ -107,18 +139,35 @@ export class CreatePostComponent {
     }
 
     this.postService.createPost(formData).subscribe({
-      next: (response: any) => {
-        post.id = response.body;
+      next: (response) => {
+        this.loadingService.hide();
+        
+        post.id = response.id;
         post.createdBy = this.currentUserId;
-        this.postService.setNewPostCreated(post);
+
+        // send notification to tagged users
+        if(taggedUserIds.length > 0) {
+          taggedUserIds.forEach((userId) => {
+            this.notificationService.sendNotification({
+              targetId: post.id,
+              actorId: this.currentUserId,
+              actionType: ActionEnum.POST_TAG,
+              redirectURL: `/post/${post.id}`,
+              recipientId: userId,
+            });
+          });
+        }
         
         this.post = {}; // Reset the post object
         this.selectedPhotos = []; // Clear selected photos display
         this.selectedPhotoFile = [];
         this.selectedAudioFile = null;
+        this.audioInput.nativeElement.value = ''; // Clear the audio input
         this.isVisible = false;
       },
       error: (error) => {
+        this.loadingService.hide();
+        this.toastService.showError(this.translateService.instant('error'), 'An error occurred while creating the post');
         console.error(error);
       },
     });
@@ -159,11 +208,11 @@ export class CreatePostComponent {
   getVisibilityLabel(visibility: Visibility): string {
     switch (visibility) {
       case Visibility.PUBLIC:
-        return 'Everyone';
+        return this.translateService.instant('public');
       case Visibility.PRIVATE:
-        return 'Only me';
+        return this.translateService.instant('private');
       case Visibility.CLOSE_FRIENDS:
-        return 'Close Friends';
+        return this.translateService.instant('closeFriends');
       default:
         return 'Set Visibility'; // Label mặc định
     }
@@ -221,4 +270,84 @@ export class CreatePostComponent {
     this.isVisibleRecorder = false;
   }
   
+
+  /**
+   * When caption changes, search for users to mention.
+   * @param event 
+   */
+  onCaptionChange(event: any) {
+    const value = event.target.value;
+    if(event.data === '@') {
+      // when start typing @
+      this.userSearched = [];
+      this.updateMentionConfig();
+    }
+    else {
+      const mentionTerm = this.extractMentionTerm(value);
+      if (mentionTerm) {
+        this.userService.searchUsers(mentionTerm, mentionTerm).pipe(
+          debounceTime(300), // Add a debounce to limit the number of API calls
+          switchMap(users => {
+            this.userSearched = users;
+            this.updateMentionConfig();
+            return [];
+          })
+        ).subscribe();
+      }
+    }
+  }
+
+
+  /**
+   * Extract the mention term from the text.
+   * Example: 'Hello @username' => 'username'
+   * @param text 
+   * @returns the mention term or null if not found. 
+   */
+  extractMentionTerm(text: string): string | null {
+    const mentionMatch = text.match(/@(\w+)$/);
+    return mentionMatch ? mentionMatch[1] : null;
+  }
+
+
+  /**
+   * Update the mention config with the current list of users searched.
+   */
+  updateMentionConfig() {
+    this.mentionConfig = {
+      items: this.userSearched,
+      triggerChar: '@',
+      labelKey: 'username',
+      mentionSelect: (item: UserSearch) => {
+        this.taggedUsers.push(item); // Save the user ID
+        return `@${item.username}`;
+      }
+    };
+  }
+
+
+  /**
+   * Replace @username with @id in the post caption.
+   * Example: 'Hello @username' => 'Hello @id'
+   * Use: const { modifiedText, taggedUserIds } = this.replaceMentionWithId('Hello @username');
+   * @param text 
+   * @returns the modified text and the list of tagged user IDs.
+   */
+  replaceMentionWithId(text: string): { modifiedText: string, taggedUserIds: string[] } {
+    const userMap = new Map(this.taggedUsers.map(user => [user.username, user.id]));
+    const taggedUserIds: string[] = [];
+  
+    // Replace @username with @id in the post caption
+    const modifiedText = text.replace(/@(\w+)/g, (match, username) => {
+      const userId = userMap.get(username);
+      if (userId) {
+        taggedUserIds.push(userId);
+        return `@${userId}`;
+      }
+      return match;
+    });
+  
+    return { modifiedText, taggedUserIds };
+  }
+
 }

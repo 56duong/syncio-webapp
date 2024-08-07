@@ -2,7 +2,7 @@
     "host": "localhost",
     "port": 8111,
     "domain": "example.com",
-    "rabbitmq_url": "amqps://rupzqjkv:3lURY4BnsU1PR_RvC67MIk92g0_iG1y9@armadillo.rmq.cloudamqp.com/rupzqjkv",
+    "rabbitmq_url": "amqp://guest:guest@rabbitmq",
     "exchange": "imageVerificationExchange",
     "queu_image_verify": "imageVerificationQueue",
     "TELEGRAM_TOKEN": "6478734755:AAHwesjyBmtIVaQsYafxvqGKeWldDbwPrg0",

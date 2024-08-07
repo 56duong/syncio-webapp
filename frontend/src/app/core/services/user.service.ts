@@ -8,9 +8,8 @@ import { HttpUtilService } from './http.util.service';
 import { LoginDTO } from 'src/app/features/authentication/login/login.dto';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
 import { FogotPasswordDTO } from 'src/app/features/authentication/forgotpassword/forgotpassword.dto';
-import { UserStory } from '../interfaces/user-story';
 import { UserProfile } from '../interfaces/user-profile';
-import { TokenService } from './token.service';
+import { UserSearch } from '../interfaces/user-search';
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +29,7 @@ export class UserService {
     headers: this.httpUtilService.createHeaders(),
   };
   private readonly TOKEN_KEY = 'access_token';
-  
+
   constructor(
     private http: HttpClient,
     private httpUtilService: HttpUtilService
@@ -41,7 +40,7 @@ export class UserService {
       .set('token', token)
       .set('password', password);
 
-    return this.http.post(this.apiResetPassword, {}, { params });
+    return this.http.post(this.apiResetPassword, null, { params });
   }
   register(registerDTO: RegisterDTO): Observable<any> {
     return this.http.post(this.apiRegister, registerDTO, this.apiConfig);
@@ -81,7 +80,6 @@ export class UserService {
 
     return this.http.post(this.apiUserDetail, {}, { headers: headers });
   }
-
   saveUserResponseToLocalStorage(userResponse?: UserResponse | null) {
     try {
       if (userResponse == null || !userResponse) {
@@ -150,7 +148,9 @@ export class UserService {
   }
 
   searchUsersByUsername(username?: string): Observable<UserProfile[]> {
-    const url = username ? `${this.apiURL}/search-by-username?username=${username}` : this.apiURL;
+    const url = username
+      ? `${this.apiURL}/search-by-username?username=${username}`
+      : this.apiURL;
     return this.http.get<UserProfile[]>(url);
   }
 
@@ -180,23 +180,12 @@ export class UserService {
 
   /**
    * Get User Profile By Id.
-   * @param userId - The userId to search if exists.
-   * @returns Object users.
+   * @param userId
+   * @returns
    */
   getUserProfile(userId: any): Observable<UserProfile> {
     const url = `${this.apiURL}/profile/${userId}`;
-    return this.http.get<UserProfile>(url);
-  }
-
-  /**
-   * Get User Profile By Id.
-   * Use for case when the user already logged in.
-   * @param userId 
-   * @returns 
-   */
-  getUserProfile2(userId: any): Observable<UserProfile> {
-    const url = `${this.apiURL}/profile/${userId}`;
-    return this.http.post<UserProfile>(url, {});
+    return this.http.get<UserProfile>(url, {});
   }
 
   updateUser(user: User, userId: any): Observable<User> {
@@ -223,24 +212,41 @@ export class UserService {
     return this.http.get<Object>(url);
   }
 
+  
+
+  /**
+   * Get user id by username.
+   * @param userId
+   * @returns response object containing the userId.
+   * @example
+   * this.userService.getUserIdByUsername(userId).subscribe({
+   *  next: (response) => {
+   *   this.userId = response.userId;
+   *  },
+   *  error: (error) => {
+   *   console.error(error);
+   *  }
+   * })
+   */
+  getUserIdByUsername(username: string): Observable<any> {
+    const url = `${this.apiURL}/username/${username}`;
+    return this.http.get<any>(url);
+  }
+
+  getQrCodeFromUser(userId: string): Observable<any> {
+    const url = `${this.apiURL}/getQrcode/${userId}`;
+    return this.http.get(url, { responseType: 'text' });
+  }
+  
   /**
    * Search users by username or email.
    * @param username - The username to search if exists.
    * @param email - The email to search if exists.
-   * @returns array of users.
+   * @returns top 20 users that match the search criteria.
    */
-  searchUsers(username: string, email: string): Observable<User[]> {
+  searchUsers(username: string, email: string): Observable<UserSearch[]> {
     const url = `${this.apiURL}/search?username=${username}&email=${email}`;
-    return this.http.get<User[]>(url);
-  }
-
-  /**
-   * Get all users with at least one story created in the last 24 hours
-   * @returns array of stories.
-   */
-  getUsersWithStories(): Observable<UserStory[]> {
-    const url = `${this.apiURL}/stories`;
-    return this.http.get<UserStory[]>(url);
+    return this.http.get<UserSearch[]>(url);
   }
 
   changeAvatar(formData: FormData): Observable<void> {
@@ -248,20 +254,20 @@ export class UserService {
     return this.http.post<void>(url, formData);
   }
 
-  getNewUsersLast30Days(): Observable<any> {
-    const url = `${this.apiURL}/last30days`;
-    return this.http.get<any>(url);
-  }
+  // getNewUsersLast30Days(): Observable<any> {
+  //   const url = `${this.apiURL}/last30days`;
+  //   return this.http.get<any>(url);
+  // }
 
-  getNewUsersLast7Days(): Observable<any> {
-    const url = `${this.apiURL}/last7days`;
-    return this.http.get<any>(url);
-  }
+  // getNewUsersLast7Days(): Observable<any> {
+  //   const url = `${this.apiURL}/last7days`;
+  //   return this.http.get<any>(url);
+  // }
 
-  getNewUsersLast100Days(): Observable<any> {
-    const url = `${this.apiURL}/last100days`;
-    return this.http.get<any>(url);
-  }
+  // getNewUsersLast100Days(): Observable<any> {
+  //   const url = `${this.apiURL}/last100days`;
+  //   return this.http.get<any>(url);
+  // }
 
   getNewUsersLastNDays(days: number): Observable<any> {
     return this.http.get(`${this.apiURL}/last/${days}`);
@@ -276,14 +282,16 @@ export class UserService {
     return this.getUsers().pipe(map((users) => users.length));
   }
 
-
   logout(): Observable<any> {
     const token = localStorage.getItem(this.TOKEN_KEY);
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     });
-    return this.http.post<any>(`${this.apiURL}/logout`, {}, { headers: headers });
+    return this.http.post<any>(
+      `${this.apiURL}/logout`,
+      {},
+      { headers: headers }
+    );
   }
-
 }

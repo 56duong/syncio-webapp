@@ -15,7 +15,6 @@ import java.util.UUID;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, UUID> {
-
     /**
      * Get the posts of the user with the UUID. Also check if the current user can see the post.
      * @param userId
@@ -32,7 +31,25 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
             "(p.visibility = 'CLOSE_FRIENDS' AND ucf.close_friend_id = :currentUserId) OR " +
             "(p.visibility = 'PRIVATE' AND p.user_id = :currentUserId)) " +
             "ORDER BY p.created_date DESC", nativeQuery = true)
-    List<Post> findPostsByUser(@Param("userId") UUID userId, @Param("currentUserId") UUID currentUserId);
+    List<Post> findAllPostsByUser(@Param("userId") UUID userId, @Param("currentUserId") UUID currentUserId);
+
+    /**
+     * Get the posts of the user with the UUID. Also check if the current user can see the post.
+     * @param userId
+     * @param currentUserId
+     * @return
+     */
+    @Query(value = "SELECT p.*, ucf.user_id AS ucf_user_id " +
+            "FROM post p " +
+                "LEFT JOIN user_close_friend ucf ON p.user_id = ucf.user_id " +
+            "WHERE p.flag = true " +
+                "AND p.user_id = :userId " +
+                "AND (p.user_id = :currentUserId OR " +
+                    "p.visibility = 'PUBLIC' OR " +
+                    "(p.visibility = 'CLOSE_FRIENDS' AND ucf.close_friend_id = :currentUserId) OR " +
+                    "(p.visibility = 'PRIVATE' AND p.user_id = :currentUserId)) " +
+            "GROUP BY p.id", nativeQuery = true)
+    Page<Post> findPostsByUser(@Param("userId") UUID userId, @Param("currentUserId") UUID currentUserId, Pageable pageable);
 
     /**
      * This method is used to get the caption of a post by its id.
@@ -81,7 +98,8 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
                     "p.visibility = 'PUBLIC' OR " +
                     "(p.visibility = 'CLOSE_FRIENDS' AND ucf.close_friend_id = :userId) OR " +
                     "(p.visibility = 'PRIVATE' AND p.user_id = :userId)) " +
-                "ORDER BY p.created_date DESC", nativeQuery = true)
+            "GROUP BY p.id " +
+            "ORDER BY p.created_date DESC", nativeQuery = true)
     Page<Post> findPostsByUserFollowing(Pageable pageable, @Param("userId") UUID userId, @Param("users") Set<UUID> users, @Param("daysAgo") LocalDateTime daysAgo);
 
     /**
@@ -129,8 +147,7 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
             "FROM post p " +
             "WHERE p.flag = true " +
             "AND p.visibility = :visibility " +
-            "AND p.user_id = :userId " +
-            "ORDER BY p.created_date DESC", nativeQuery = true)
-    List<Post> findPostsByVisibilityAndUserId(@Param("visibility") String visibility, @Param("userId") UUID userId);
+            "AND p.user_id = :userId ", nativeQuery = true)
+    Page<Post> findPostsByVisibilityAndUserId(@Param("visibility") String visibility, @Param("userId") UUID userId, Pageable pageable);
 
 }

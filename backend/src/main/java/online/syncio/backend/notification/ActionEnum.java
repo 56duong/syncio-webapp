@@ -4,5 +4,6 @@ public enum ActionEnum {
     LIKE_POST,
     COMMENT_POST,
     COMMENT_REPLY,
-    FOLLOW
+    FOLLOW,
+    POST_TAG,
 }

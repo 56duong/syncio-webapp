@@ -28,30 +28,30 @@ public class RabbitQueueDefine {
         });
     }
 
-    @Bean
-    public void declareExchanges() {
-        JobQueue.exchangeNameList.forEach(exchangeName -> {
-            Exchange exchange = new DirectExchange(exchangeName, true, false);
-            rabbitAdminMain.declareExchange(exchange);
-        });
-    }
-    @Bean
-    public void setupBindings() {
+//    @Bean
+//    public void declareExchanges() {
+//        JobQueue.exchangeNameList.forEach(exchangeName -> {
+//            Exchange exchange = new DirectExchange(exchangeName, true, false);
+//            rabbitAdminMain.declareExchange(exchange);
+//        });
+//    }
+//    @Bean
+//    public void setupBindings() {
+//
+//        for (int i = 0; i < JobQueue.queueNameList.size(); i++) {
+//            Binding binding = BindingBuilder
+//                    .bind(new Queue(JobQueue.queueNameList.get(i), true))
+//                    .to(new DirectExchange(JobQueue.exchangeNameList.get(i), true, false))
+//                    .with(JobQueue.routingKeyList.get(i));
+//            rabbitAdminMain.declareBinding(binding);
+//        }
+//    }
 
-        for (int i = 0; i < JobQueue.queueNameList.size(); i++) {
-            Binding binding = BindingBuilder
-                    .bind(new Queue(JobQueue.queueNameList.get(i), true))
-                    .to(new DirectExchange(JobQueue.exchangeNameList.get(i), true, false))
-                    .with(JobQueue.routingKeyList.get(i));
-            rabbitAdminMain.declareBinding(binding);
-        }
-    }
-
-    @Bean
-    public Queue responseQueue() {
-        Queue queue = new Queue("image_verification_response_queue_springboot", true, false, false, null);
-        rabbitAdminMain.declareQueue(queue);
-        return queue;
-    }
+//    @Bean
+//    public Queue responseQueue() {
+//        Queue queue = new Queue("image_verification_response_queue_springboot", true, false, false, null);
+//        rabbitAdminMain.declareQueue(queue);
+//        return queue;
+//    }
 
 }

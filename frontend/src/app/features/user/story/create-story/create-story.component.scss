@@ -12,6 +12,11 @@
     .p-tabview .p-tabview-nav li .p-tabview-nav-link {
       padding: 1rem 1.125rem;
     }
+    
+    textarea.p-inputtext {
+      background-color: transparent;
+      border: 1px solid #3f3f46;
+    }
   }
 }
 
@@ -21,7 +26,6 @@
   min-height: 100vh;
   max-height: 100vh;
   transition: 0s;
-  overflow: scroll;
 
   .p-sidebar-header {
     display: none;
@@ -37,7 +41,8 @@
 
   .p-sidebar-content {
     overflow: visible !important;
-    padding: 1.25rem;
+    padding: 0;
+    height: 100%;
   }
 }
 
@@ -74,5 +79,9 @@
   p-togglebutton.bold .p-togglebutton,
   p-togglebutton.bold .p-togglebutton .p-button-label {
     font-weight: inherit;
+  }
+
+  .p-inputtext {
+    height: auto !important;
   }
 }

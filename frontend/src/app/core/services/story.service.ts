@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Story } from '../interfaces/story';
+import { UserStory } from '../interfaces/user-story';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,20 @@ export class StoryService {
   getStoriesByUserId(userId: string): Observable<Story[]> {
     const url = `${this.apiURL}/${userId}`;
     return this.http.get<Story[]>(url);
+  }
+
+  /**
+   * Get all users with at least one story created in the last 24 hours
+   * @returns array of stories.
+   */
+  getUsersWithStories(): Observable<UserStory[]> {
+    const url = `${this.apiURL}/user-with-stories`;
+    return this.http.get<UserStory[]>(url);
+  }
+
+  getUserStory(userId: string): Observable<UserStory> {
+    const url = `${this.apiURL}/user-with-stories/${userId}`;
+    return this.http.get<UserStory>(url);
   }
 
 }

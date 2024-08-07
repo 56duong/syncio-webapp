@@ -1,15 +1,16 @@
 <main>
-  <header class="flex align-items-center gap-6 ml-6">
+  <!-- header desktop -->
+  <header *ngIf="!isMobile" class="flex align-items-center gap-6 ml-6">
     <!-- Avatar -->
-    <div class="border-circle overflow-hidden" style="width: 164px; height: 164px;">
+    <div [title]="'uploadAvatar' | translate" class="border-circle overflow-hidden" style="width: 164px; height: 164px;">
       <input
         #fileInput
         type="file"
         style="display: none"
         accept="image/*"
         (change)="onFileSelected($event)" />
-      <button (click)="fileInput.click()" class="border-none p-0 outline-none">
-        <app-avatar [userId]="userProfile.id" [width]="164"></app-avatar>
+      <button (click)="fileInput.click()" class="border-none p-0 outline-none cursor-pointer" style="background: none;">
+        <app-avatar [userId]="userProfile.id" [width]="164" [userStory]="userStory"></app-avatar>
       </button>
     </div>
 
@@ -18,56 +19,57 @@
       <div class="flex align-items-center gap-3">
         <!-- Username -->
         <!-- <h1 class="font-normal text-2xl my-0 mr-3">{{ userProfile.username }}</h1> -->
-        <app-username-label [userId]="currentUserId"
-                        [username]="userProfile.username"
-                        [fontSize]="'28px'"
-                        [color]="''">
+        <app-username-label 
+          [userId]="currentUserId"
+          [username]="userProfile.username"
+          [fontSize]="'1.5rem'"
+          [color]="''">
         </app-username-label>
         <!-- Follow button -->
         <p-button *ngIf="!isOwnerProfile && !userProfile.isFollowing"
           (click)="toggleFollow(userProfile.id)" 
-          label="Follow" severity="my-custom-primary">
+          [label]="'follow' | translate" severity="my-custom-primary">
         </p-button>
         <!-- Unfollow button -->
         <p-button *ngIf="!isOwnerProfile && userProfile.isFollowing"
           (click)="dialogVisible = !dialogVisible" 
           icon="pi pi-angle-down" iconPos="right"
-          label="Unfollow" severity="my-custom-secondary">
+          [label]="'unfollow' | translate" severity="my-custom-secondary">
         </p-button>
         <!-- Message -->
         <a *ngIf="!isOwnerProfile" href="/messages">
-          <p-button label="Messages" severity="my-custom-secondary"></p-button>
+          <p-button [label]="'messages' | translate" severity="my-custom-secondary"></p-button>
         </a>
         <!-- Edit profile/ Setting -->
         <ng-container *ngIf="isOwnerProfile">
           <!-- Edit profile -->
-          <a *ngIf="isOwnerProfile" href="/edit-profile">
-            <p-button (click)="handleEditProfile()" label="Edit Profile" severity="my-custom-secondary"></p-button>
-          </a>
+          <div *ngIf="isOwnerProfile" routerLink="/account/edit-profile">
+            <p-button [label]="'editProfile' | translate" severity="my-custom-secondary"></p-button>
+          </div>
           <!-- choose Label -->
           <p-button class="ml-2"
             (click)="showChooseLabelDialog()" 
-            label="Choose Label" severity="my-custom-primary">
+            [label]="'chooseLabel' | translate" severity="my-custom-primary">
           </p-button>
 
           <!-- Setting -->
-          <i *ngIf="isOwnerProfile" class="pi pi-cog cursor-pointer" style="font-size: 1.5rem"></i>
+          <i *ngIf="isOwnerProfile" routerLink="/account/edit-profile" class="pi pi-cog cursor-pointer" style="font-size: 1.5rem"></i>
         </ng-container>
       </div>
 
       <!-- Count section -->
-      <ul class="flex align-items-center gap-4 list-none pl-0">
+      <ul class="flex align-items-center gap-4 list-none pl-0 m-0">
         <!-- posts -->
-        <li><span class="font-semibold">{{ !userProfile.posts ? 0 : userProfile.posts.length }}</span> posts</li>
+        <li class="lowercase"><span class="font-semibold">{{ !userProfile.posts ? 0 : userProfile.posts.length }}</span> {{'posts' | translate}}</li>
         <!-- followers -->
         <li (click)="currentUserId && userProfile.followerCount > 0 ? isVisibleFollowers = true : ''"
-          [ngClass]="currentUserId && userProfile.followerCount > 0 ? 'cursor-pointer' : ''">
-          <span class="font-semibold">{{ userProfile.followerCount }}</span> followers
+          [ngClass]="currentUserId && userProfile.followerCount > 0 ? 'cursor-pointer lowercase' : 'lowercase'">
+          <span class="font-semibold">{{ userProfile.followerCount }}</span> {{'followers' | translate}}
         </li>
         <!-- following -->
         <li (click)="currentUserId && userProfile.followingCount > 0 ? isVisibleFollowing = true: ''"
-          [ngClass]="currentUserId && userProfile.followingCount > 0 ? 'cursor-pointer' : ''">
-          <span class="font-semibold">{{ userProfile.followingCount }}</span> following
+          [ngClass]="currentUserId && userProfile.followingCount > 0 ? 'cursor-pointer lowercase' : 'lowercase'">
+          <span class="font-semibold">{{ userProfile.followingCount }}</span> {{'following' | translate}}
         </li>
       </ul>
 
@@ -78,29 +80,131 @@
     </section>
   </header>
 
+  <!-- header mobile -->
+  <header *ngIf="isMobile" class="px-2 flex flex-column gap-3">
+    <div class="flex align-items-center column-gap-3">
+      <!-- Avatar -->
+      <div [title]="'uploadAvatar' | translate" class="border-circle overflow-hidden" style="min-width: 96px; height: 96px;">
+        <input
+          #fileInput
+          type="file"
+          style="display: none"
+          accept="image/*"
+          (change)="onFileSelected($event)" />
+        <button (click)="fileInput.click()" class="border-none p-0 outline-none cursor-pointer" style="background: none;">
+          <app-avatar [userId]="userProfile.id" [width]="96" [userStory]="userStory"></app-avatar>
+        </button>
+      </div>
+
+      <!-- Right side -->
+      <section class="flex flex-column gap-3">
+        <div class="flex align-items-center gap-3">
+          <!-- Username -->
+          <app-username-label 
+            [userId]="currentUserId"
+            [username]="userProfile.username"
+            [fontSize]="'1.5rem'"
+            [color]="''">
+          </app-username-label>
+        </div>
+
+        <!-- Count section -->
+        <ul class="flex align-items-center gap-4 list-none pl-0 m-0">
+          <!-- posts -->
+          <li class="lowercase">
+            <span class="font-semibold">{{ !userProfile.posts ? 0 : userProfile.posts.length }}</span>
+            <span class="line-clamp">{{'posts' | translate}}</span>
+          </li>
+          <!-- followers -->
+          <li (click)="currentUserId && userProfile.followerCount > 0 ? isVisibleFollowers = true : ''"
+            [ngClass]="currentUserId && userProfile.followerCount > 0 ? 'cursor-pointer lowercase' : 'lowercase'">
+            <span class="font-semibold">{{ userProfile.followerCount }}</span>
+            <span class="line-clamp">{{'followers' | translate}}</span>
+          </li>
+          <!-- following -->
+          <li (click)="currentUserId && userProfile.followingCount > 0 ? isVisibleFollowing = true: ''"
+            [ngClass]="currentUserId && userProfile.followingCount > 0 ? 'cursor-pointer lowercase' : 'lowercase'">
+            <span class="font-semibold">{{ userProfile.followingCount }}</span> 
+            <span class="line-clamp">{{'following' | translate}}</span>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <!-- button list -->
+     <div class="flex gap-2 flex-column mt-2">
+        <!-- Bio -->
+        <div *ngIf="userProfile.bio" class="intro">
+          <span>{{ userProfile.bio }}</span>
+        </div>
+        <div class="flex align-items-center gap-2 mt-2">
+          <!-- Follow button -->
+          <p-button *ngIf="!isOwnerProfile && !userProfile.isFollowing"
+            (click)="toggleFollow(userProfile.id)" 
+            [label]="'follow' | translate" severity="my-custom-primary"
+            class="flex-1"
+            styleClass="w-full">
+          </p-button>
+          <!-- Unfollow button -->
+          <p-button *ngIf="!isOwnerProfile && userProfile.isFollowing"
+            (click)="dialogVisible = !dialogVisible" 
+            icon="pi pi-angle-down" iconPos="right"
+            [label]="'unfollow' | translate" severity="my-custom-secondary"
+            class="flex-1"
+            styleClass="w-full">
+          </p-button>
+          <!-- Message -->
+          <a *ngIf="!isOwnerProfile" href="/messages" class="flex-1">
+            <p-button [label]="'messages' | translate" severity="my-custom-secondary" styleClass="w-full"></p-button>
+          </a>
+          <!-- Edit profile/ Setting -->
+          <ng-container *ngIf="isOwnerProfile">
+            <!-- Edit profile -->
+            <div *ngIf="isOwnerProfile" routerLink="/account/edit-profile" class="flex-1">
+              <p-button [label]="'editProfile' | translate" severity="my-custom-secondary" styleClass="w-full"></p-button>
+            </div>
+            <!-- choose Label -->
+            <p-button class="ml-2 flex-1" styleClass="w-full"
+              (click)="showChooseLabelDialog()" 
+              [label]="'chooseLabel' | translate" severity="my-custom-primary">
+            </p-button>
+    
+            <!-- Setting -->
+            <i *ngIf="isOwnerProfile" routerLink="/account/edit-profile" class="pi pi-cog cursor-pointer" style="font-size: 1.5rem"></i>
+          </ng-container>
+          </div>
+     </div>
+  </header>
   
-  <div class="mt-6 border-top-1 border-gray-300 flex justify-content-center align-items-center">
-    <div class="py-3 border-top-1 flex justify-content-center align-items-center">
-      <i class="pi pi-table mr-2" style="font-size: 1rem"></i>
-      <span class="text-xs font-semibold">POSTS</span>
+  <div class="border-top-1 border-gray-300 mt-6 flex justify-content-center align-items-center gap-4">
+    <!-- POSTS -->
+    <div (click)="selectTab(0)" [ngStyle]="{'border-top': selectedTab == 0 ? '1px solid' : ''}" title="View mode" class="transition-duration-200 py-3 flex justify-content-center align-items-center cursor-pointer">
+      <i class="pi pi-table mr-1" style="font-size: 1rem"></i>
+      <span class="text-xs font-semibold uppercase">{{'posts' | translate}}</span>
+    </div>
+    <!-- COLLECTIONS -->
+    <div (click)="selectTab(1)" [ngStyle]="{'border-top': selectedTab == 1 ? '1px solid' : ''}" class="transition-duration-200 py-3 flex justify-content-center align-items-center cursor-pointer">
+      <i class="pi pi-objects-column mr-1" style="font-size: 1rem"></i>
+      <span class="text-xs font-semibold uppercase">{{'collections' | translate}}</span>
     </div>
   </div>
 
   <!-- Post list -->
-  <div class="content">
-    <article style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px">
-      <ng-container *ngFor="let post of userProfile.posts">
-        <div *ngIf="post.photos && post.photos.length > 0" 
-          style="aspect-ratio: 1/1; cursor: pointer;"
-          (click)="handleShowPostDetail(true, post)">
-          <img height="100%"
-            width="100%"
-            [src]="post.photos[0].url"
-            [alt]="post.photos[0].altText"
-            style="object-fit: cover; display: block;" />
-        </div>
-      </ng-container>
-    </article>
+  <div [ngClass]="{'hidden': selectedTab != 0}" class="content">
+    <app-post-list 
+      [userProfileId]="profileId"
+      [currentUserId]="currentUserId"
+      [viewMode]="viewMode"
+      [sortMode]="sortMode"
+      (showPostDetailEvent)="handleShowPostDetail(true, $event)">
+    </app-post-list>
+  </div>
+  <!-- Collection list -->
+  <div [ngClass]="{'hidden': selectedTab != 1}" class="content">
+    <app-collection-grid 
+      [userProfileId]="profileId"
+      [currentUserId]="currentUserId">
+    </app-collection-grid>
   </div>
 </main>
 
@@ -140,11 +244,11 @@
 </app-following-dialog>
 
 <!-- Choose Label -->
-<p-dialog [(visible)]="chooseLableDialog" [style]="{ width: '62rem' }" header="Choose Label" [modal]="true"
+<p-dialog [(visible)]="chooseLableDialog" [style]="{ width: '62rem' }" [header]="'chooseLabel' | translate" [modal]="true"
 styleClass="p-fluid">
       <p-dataView #dv [value]="userLabelInfos" >
         <ng-template let-userLabelInfo pTemplate="listItem">
-          <div class="col-12 lg:col-12 xl:col-3 p-2">
+          <div class="col-12 lg:col-4 sm:col-4 xl:col-3 p-2">
             <div class="p-4 border-1 surface-border surface-card border-round">
               <div class="flex flex-wrap align-items-center justify-content-between gap-2">
                 <span class="flex align-items-center gap-2">
@@ -159,11 +263,70 @@ styleClass="p-fluid">
               </div>
               
               <div class="card flex justify-content-center">
-                <p-button label="Cancel" (click)="confirm(userLabelInfo)" *ngIf="userLabelInfo.isShow" icon="pi pi-times" severity="secondary" [rounded]="true"></p-button>
-                <p-button label="Confirm" (click)="confirm(userLabelInfo)" *ngIf="!userLabelInfo.isShow" [rounded]="true"></p-button>
+                <p-button [label]="'cancel' | translate" (click)="confirm(userLabelInfo)" *ngIf="userLabelInfo.isShow" icon="pi pi-times" severity="secondary" [rounded]="true"></p-button>
+                <p-button [label]="'confirm' | translate" (click)="confirm(userLabelInfo)" *ngIf="!userLabelInfo.isShow" [rounded]="true"></p-button>
             </div>
             </div>
           </div>
         </ng-template>
       </p-dataView>
+</p-dialog>
+
+<p-dialog
+  [(visible)]="qrCodeDialogVisible"
+  [modal]="true"
+  header="QR Code"
+  [style]="{ width: '50vw' }"
+>
+  <img [src]="qrCodeUrl" alt="QR Code" style="width: 70%; height: auto" />
+  <p-button
+    label="Close"
+    icon="pi pi-times"
+    (click)="qrCodeDialogVisible = false"
+  ></p-button>
+</p-dialog>
+
+
+<!-- View and sort -->
+<p-dialog
+  class="viewmode-dialog"
+  [header]="'viewMode' | translate"
+  [modal]="true"
+  [(visible)]="isVisibleChooseViewMode"
+  [dismissableMask]="true"
+  [style]="{ width: '24rem' }">
+
+  <p-divider></p-divider>
+  
+  <div class="modal-content p-3">
+    <!-- view -->
+    <span class="block mb-2 mt-2 text-gray-500 text-sm">{{'viewMode' | translate}}</span>
+
+    <div *ngFor="let option of viewOptions" class="field-checkbox mb-2">
+      <p-radioButton 
+        [inputId]="option.id"
+        name="view" 
+        [value]="option.id" 
+        [(ngModel)]="viewMode" />
+      <label [for]="option.id" class="gap-1 flex align-items-center cursor-pointer">
+        <p-button class="close-friend" [icon]="option.icon" [text]="true" severity="secondary" size="small" />
+        {{ option.label }}
+      </label>
+    </div>
+
+    <!-- sorting -->
+    <span class="block mb-2 mt-3 text-gray-500 text-sm">{{'sort' | translate}}</span>
+
+    <div *ngFor="let option of sortOptions" class="field-checkbox mb-2">
+      <p-radioButton 
+        [inputId]="option.id"
+        name="sort" 
+        [value]="option.value" 
+        [(ngModel)]="sortMode" />
+      <label [for]="option.id" class="gap-1 flex align-items-center cursor-pointer">
+        <p-button class="close-friend" [icon]="option.icon" [text]="true" severity="secondary" size="small" />
+        {{ option.label }}
+      </label>
+    </div>
+  </div>
 </p-dialog>

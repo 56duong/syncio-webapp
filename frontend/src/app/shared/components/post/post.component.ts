@@ -1,10 +1,14 @@
 import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { tap } from 'rxjs';
 import { Post, Visibility } from 'src/app/core/interfaces/post';
 import { Report } from 'src/app/core/interfaces/report';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 import { ReportService } from 'src/app/core/services/report.service';
 import { ToastService } from 'src/app/core/services/toast.service';
+import { TokenService } from 'src/app/core/services/token.service';
 import { TextUtils } from 'src/app/core/utils/text-utils';
 
 @Component({
@@ -24,22 +28,7 @@ export class PostComponent {
   
   dialogVisible: boolean = false;
   
-  dialogItems: any = [
-    { 
-      label: 'Report', 
-      bold: 7,
-      color: 'red', 
-      action: () => this.showReportModal() 
-    },
-    { 
-      label: 'Copy link',
-      action: () => this.copyLink()
-    },
-    { 
-      label: 'Cancel',
-      action: () => this.dialogVisible = false
-    }
-  ];
+  dialogItems: any = [];
   
   reasonDialogVisible: boolean = false;
 
@@ -58,11 +47,19 @@ export class PostComponent {
 
   Visibility = Visibility
 
+  collectionVisible: boolean = false;
+
+  currentUserId: string = '';
+
   constructor(
     private location: Location,
     private textUtils: TextUtils,
     private toastService: ToastService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private translateService: TranslateService,
+    private tokenService: TokenService,
+    private redirectService: RedirectService,
+    private router: Router
   ) {}
 
   hideDialog() {
@@ -70,6 +67,28 @@ export class PostComponent {
   }
   
   ngOnInit(): void {
+    this.currentUserId = this.tokenService.extractUserIdFromToken();
+    this.dialogItems = [
+      { 
+        label: this.translateService.instant('report'), 
+        bold: 7,
+        color: 'red', 
+        action: () => this.showReportModal() 
+      },
+      { 
+        label: this.translateService.instant('copyLink'),
+        action: () => this.copyLink()
+      },
+      ...(this.post.createdBy === this.currentUserId ? [{ 
+        label: this.translateService.instant('saveToCollection'),
+        action: () => this.collectionVisible = true
+      }] : []),
+      { 
+        label: this.translateService.instant('cancel'),
+        action: () => this.dialogVisible = false
+      }
+    ];
+
     if (this.isReportedPostsPage) {
       this.getReports();
     }
@@ -97,7 +116,12 @@ export class PostComponent {
   }
 
   showReportModal() {
-    this.reportVisible = true;
+    if(!this.tokenService.extractUserIdFromToken()) {
+      this.redirectService.needLogin();
+    }
+    else {
+      this.reportVisible = true;
+    }
   }
 
   handleReportModalVisibility(event: boolean) {
@@ -109,7 +133,10 @@ export class PostComponent {
    */
   async copyLink() {
     await this.textUtils.copyToClipboard(window.location.href + 'post/' + this.post.id);
-    this.toastService.showSuccess('Success', 'Link copied to clipboard');
+    this.toastService.showSuccess(
+      this.translateService.instant('success'), 
+      this.translateService.instant('linkCopiedToClipboard')
+    );
   }
 
   onActivePost(): void {
@@ -154,6 +181,24 @@ export class PostComponent {
 
   onHidePost(): void {
     this.hidePostEvent.emit(this.post.id);
+  }
+
+
+  /**
+   * Handle the click event on the post caption.
+   * @param event 
+   */
+  handleClick(event: MouseEvent) {
+    // Check if the click event target is a .profile-link element
+    const target = event.target as HTMLElement;
+    if (target.tagName === 'A' && target.getAttribute('data-link')) {
+      event.preventDefault();
+      const profileUrl = target.getAttribute('data-link');
+      this.router.navigate([profileUrl]);
+    }
+  
+    // Toggle isViewMore if not clicked on a .profile-link
+    this.isViewMore = !this.isViewMore;
   }
 
 }

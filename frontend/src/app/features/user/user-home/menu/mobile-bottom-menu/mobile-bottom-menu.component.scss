@@ -1,0 +1,37 @@
+.container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--surface-a);
+  z-index: 9999;
+  border-top: 1px solid var(--gray-300);
+  height: 65px;
+}
+
+.container ::ng-deep .menu-active .p-button-label,
+.container ::ng-deep .menu-active .p-button-icon {
+  font-weight: bold !important;
+}
+
+.container nav ::ng-deep .p-button {
+  text-align: left;
+  padding: 0 1rem;
+  height: auto;
+  width: auto;
+}
+
+.container ::ng-deep .p-button.p-button-text.p-button-plain:enabled:hover {
+  background: none;
+}
+
+.container ::ng-deep .p-button.p-button-text:not(:disabled) .p-button-icon {
+  font-size: 1.25rem !important;
+  margin-right: 0;
+}
+.container ::ng-deep .p-button.p-button-text:not(:disabled) .p-button-label,
+.container ::ng-deep .p-button.p-button-text:not(:disabled) .p-button-icon {
+  font-weight: 500;
+  color: var(--surface-800);
+  font-size: 16px;
+}

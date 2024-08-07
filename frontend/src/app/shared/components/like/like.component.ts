@@ -4,6 +4,7 @@ import { ActionEnum } from 'src/app/core/interfaces/notification';
 import { CommentService } from 'src/app/core/services/comment.service';
 import { LikeService } from 'src/app/core/services/like.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
+import { RedirectService } from 'src/app/core/services/redirect.service';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
@@ -13,6 +14,7 @@ import { UserResponse } from 'src/app/features/authentication/login/user.respons
   templateUrl: './like.component.html',
   styleUrls: ['./like.component.scss'],
 })
+
 export class LikeComponent {
   @Input() postId!: string;
   @Input() createdBy!: string; // The id of the user who created the post
@@ -30,6 +32,7 @@ export class LikeComponent {
     private commentService: CommentService,
     private userService: UserService,
     private notificationService: NotificationService,
+    private redirectService: RedirectService
   ) {}
 
   ngOnInit() {
@@ -45,6 +48,9 @@ export class LikeComponent {
   }
 
   likePost() {
+    //not logged in
+    if(!this.userResponse?.id) this.redirectService.needLogin();
+
     console.log('likePost');
     this.likeService.toggleLikes(this.postId, this.userResponse?.id).subscribe({
       next: () => {

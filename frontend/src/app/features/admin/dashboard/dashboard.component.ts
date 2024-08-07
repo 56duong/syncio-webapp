@@ -180,8 +180,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getTotalUsers() {
-    this.userService.getUserCount().subscribe(count => {
-      this.totalUsers = count;
+    this.userService.getUsers().subscribe(users => {
+      this.totalUsers = users.length;
     })
   }
 

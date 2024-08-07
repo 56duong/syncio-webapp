@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageContent, MessageContentTypeEnum } from 'src/app/core/interfaces/message-content';
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
 import { User } from 'src/app/core/interfaces/user';
+import { UserSearch } from 'src/app/core/interfaces/user-search';
 import { MessageContentService } from 'src/app/core/services/message-content.service';
 import { MessageRoomMemberService } from 'src/app/core/services/message-room-member.service';
 import { MessageRoomService } from 'src/app/core/services/message-room.service';
@@ -15,11 +16,14 @@ import { TokenService } from 'src/app/core/services/token.service';
 })
 
 export class MessagesComponent {
+  isMobile: boolean = false;
+  @ViewChild('messageContainer') messageContainerElement: any;
+
   messageRooms: MessageRoom[] = []; // Array of message rooms to display in the sidebar.
   currentUser!: User; // Current user logged in.
   
   isDialogVisible: boolean = false;
-  selectedUserMembers: User[] = []; // Array of selected user members to create a message room.
+  selectedUserMembers: UserSearch[] = []; // Array of selected user members to create a message room.
 
   selectedMessageRoom!: MessageRoom; // Selected message room to display the messages content.
   
@@ -33,8 +37,9 @@ export class MessagesComponent {
     private router: Router,
     private messageRoomMemberService: MessageRoomMemberService,
     private messageContentService: MessageContentService,
-    private cdr: ChangeDetectorRef
-  ) { }
+  ) { 
+    this.isMobile = window.innerWidth < 768;
+  }
   
 
   ngOnInit() {
@@ -92,8 +97,7 @@ export class MessagesComponent {
 
 
   /**
-   * Get the new message group observable.
-   * This observable will emit new message room whenever a new message room is received.
+   * When a new message room is created.
    * This is used if the room is group chat.
    * It will add the new message room to the message rooms array, connect and subscribe to the message room.
    */
@@ -101,7 +105,7 @@ export class MessagesComponent {
     this.messageRoomService.getNewMessageGroupObservable().subscribe({
       next: (messageRoom) => {
         if(!messageRoom.id) return; 
-        if(messageRoom.createdBy == this.currentUser.id) {
+        if(messageRoom.createdBy !== this.currentUser.id) {
           // when a new message room is created, add it to the message rooms array
           this.messageRooms = [messageRoom, ...this.messageRooms];
         }
@@ -116,8 +120,7 @@ export class MessagesComponent {
 
 
   /**
-   * Get the message rooms observable for the first message.
-   * This observable will emit new message room whenever the first message is received.
+   * When receiving the first message content of a new message room.
    * This is used if the room is a direct message between two users.
    * You can use this method as an alternative to getNewMessageGroupObservable() for direct messages.
    * It will add the new message room to the message rooms array, connect and subscribe to the message room.
@@ -128,7 +131,7 @@ export class MessagesComponent {
         if(!messageRoom.id) return;
         if(messageRoom.createdBy != this.currentUser.id) {
           if(!messageRoom.group) {
-            messageRoom.avatarURL = messageRoom.members?.filter((member: any) => member.userId != this.currentUser.id)[0].userId;
+            messageRoom.avatarURL = messageRoom.createdBy; // update avatar is the created by user id
             this.messageRooms = [messageRoom, ...this.messageRooms];
           }
         }
@@ -239,6 +242,10 @@ export class MessagesComponent {
     }
     
     this.updateLastSeenMessage(messageRoom);
+
+    if(this.isMobile) {
+      this.scrollToBehavior('right');
+    }
   }
 
 
@@ -268,7 +275,7 @@ export class MessagesComponent {
   /**
    * Check and create a new message room with selected user members.
    */
-  chat(event: User[]) {
+  chat(event: UserSearch[]) {
     this.selectedUserMembers = event;
 
     if(this.selectedUserMembers.length <= 0) return;
@@ -290,6 +297,8 @@ export class MessagesComponent {
           // if not exists, create a new room
           this.messageRoomService.createMessageRoomWithUsers(userIds).subscribe({
             next: (messageRoom) => {
+              // update the avatarURL of the message room if the room is a direct message between two users
+              if(userIds.length === 2) messageRoom.avatarURL = this.currentUser.id;
               this.messageRooms = [messageRoom, ...this.messageRooms];
               this.selectMessageRoom(messageRoom);
               this.isDialogVisible = false;
@@ -323,7 +332,7 @@ export class MessagesComponent {
         if(!receiveId || !this.selectedMessageRoom.id) return;
         this.messageRoomService.sendFirstMessage(receiveId, this.selectedMessageRoom.id).subscribe({
           next: (result) => {
-            console.log(result);
+            // console.log(result);
           },
           error: (error) => {
             console.log(error);
@@ -358,6 +367,23 @@ export class MessagesComponent {
       }
       return room;
     });
+  }
+
+
+  backToMessageRoomListEvent(event: any) {
+    this.scrollToBehavior('left');
+    this.selectedMessageRoom = {} as MessageRoom;
+    this.router.navigate(['/messages']);
+  }
+
+
+  scrollToBehavior(direction: 'left' | 'right') {
+    if(direction === 'left') {
+      this.messageContainerElement.nativeElement.scrollLeft -= this.messageContainerElement.nativeElement.scrollWidth;
+    }
+    else {
+      this.messageContainerElement.nativeElement.scrollLeft += this.messageContainerElement.nativeElement.scrollWidth;
+    }
   }
 
 }

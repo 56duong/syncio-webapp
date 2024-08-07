@@ -20,6 +20,8 @@ public interface UserFollowRepository extends JpaRepository<UserFollow, PkUserUs
 
     List<UserFollow> findAllByActorId(UUID actorId);
 
+    List<UserFollow> findAllByTargetId(UUID targetId);
+
     /**
      * Retrieves a page of UserFollow entities based on the target user (the one being followed).
      * If the actor user is followed by the current user, they are given higher priority (sorted first).

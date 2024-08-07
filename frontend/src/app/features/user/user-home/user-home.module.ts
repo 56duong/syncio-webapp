@@ -3,11 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { UserHomeRoutingModule } from './user-home-routing.module';
 import { UserHomeComponent } from './user-home.component';
-import { CreatePostComponent } from './create-post/create-post.component';
 import { FeedComponent } from './feed/feed.component';
-import { LeftMenuComponent } from './left-menu/left-menu.component';
 import { PrimengModule } from 'src/app/primeng/primeng.module';
-import { TopMenuComponent } from './top-menu/top-menu.component';
 import { CoreModule } from 'src/app/core/core.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ProfileComponent } from './profile/profile.component';
@@ -23,14 +20,16 @@ import { NotificationsItemComponent } from './notifications/notifications-item/n
 import { FollowerDialogComponent } from './profile/follower-dialog/follower-dialog.component';
 import { FollowingDialogComponent } from './profile/following-dialog/following-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { SettingComponent } from './setting/setting.component';
+import { MenuModule } from './menu/menu.module';
+import { PostListComponent } from './profile/post-list/post-list.component';
+import { TagToLinkPipe } from 'src/app/core/pipes/tag-to-link.pipe';
+import { CollectionGridComponent } from './profile/collection-grid/collection-grid.component';
 
 @NgModule({
   declarations: [
     UserHomeComponent,
-    CreatePostComponent,
     FeedComponent,
-    LeftMenuComponent,
-    TopMenuComponent,
     ProfileComponent,
     SearchComponent,
     StoryListComponent,
@@ -41,7 +40,10 @@ import { TranslateModule } from '@ngx-translate/core';
     NotificationsComponent,
     NotificationsItemComponent,
     FollowerDialogComponent,
-    FollowingDialogComponent
+    FollowingDialogComponent,
+    SettingComponent,
+    PostListComponent,
+    CollectionGridComponent
   ],
   imports: [
     CommonModule,
@@ -50,7 +52,11 @@ import { TranslateModule } from '@ngx-translate/core';
     CoreModule,
     SharedModule,
     PickerComponent,
-    TranslateModule
+    TranslateModule,
+    MenuModule
+  ],
+  providers: [
+    TagToLinkPipe
   ],
 })
 export class UserHomeModule {}

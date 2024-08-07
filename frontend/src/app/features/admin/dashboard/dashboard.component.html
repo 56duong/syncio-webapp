@@ -37,9 +37,10 @@
         <li *ngFor="let user of outstandingUsers" class="user-card" style="list-style: none;">  
           <!-- <img [src]="user.avtURL" alt=""> -->
           <div class="flex flex-grow ">
-            <img class=" flex-grow-1 p-2" style="width: 50px; height: 50px; object-fit: contain;" 
+            <!-- <img class=" flex-grow-1 p-2" style="width: 50px; height: 50px; object-fit: contain;" 
             src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
-            alt="" />
+            alt="" /> -->
+            <app-avatar [userId]="user.id" [width]="64" [userStory]="user"></app-avatar>
             <p class="flex-grow-1 p-2">{{ user.username }}</p>
         </div>
         </li>

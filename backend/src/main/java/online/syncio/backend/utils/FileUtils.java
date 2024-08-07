@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class FileUtils {
 
     private final String UPLOADS_FOLDER = "uploads";
     private final String FILE_IMAGE_EXTENSION = "jpg";
-    private final String FILE_AUDIO_EXTENSION = "mp4";
+    private final String FILE_AUDIO_EXTENSION = "wav";
 
     @Value("${firebase.storage.type}")
     private String storageType;
@@ -29,8 +30,8 @@ public class FileUtils {
     /**
      * Will store the file to the local storage or firebase storage based on the storage type.
      * @param file
-     * @param folderName
-     * @return If the storage type is firebase, it will return the file path. Example: fileName.fileExtension
+     * @param folderName Folder name where the file will be stored. Example: stickers
+     * @return Return file name. Example: 1234-5678-90ab-cdef.jpg
      * @throws IOException If the file is empty or the file name is null.
      */
     public String storeFile(MultipartFile file, String folderName, boolean isKeepCurrentName) throws IOException {
@@ -55,8 +56,13 @@ public class FileUtils {
             return firebaseStorageService.uploadFileKeepCurrentName(file, folderName);
         }
         else {
-            boolean isImage = file.getContentType().startsWith("image");
-            return firebaseStorageService.uploadFile(file, folderName, isImage ? FILE_IMAGE_EXTENSION : FILE_AUDIO_EXTENSION);
+            boolean isImage = Objects.requireNonNull(file.getContentType()).startsWith("image");
+            boolean isAudio = file.getContentType().startsWith("audio");
+            return firebaseStorageService.uploadFile(file, folderName, isImage
+                                                                            ? FILE_IMAGE_EXTENSION
+                                                                            : isAudio
+                                                                                ? FILE_AUDIO_EXTENSION
+                                                                                : null);
         }
     }
 
@@ -84,6 +90,24 @@ public class FileUtils {
         Path destination = Paths.get(path.toString(), newFileName);
         Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
         return newFileName;
+    }
+
+
+    /**
+     * Will delete the file from the local storage or firebase storage based on the storage type.
+     * File name should be contained the folder name. Example: stickers/1234-5678-90ab-cdef.jpg
+     * @param fileName File name to be deleted. Example: stickers/1234-5678-90ab-cdef.jpg
+     * @return Return true if the file is deleted successfully.
+     * @throws IOException If the file is not found or the file name is null.
+     */
+    public boolean deleteFile(String fileName) throws IOException {
+        if (storageType.equals("firebase")) {
+            return firebaseStorageService.deleteFile(fileName);
+        }
+        else {
+            Path path = Paths.get(UPLOADS_FOLDER, fileName);
+            return Files.deleteIfExists(path);
+        }
     }
 
 }

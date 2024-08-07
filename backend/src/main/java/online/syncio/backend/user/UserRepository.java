@@ -1,5 +1,6 @@
 package online.syncio.backend.user;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,21 +27,30 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     public User findByResetPasswordToken(String token);
 
-    List<User> findTop20ByUsernameContainingOrEmailContaining(String username, String email);
+    @Query("SELECT u.id, u.username, size(u.followers) " +
+            "FROM User u " +
+            "WHERE u.username LIKE %:username% OR u.email LIKE %:email% " +
+            "ORDER BY CASE WHEN u.username = :username THEN 0 WHEN u.email = :email THEN 1 ELSE 2 END, u.username, u.email")
+    List<Object[]> findTop20ByUsernameContainingOrEmailContaining(@Param("username") String username, @Param("email") String email, Pageable pageable);
 
     @Modifying
     @Query("UPDATE User u SET u.status = 'ACTIVE' WHERE u.id = :id")
     void enableUser(UUID id);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE User u SET u.qrCodeUrl = :userQRCode WHERE u.id = :id")
+    void saveQRCODE(@Param("userQRCode") String userQRCode, @Param("id") UUID id);
+
 
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.posts WHERE u.id = :id")
     Optional<User> findByIdWithPosts(@Param("id") UUID id);
 
-    @Query("SELECT u FROM User u JOIN u.stories s WHERE s.createdDate > :createdDate")
-    List<User> findAllUsersWithAtLeastOneStoryAfterCreatedDate(LocalDateTime createdDate);
-
     @Query("SELECT u.username FROM User u WHERE u.id = :id")
     String findUsernameById(UUID id);
+
+    @Query("SELECT u.id FROM User u WHERE u.username = :username")
+    UUID findUserIdByUsername(String username);
 
     @Query("SELECT DATE(u.createdDate) as date, COUNT(u) as count " +
             "FROM User u " +

@@ -2,11 +2,11 @@
   [(visible)]="isVisible"
   [modal]="true"
   [dismissableMask]="true"
-  [closable]="false"
   [responsive]="true"
-  [style]="{ width: '80vw', maxWidth: '900px' }"
+  [style]="{ width: isMobile? '100vw' : '80vw', maxWidth: '900px' }"
   [baseZIndex]="10000"
-  header="Header">
+  header="Header"
+  [class.mobile]="isMobile">
   <ng-template pTemplate="header" style="padding: 0;">
     <!-- Modal header -->
     <div
@@ -16,7 +16,7 @@
         justify-content: space-between;
         align-items: center;
         width: 100%;
-        border-bottom: 1px solid #ccc;">
+        border-bottom: 1px solid var(--surface-border);">
       <div>
         <button
           pButton
@@ -27,13 +27,13 @@
         ></button>
       </div>
       <div>
-        <p style="margin: 0; font-weight: 600;">Create New Post</p>
+        <p style="margin: 0; font-weight: 600;">{{ 'createNewPost' | translate }}</p>
       </div>
       <div>
         <button
           pButton
           type="button"
-          label="Share"
+          [label]="'share' | translate"
           (click)="createPost()"
           class="p-button-text"
         ></button>
@@ -50,7 +50,7 @@
             #fileUploader
             name="photo[]"
             mode="basic"
-            chooseLabel="Select from computer"
+            [chooseLabel]="'selectFromComputer' | translate"
             chooseIcon="pi pi-upload"
             (onSelect)="onPhotoSelected($event)"
             [multiple]="true"
@@ -72,22 +72,32 @@
       </div>
     </div>
 
-    <p-divider layout="vertical"></p-divider>
+    <p-divider *ngIf="!isMobile" layout="vertical"></p-divider>
+    <p-divider *ngIf="isMobile" layout="horizontal"></p-divider>
 
     <!-- Right content / Caption -->
     <div class="col-5 px-3 pt-2">
       <div class="p-fluid">
         <div class="field">
-          <div class="inline-flex align-items-center justify-content-center gap-2">
+          <div class="inline-flex align-items-center justify-content-start gap-2 w-full">
             <app-avatar [userId]="currentUserId" [width]="32"></app-avatar>
-            <span class="font-semibold white-space-nowrap">{{currentUsername}}</span>
+            <span class="font-semibold white-space-nowrap">
+              <!-- {{currentUsername}} -->
+              <app-username-label 
+                [userId]="currentUserId"
+                [username]="currentUsername"
+                [fontSize]="''"
+                [color]="''">
+              </app-username-label>
+            </span>
             <!-- Visibility -->
             <button
               pButton
               pRipple
               [label]="getVisibilityLabel(selectedVisibility)"
               (click)="onShowModalVisibility()"
-              class="p-button-success padding-7"
+              class="p-button-success padding-7 w-fit"
+              [ngStyle]="{ 'margin-left': isMobile ? 'auto' : '0' }"
             ></button>
           </div>
         </div>
@@ -99,9 +109,12 @@
             pInputTextarea
             [(ngModel)]="post.caption"
             [autoResize]="true"
-            placeholder="Write a caption..."
+            [placeholder]="('writeACaption' | translate) + '...'"
             class="border-0 outline-none p-0 shadow-none"
             style="max-height: 154px;"
+            [mentionConfig]="mentionConfig"
+            [mentionListTemplate]="mentionListTemplate"
+            (input)="onCaptionChange($event)"
           ></textarea>
         </div>
         <!-- Emoji -->
@@ -132,7 +145,7 @@
 
         <!-- Audio -->
         <div class="flex justify-content-between align-items-center">
-          <p>Audio</p>
+          <p>{{ 'audio' | translate }}</p>
           <div class="relative">
             <p-speedDial [model]="audioItems" direction="up" />
             <input #audioInput type="file" accept="audio/*" (change)="onAudioSelected($event)" hidden />
@@ -149,16 +162,16 @@
 <!-- Visibility modal -->
 <p-dialog
   class="visibility-dialog"
-  header="Audience"
+  [header]="'audience' | translate"
   [modal]="true"
   [(visible)]="isVisibleVisibility"
-  [style]="{ width: '23.5rem' }"
-  [closable]="false">
+  [dismissableMask]="true"
+  [style]="{ width: '23.5rem' }">
 
   <p-divider></p-divider>
   
   <div class="modal-content p-2">
-    <span class="block text-center mb-3 mt-2 font-semibold">Who would you like to share your post with?</span>
+    <span class="block text-center mb-3 mt-2 font-semibold">{{'whoWouldYouLikeToShareYourPostWith' | translate}}?</span>
 
     <div *ngFor="let visibility of visibilityOptions | keyvalue" class="field-checkbox mb-3">
       <p-radioButton 
@@ -185,3 +198,15 @@
   (submitAudioEvent)="submitAudio($event)"
   (closeRecorderEvent)="isVisibleRecorder = false">
 </app-voice-recorder-dialog>
+
+<!-- Mention list template -->
+<ng-template #mentionListTemplate let-user="item">
+  <!-- each item -->
+  <div class="flex justify-content-start align-content-center gap-2 cursor-pointer">
+    <app-avatar [userId]="user.id" [width]="36"></app-avatar>
+    <div class="flex flex-column">
+      <span style="line-height: 1.3em;">{{user.username}}</span>
+      <small class="text-gray-500" style="line-height: 1.3em;">{{user.followerCount}} followers</small>
+    </div>
+  </div>
+</ng-template>

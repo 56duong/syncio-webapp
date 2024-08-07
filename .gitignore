@@ -6,13 +6,10 @@ package-lock.json
 uploads/
 backend/src/main/resources/application-local.properties
 backend/src/main/resources/application-common.properties
-
-backend/src/main/resources/application-local.properties
-
 ai-check-image/main.py
 ai-check-image/test1.py
 
+backend/src/main/resources/static/syncio-bf6ca-firebase-adminsdk-68fpl-88eea603ef.json
 backend/src/main/resources/static/syncio-bf6ca-firebase-adminsdk-68fpl-bf6eb06c71.json
 ca.pem
 
-backend/src/main/resources/static/syncio-bf6ca-firebase-adminsdk-68fpl-88eea603ef.json

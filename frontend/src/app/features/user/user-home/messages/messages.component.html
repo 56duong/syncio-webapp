@@ -1,12 +1,13 @@
-<div class="message-container flex">
+<div #messageContainer class="message-container flex"
+  [class.mobile]="isMobile">
 
   <!-- Left  -->
   <div class="left col-3 p-0 flex flex-column">
     <!-- Username Header -->
-    <div class="flex justify-content-between align-items-center p-2">
+    <div *ngIf="currentUser" class="flex justify-content-between align-items-center p-2">
       <div class="flex justify-content-between align-items-center gap-2">
-        <app-avatar [userId]="currentUser?.id" [width]="48"></app-avatar>
-        <h3>{{currentUser?.username}}</h3>
+        <app-avatar [userId]="currentUser.id" [width]="48"></app-avatar>
+        <h3>{{currentUser.username}}</h3>
       </div>
       <i (click)="isDialogVisible = true" class="fa-regular fa-pen-to-square cursor-pointer"></i>
     </div>
@@ -15,7 +16,7 @@
 
     <!-- Message Room List -->
     <div class="flex-1 overflow-hidden flex flex-column">
-      <h4 class="px-2">Messages</h4>
+      <h4 class="px-2">{{ 'messages' | translate }}</h4>
       <div class="flex-1 primary-scrollbar overflow-y-scroll">
         <div *ngFor="let messageroom of messageRooms"
           (click)="selectMessageRoom(messageroom)"
@@ -23,7 +24,7 @@
           routerLinkActive="active"
           class="message-item py-3 px-2">
           <div class="flex align-items-center gap-2">
-            <app-avatar [userId]="messageroom.avatarURL" [width]="48"></app-avatar>
+            <app-avatar [userId]="messageroom.avatarURL" [width]="48" [onError]="messageroom.group ? 'assets/images/avatar-group.jpg' : ''"></app-avatar>
             <div class="w-full" [ngStyle]="{ 'max-width': (messageroom.unSeenCount && messageroom.unSeenCount > 0) ? 'calc(100% - 48px - 0.5rem - 20px - 0.5rem)' : 'calc(100% - 48px - 0.5rem)'}">
               <p *ngIf="currentUser.username"
                 title="{{messageroom.name}}"
@@ -37,15 +38,15 @@
                 <small *ngIf="!messageroom.lastMessage?.type?.startsWith('NOTIFICATION') && messageroom.lastMessage?.type == MessageContentTypeEnum.TEXT" 
                   style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
                   class="line-clamp"
-                  [innerHTML]="messageroom.lastMessage?.message">
+                  [innerHTML]="messageroom.lastMessage.message">
                 </small>
                 <!-- if type is not text, show user sent a sticker or photo -->
                 <small *ngIf="!messageroom.lastMessage?.type?.startsWith('NOTIFICATION') && messageroom.lastMessage?.type != MessageContentTypeEnum.TEXT" 
                   style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
                   <ng-container>
-                    {{messageroom.lastMessage?.user?.username == this.currentUser.username ? 'You' : messageroom.lastMessage?.user?.username}}
+                    {{messageroom.lastMessage.user?.username == this.currentUser.username ? 'You' : messageroom.lastMessage.user?.username}}
                     sent a 
-                    {{messageroom.lastMessage?.type == MessageContentTypeEnum.STICKER ? 'sticker' : 'photo'}}.
+                    {{messageroom.lastMessage.type == MessageContentTypeEnum.STICKER ? 'sticker' : 'photo'}}.
                   </ng-container>
                 </small>
                 <!-- if type is notification, show notification -->
@@ -59,7 +60,7 @@
                 </ng-container>
                 <small>·</small>
                 <!-- date sent -->
-                <small>{{messageroom.lastMessage?.dateSent | dateAgoPipe: 'd'}}</small>
+                <small class="white-space-nowrap">{{messageroom.lastMessage.dateSent | dateAgoPipe: 'mth'}}</small>
               </div>
             </div>
             <!-- unSeenCount -->
@@ -75,14 +76,22 @@
   <p-divider [layout]="'vertical'"></p-divider>
 
   <!-- Message Content -->
-  <div class="right col-9 message-content p-0">
-    <!-- <router-outlet></router-outlet> -->
+  <div class="right col-9 message-content p-0 relative">
     <app-message-content-list *ngIf="selectedMessageRoom" 
+      [isMobile]="isMobile"
       [messageRoom]="selectedMessageRoom"
       [currentUser]="currentUser"
       (sendFirstMessageEvent)="sendFirstMessageEvent()"
-      (updateMessageRoomNameEvent)="updateMessageRoomName($event)">
+      (updateMessageRoomNameEvent)="updateMessageRoomName($event)"
+      (backToMessageRoomListEvent)="backToMessageRoomListEvent($event)">
     </app-message-content-list>
+
+    <div *ngIf="!selectedMessageRoom" class="flex flex-column justify-content-center align-items-center gap-3 absolute top-50 left-50" style="transform: translate(-50%, -50%);">
+      <i class="pi pi-comments" style="font-size: 4rem"></i>
+      <p class="my-0 text-xl">{{ 'yourMessages' | translate }}</p>
+      <small>{{ 'sendAMessageToStartAChat' | translate }}.</small>
+      <p-button [label]="'sendMessage' | translate" (click)="isDialogVisible = true"></p-button>
+    </div>
   </div>
 </div>
 
@@ -91,9 +100,9 @@
 <!-- New message dialog -->
 <app-select-user-dialog *ngIf="currentUser && currentUser.id"
   [isDialogVisible]="isDialogVisible"
-  dialogTitle="New message"
-  dialogDescription="To..."
-  dialogSubmitLabel="Chat"
+  [dialogTitle]="'newMessage' | translate"
+  [dialogDescription]="('to' | translate) + '...'"
+  [dialogSubmitLabel]="'chat' | translate"
   (selectedUsersEvent)="chat($event)"
   (visibleHide)="isDialogVisible = false">
 </app-select-user-dialog>

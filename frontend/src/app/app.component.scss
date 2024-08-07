@@ -1,14 +1,16 @@
-.profile-form {
-    max-width: 500px;
-    margin: auto;
-  
-    mat-form-field {
-      width: 100%;
-      margin-bottom: 16px;
+@media(max-width: 767px) {
+  p-toast ::ng-deep {
+    .p-toast-top-right {
+      top: 56px;
     }
-  
-    button {
-      width: 100%;
+
+    .p-toast {
+      width: calc(100% - 2rem);
+      right: 1rem;
+    }
+
+    .p-toast .p-toast-message .p-toast-message-content .p-toast-detail {
+      font-size: 0.875rem;
     }
   }
-  
+}

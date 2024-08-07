@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { User } from 'src/app/core/interfaces/user';
+import { UserSearch } from 'src/app/core/interfaces/user-search';
 import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
@@ -14,9 +14,9 @@ export class SelectUserDialogComponent {
   @Input() dialogTitle: string = '';
   @Input() dialogDescription: string = '';
   @Input() dialogSubmitLabel: string = '';
-  searchedUsers: User[] = [];
-  selectedUsers: User[] = [];
-  @Output() selectedUsersEvent: EventEmitter<User[]> = new EventEmitter<User[]>();
+  searchedUsers: UserSearch[] = [];
+  selectedUsers: UserSearch[] = [];
+  @Output() selectedUsersEvent: EventEmitter<UserSearch[]> = new EventEmitter<UserSearch[]>();
   @Output() visibleHide = new EventEmitter<boolean>();
 
   constructor(
@@ -32,6 +32,8 @@ export class SelectUserDialogComponent {
     this.userService.searchUsers(searchText, searchText).subscribe({
       next: (users) => {
         users = users.filter(user => !this.expectedUsers?.includes(user.id || ''));
+        //filter out the users that are already selected
+        users = users.filter(user => !this.selectedUsers.map(selectedUser => selectedUser.id).includes(user.id));
         this.searchedUsers = users;
       },
       error: (error) => {

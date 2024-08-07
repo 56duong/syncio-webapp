@@ -16,6 +16,19 @@ p-sidebar ::ng-deep .p-sidebar .p-sidebar-header {
     display: none;
 }
 
+p-sidebar ::ng-deep .p-sidebar-content {
+    overflow: unset;
+}
+
+p-sidebar ::ng-deep .p-sidebar .p-sidebar-footer {
+    padding: 0;
+}
+
+p-tieredmenu ::ng-deep .p-tieredmenu .p-menuitem-active>p-tieredmenusub>.p-submenu-list {
+    top: auto;
+    bottom: 0;
+}
+
 .container{
     flex: auto;
 }

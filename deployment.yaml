@@ -1,57 +1,7 @@
 version: "3.8"
 
 services:
-  mysql8-container:
-    container_name: mysql8-container
-    image: mysql:8.2.0
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: 1999
-      MYSQL_DATABASE: syncio-webapp
-    ports:
-      - 3307:3306
-    volumes:
-      - ./sql/syncio-webapp.sql:/docker-entrypoint-initdb.d/init-script.sql
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--password=1999"]
-      interval: 10s
-      timeout: 20s
-      retries: 10
-
-  phpmyadmin8-container:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin8-container
-    restart: always
-    depends_on:
-      mysql8-container:
-        condition: service_healthy
-    ports:
-      - "8100:80" #8080 is the default port for phpMyAdmin
-    environment:
-      PMA_HOST: mysql8-container
-    networks:
-      - app-network
-
-  redis-container:
-    image: docker.io/redis:7.2.3
-    container_name: redis-container
-    restart: always
-    ports:
-      - "6379:6379"
-    volumes:
-      - ./redis-data:/data
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  ai_check_image_container:
-    container_name: ai_check_image_container
+  app:
     build:
       context: .
       dockerfile: DockerfileAI
@@ -61,76 +11,27 @@ services:
       HOST: 0.0.0.0
       PORT: 8111
       DOMAIN: example.com
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq
       EXCHANGE: imageVerificationExchange
       QUEUE_IMAGE_VERIFY: imageVerificationQueue
-    networks:
-      - app-network
-
-  backend-container:
-    container_name: backend-container
-    build:
-      context: .
-      dockerfile: DockerfileBackend
-    ports:
-      - 8080:8080
-    environment:
-      SPRING_PROFILES_ACTIVE: local
-      DATASOURCE_URL: jdbc:mysql://mysql8-container:3306/syncio-webapp?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-      MYSQL_ROOT_PASSWORD: 1999
-      REDIS_HOST: redis-container
-      REDIS_PORT: 6379
-      SPRING_RABBITMQ_HOST: armadillo.rmq.cloudamqp.com
-      SPRING_RABBITMQ_PORT: 5672
-      SPRING_RABBITMQ_USERNAME: rupzqjkv
-      SPRING_RABBITMQ_PASSWORD: 3lURY4BnsU1PR_RvC67MIk92g0_iG1y9
-      SPRING_RABBITMQ_VIRTUAL_HOST: rupzqjkv
     depends_on:
-      mysql8-container:
-        condition: service_healthy
-      redis-container:
-        condition: service_healthy
+      - rabbitmq
+    container_name: ai_check_image_container
     networks:
       - app-network
 
-  frontend-container:
-    container_name: frontend-container
-    build:
-      context: .
-      dockerfile: DockerfileFronted
+  rabbitmq:
+    image: "rabbitmq:3-management"
     ports:
-      - "4200:80" # 80 is the default port for Nginx
-    restart: always
+      - "15672:15672" # Management interface
+      - "5672:5672" # RabbitMQ service
+    container_name: rabbitmq_container
     networks:
       - app-network
 
 networks:
   app-network:
-    name: app-network
     driver: bridge
-# build docker file từng file một để tránh lỗi
-
-#file rm is remove container
-
-#file up is run container
-
-#docker-compose -f ./deployment.yaml rm -s -f mysql8-container
-#docker-compose -f ./deployment.yaml up -d mysql8-container
-
-#docker-compose -f ./deployment.yaml rm -s -f phpmyadmin8-container
-#docker-compose -f ./deployment.yaml up -d phpmyadmin8-container
-
-#docker-compose -f ./deployment.yaml rm -s -f redis-container
-#docker-compose -f ./deployment.yaml up -d redis-container
-
-#docker-compose -f ./deployment.yaml rm -s -f ai_check_image_container
-#docker-compose -f ./deployment.yaml up -d ai_check_image_container
-
-#docker-compose -f ./deployment.yaml rm -s -f backend-container
-#docker-compose -f ./deployment.yaml up -d backend-container
-
-#docker-compose -f ./deployment.yaml rm -s -f frontend-container
-#docker-compose -f ./deployment.yaml up -d frontend-container
-
 # build docker file
 #docker-compose -f ./deployment.yaml build
 
@@ -142,4 +43,3 @@ networks:
 
 # check error logs
 #docker logs ai_check_image_container
-

@@ -1,18 +1,37 @@
 {
+  "LOGIN-----------------------------------------------------------------": "",
   "login": "Đăng nhập",
   "email": "Email",
+  "emailOrUsername": "Email hoặc Username",
+  "bio": "Tiểu sử",
   "password": "Mật khẩu",
   "forgotPassword": "Quên mật khẩu?",
   "dontHaveAnAccount": "Chưa có tài khoản?",
   "signUp": "Đăng ký",
   "continueAsGuest": "Tiếp tục mà không đăng nhập",
+  "youNeedToLoginFirst": "Bạn cần đăng nhập để tiếp tục",
 
-  "error": "Lỗi",
+
+  "REGISTER-----------------------------------------------------------------": "",
+  "passwordConfirm": "Nhập lại mật khẩu",
+  "haveAnAccount": "Đã có tài khoản?",
+  "usernameOnlyContain": "Tên người dùng chỉ chứa chữ cái, số và dấu gạch dưới",
+  "usernameShouldBeAtLeast3CharactersAndAtMost30Characters": "Username phải chứa ít nhất 3 ký tự và nhiều nhất 30 ký tự",
+  "emailShouldContain": "Email phải chứa ký tự @",
+  "emailShouldContainADot": "Email phải chứa tên miền có ít nhất một dấu chấm",
+  "emailInvalid": "Email không hợp lệ",
+  "passwordShouldBeAtLeast6CharactersAndAtMost100Characters": "Mật khẩu phải chứa ít nhất 6 ký tự và nhiều nhất 100 ký tự",
+
+
+  "VALIDATE-----------------------------------------------------------------": "",
   "emailIsRequired": "Email không được để trống",
   "passwordIsRequired": "Mật khẩu không được để trống",
 
+
+  "LEFT MENU-----------------------------------------------------------------": "",
   "home": "Trang chủ",
   "search": "Tìm kiếm",
+  "searchByUsernameOrEmail": "Tìm kiếm theo username hoặc email",
   "messages": "Tin nhắn",
   "notifications": "Thông báo",
   "labelShopping": "Mua sắm nhãn",
@@ -21,5 +40,195 @@
   "story": "Tin",
   "settings": "Cài đặt",
   "help": "Trợ giúp",
-  "logout": "Đăng xuất"
+  "logout": "Đăng xuất",
+
+
+  "STORY-----------------------------------------------------------------": "",
+  "expandStories": "Mở rộng Tin",
+  "collapseStories": "Thu gọn Tin",
+  "yourStory": "Tin của bạn",
+
+
+  "HOME-----------------------------------------------------------------": "",
+  "suggestedForYou": "Đề xuất cho bạn",
+  "youReachTheEnOfTheFeed": "Bạn đã đến cuối xem hết các bài viết",
+
+
+  "POST-----------------------------------------------------------------": "",
+  "viewAll": "Xem tất cả",
+  "like": {
+    "one": "Lượt thích",
+    "other": "Lượt thích"
+  },
+  "comment": {
+    "one": "Bình luận",
+    "other": "Bình luận"
+  },
+
+
+  "POST_DETAIL-----------------------------------------------------------------": "",
+  "reply": "Trả lời",
+  "hideReplies": "Ẩn câu trả lời",
+  "viewReplies": "Xem câu trả lời",
+  "addAComment": "Thêm bình luận",
+  "postComment": "Đăng",
+  "saveToCollection": "Lưu vào bộ sưu tập",
+
+
+  "DATETIME-----------------------------------------------------------------": "",
+  "justNow": "Vừa xong",
+  "y": " năm",
+  "mth": " tháng",
+  "w": " tuần",
+  "d": " ngày",
+  "h": " giờ",
+  "m": " phút",
+  "s": " giây",
+
+
+  "REPORT-----------------------------------------------------------------": "",
+  "report": "Báo cáo",
+  "reason": "Lý do",
+  "selectAReason": "Chọn một lý do",
+  "description": "Mô tả",
+  "submit": "Gửi",
+  "spam": "Spam",
+  "nude": "Khỏa thân",
+  "harassment": "Quấy rối",
+  "violence": "Bạo lực",
+  "inappropriateContent": "Nội dung không phù hợp",
+  "thanksForLettingUsKnow": "Cảm ơn bạn đã thông báo cho chúng tôi",
+  "yourFeedbackIsImportantInHelpingUsKeepTheCommunitySafe": "Phản hồi của bạn rất quan trọng trong việc giúp chúng tôi giữ an toàn cho cộng đồng",
+
+
+  "SEARCH-----------------------------------------------------------------": "",
+  "byImage": "Bằng hình ảnh",
+  "recent": "Gần đây",
+  "clearAll": "Xóa tất cả",
+  "suggestForYou": "Đề xuất cho bạn",
+  "follower": {
+    "one": "người theo dõi",
+    "other": "người theo dõi"
+  },
+
+
+  "MESSAGE-----------------------------------------------------------------": "",
+  "yourMessages": "Tin nhắn của bạn",
+  "sendAMessageToStartAChat": "Gửi tin nhắn để bắt đầu trò chuyện",
+  "sendMessage": "Gửi tin nhắn",
+  "newMessage": "Tin nhắn mới",
+  "to": "Đến",
+  "chat": "Chat",
+  "details": "Chi tiết",
+  "changeGroupName": "Thay đổi tên nhóm",
+  "change": "Thay đổi",
+  "members": "Thành viên",
+  "addPeople": "Thêm người",
+  "admin": "Quản trị viên",
+  "changingTheNameOfTheGroupWillChangeTheNameForAllMembers": "Thay đổi tên nhóm sẽ thay đổi tên cho tất cả thành viên",
+  "save": "Lưu",
+  "leaveChat": "Rời khỏi cuộc trò chuyện",
+  "youWontBeAbleToSendOrReceiveMessagesUnlessSomeoneAddsYouBackToTheChat": "Bạn sẽ không thể gửi hay nhận tin nhắn trừ khi có ai đó thêm bạ trở lại cuộc trò chuyện",
+  "add": "Thêm",
+  "removeFromGroup": "Xóa khỏi nhóm",
+  "makeAdmin": "Chỉ định làm quản trị viên",
+  "removeAdmin": "Gỡ vai trò quản trị viên",
+  "send": "Gửi",
+  "viewProfile": "Xem trang cá nhân",
+
+
+  "OTHERS-----------------------------------------------------------------": "",
+  "error": "Lỗi",
+  "success": "Thành công",
+  "copyLink": "Sao chép liên kết",
+  "linkCopiedToClipboard": "Đã sao chép liên kết vào bộ nhớ tạm",
+  "cancel": "Hủy",
+
+
+  "NOTIFICATION-----------------------------------------------------------------": "",
+  "thisMonth": "Trong tháng này",
+  "and": "và",
+  "other": {
+    "one": "người khác",
+    "other": "người khác"
+  },
+  "commentedOnYourPost": "đã bình luận về bài viết của bạn",
+  "likedYourPost": "đã thích bài viết của bạn",
+  "startedFollowingYou": "đã theo dõi bạn",
+  "repliedToYourComment": "đã trả lời bình luận của bạn",
+  "taggedYouInAPost": "đã nhắc đến bạn trong một bài viết",
+
+
+  "CREATE NEW POST-----------------------------------------------------------------": "",
+  "createNewPost": "Tạo bài viết mới",
+  "share": "Chia sẻ",
+  "selectFromComputer": "Chọn từ máy tính",
+  "writeACaption": "Hãy viết caption",
+  "audio": "Âm thanh",
+  "audience": "Đối tượng",
+  "whoWouldYouLikeToShareYourPostWith": "Bạn muốn chia sẻ bài viết với ai",
+  "public": "Công khai",
+  "private": "Riêng tư",
+  "closeFriends": "Bạn thân",
+  "voiceRecorder": "Ghi âm",
+  "aPostMustHaveAtLeastOneImageOrOneAudioOrCaption": "Một bài viết phải có ít nhất một hình ảnh hoặc một âm thanh hoặc caption",
+
+
+  "PROFILE-----------------------------------------------------------------": "",
+  "uploadAvatar": "Tải ảnh đại diện",
+  "editProfile": "Chỉnh sửa trang cá nhân",
+  "follow": "Theo dõi",
+  "unfollow": "Bỏ theo dõi",
+  "followers": "Người theo dõi",
+  "following": "Đang theo dõi",
+  "posts": "Bài viết",
+  "chooseLabel": "Chọn nhãn",
+  "viewMode": "Chế độ xem",
+  "grid": "Lưới",
+  "list": "Danh sách",
+  "sort": "Sắp xếp",
+  "newest": "Mới nhất",
+  "oldest": "Cũ nhất",
+  "addToCloseFriends": "Thêm vào bạn thân",
+  "removeFromCloseFriends": "Xóa khỏi bạn thân",
+  "remove": "Xóa",
+  "avatarUpdatedSuccessfully": "Avatar updated successfully",
+  "collections": "Bộ sưu tập",
+  "newCollection": "Bộ sưu tập mới",
+  "uploadImage": "Tải ảnh lên",
+  "done": "Xong",
+  "collectionCreatedSuccessfully": "Tạo bộ sưu tập thành công",
+  "updateCollectionSuccessfully": "Cập nhật bộ sưu tập thành công",
+  "collectionImageDeletedSuccessfully": "Xóa ảnh của bộ sưu tập thành công",
+  "noPostsAddedToCollectionYet": "Chưa có bài viết nào được thêm vào bộ sưu tập",
+  "editCollection": "Chỉnh sửa bộ sưu tập",
+
+
+  "SETTING-----------------------------------------------------------------": "",
+  "howYouUseSyncio": "Cách bạn sử dụng Syncio",
+  "howPeopleFindAndContactYou": "Cách mọi người tìm kiếm và liên hệ với bạn",
+  "imageSearch": "Tìm kiếm bằng hình ảnh",
+  "imageSearchDescription": "Tìm kiếm bằng hình ảnh cho phép các người dùng tìm kiếm hình ảnh tương tự với hình ảnh gương mặt bạn đã chọn",
+  "uploadNewImage": "Tải ảnh mới",
+  "deleteImage": "Xóa ảnh",
+  "imageSearchUpdatedSuccessfully": "Cập nhật tìm kiếm bằng hình ảnh thành công",
+  "imageSearchDeletedSuccessfully": "Xóa tìm kiếm bằng hình ảnh thành công",
+  "profileUpdatedSuccessfully": "Cập nhật trang cá nhân thành công",
+  "confirm": "Xác nhận",
+
+
+  "LABELSHOPPING-----------------------------------------------------------------": "",
+  "priceHighToLow": "Giá cao đến thấp",
+  "priceLowToHigh": "Giá thấp đến cao",
+  "purchaseHistory": "Lịch sử mua hàng",
+  "outOfStock": "Hết hàng",
+  "inStock": "Còn hàng",
+  "buy": "Mua",
+  "gift": "Tặng",
+  "receiver": "Người nhận",
+  "payment": "Thanh toán",
+  "paymentDetails": "Chi tiết thanh toán",
+  "name": "Tên",
+  "price": "Giá",
+  "buyed": "Đã mua"
 }

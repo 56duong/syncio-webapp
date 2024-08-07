@@ -11,11 +11,13 @@ import online.syncio.backend.messagecontent.MessageContent;
 import online.syncio.backend.messageroommember.MessageRoomMember;
 import online.syncio.backend.notification.Notification;
 import online.syncio.backend.post.Post;
+import online.syncio.backend.postcollection.PostCollection;
 import online.syncio.backend.report.Report;
 import online.syncio.backend.story.Story;
 import online.syncio.backend.storyview.StoryView;
 import online.syncio.backend.userclosefriend.UserCloseFriend;
 import online.syncio.backend.userfollow.UserFollow;
+import online.syncio.backend.usersetting.UserSetting;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -140,8 +142,20 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "owner")
     private Set<Billing> ownedItems;
 
+    @Column(nullable = true)
+    private String qrCodeUrl;
+
     @Column(name = "username_last_modified")
     private LocalDateTime usernameLastModified;
+
+//    UserSetting
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private UserSetting userSetting;
+
+//    Collection
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
+    private Set<PostCollection> postCollections;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
@@ -190,6 +204,4 @@ public class User implements UserDetails {
     @Override
     public int hashCode() {
         return Objects.hash(id);}
-
-
 }
