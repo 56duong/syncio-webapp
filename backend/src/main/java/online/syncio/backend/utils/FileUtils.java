@@ -34,6 +34,31 @@ public class FileUtils {
      * @return Return file name. Example: 1234-5678-90ab-cdef.jpg
      * @throws IOException If the file is empty or the file name is null.
      */
+    public String storeFile(MultipartFile file, String folderName) throws IOException {
+        if (file.isEmpty()) {
+            throw new IOException("Failed to store empty file " + file.getOriginalFilename());
+        }
+        if (file.getOriginalFilename() == null) {
+            throw new IOException("Failed to store file with null name");
+        }
+
+        if (storageType.equals("firebase")) {
+            return storeFileToFirebase(file, folderName, false);
+        }
+        else {
+            return storeFileToLocal(file, folderName, false);
+        }
+    }
+
+
+    /**
+     * Will store the file to the local storage or firebase storage based on the storage type.
+     * @param file
+     * @param folderName Folder name where the file will be stored. Example: stickers
+     * @param isKeepCurrentName If true, the file will be stored with the current file name. If false, the file will be stored with a new file name. Maybe used for cases where the file name also is the id.
+     * @return Return file name. Example: 1234-5678-90ab-cdef.jpg
+     * @throws IOException If the file is empty or the file name is null.
+     */
     public String storeFile(MultipartFile file, String folderName, boolean isKeepCurrentName) throws IOException {
         if (file.isEmpty()) {
             throw new IOException("Failed to store empty file " + file.getOriginalFilename());
@@ -79,9 +104,11 @@ public class FileUtils {
             }
         }
         else {
-            // if file is not image, get the file extension and generate new file name with the extension
-            String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
-            newFileName = UUID.randomUUID() + "." + fileExtension;
+            if (!isKeepCurrentName) {
+                // if file is not image, get the file extension and generate new file name with the extension
+                String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
+                newFileName = UUID.randomUUID() + "." + fileExtension;
+            }
         }
         Path path = Paths.get(UPLOADS_FOLDER, folderName);
         if (!Files.exists(path)) {

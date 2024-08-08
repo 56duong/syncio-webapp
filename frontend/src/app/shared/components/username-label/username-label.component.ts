@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { UserLabelInfoService } from 'src/app/core/services/user-label-info.service';
 import { LabelUpdateService } from 'src/app/core/services/label-update.service';
+import { ImageUtils } from 'src/app/core/utils/image-utils';
 
 @Component({
   selector: 'app-username-label',
@@ -19,7 +20,8 @@ export class UsernameLabelComponent implements OnInit, OnChanges {
 
   constructor(
     private userLabelInfoService: UserLabelInfoService,
-    private labelUpdateService: LabelUpdateService
+    private labelUpdateService: LabelUpdateService,
+    public imageUtils: ImageUtils
   ) { }
 
   ngOnInit(): void {

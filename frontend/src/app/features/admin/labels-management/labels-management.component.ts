@@ -3,6 +3,7 @@ import { Label, StatusEnum } from 'src/app/core/interfaces/label';
 import { LabelService } from 'src/app/core/services/label.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { UserService } from'src/app/core/services/user.service';
+import { ImageUtils } from 'src/app/core/utils/image-utils';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
 
 @Component({
@@ -23,21 +24,18 @@ export class LabelsManagementComponent implements OnInit {
 
     user?: UserResponse | null = this.userService.getUserResponseFromLocalStorage();
 
-    nameCreatedBy?: any;
-
     selectedLabels: string[] = [];
 
     selectedLabelFile: File[] = [];
 
     submitted: boolean = false;
 
-    dateNow: any = null;
-
     constructor(
         private labelService: LabelService,
         private toastService: ToastService,
         private userService: UserService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        public imageUtils: ImageUtils
     ) { }
 
     ngOnInit() {
@@ -46,6 +44,7 @@ export class LabelsManagementComponent implements OnInit {
                 this.labels = data;
             },
             error: (error) => {
+                console.log(error);
                 this.toastService.showError('Error fetching labels', error);
             },
         });
@@ -91,10 +90,9 @@ export class LabelsManagementComponent implements OnInit {
         this.fileUploader.clear();
     }
 
+
     saveLabel() {
         this.submitted = true;
-
-        const formData = new FormData();
 
         // check input name is "" 
         if (this.label.name == "") {
@@ -122,19 +120,24 @@ export class LabelsManagementComponent implements OnInit {
             createdBy: this.user?.id,
         };
 
+        const formData = new FormData();
+
         formData.append(
             'labelDTO',
             new Blob([JSON.stringify(label)], { type: 'application/json' })
         );
 
-        this.selectedLabelFile.forEach((photo: File, index) => {
-            formData.append(`file`, photo);
-        });
-
         label.labelURL = this.selectedLabels[0];
 
         // xu ly create hoac update
         if (this.label.id) {
+            // append file with name is label id to overwrite the old image
+            this.selectedLabelFile.forEach((photo: File, index) => {
+                formData.append('file', new File([photo], this.label.id + photo.name.slice(photo.name.lastIndexOf('.')), {
+                    type: photo.type,
+                }));
+            });
+
             // neu ton tai id -> update label
             // check xem ten moi co trung voi ten cua cac label khac tru ban than hay ko
             const currentIndex = this.labels.findIndex((x) => x.id === this.label.id);
@@ -146,10 +149,10 @@ export class LabelsManagementComponent implements OnInit {
 
             this.labelService.updateLabel(this.label.id, formData).subscribe({
                 next: (response: any) => {
+                    this.imageUtils.refreshDateTime();
                     console.log(response);
                     const index = this.labels.findIndex(x => x.id === response.id);
                     this.labels[index] = response;
-                    this.dateNow = Date.now();
                     this.labels = [...this.labels];
                     this.cdr.detectChanges();
                     this.toastService.showSuccess('Success','Label Updated');
@@ -159,7 +162,12 @@ export class LabelsManagementComponent implements OnInit {
                 },
             });
 
-        } else {
+        } 
+        else {
+            this.selectedLabelFile.forEach((photo: File, index) => {
+                formData.append(`file`, photo);
+            });
+
             // nguoc lai if id not exist -> create label
             // Kiểm tra xem tên đã tồn tại trong mảng chưa
             if (this.labels.some((label) => label.name === this.label.name)) {
@@ -188,20 +196,10 @@ export class LabelsManagementComponent implements OnInit {
 
         this.label = {};
         this.selectedLabels = [];
+        this.selectedLabelFile = [];
         this.labelDialog = false;
     }
 
-    findIndexById(id: string): number {
-        let index = -1;
-        for (let i = 0; i < this.labels.length; i++) {
-            if (this.labels[i].id === id) {
-                index = i;
-                break;
-            }
-        }
-
-        return index;
-    }
 
     getSeverity(status: string) {
         switch (status) {

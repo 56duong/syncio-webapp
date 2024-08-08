@@ -19,6 +19,7 @@ import { TagToLinkPipe } from './pipes/tag-to-link.pipe';
     ConstructImageUrlPipe,
     TagToLinkPipe
   ],
+  providers: [ConstructImageUrlPipe]
 })
 
 export class CoreModule {}

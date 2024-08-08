@@ -18,6 +18,7 @@ import { StoryService } from 'src/app/core/services/story.service';
 import { RedirectService } from 'src/app/core/services/redirect.service';
 import { TranslateService } from '@ngx-translate/core';
 import { lastValueFrom } from 'rxjs';
+import { ImageUtils } from 'src/app/core/utils/image-utils';
 
 @Component({
   selector: 'app-profile',
@@ -109,7 +110,8 @@ export class ProfileComponent implements OnInit {
     private labelUpdateService: LabelUpdateService,
     private storyService: StoryService,
     private redirectService: RedirectService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    public imageUtils: ImageUtils
   ) {
     this.isMobile = window.innerWidth < 768;
   }

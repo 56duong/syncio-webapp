@@ -257,7 +257,7 @@ styleClass="p-fluid">
                 </span>
               </div>
               <div class="flex flex-column align-items-center gap-3 py-5">
-                <img class="w-9 shadow-2 border-round" src="{{ userLabelInfo.labelURL }}" width="150"
+                <img class="w-9 shadow-2 border-round" [src]="imageUtils.getImageURL(userLabelInfo.labelURL)" width="150"
                   height="150" [alt]="userLabelInfo.name" />
                 <div class="text-lg font-bold">{{ userLabelInfo.name }}</div>
               </div>

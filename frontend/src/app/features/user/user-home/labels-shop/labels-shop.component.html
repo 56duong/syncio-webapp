@@ -10,7 +10,7 @@
 
       <!-- Purchase History -->
       <ng-template pTemplate="right">
-        <button pButton pRipple label="Purchase History" icon="pi pi-history" class="p-button-help"
+        <button pButton pRipple [label]="'purchaseHistory' | translate" icon="pi pi-history" class="p-button-help"
           (click)="openPurchaseHistory()"></button>
           
       </ng-template>
@@ -27,12 +27,12 @@
                 <span class="font-semibold text-sm">{{ label.type }}</span>
               </div>
               <div>
-                <p-tag *ngIf="label.status === 'ENABLED'" [severity]="'success'">IN STOCK</p-tag>
-                <p-tag *ngIf="label.status === 'DISABLED'" [severity]="'danger'">OUT OF STOCK</p-tag>
+                <p-tag *ngIf="label.status === 'ENABLED'" [severity]="'success'" styleClass="uppercase">{{'inStock' | translate}}</p-tag>
+                <p-tag *ngIf="label.status === 'DISABLED'" [severity]="'danger'" styleClass="uppercase">{{'outOfStock' | translate}}</p-tag>
               </div>
             </div>
   
-            <img src="{{ label.labelURL + '?view=' + dateNow }}" [alt]="label.name" class="shadow-1 border-round w-full block mx-auto" style="object-fit: cover; aspect-ratio: 1/1;" />
+            <img [src]="imageUtils.getImageURL(label.labelURL)" [alt]="label.name" class="shadow-1 border-round w-full block mx-auto" style="object-fit: cover; aspect-ratio: 1/1;" />
             
             <div>
               <div class="text-lg font-bold mb-2">{{ label.name }}</div>
@@ -43,9 +43,9 @@
             </div>
             
             <div class="flex justify-content-between gap-2">
-              <p-button (click)="gift(label)" label="Gift" icon="pi pi-gift" severity="my-custom-secondary danger" class="flex-1" styleClass="w-full"></p-button>
-              <p-button *ngIf="!label.purcharse" [disabled]="label.status == 'DISABLED'" (click)="buyNow(label)" label="Buy" icon="pi pi-check-circle" severity="my-custom-primary" class="flex-1" styleClass="w-full"></p-button>
-              <p-button *ngIf="label.purcharse" [disabled]="true" label="Buyed" icon="pi pi-check-circle" severity="my-custom-primary" class="flex-1" styleClass="w-full"></p-button>
+              <p-button (click)="gift(label)" [label]="'gift' | translate" icon="pi pi-gift" severity="my-custom-secondary danger" class="flex-1" styleClass="w-full"></p-button>
+              <p-button *ngIf="!label.purcharse" [disabled]="label.status == 'DISABLED'" (click)="buyNow(label)" [label]="'buy' | translate" icon="pi pi-check-circle" severity="my-custom-primary" class="flex-1" styleClass="w-full"></p-button>
+              <p-button *ngIf="label.purcharse" [disabled]="true" [label]="'buyed' | translate" icon="pi pi-check-circle" severity="my-custom-primary" class="flex-1" styleClass="w-full"></p-button>
             </div>
           </div>
         </div>
@@ -54,19 +54,19 @@
   </div>
 
   <!-- Dialog -->
-  <p-dialog [(visible)]="labelDialog" [style]="{ width: '450px' }" header="Payment Details" [modal]="true"
+  <p-dialog [(visible)]="labelDialog" [style]="{ width: '450px' }" [header]="'paymentDetails' | translate" [modal]="true"
     styleClass="p-fluid">
     <ng-template pTemplate="content">
       <!-- Label name -->
       <div class="field">
-        <label for="name">Name</label>
+        <label for="name">{{'name' | translate}}</label>
         <input type="text" pInputText id="name" [(ngModel)]="label.name" required autofocus disabled="true" />
         <small class="p-error" *ngIf="submitted && !label.name">Name is required.</small>
       </div>
 
       <!-- Price -->
       <div class="field">
-        <label for="price">Price</label>
+        <label for="price">{{'price' | translate}}</label>
         <p-inputNumber id="price" [(ngModel)]="label.price" inputId="currency-vn" mode="currency" currency="VND"
           locale="vi-VN" [disabled]="true">
         </p-inputNumber>
@@ -75,7 +75,7 @@
 
       <!-- Receiver -->
       <div class="field">
-        <label for="receiver">Receiver</label>
+        <label for="receiver">{{'receiver' | translate}}</label>
         <input type="text" pInputText id="receiver" [(ngModel)]="label.owner" required autofocus />
         <small class="p-error" *ngIf="submitted && !label.owner">Owner is required.</small>
       </div>
@@ -83,10 +83,10 @@
 
     <ng-template pTemplate="footer">
       <!-- nut an -->
-      <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+      <button pButton pRipple [label]="'cancel' | translate" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
 
       <!-- nut save -->
-      <button pButton pRipple label="Payment" icon="pi pi-check" class="p-button-text" (click)="sendGift()"></button>
+      <button pButton pRipple [label]="'payment' | translate" icon="pi pi-check" class="p-button-text" (click)="sendGift()"></button>
     </ng-template>
   </p-dialog>
 

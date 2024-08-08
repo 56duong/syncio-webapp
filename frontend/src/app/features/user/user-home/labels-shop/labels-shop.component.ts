@@ -11,6 +11,8 @@ import { ToastService } from 'src/app/core/services/toast.service';
 import { BillingService } from 'src/app/core/services/billing.service';
 import { Billing } from 'src/app/core/interfaces/billing';
 import { SelectItem } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
+import { ImageUtils } from 'src/app/core/utils/image-utils';
 
 @Component({
   selector: 'app-labels-shop',
@@ -43,7 +45,9 @@ export class LabelsShopComponent {
     private userService: UserService,
     private toastService: ToastService,
     private paymentService: PaymentService,
-    private billingService: BillingService
+    private billingService: BillingService,
+    private translateService: TranslateService,
+    public imageUtils: ImageUtils
   ) {}
 
   ngOnInit() {
@@ -69,8 +73,8 @@ export class LabelsShopComponent {
     }
     this.sortKey = '';
     this.sortOptions = [
-      { label: 'Price High to Low', value: '!price' },
-      { label: 'Price Low to High', value: 'price' },
+      { label: this.translateService.instant('priceHighToLow'), value: '!price' },
+      { label: this.translateService.instant('priceLowToHigh'), value: 'price' },
       { label: 'A-Z', value: 'name' },
       { label: 'Z-A', value: '!name' },
       { label: 'Have owned', value: '!purcharse' },

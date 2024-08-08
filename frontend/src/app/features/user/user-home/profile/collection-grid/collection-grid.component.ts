@@ -4,6 +4,7 @@ import { PostCollection } from 'src/app/core/interfaces/post-collection';
 import { ConstructImageUrlPipe } from 'src/app/core/pipes/construct-image-url.pipe';
 import { PostCollectionService } from 'src/app/core/services/post-collection.service';
 import { ToastService } from 'src/app/core/services/toast.service';
+import { ImageUtils } from 'src/app/core/utils/image-utils';
 
 @Component({
   selector: 'app-collection-grid',
@@ -23,13 +24,12 @@ export class CollectionGridComponent {
   selectedImage: any; // the selected image to upload
   selectedImageDataUrl: any; // the selected image data url
 
-  currentDateTime: number = Date.now(); // the current date time to refresh the image cache
-
   constructor(
     private postCollectionService: PostCollectionService,
     private toastService: ToastService,
     private translateService: TranslateService,
-    private constructImageUrlPipe: ConstructImageUrlPipe
+    private constructImageUrlPipe: ConstructImageUrlPipe,
+    public imageUtils: ImageUtils
   ) { }
 
 
@@ -50,21 +50,6 @@ export class CollectionGridComponent {
         console.error(error);
       }
     });
-  }
-
-
-  getCollectionImage(baseUrl?: string): string {
-    // Use the pipe to transform the URL
-    let fullUrl = this.constructImageUrlPipe.transform(baseUrl);
-    // Check if the URL already contains a query parameter
-    if (fullUrl.includes('?')) {
-      fullUrl += '&';
-    } else {
-      fullUrl += '?';
-    }
-    // Append the current date
-    fullUrl += this.currentDateTime;
-    return fullUrl;
   }
 
 
@@ -132,7 +117,7 @@ export class CollectionGridComponent {
             this.translateService.instant('success'), 
             this.translateService.instant('updateCollectionSuccessfully')
           );
-          this.currentDateTime = Date.now();
+          this.imageUtils.refreshDateTime();
           // reset
           this.reset();
         },

@@ -2,9 +2,9 @@ package online.syncio.backend.label;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Data
 public class LabelDTO {
@@ -26,7 +26,5 @@ public class LabelDTO {
 
         @NotNull
         private StatusEnum status = StatusEnum.ENABLED;
-        public String getLabelURL() {
-                return labelURL = "http://localhost:8080/api/v1/posts/images/" + labelURL;
-        }
+
 }
