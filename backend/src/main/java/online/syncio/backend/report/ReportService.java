@@ -1,7 +1,5 @@
 package online.syncio.backend.report;
 
-
-import online.syncio.backend.config.RabbitMQConfig;
 import jakarta.transaction.Transactional;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.post.Post;
@@ -9,7 +7,6 @@ import online.syncio.backend.post.PostRepository;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
 import online.syncio.backend.utils.JobQueue;
-import org.apache.coyote.BadRequestException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -29,15 +26,11 @@ public class ReportService {
     private final UserRepository userRepository;
     private final RabbitTemplate rabbitTemplate;
 
-    private final RabbitMQConfig config;
-
-    public ReportService(ReportRepository reportRepository, PostRepository postRepository, UserRepository userRepository,RabbitTemplate rabbitTemplate, RabbitMQConfig config) {
+    public ReportService(ReportRepository reportRepository, PostRepository postRepository, UserRepository userRepository,RabbitTemplate rabbitTemplate) {
         this.reportRepository = reportRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.rabbitTemplate = rabbitTemplate;
-        this.config = config;
-
     }
 
 //    CRUD

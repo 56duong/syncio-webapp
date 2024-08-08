@@ -124,6 +124,13 @@ export class FeedComponent {
   }
 
   updatePostsState(postsPage: any, endOf: 'FOLLOWING' | 'INTERESTS' | 'FEED') {
+    if (!postsPage) {
+      this.showLoading = false;
+      this.pageNumber = 0;
+      this.endOfInterests = true;
+      this.getPosts();
+      return;
+    }
     let posts = postsPage.content || [];
 
     if (!this.posts) {

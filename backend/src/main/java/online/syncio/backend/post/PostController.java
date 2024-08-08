@@ -69,10 +69,14 @@ public class PostController {
     }
 
     @PostMapping("/interests")
-    public Page<PostDTO> getPostsInterests(@RequestParam(defaultValue = "0") int pageNumber,
-                                           @RequestParam(defaultValue = "10") int pageSize,
-                                           @RequestBody Set<UUID> postIds) {
-        return postService.getPostsInterests(PageRequest.of(pageNumber, pageSize), postIds);
+    public ResponseEntity<Page<PostDTO>> getPostsInterests(@RequestParam(defaultValue = "0") int pageNumber,
+                                                           @RequestParam(defaultValue = "10") int pageSize,
+                                                           @RequestBody Set<UUID> postIds) {
+        Page<PostDTO> posts = postService.getPostsInterests(PageRequest.of(pageNumber, pageSize), postIds);
+        if(posts.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.ok(posts);
     }
 
     @PostMapping("/feed")
