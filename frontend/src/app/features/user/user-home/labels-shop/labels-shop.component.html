@@ -3,7 +3,7 @@
     <p-toolbar styleClass="m-3 gap-2">
       <ng-template pTemplate="left">
         <div class="flex flex-column md:flex-row md:justify-content-between">
-          <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By Price" (onChange)="onSortChange($event)" styleClass="mb-2 md:mb-0"></p-dropdown>
+          <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Select Sort Options" (onChange)="onSortChange($event)" styleClass="mb-2 md:mb-0"></p-dropdown>
           <input type="text" pInputText placeholder="Search By Name" [(ngModel)]="searchTerm" (input)="filterNameLabels()" class="ml-2"/>
       </div>
       </ng-template>

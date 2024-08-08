@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { UserLabelInfoService } from 'src/app/core/services/user-label-info.service';
 import { LabelUpdateService } from 'src/app/core/services/label-update.service';
 
@@ -7,7 +7,7 @@ import { LabelUpdateService } from 'src/app/core/services/label-update.service';
   templateUrl: './username-label.component.html',
   styleUrls: ['./username-label.component.scss']
 })
-export class UsernameLabelComponent implements OnInit {
+export class UsernameLabelComponent implements OnInit, OnChanges {
   @Input() userId: string | undefined;
   @Input() username: string | undefined;
   @Input() fontSize: string | undefined;
@@ -23,11 +23,15 @@ export class UsernameLabelComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getUrlLabel();
-
     this.labelUpdateService.currentGifUrl.subscribe(() => {
       this.getUrlLabel();
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['userId'] && changes['userId'].currentValue) {
+      this.getUrlLabel();
+    }
   }
 
   getUrlLabel(){

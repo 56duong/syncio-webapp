@@ -219,6 +219,10 @@
     margin-right: 0;
   }
 
+  #ProfileButton .user-label {
+    display: none;
+  }
+
 }
 
 p-tieredMenu ::ng-deep {
@@ -250,20 +254,20 @@ p-tieredMenu ::ng-deep {
   }
 }
 
-.profile-button {
-  display: flex;
-  align-items: center;
-}
+// .profile-button {
+//   display: flex;
+//   align-items: center;
+// }
 
-.avatar {
-  order: 1;
-}
+// .avatar {
+//   order: 1;
+// }
 
-.user-label {
-  order: 3;
-}
+// .user-label {
+//   order: 3;
+// }
 
-.p-button-label {
-  order: 2;
-  flex: 0 1 auto;
-}
+// .p-button-label {
+//   order: 2;
+//   flex: 0 1 auto;
+// }
