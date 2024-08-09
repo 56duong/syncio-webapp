@@ -1,16 +1,9 @@
 package online.syncio.backend.user;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import jakarta.validation.Valid;
 import online.syncio.backend.auth.responses.LoginResponse;
 import online.syncio.backend.auth.responses.ResponseObject;
-import online.syncio.backend.exception.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -20,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
 
@@ -158,11 +150,6 @@ public class UserController {
     @GetMapping("/last/{days}")
     public Map<String, Long> getNewUsersLastNDays(@PathVariable(name = "days") final int days) {
         return userService.getNewUsersLastNDays(days);
-    }
-
-    @GetMapping("/outstanding")
-    public ResponseEntity<List<UserDTO>> getOutstandingUsers() {
-        return ResponseEntity.ok(userService.getOutstandingUsers());
     }
 
     @GetMapping("/generateUserQRCode/{userId}")

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -73,9 +74,6 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
 
     Page<Post> findByReportsIsNotNullAndFlagTrue(Pageable pageable);
     Page<Post> findByReportsIsNotNullAndFlagFalse(Pageable pageable);
-
-    @Query("SELECT p FROM Post p WHERE p.createdDate >= :startDate")
-    List<Post> findAllPostsSince(@Param("startDate") LocalDateTime startDate);
 
     /**
      * Get the posts of the users that the user with the UUID follows.
@@ -149,5 +147,17 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
             "AND p.visibility = :visibility " +
             "AND p.user_id = :userId ", nativeQuery = true)
     Page<Post> findPostsByVisibilityAndUserId(@Param("visibility") String visibility, @Param("userId") UUID userId, Pageable pageable);
+
+    Long countByCreatedById(UUID userId);
+
+    @Query(value = "SELECT date_table.date as date, " +
+            "(SELECT COUNT(*) FROM likes l WHERE DATE(l.created_date) = date_table.date) as likes, " +
+            "(SELECT COUNT(*) FROM comment c WHERE DATE(c.created_date) = date_table.date) as comments, " +
+            "(SELECT COUNT(*) FROM post p WHERE DATE(p.created_date) = date_table.date) as posts " +
+            "FROM (SELECT DISTINCT DATE(created_date) as date FROM post WHERE created_date >= :startDate " +
+            "UNION SELECT DISTINCT DATE(created_date) FROM likes WHERE created_date >= :startDate " +
+            "UNION SELECT DISTINCT DATE(created_date) FROM comment WHERE created_date >= :startDate) as date_table " +
+            "ORDER BY date DESC", nativeQuery = true)
+    List<Map<String, Object>> countEngagementMetricsSince(@Param("startDate") LocalDateTime startDate);
 
 }

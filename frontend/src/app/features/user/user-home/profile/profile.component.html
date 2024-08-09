@@ -60,7 +60,7 @@
       <!-- Count section -->
       <ul class="flex align-items-center gap-4 list-none pl-0 m-0">
         <!-- posts -->
-        <li class="lowercase"><span class="font-semibold">{{ !userProfile.posts ? 0 : userProfile.posts.length }}</span> {{'posts' | translate}}</li>
+        <li class="lowercase"><span class="font-semibold">{{ userProfile.postCount }}</span> {{'posts' | translate}}</li>
         <!-- followers -->
         <li (click)="currentUserId && userProfile.followerCount > 0 ? isVisibleFollowers = true : ''"
           [ngClass]="currentUserId && userProfile.followerCount > 0 ? 'cursor-pointer lowercase' : 'lowercase'">
@@ -112,7 +112,7 @@
         <ul class="flex align-items-center gap-4 list-none pl-0 m-0">
           <!-- posts -->
           <li class="lowercase">
-            <span class="font-semibold">{{ !userProfile.posts ? 0 : userProfile.posts.length }}</span>
+            <span class="font-semibold">{{ userProfile.postCount }}</span>
             <span class="line-clamp">{{'posts' | translate}}</span>
           </li>
           <!-- followers -->

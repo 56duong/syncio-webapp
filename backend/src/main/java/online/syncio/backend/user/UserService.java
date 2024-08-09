@@ -10,11 +10,8 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import lombok.RequiredArgsConstructor;
-import online.syncio.backend.comment.CommentRepository;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.NotFoundException;
-import online.syncio.backend.like.LikeRepository;
-import online.syncio.backend.post.PostRepository;
 import online.syncio.backend.utils.AuthUtils;
 import online.syncio.backend.utils.Constants;
 import online.syncio.backend.utils.FileUtils;
@@ -41,11 +38,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final LikeRepository likeRepository;
-    private final CommentRepository commentRepository;
     private final AuthUtils authUtils;
     private final PasswordEncoder passwordEncoder;
-    private final PostRepository postRepository;
     private final FileUtils fileUtils;
     private final UserMapper userMapper;
 
@@ -202,26 +196,6 @@ public class UserService {
             newUsersCount.put(result[0].toString(), (Long) result[1]);
         }
         return newUsersCount;
-    }
-
-    public List<UserDTO> getOutstandingUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
-                .filter(this::hasOutstandingInteractions)
-                .map(user -> userMapper.mapToDTO(user, new UserDTO()))
-                .toList();
-    }
-
-    private boolean hasOutstandingInteractions(User user) {
-        LocalDateTime sevenDaysAgo = LocalDateTime.now().minus(InteractionCriteria.TIME_PERIOD);
-
-        long recentPosts = postRepository.countByCreatedByAndCreatedDateAfter(user, sevenDaysAgo);
-        long recentLikes = likeRepository.countByUserAndPostCreatedDateAfter(user, sevenDaysAgo);
-        long recentComments = commentRepository.countByUserAndCreatedDateAfter(user, sevenDaysAgo);
-
-        return recentPosts >= InteractionCriteria.MIN_POSTS &&
-                recentLikes >= InteractionCriteria.MIN_LIKES &&
-                recentComments >= InteractionCriteria.MIN_COMMENTS;
     }
 
 

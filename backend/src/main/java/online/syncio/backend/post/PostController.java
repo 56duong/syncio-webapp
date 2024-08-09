@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import online.syncio.backend.like.LikeService;
-import online.syncio.backend.user.EngagementMetricsDTO;
 import online.syncio.backend.userfollow.UserFollow;
 import online.syncio.backend.userfollow.UserFollowRepository;
 import online.syncio.backend.utils.AuthUtils;
@@ -174,12 +173,6 @@ public class PostController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-    }
-
-    @GetMapping("/engagement-metrics")
-    public ResponseEntity<EngagementMetricsDTO> getEngagementMetrics(@RequestParam int days) {
-        EngagementMetricsDTO metricsDTO = postService.getEngagementMetrics(days);
-        return ResponseEntity.ok(metricsDTO);
     }
 
     @GetMapping("/reported")

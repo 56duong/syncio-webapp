@@ -2,6 +2,7 @@ package online.syncio.backend.user;
 
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.exception.NotFoundException;
+import online.syncio.backend.post.PostRepository;
 import online.syncio.backend.userclosefriend.UserCloseFriendRepository;
 import online.syncio.backend.userfollow.UserFollowRepository;
 import online.syncio.backend.utils.AuthUtils;
@@ -16,6 +17,7 @@ public class UserMapper {
     private final UserRepository userRepository;
     private final UserCloseFriendRepository userCloseFriendRepository;
     private final UserFollowRepository userFollowRepository;
+    private final PostRepository postRepository;
     private final AuthUtils authUtils;
 
 
@@ -50,6 +52,7 @@ public class UserMapper {
         userProfile.setBio(user.getBio());
         userProfile.setFollowerCount(user.getFollowers().size());
         userProfile.setFollowingCount(user.getFollowing().size());
+        userProfile.setPostCount(postRepository.countByCreatedById(user.getId()));
 
         return userProfile;
     }

@@ -4,7 +4,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Post } from '../interfaces/post';
 import { environment } from 'src/environments/environment';
 import {map} from "rxjs/operators";
-import { EngagementMetricsDTO } from '../interfaces/engagement-metrics';
 import { CompatClient, IMessage, Stomp } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
 import { TokenService } from './token.service';
@@ -162,10 +161,6 @@ export class PostService {
    */
   createPost(formData: FormData): Observable<Post> {
     return this.http.post<Post>(this.apiURL, formData);
-  }
-
-  getEngagementMetrics(days: number): Observable<EngagementMetricsDTO> {
-    return this.http.get<EngagementMetricsDTO>(`${this.apiURL}/engagement-metrics?days=${days}`);
   }
 
   setPostReportedInAdmin(post: any) {

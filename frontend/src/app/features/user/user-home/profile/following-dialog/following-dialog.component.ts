@@ -19,7 +19,7 @@ export class FollowingDialogComponent {
     followerCount: 0,
     followingCount: 0,
     bio: '',
-    posts: [],
+    postCount: 0,
     isFollowing: false,
     isCloseFriend: false
   }; // user profile to show

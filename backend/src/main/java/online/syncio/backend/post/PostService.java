@@ -2,16 +2,13 @@ package online.syncio.backend.post;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import online.syncio.backend.comment.CommentRepository;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.huggingfacenlp.HfInference;
 import online.syncio.backend.keyword.KeywordResponseDTO;
 import online.syncio.backend.keyword.KeywordService;
-import online.syncio.backend.like.LikeRepository;
 import online.syncio.backend.post.photo.Photo;
 import online.syncio.backend.setting.SettingService;
-import online.syncio.backend.user.EngagementMetricsDTO;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
 import online.syncio.backend.userfollow.UserFollowRepository;
@@ -20,14 +17,12 @@ import online.syncio.backend.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -36,8 +31,6 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final LikeRepository likeRepository;
-    private final CommentRepository commentRepository;
     private final KeywordService keywordService;
     private final SettingService settingService;
     private final AuthUtils authUtils;
@@ -353,21 +346,6 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException(Post.class, "id", postId.toString()));
         post.setFlag(true);
         postRepository.save(post);
-    }
-
-
-    public EngagementMetricsDTO getEngagementMetrics (int days) {
-        LocalDateTime startDate = LocalDateTime.now().minusDays(days);
-        List<Post> posts = postRepository.findAllPostsSince(startDate);
-
-        long totalLikes = likeRepository.countLikesForPosts(posts);
-        long totalComments = commentRepository.countCommentsForPosts(posts);
-
-        EngagementMetricsDTO metrics = new EngagementMetricsDTO();
-        metrics.setLikes(totalLikes);
-        metrics.setComments(totalComments);
-
-        return metrics;
     }
 
 }

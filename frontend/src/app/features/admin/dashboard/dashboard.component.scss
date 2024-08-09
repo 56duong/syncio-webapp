@@ -6,3 +6,8 @@ i{
     font-size :20px;
     margin-right: 5px;
 }
+
+p-inputNumber ::ng-deep input {
+  width: 64px;
+  background: transparent;
+}

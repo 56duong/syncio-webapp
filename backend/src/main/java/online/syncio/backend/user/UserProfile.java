@@ -27,4 +27,6 @@ public class UserProfile {
 
     private long followingCount;
 
+    private long postCount;
+
 }

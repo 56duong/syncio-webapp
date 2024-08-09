@@ -34,7 +34,7 @@ export class ProfileComponent implements OnInit {
     followerCount: 0,
     followingCount: 0,
     bio: '',
-    posts: [],
+    postCount: 0,
     isFollowing: false,
     isCloseFriend: false,
   };

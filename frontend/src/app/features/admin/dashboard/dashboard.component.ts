@@ -6,9 +6,10 @@ import 'chartjs-adapter-date-fns';
 import { UserService } from 'src/app/core/services/user.service';
 import { PostService } from 'src/app/core/services/post.service';
 import { User } from 'src/app/core/interfaces/user';
-// import * as XLSX from 'xlsx';
 import * as XLSX from 'xlsx-js-style';
 import { saveAs } from 'file-saver';
+import { EngagementMetricsDTO } from 'src/app/core/interfaces/engagement-metrics';
+import { DashboardService } from 'src/app/core/services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,10 +19,7 @@ import { saveAs } from 'file-saver';
 export class DashboardComponent implements OnInit, OnDestroy {
   totalUsers: number = 0;
   totalPosts : number = 0;
-  totalComments : number = 0;
-  totalLikes : number = 0;
   totalPostsReported: number = 0;
-  outstandingUsers: User[] = [];
   public selectedDays: number = 7;
 
   public daysOptions = [
@@ -31,7 +29,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ]; // Options for ng-select dropdown
   private charts: Chart[] = [];
 
-  constructor(private userService: UserService, private postService: PostService) {
+  constructor(
+    private userService: UserService, 
+    private postService: PostService,
+    private dashboardService: DashboardService
+  ) {
     // Register all necessary Chart.js components
     Chart.register(...registerables);
   }
@@ -44,7 +46,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.getTotalUsers();
     this.getTotalPosts();
     this.getTotalPostsReported();
-    this.getOutstandingUsers();
+    this.getOutstandingUsers(this.topOutstandingUsers);
     this.getEngagementMetrics();
     this.getNewUsersChartData();
   }
@@ -53,13 +55,98 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.charts.forEach(chart => chart.destroy());
   }
 
+
+  /* --------------------------- START / Engagement Metrics --------------------------- */
+  engagementMetricsData: any;
+  engagementMetricsOptions: any;
+
   getEngagementMetrics() {
-    this.postService.getEngagementMetrics(this.selectedDays).subscribe(data => {
-      this.totalLikes = data.likes;
-      this.totalComments = data.comments;
-      this.createChartEngagementMetrics();
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue('--text-color');
+    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
+    const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+
+    this.engagementMetricsOptions = {
+      maintainAspectRatio: false,
+      aspectRatio: 0.8,
+      plugins: {
+        legend: {
+          labels: {
+            color: textColor
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: textColorSecondary,
+            font: {
+              weight: 500
+            }
+          },
+          grid: {
+            color: surfaceBorder,
+            drawBorder: false
+          },
+          title: {
+            display: true,
+            text: 'Date',
+            color: textColor
+          }
+        },
+        y: {
+          ticks: {
+            color: textColorSecondary
+          },
+          grid: {
+            color: surfaceBorder,
+            drawBorder: false
+          },
+          title: {
+            display: true,
+            text: 'Count',
+            color: textColor
+          }
+        }
+      }
+    };
+
+    this.dashboardService.getEngagementMetrics(this.selectedDays).subscribe({
+      next: (data: EngagementMetricsDTO[]) => {
+        this.engagementMetricsData = {
+          labels: data.map((item: EngagementMetricsDTO) => item.date),
+          datasets: [
+            {
+              label: 'Total Likes',
+              data: data.map((item: EngagementMetricsDTO) => item.likes),
+              backgroundColor: documentStyle.getPropertyValue('--blue-500'),
+              borderColor: documentStyle.getPropertyValue('--blue-500'),
+              borderWidth: 1
+            },
+            {
+              label: 'Total Comments',
+              data: data.map((item: EngagementMetricsDTO) => item.comments),
+              backgroundColor: documentStyle.getPropertyValue('--pink-500'),
+              borderColor: documentStyle.getPropertyValue('--pink-500'),
+              borderWidth: 1
+            },
+            {
+              label: 'Total Posts',
+              data: data.map((item: EngagementMetricsDTO) => item.posts),
+              backgroundColor: documentStyle.getPropertyValue('--green-500'),
+              borderColor: documentStyle.getPropertyValue('--green-500'),
+              borderWidth: 1
+            }
+          ]
+        };
+      },
+      error: (error) => {
+        console.error(error);
+      }
     });
   }
+  /* --------------------------- END / Engagement Metrics --------------------------- */
+
 
   getNewUsersChartData() {
     const startDate = new Date();
@@ -130,46 +217,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.charts.push(chart);
     });
   }
-  createChartEngagementMetrics() {
-    const canvasId = 'engagementChart';
-    const label = `Engagement Metrics in Last ${this.selectedDays} Days`;
 
-    const chart = new Chart(canvasId, {
-      type: 'bar',
-      data: {
-        labels: ['Likes', 'Comments'],
-        datasets: [
-          {
-            label: label,
-            data: [this.totalLikes, this.totalComments],
-            backgroundColor: ['rgba(75, 192, 192, 0.5)', 'rgba(255, 159, 64, 0.5)'],
-            borderColor: ['#4bc0c0', '#ff9f40'],
-            borderWidth: 1
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: 'Metric'
-            }
-          },
-          y: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Count'
-            }
-          }
-        }
-      }
-    });
 
-    this.charts.push(chart);
-  }
   selectDays() {
     // Remove existing chart
     this.charts.forEach(chart => chart.destroy());
@@ -197,12 +246,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  getOutstandingUsers() {
-    this.userService.getOutstandingUsers().subscribe(users => {
+  /* ------------------------ START / Outstanding Users ----------------------- */
+  outstandingUsers: {
+    user: User;
+    score: number;
+  }[] = [];
+  topOutstandingUsers: number = 5;
+  
+  getOutstandingUsers(top?: number) {
+    this.dashboardService.getOutstandingUsers(this.selectedDays, top ? top : 5).subscribe(users => {
       this.outstandingUsers = users;
-      console.log('outstanding users :', this.outstandingUsers);
     });
   }
+  /* ------------------------- END / Outstanding Users ------------------------ */
 
   // New method to export data to Excel
   exportToExcel() {
@@ -217,8 +273,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // Convert outstanding users to a suitable format with headers
     const outstandingUsersHeader = [{ Username: 'Username', Email: 'Email' }];
     const outstandingUsersData = this.outstandingUsers.map(user => ({
-      Username: user.username,
-      Email: user.email,
+      Username: user.user.username,
+      Email: user.user.email,
       // Add other fields as necessary
     }));
   

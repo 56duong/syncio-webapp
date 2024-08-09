@@ -1,52 +1,73 @@
 <div class="dashboard-container">
+  <!-- Header -->
   <div class="flex overflow-hidden">
-  <h1 class="flex-none flex align-items-center justify-content-center">Social Network Dashboard</h1>
-  <div class="flex-grow-1 flex align-items-center justify-content-center font-bold  border-round"></div>
-  <p-button (click)="exportToExcel()" class="flex-none flex align-items-center justify-content-center">Export to Excel</p-button>
-</div>
-  <div class="summary-cards flex">
-    <div class="summary-card flex-1 align-items-center justify-content-center m-2 px-5 py-3 border-round border-1" id="total-users">
+    <h1 class="flex-none flex align-items-center justify-content-center">Social Network Dashboard</h1>
+    <div class="flex-grow-1 flex align-items-center justify-content-center font-bold  border-round"></div>
+    <p-button (click)="exportToExcel()" class="flex-none flex align-items-center justify-content-center">Export to Excel</p-button>
+  </div>
+
+  <!-- Total section -->
+  <div class="summary-cards flex gap-3">
+    <div class="summary-card flex-1 align-items-center justify-content-center px-5 py-3 border-round" style="background-color: var(--surface-ground);" id="total-users">
       <p><i class="pi pi-user" style="color: #708090"></i>
         Total Users</p>
       <h2>{{totalUsers}}</h2>
     </div>
-    <div class="summary-card flex-1 align-items-center justify-content-center m-2 px-5 py-3 border-round border-1" id="total-posts">
+    <div class="summary-card flex-1 align-items-center justify-content-center px-5 py-3 border-round" style="background-color: var(--surface-ground);" id="total-posts">
       <p><i class="pi pi-file-edit" style="color: #708090"></i>Total Posts</p>
       <h2>{{totalPosts}}</h2>
     </div>
-    <div class="summary-card flex-1 align-items-center justify-content-center m-2 px-5 py-3 border-round border-1" id="total-reported-posts">
+    <div class="summary-card flex-1 align-items-center justify-content-center px-5 py-3 border-round" style="background-color: var(--surface-ground);" id="total-reported-posts">
       <p><i class="pi pi-file-excel" style="color: #708090"></i>Total Reported Posts</p>
       <h2>{{totalPostsReported}}</h2>
     </div>
   </div>
 
-  <div class="mt-2">
+  <!-- Chart -->
+  <div class="mt-6">
     <p-dropdown [options]="daysOptions" [(ngModel)]="selectedDays" (ngModelChange)="selectDays()"></p-dropdown>
   </div>
-  <div class="grid mx-2">
+  <div class="flex align-items-start gap-3">
     <div class="chart-section col-8 p-2" >
       <canvas id="newUsersChart"></canvas>
       <p-button (click)="exportChartAsImage()" class="btn-chart flex-none flex align-items-center justify-content-center">Export Chart as Image</p-button>
-      <div>
-        <canvas id="engagementChart"></canvas>
+
+      <!-- engagement metrics chart -->
+      <div class="mt-6">
+        <p-chart type="bar" [data]="engagementMetricsData" [options]="engagementMetricsOptions" />
       </div>
     </div>
-    <div class="outstanding-users-section col-4  align-items-center justify-content-between border-round border-1" >
-      <h3 class="px-3">Top Users Interation</h3>
-      <ul>
-        <li *ngFor="let user of outstandingUsers" class="user-card" style="list-style: none;">  
-          <!-- <img [src]="user.avtURL" alt=""> -->
-          <div class="flex flex-grow ">
-            <!-- <img class=" flex-grow-1 p-2" style="width: 50px; height: 50px; object-fit: contain;" 
-            src="https://cdn-icons-png.flaticon.com/128/5556/5556475.png"
-            alt="" /> -->
-            <app-avatar [userId]="user.id" [width]="64" [userStory]="user"></app-avatar>
-            <p class="flex-grow-1 p-2">{{ user.username }}</p>
-        </div>
+    <!-- Outstanding users -->
+    <div class="outstanding-users-section flex-1 align-items-center justify-content-between border-round" style="background-color: var(--surface-ground);">
+      <div class="px-3 flex justify-content-between align-items-center">
+        <h3>Outstanding Users Score 
+          <br>
+          <span class="text-sm text-gray-500">(last {{selectedDays}} days)</span>
+          <br>
+          <span class="text-sm text-gray-500 mt-2 block">
+            Top 
+            <p-inputNumber (ngModelChange)="getOutstandingUsers($event)"
+              inputId="integeronly" 
+              [(ngModel)]="topOutstandingUsers"
+              class="ml-2" /> 
+          </span>
+        </h3>
+        <span class="pi pi-question-circle cursor-pointer" title="Top N users with most interactions, calculated by the sum of posts * 3 + comments * 2 + likes * 1"></span>
+      </div>
+      <ul class="px-3">
+        <li *ngFor="let data of outstandingUsers" class="user-card" style="list-style: none;">  
+          <div class="flex justify-content-between align-items-center">
+            <div class="flex gap-2 align-items-center">
+              <app-avatar [userId]="data.user.id" [width]="64" [userStory]="data.user"></app-avatar>
+              <p class="flex-grow-1 text-md">{{ data.user.username }}</p>
+            </div>
+            <p class="text-xl">{{data.score}}</p>
+          </div>
         </li>
       </ul>
     </div>
   </div>
+
 </div>
 
 

@@ -19,6 +19,7 @@ public class LikeMapper {
     public LikeDTO mapToDTO(final Like like, final LikeDTO likeDTO) {
         likeDTO.setPostId(like.getPost().getId());
         likeDTO.setUserId(like.getUser().getId());
+        likeDTO.setCreatedDate(like.getCreatedDate());
         return likeDTO;
     }
 
@@ -30,6 +31,7 @@ public class LikeMapper {
         final User user = likeDTO.getUserId() == null ? null : userRepository.findById(likeDTO.getUserId())
                 .orElseThrow(() -> new NotFoundException(User.class, "id", likeDTO.getUserId().toString()));
         like.setUser(user);
+        like.setCreatedDate(likeDTO.getCreatedDate());
         return like;
     }
 

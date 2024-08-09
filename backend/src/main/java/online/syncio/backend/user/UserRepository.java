@@ -66,4 +66,41 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("SELECT COUNT(u) > 0 FROM User u JOIN u.following f WHERE u.id = :currentUserId AND f.target.id = :targetUserId")
     boolean isFollowing(@Param("currentUserId") UUID currentUserId, @Param("targetUserId") UUID targetUserId);
 
+    /**
+     * Find top :limit users by total interactions in the last N days.
+     * Interactions are calculated as follows:
+     * - 3 points for each post
+     * - 2 points for each comment
+     * - 1 point for each like
+     * @param startDate Start date for the interactions count
+     * @return List of Object[] where Object[0] is the user id and Object[1] is the total interactions
+     */
+    @Query(value =
+            "SELECT u.id, " +
+                "       (SELECT COUNT(*) * 3 FROM post p WHERE p.user_id = u.id AND p.created_date >= :startDate) " +
+                "       + " +
+                "       (SELECT COUNT(*) * 2 FROM comment c WHERE c.user_id = u.id AND c.created_date >= :startDate) " +
+                "       + " +
+                "       (SELECT COUNT(*) * 1 FROM likes l WHERE l.user_id = u.id AND l.created_date >= :startDate) " +
+                "       AS total_interactions " +
+                "FROM user u " +
+                "HAVING total_interactions >= ( " +
+                "    SELECT MIN(total_interactions) " +
+                "    FROM ( " +
+                "        SELECT " +
+                "            (SELECT COUNT(*) * 3 FROM post p WHERE p.user_id = u.id AND p.created_date >= :startDate) " +
+                "            + " +
+                "            (SELECT COUNT(*) * 2 FROM comment c WHERE c.user_id = u.id AND c.created_date >= :startDate) " +
+                "            + " +
+                "            (SELECT COUNT(*) * 1 FROM likes l WHERE l.user_id = u.id AND l.created_date >= :startDate) " +
+                "            AS total_interactions " +
+                "        FROM user u " +
+                "        ORDER BY total_interactions DESC " +
+                "        LIMIT :limit " +
+                "    ) topUsers " +
+                ") " +
+                "ORDER BY total_interactions DESC",
+            nativeQuery = true)
+    List<Object[]> findTopUsersByInteractionsInNDays(@Param("startDate") LocalDateTime startDate, @Param("limit") int limit);
+
 }

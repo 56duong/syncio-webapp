@@ -34,10 +34,12 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { SpeedDialModule } from 'primeng/speeddial';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   declarations: [],
   exports: [
+    ChartModule,
     CheckboxModule,
     SpeedDialModule,
     InputSwitchModule,

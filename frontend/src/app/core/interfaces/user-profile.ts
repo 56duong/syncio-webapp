@@ -8,6 +8,5 @@ export interface UserProfile {
   followingCount: number;
   isFollowing: boolean;
   isCloseFriend: boolean;
-
-  posts: Post[];
+  postCount: number;
 }

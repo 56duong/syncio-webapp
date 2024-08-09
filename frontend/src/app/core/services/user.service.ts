@@ -273,11 +273,6 @@ export class UserService {
     return this.http.get(`${this.apiURL}/last/${days}`);
   }
 
-  getOutstandingUsers(): Observable<User[]> {
-    const url = `${this.apiURL}/outstanding`;
-    return this.http.get<User[]>(url);
-  }
-
   getUserCount(): Observable<number> {
     return this.getUsers().pipe(map((users) => users.length));
   }
