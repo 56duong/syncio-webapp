@@ -15,25 +15,44 @@
 
         <!-- Bang du lieu Users -->
         <p-table 
-            #dt [value]="users"
+            #dt 
+            [value]="users"
             [rows]="6" 
             [paginator]="true" 
-            [globalFilterFields]="[
-                'name',
-                'country.name',
-                'representative.name',
-                'status']" 
+            [globalFilterFields]="['username', 'email']" 
             [tableStyle]="{ 'min-width': '75rem' }" 
-            [rowHover]="true" dataKey="id"
+            [rowHover]="true"
+            dataKey="id"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             [showCurrentPageReport]="true" 
             selectionMode="single" 
             (onRowSelect)="onRowSelect($event)">
+
             <ng-template pTemplate="caption">
                 <div class="flex align-items-center justify-content-between">
-                    <h5 class="m-0">Manage Users</h5>
+                    <h3 class="m-0">Manage Users</h3>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText
+                            type="text" 
+                            (input)="onInputChange($event)" 
+                            placeholder="Search..." />
+                    </span>
                 </div>
             </ng-template>
+
+            <!-- Search -->
+            <!-- <ng-template pTemplate="caption">
+                <div class="flex">
+                    <span class="p-input-icon-left ml-auto">
+                        <i class="pi pi-search"></i>
+                        <input pInputText 
+                        type="text" 
+                        (input)="onInputChange($event)" 
+                        placeholder="Search" />
+                    </span>
+                </div>
+            </ng-template> -->
 
             <ng-template pTemplate="header">
                 <tr>
@@ -43,8 +62,8 @@
                     <th pSortableColumn="email" style="min-width: 16rem">
                         Email <p-sortIcon field="email"></p-sortIcon>
                     </th>
-                    <th pSortableColumn="createDate" style="min-width: 16rem">
-                        Date Create <p-sortIcon field="createDate"></p-sortIcon>
+                    <th pSortableColumn="createdDate" style="min-width: 16rem">
+                        Date Create <p-sortIcon field="createdDate"></p-sortIcon>
                     </th>
                     <th pSortableColumn="role" style="max-width: 11rem">
                         Role <p-sortIcon field="role"></p-sortIcon>
@@ -66,7 +85,7 @@
                         </app-username-label>
                     </td>
                     <td>{{ user.email }}</td>
-                    <td>{{ user.createdDate | date : "HH:mm:ss dd/MM/yyyy" }}</td>
+                    <td>{{ user.createdDate | date : "HH:mm:ss dd/MM/yyyy"}}</td>
                     <td>{{ user.role }}</td>
                     <td>
                         <p-tag [value]="user.status" [severity]="getSeverity(user.status)"></p-tag>

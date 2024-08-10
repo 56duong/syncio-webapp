@@ -32,12 +32,7 @@
       [value]="labels"
       [rows]="6"
       [paginator]="true"
-      [globalFilterFields]="[
-        'name',
-        'country.name',
-        'representative.name',
-        'status'
-      ]"
+      [globalFilterFields]="['name']"
       [tableStyle]="{ 'min-width': '75rem' }"
       [(selection)]="selectedLabels"
       [rowHover]="true"
@@ -46,7 +41,14 @@
       [showCurrentPageReport]="true">
       <ng-template pTemplate="caption">
         <div class="flex align-items-center justify-content-between">
-          <h5 class="m-0">Manage Labels</h5>
+          <h3 class="m-0">Manage Labels</h3>
+          <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input pInputText
+                type="text" 
+                (input)="onInputChange($event)" 
+                placeholder="Search..." />
+        </span>
         </div>
       </ng-template>
 
@@ -65,7 +67,7 @@
             Image
           </th>
           
-          <th pSortableColumn="createDate">Date Create <p-sortIcon field="createDate"></p-sortIcon></th>
+          <th pSortableColumn="createdDate">Date Create <p-sortIcon field="createdDate"></p-sortIcon></th>
           <th pSortableColumn="createdBy">Created By <p-sortIcon field="createdBy"></p-sortIcon></th>
           <th pSortableColumn="status" style="min-width:4rem">Status <p-sortIcon field="status"></p-sortIcon></th>
           <th pSortableColumn="action" style="min-width: 4rem">Action</th>
