@@ -5,6 +5,7 @@ import { ToastService } from 'src/app/core/services/toast.service';
 import { UserService } from'src/app/core/services/user.service';
 import { ImageUtils } from 'src/app/core/utils/image-utils';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
+import { Table } from 'primeng/table';
 
 @Component({
     selector: 'app-labels-management',
@@ -29,6 +30,8 @@ export class LabelsManagementComponent implements OnInit {
     selectedLabelFile: File[] = [];
 
     submitted: boolean = false;
+
+    @ViewChild('dt') dt: Table | undefined;
 
     constructor(
         private labelService: LabelService,
@@ -209,6 +212,15 @@ export class LabelsManagementComponent implements OnInit {
                 return 'danger';
             default:
                 return 'info';
+        }
+    }
+
+    onInputChange(event: Event) {
+        if (this.dt) {
+          const inputElement = event.target as HTMLInputElement;
+          this.dt.filterGlobal(inputElement.value, 'contains');
+        } else {
+          console.error('Table component (dt) is not initialized.');
         }
     }
 }

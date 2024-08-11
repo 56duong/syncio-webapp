@@ -6,6 +6,7 @@ import { Post } from 'src/app/core/interfaces/post';
 import { PostService } from 'src/app/core/services/post.service';
 import { lastValueFrom, Subscription } from 'rxjs';
 import { TokenService } from 'src/app/core/services/token.service';
+import { Table } from 'primeng/table';
 
 @Component({
     selector: 'app-users-management',
@@ -31,6 +32,7 @@ export class UsersManagementComponent implements OnInit {
     roles!: any[];
     
     @ViewChild('endOfFeed') endOfFeedElement: any;
+    @ViewChild('dt') dt: Table | undefined;
 
     constructor(
         private userService: UserService,
@@ -187,6 +189,15 @@ export class UsersManagementComponent implements OnInit {
             this.postOfUserDialog = true;
         } catch (error) {
             console.error('Failed to fetch posts:', error);
+        }
+    }
+
+    onInputChange(event: Event) {
+        if (this.dt) {
+          const inputElement = event.target as HTMLInputElement;
+          this.dt.filterGlobal(inputElement.value, 'contains');
+        } else {
+          console.error('Table component (dt) is not initialized.');
         }
     }
 }
