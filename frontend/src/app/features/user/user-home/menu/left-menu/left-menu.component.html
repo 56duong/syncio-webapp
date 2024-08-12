@@ -150,3 +150,10 @@
   <app-create-post></app-create-post>
 
 </div>
+
+
+<!-- Report A Problem Dialog -->
+<app-user-report 
+  [isVisibleReportAProblem]="isVisibleReportAProblem"
+  (visibleChange)="isVisibleReportAProblem = $event"
+></app-user-report>

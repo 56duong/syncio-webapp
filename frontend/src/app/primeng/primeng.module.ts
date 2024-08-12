@@ -35,10 +35,13 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 import { SpeedDialModule } from 'primeng/speeddial';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ChartModule } from 'primeng/chart';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
   declarations: [],
   exports: [
+    OverlayPanelModule,
+    MultiSelectModule,
     ChartModule,
     CheckboxModule,
     SpeedDialModule,

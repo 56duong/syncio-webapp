@@ -13,6 +13,7 @@ import { CoreModule } from 'src/app/core/core.module';
 import { ReportedPostsComponent } from './reported-posts/reported-posts.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { HiddenPostsComponent } from './hidden-posts/hidden-posts.component';
+import { IssueManagementComponent } from './issue-management/issue-management.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { HiddenPostsComponent } from './hidden-posts/hidden-posts.component';
     LabelsManagementComponent,
     StickerManagementComponent,
     ReportedPostsComponent,
-    HiddenPostsComponent
+    HiddenPostsComponent,
+    IssueManagementComponent
   ],
   imports: [
     CommonModule,

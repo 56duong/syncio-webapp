@@ -1,0 +1,67 @@
+p-table {
+  display: block;
+  height: 100%;
+  min-height: 100vh;
+}
+
+p-table ::ng-deep {
+  .p-datatable {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .p-datatable-wrapper {
+    flex: 1;
+  }
+
+  .p-datatable .p-datatable-header,
+  .p-datatable .p-datatable-thead > tr > th {
+    background-color: #ffffff;
+  }
+}
+
+p-dialog ::ng-deep {
+  .p-dialog-header {
+    padding: 0.75rem 1rem;
+    justify-content: center;
+    position: relative;
+  }
+
+  .p-dialog-title {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .p-dialog-header-close {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+  }
+
+  .p-dialog-content {
+    padding: 0;
+    overflow: unset;
+    overflow-y: scroll;
+  }
+
+}
+
+p-divider ::ng-deep {
+  .p-divider {
+    margin: 0;
+  }
+}
+
+p-dialog ::ng-deep .issue-details-left p {
+  white-space: pre-line;
+}
+
+p-dialog ::ng-deep .issue-details-left .comments p {
+  margin: 0;
+}
+
+p-dialog ::ng-deep .issue-details-left img {
+  max-width: 100%;
+}

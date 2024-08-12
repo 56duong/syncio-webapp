@@ -18,6 +18,9 @@ export class MobileTopMenuComponent {
   currentUserId: string = '';
 
   currentTheme: string = this.themeService.getCurrentTheme();
+
+  /** Indicates if the report a problem dialog is visible */
+  isVisibleReportAProblem: boolean = false;
   
   settingSubmenuItems: any[] = [
     {
@@ -44,6 +47,17 @@ export class MobileTopMenuComponent {
           label: this.translateService.instant('help'),
           icon: 'pi pi-question-circle',
           route: '/help',
+        },
+        {
+          label: this.translateService.instant('reportAProblem'),
+          icon: 'pi pi-exclamation-circle',
+          command: () => {
+            if(!this.currentUserId) {
+              this.redirectService.needLogin();
+              return;
+            }
+            this.isVisibleReportAProblem = true;
+          },
         }
       ],
     },

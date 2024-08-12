@@ -42,6 +42,9 @@ export class LeftMenuComponent {
 
   currentTheme: string = 'theme-light';
 
+  /** Indicates if the report a problem dialog is visible */
+  isVisibleReportAProblem: boolean = false;
+
   constructor(
     private router: Router,
     private tokenService: TokenService,
@@ -136,6 +139,17 @@ export class LeftMenuComponent {
             label: this.translateService.instant('help'),
             icon: 'pi pi-question-circle',
             route: '/help',
+          },
+          {
+            label: this.translateService.instant('reportAProblem'),
+            icon: 'pi pi-exclamation-circle',
+            command: () => {
+              if(!this.currentUserId) {
+                this.redirectService.needLogin();
+                return;
+              }
+              this.isVisibleReportAProblem = true;
+            },
           }
         ],
       },

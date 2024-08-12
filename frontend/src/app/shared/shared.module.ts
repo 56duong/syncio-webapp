@@ -22,6 +22,7 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { UpdateIpComponent } from './components/update-ip/update-ip.component';
 import { CollectionListComponent } from './components/collection-list/collection-list.component';
 import { CollectionDetailComponent } from './components/collection-detail/collection-detail.component';
+import { UserReportComponent } from './components/user-report/user-report.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { CollectionDetailComponent } from './components/collection-detail/collec
     LoadingComponent,
     UpdateIpComponent,
     CollectionListComponent,
-    CollectionDetailComponent
+    CollectionDetailComponent,
+    UserReportComponent
   ],
   imports: [
     PickerComponent,
@@ -62,7 +64,8 @@ import { CollectionDetailComponent } from './components/collection-detail/collec
     AvatarComponent,
     UsernameLabelComponent,
     LoadingComponent,
-    CollectionListComponent
+    CollectionListComponent,
+    UserReportComponent
   ],
 })
 export class SharedModule {}

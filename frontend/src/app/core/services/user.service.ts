@@ -199,7 +199,7 @@ export class UserService {
    * @returns response object containing the username.
    * @example
    * this.userService.getUsernameById(userId).subscribe({
-   *  next: (response) => {
+   *  next: (response: any) => {
    *   this.username = response.username;
    *  },
    *  error: (error) => {

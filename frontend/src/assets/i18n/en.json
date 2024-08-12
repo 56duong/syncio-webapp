@@ -230,7 +230,23 @@
   "paymentDetails": "Payment details",
   "name": "Name",
   "price": "Price",
-  "buyed": "Buyed"
+  "buyed": "Buyed",
+
+
+  "USERREPORT-----------------------------------------------------------------": "",
+  "reportAProblem": "Report a problem",
+  "whyYouMakeThisReport": "Why you make this report",
+  "title": "Title",
+  "letUsKnowIfYouHaveIdeasThatCanHelpMakeOurProductsBetter": "Let us know if you have ideas that can help make our products better. If you need help solving a specific problem, please visit the Help Center.",
+  "somethingWentWrong": "Something went wrong",
+  "helpUsImproveSyncioByProvidingFeedback": "Help us improve Syncio by providing feedback",
+  "youCanUploadUpTo6Images": "You can upload up to 6 images",
+  "thankYouForReportingTheBugWeWillLookIntoIt": "Thank you for reporting the bug. We will look into it.",
+  "thankYouForYourFeedbackWeWillUseItToImproveSyncio  ": "Thank you for your feedback. We will use it to improve Syncio.",
+  "addScreenshots": "Add screenshots",
+  "reportABug": "Report a bug",
+  "HelpUsImproveSyncio": "Help us improve Syncio",
+  "pleaseIncludeAsMuchInfoAsPossible": "Please include as much info as possible..."
 
 
 }

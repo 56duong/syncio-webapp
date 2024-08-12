@@ -1,0 +1,310 @@
+
+<p-table
+  #issuesTable
+  [value]="issues"
+  dataKey="id"
+  [rows]="10"
+  [showCurrentPageReport]="true"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  [loading]="loading"
+  [paginator]="true"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  [globalFilterFields]="['title', 'number']">
+  <ng-template pTemplate="caption">
+    <div class="flex">
+      <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash" (click)="clear(issuesTable)"></button>
+      <span class="p-input-icon-left ml-auto">
+        <i class="pi pi-search"></i>
+        <input #search pInputText type="text" (input)="issuesTable.filterGlobal(search.value, 'contains')" placeholder="Search keyword" class="pl-5" />
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <!-- TITLE -->
+    <tr>
+      <th style="width:10%; min-width:5rem">
+        ID
+      </th>
+      <th style="min-width:10rem">
+        Label
+      </th>
+      <th style="min-width:15rem">
+        Title
+      </th>
+      <th style="min-width:15rem">
+        Assignees
+      </th>
+      <th style="min-width:12rem">
+        Reporter
+      </th>
+      <th style="width:13rem; min-width:13rem" pSortableColumn="created_at">
+        Created Date
+        <p-sortIcon field="quantity" />
+      </th>
+      <th style="width:5rem">
+        State
+      </th>
+    </tr>
+    
+    <!-- FILTER -->
+    <tr>
+      <!-- ID -->
+      <th>
+        <p-columnFilter 
+          matchMode="contains"
+          type="text"
+          field="number"
+          placeholder="Search by ID" 
+          ariaLabel="Filter ID"
+          [showClearButton]="false"
+          matchMode="contains"
+          [showMenu]="false" />
+      </th>
+      <!-- Label -->
+      <th>
+        <div *ngIf="labels" class="flex align-items-center">
+          <p-columnFilter field="labels" matchMode="labelFilter" [showMenu]="false" [showClearButton]="false" class="w-full">
+            <ng-template pTemplate="filter" let-label let-filter="filterCallback">
+              <p-dropdown 
+                [ngModel]="label" 
+                [options]="labels"
+                (ngModelChange)="filter($event)"
+                placeholder="Select One" 
+                [showClear]="true">
+                  <ng-template let-option pTemplate="item">
+                    <small [ngStyle]="{
+                      'background-color': '#'+option.color,
+                      'color': 'white',
+                      'padding': '0.25rem 0.5rem',
+                      'border-radius': '10px',
+                      'font-weight': 'bold',
+                      'font-size': '0.75rem',
+                    }">{{ option.label }}</small>
+                  </ng-template>
+              </p-dropdown>
+            </ng-template>
+          </p-columnFilter>
+        </div>
+      </th>
+      <!-- Title -->
+      <th>
+        <p-columnFilter 
+          matchMode="contains"
+          type="text"
+          field="title"
+          placeholder="Search by title" 
+          ariaLabel="Filter Title"
+          [showClearButton]="false"
+          matchMode="contains"
+          [showMenu]="false" />
+      </th>
+      <!-- Assignees -->
+      <th>
+        <p-columnFilter field="assignees" matchMode="assigneesFilter" [showMenu]="false">
+          <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+            <p-multiSelect 
+              [ngModel]="value" 
+              [options]="assignees" 
+              placeholder="Any"  
+              (ngModelChange)="filter($event)"
+              optionLabel="name">
+                <ng-template let-option pTemplate="item">
+                  <div class="inline-block vertical-align-middle">
+                    <img [alt]="option.label" [src]="option.avatar_url" [title]="option.label" width="36" class="border-circle vertical-align-middle" />
+                    <span class="ml-1 mt-1">
+                      {{ option.name }}
+                    </span>
+                  </div>
+                </ng-template>
+            </p-multiSelect>
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <!-- Reporter -->
+      <th></th>
+      <!-- Created Date -->
+      <th></th>
+      <!-- State -->
+      <th>
+        <p-columnFilter type="boolean" field="state" matchMode="stateFilter"></p-columnFilter>
+      </th>
+    </tr>
+  </ng-template>
+
+  <!-- BODY -->
+  <ng-template pTemplate="body" let-issue>
+    <tr (click)="showDetails(issue)" class="cursor-pointer">
+      <!-- ID -->
+      <td>
+        {{ issue.number }}
+      </td>
+      <!-- Label -->
+      <td>
+        <small *ngFor="let label of issue.labels" [ngStyle]="{
+          'background-color': '#'+label.color,
+          'color': 'white',
+          'padding': '0.25rem 0.5rem',
+          'border-radius': '10px',
+          'font-weight': 'bold',
+          'font-size': '0.75rem',
+        }">{{ label.name }}</small>
+      </td>
+      <!-- Title -->
+      <td>
+        {{ issue.title }}
+      </td>
+      <!-- Assignees -->
+      <td>
+        <a *ngFor="let user of issue.assignees" [href]="user.html_url" target="_blank">
+          <img [alt]="user.login" [src]="user.avatar_url" [title]="user.login" width="36" class="border-circle" />
+        </a>
+      </td>
+      <!-- Reporter -->
+      <td>
+        <div class="flex gap-1 align-items-center">
+          <app-avatar [userId]="githubService.extractUserIdFromIssueBody(issue.body) || ''" [width]="36"></app-avatar>
+          {{ githubService.extractUserIdFromIssueBody(issue.body) | userIdToName | async }}
+        </div>
+      </td>
+      <!-- Created Date -->
+      <td>{{issue.created_at | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+      <!-- State -->
+      <td>
+        <i class="pi" [ngClass]="{ 'text-green-500 pi-check-circle': issue.state === 'open', 'text-red-500 pi-times-circle': issue.state === 'closed' }"></i>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="7">No issues found.</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+
+
+<!-- Issue Details Dialog -->
+<p-dialog [header]="'Issue Details'"
+  [modal]="true"
+  [dismissableMask]="true" 
+  [(visible)]="isVisibleDetails" 
+  [style]="{ width: '80vw', minWidth: '320px', maxWidth: '1280px', margin: 'auto' }">
+  <p-divider></p-divider>
+
+  <div *ngIf="selectedIssue">
+    <div class="flex align-items-start gap-3">
+      <!-- Left -->
+      <div class="issue-details-left col-8 px-3">
+        <div [innerHTML]="marked.parse(selectedIssue.body)"></div>
+  
+        <!-- Comments -->
+        <ng-container *ngIf="selectedIssue.comments && selectedIssue.comments.length > 0">
+          <p-divider class="block my-2"></p-divider>
+
+          <div *ngFor="let comment of selectedIssue.comments" class="comments flex gap-3 p-3">
+            <!-- From app -->
+            <div *ngIf="comment.created_by" class="flex gap-2">
+              <app-avatar [userId]="comment.created_by.id" [width]="36"></app-avatar>
+              <div>
+                <div class="flex align-items-center gap-1">
+                  <strong>{{ comment.created_by.username }}</strong>
+                  <small class="text-gray-500">{{ comment.created_at | date:'dd/MM/yyyy HH:mm:ss' }}</small>
+                </div>
+                <div [innerHTML]="marked.parse(comment.body)"></div>
+              </div>
+            </div>
+            <!-- From git -->
+            <div *ngIf="!comment.created_by" class="flex gap-2">
+              <a [href]="comment.user.html_url" target="_blank">
+                <img [alt]="comment.user.login" [src]="comment.user.avatar_url" [title]="comment.user.login" width="36" class="border-circle" />
+              </a>
+              <div>
+                <div class="flex align-items-center gap-1">
+                  <strong>{{ comment.user.login }}</strong>
+                  <small class="text-gray-500">{{ comment.created_at | date:'dd/MM/yyyy HH:mm:ss' }}</small>
+                  <small>(From GitHub)</small>
+                </div>
+                <div [innerHTML]="marked.parse(comment.body)"></div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+  
+        <ng-container *ngIf="selectedIssue.state === 'open'">
+          <p-divider class="block my-2"></p-divider>
+          <!-- Comment input -->
+          <div class="py-3 text-right">
+            <div class="p-fluid mb-2">
+              <textarea [(ngModel)]="comment" pInputText id="details" class="flex-auto" autocomplete="off" rows="5" placeholder="Add your comment here"></textarea>
+            </div>
+            <p-button (click)="onCommentSubmit()" [disabled]="!comment" label="Comment" class="mt-3" severity="success"></p-button>
+          </div>
+        </ng-container>
+      </div>
+      <!-- Right -->
+      <div class="col-3 py-5">
+        <!-- Assignees -->
+        <div>
+          <div class="flex justify-content-between align-content-center">
+            <small class="block mb-2">Assignees</small>
+            <div>
+              <span (click)="op.toggle($event)" class="pi pi-cog cursor-pointer"></span>
+              <p-overlayPanel #op (onHide)="saveAssignees()">
+                <div *ngFor="let user of assignees" class="field-checkbox my-2 flex align-items-center gap-1">
+                  <p-checkbox 
+                    [(ngModel)]="selectedAssignees"
+                    (ngModelChange)="isChangeAssignees = true"
+                    name="group" 
+                    [value]="user.name"
+                    [inputId]="user.name" />
+                  <label [for]="user.name" class="flex align-items-center">
+                    <img [src]="user.avatar_url" [alt]="user.name" width="24" class="mr-2 border-circle" />
+                    <span>{{user.name}}</span>
+                  </label>
+                </div>
+              </p-overlayPanel>
+            </div>
+          </div>
+          <small *ngIf="selectedIssue.assignees.length === 0" class="block">No one</small>
+          <div *ngIf="selectedIssue.assignees.length > 0" class="flex flex-wrap gap-1">
+            <a *ngFor="let user of selectedIssue.assignees" [href]="user.html_url" target="_blank">
+              <img [alt]="user.login" [src]="user.avatar_url" [title]="user.login" width="36" class="border-circle" />
+            </a>
+          </div>
+        </div>
+  
+        <p-divider class="block my-3"></p-divider>
+  
+        <!-- Labels -->
+        <div>
+          <small class="block mb-2">Labels</small>
+          <div class="flex flex-wrap gap-1">
+            <small *ngFor="let label of selectedIssue.labels" [ngStyle]="{
+              'background-color': '#'+label.color,
+              'color': 'white',
+              'padding': '0.25rem 0.5rem',
+              'border-radius': '10px',
+              'font-weight': 'bold',
+              'font-size': '0.75rem',
+            }">{{ label.name }}</small>
+          </div>
+        </div>
+  
+        <p-divider class="block my-3"></p-divider>
+
+        <!-- Action -->
+        <div class="flex flex-column">
+          <!-- Close issue -->
+          <p-button *ngIf="selectedIssue.state === 'open'" [disabled]="!selectedIssue.comments || selectedIssue.comments.length === 0" (click)="onUpdateIssueState('closed')" title="You need to comment the reason to close this issue. We need at least one comment to close the issue." label="Close issue" severity="secondary" size="small" icon="pi pi-check-circle" [text]="true"></p-button>
+          <p-button *ngIf="selectedIssue.state === 'closed'" (click)="onUpdateIssueState('open')"label="Reopen issue" severity="secondary" size="small" icon="pi pi-refresh" [text]="true"></p-button>
+          <!-- View on GitHub -->
+          <a [href]="selectedIssue.html_url" title="You need a GitHub account with a role in the repository to view this" target="_blank" rel="noopener noreferrer" class="p-button p-button-link no-underline font-semibold text-primary">
+            <span class="pi pi-external-link mr-2"></span>
+            View on GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>

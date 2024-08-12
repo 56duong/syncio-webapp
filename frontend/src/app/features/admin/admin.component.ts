@@ -36,6 +36,10 @@ export class AdminComponent {
       name: 'Hidden Posts',
       link: 'hidden-posts',
     },
+    {
+      name: 'Issue Management',
+      link: 'issue-management',
+    },
   ];
   settingSubmenuItems = [
     {

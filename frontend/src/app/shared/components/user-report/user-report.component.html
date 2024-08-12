@@ -1,0 +1,64 @@
+<p-dialog [header]="selectedOptionLabel"
+  [modal]="true"
+  [dismissableMask]="true" 
+  [(visible)]="isVisibleReportAProblem" 
+  [style]="{ width: '40vw', minWidth: '320px' }"
+  (onHide)="visibleChange.emit(false)">
+  <p-divider></p-divider>
+  
+  <div class="p-3 flex flex-column gap-3">
+    <!-- Option -->
+    <div>
+      <span class="block">{{'whyYouMakeThisReport' | translate}}?</span>
+      <div class="p-fluid mt-2">
+        <p-dropdown 
+          [options]="options" 
+          [(ngModel)]="selectedOption" 
+          (ngModelChange)="onOptionChange($event)"
+          optionLabel="label"
+          placeholder="Select an option" />
+      </div>
+    </div>
+
+    <!-- Title -->
+    <div>
+      <span class="block">{{'title' | translate}}</span>
+      <div class="flex align-items-center gap-3 pt-0 mt-2">
+        <input [(ngModel)]="title" pInputText id="details" class="flex-auto" autocomplete="off" [placeholder]="('title' | translate) + '...'" />
+      </div>
+    </div>
+
+    <!-- Detail -->
+    <div>
+      <span class="block">{{'details' | translate}}</span>
+      <div class="flex align-items-center gap-3 pt-0 mt-2">
+        <textarea [(ngModel)]="details" pInputText id="details" class="flex-auto" autocomplete="off" rows="5" [placeholder]="'pleaseIncludeAsMuchInfoAsPossible' | translate"></textarea>
+      </div>
+    </div>
+
+    <!-- Images -->
+    <div class="flex flex-wrap">
+      <img *ngFor="let image of selectedFilesUrl" [src]="image" class="col-3 p-1" style="object-fit: cover; max-height: 250px;" />
+    </div>
+  </div>
+
+  <p-divider></p-divider>
+
+  <!-- Button -->
+  <div class="flex justify-content-between w-full p-3">
+    <p-button (click)="onSubmit()" [disabled]="!title || !selectedOption || !details" [label]="'submit' | translate" />
+    <div>
+      <input
+        #fileInput
+        type="file"
+        style="display: none"
+        accept="image/*"
+        [multiple]="true"
+        (change)="onFileSelected($event)" />
+      <p-button (click)="fileInput.click()" [label]="'addScreenshots' | translate" severity="my-custom-secondary" styleClass="h-auto"></p-button>
+    </div>
+  </div>
+
+  <small class="text-gray-500 p-3 pt-0 block">{{'letUsKnowIfYouHaveIdeasThatCanHelpMakeOurProductsBetter' | translate}}</small>
+
+</p-dialog>

@@ -18,7 +18,8 @@ export class UserIdToNamePipe implements PipeTransform {
    * @example
    * {{ userId | userIdToName | async }}
    */
-  transform(userId: string): any {
+  transform(userId: string | undefined | null): any {
+    if (!userId) return null;
     return this.userService
       .getUsernameById(userId)
       .pipe(map((response: any) => (response ? response.username : null)));

@@ -20,7 +20,7 @@ export class AvatarComponent {
   
   @Input() userStory: UserStory | undefined;
   
-  innerWidth: number =0;
+  innerWidth: number = 0;
   innerHeight: number = 0;
 
   currentDateTime: string = Date.now().toString();

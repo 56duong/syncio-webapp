@@ -230,5 +230,21 @@
   "paymentDetails": "Chi tiết thanh toán",
   "name": "Tên",
   "price": "Giá",
-  "buyed": "Đã mua"
+  "buyed": "Đã mua",
+
+
+  "USERREPORT-----------------------------------------------------------------": "",
+  "reportAProblem": "Báo cáo sự cố",
+  "whyYouMakeThisReport": "Tại sao bạn báo cáo vấn đề này",
+  "title": "Tiêu đề",
+  "letUsKnowIfYouHaveIdeasThatCanHelpMakeOurProductsBetter": "Hãy cho chúng tôi biết nếu bạn có ý tưởng giúp ứng dụng của chúng tôi tốt hơn. Nếu bạn cần giúp đỡ giải quyết một vấn đề cụ thể, vui lòng truy cập Trung tâm trợ giúp.",
+  "somethingWentWrong": "Có lỗi xảy ra",
+  "helpUsImproveSyncioByProvidingFeedback": "Hãy giúp chúng tôi cải thiện Syncio bằng cách cung cấp phản hồi",
+  "youCanUploadUpTo6Images": "Bạn có thể tải lên tối đa 6 hình ảnh",
+  "thankYouForReportingTheBugWeWillLookIntoIt": "Cảm ơn bạn đã báo cáo lỗi. Chúng tôi sẽ xem xét nó",
+  "thankYouForYourFeedbackWeWillUseItToImproveSyncio  ": "Cảm ơn bạn đã phản hồi. Chúng tôi sẽ sử dụng nó để cải thiện Syncio",
+  "addScreenshots": "Thêm ảnh chụp màn hình",
+  "reportABug": "Báo cáo lỗi",
+  "HelpUsImproveSyncio": "Hãy giúp chúng tôi cải thiện Syncio",
+  "pleaseIncludeAsMuchInfoAsPossible": "Vui lòng bao gồm càng nhiều thông tin càng tốt..."
 }

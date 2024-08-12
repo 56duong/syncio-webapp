@@ -8,6 +8,7 @@ import { LabelsManagementComponent } from './labels-management/labels-management
 import { StickerManagementComponent } from './sticker-management/sticker-management.component';
 import { ReportedPostsComponent } from './reported-posts/reported-posts.component';
 import { HiddenPostsComponent } from './hidden-posts/hidden-posts.component';
+import { IssueManagementComponent } from './issue-management/issue-management.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,10 @@ const routes: Routes = [
   {
     path: 'hidden-posts',
     component: HiddenPostsComponent,
+  },
+  {
+    path: 'issue-management',
+    component: IssueManagementComponent
   },
 ];
 
