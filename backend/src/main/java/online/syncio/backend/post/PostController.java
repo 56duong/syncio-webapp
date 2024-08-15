@@ -35,10 +35,6 @@ public class PostController {
     private final AuthUtils authUtils;
     private final UserFollowRepository userFollowRepository;
 
-
-
-
-    // new - get 10 post/page
     @GetMapping
     public Page<PostDTO> getPosts(@RequestParam(defaultValue = "0") int pageNumber,
                                @RequestParam(defaultValue = "10") int pageSize) throws JsonProcessingException {

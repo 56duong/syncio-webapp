@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import online.syncio.backend.user.User;
 import online.syncio.backend.utils.JwtTokenUtils;
 
+import online.syncio.backend.utils.RedisRateLimiter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,6 +32,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private String apiPrefix;
     private final UserDetailsService userDetailsService;
     private final JwtTokenUtils jwtTokenUtil;
+    private final RedisRateLimiter redisRateLimiter;
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
@@ -60,7 +63,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             if (email != null
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
                 User userDetails = (User) userDetailsService.loadUserByUsername(email);
+                if (!redisRateLimiter.isAllowed(userDetails.getUsername())) {
+                    response.setStatus(429);
+                    response.getWriter().write("Too many requests");
+                    return;
+                }
                 if(jwtTokenUtil.validateToken(token, userDetails)) {
+
                     UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(
                                     userDetails,

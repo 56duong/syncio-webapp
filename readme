@@ -6,3 +6,6 @@ use ping to check if the server is running
 docker stop rdb
 
 docker rm rdb
+
+
+

@@ -43,7 +43,6 @@ public class UserService {
     private final FileUtils fileUtils;
     private final UserMapper userMapper;
 
-
     public List<UserDTO> findAll (Optional<String> username) {
 //        final List<User> users = userRepository.findAll(Sort.by("createdDate").descending());
 //        return users.stream()
@@ -132,7 +131,7 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(User.class, "username", username));
     }
 
-    public UUID create(final UserDTO userDTO) {
+    public UUID create(final UserDTO userDTO) throws IOException, WriterException {
 
         // encode password
         String encodePassword = passwordEncoder.encode(userDTO.getPassword());
@@ -140,7 +139,11 @@ public class UserService {
         
         final User user = new User();
         userMapper.mapToEntity(userDTO, user);
-        return userRepository.save(user).getId();
+        User result = userRepository.save(user);
+        String qrCodeText = result.getId().toString();
+        String qrCodeUrl = generateQRCodeAndUploadToFirebase(qrCodeText, 300, 300);
+        saveQRcode(qrCodeUrl,result.getId());
+        return result.getId();
     }
 
     public void update (final UUID id, final UserDTO userDTO) {
