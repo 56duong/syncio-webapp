@@ -27,13 +27,13 @@
         ></button>
       </div>
       <div>
-        <p style="margin: 0; font-weight: 600;">{{ 'createNewPost' | translate }}</p>
+        <p style="margin: 0; font-weight: 600;">{{ 'create_post.create_new_post' | translate }}</p>
       </div>
       <div>
         <button
           pButton
           type="button"
-          [label]="'share' | translate"
+          [label]="'create_post.share' | translate"
           (click)="createPost()"
           class="p-button-text"
         ></button>
@@ -50,7 +50,7 @@
             #fileUploader
             name="photo[]"
             mode="basic"
-            [chooseLabel]="'selectFromComputer' | translate"
+            [chooseLabel]="'create_post.select_from_computer' | translate"
             chooseIcon="pi pi-upload"
             (onSelect)="onPhotoSelected($event)"
             [multiple]="true"
@@ -109,7 +109,7 @@
             pInputTextarea
             [(ngModel)]="post.caption"
             [autoResize]="true"
-            [placeholder]="('writeACaption' | translate) + '...'"
+            [placeholder]="('create_post.write_a_caption' | translate) + '...'"
             class="border-0 outline-none p-0 shadow-none"
             style="max-height: 154px;"
             [mentionConfig]="mentionConfig"
@@ -145,7 +145,7 @@
 
         <!-- Audio -->
         <div class="flex justify-content-between align-items-center">
-          <p>{{ 'audio' | translate }}</p>
+          <p>{{ 'create_post.audio' | translate }}</p>
           <div class="relative">
             <p-speedDial [model]="audioItems" direction="up" />
             <input #audioInput type="file" accept="audio/*" (change)="onAudioSelected($event)" hidden />
@@ -162,7 +162,7 @@
 <!-- Visibility modal -->
 <p-dialog
   class="visibility-dialog"
-  [header]="'audience' | translate"
+  [header]="'create_post.audience' | translate"
   [modal]="true"
   [(visible)]="isVisibleVisibility"
   [dismissableMask]="true"
@@ -171,7 +171,7 @@
   <p-divider></p-divider>
   
   <div class="modal-content p-2">
-    <span class="block text-center mb-3 mt-2 font-semibold">{{'whoWouldYouLikeToShareYourPostWith' | translate}}?</span>
+    <span class="block text-center mb-3 mt-2 font-semibold">{{'create_post.who_would_you_like_to_share_your_post_with' | translate}}?</span>
 
     <div *ngFor="let visibility of visibilityOptions | keyvalue" class="field-checkbox mb-3">
       <p-radioButton 

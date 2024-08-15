@@ -118,14 +118,14 @@
           [style]="{ maxHeight: '40px' }">
           <ng-template pTemplate="header" hidden></ng-template>
         </p-editor> -->
-        <textarea [(ngModel)]="comment.text" rows="1" pInputTextarea [placeholder]="('addAComment' | translate) + '...'" 
+        <textarea [(ngModel)]="comment.text" rows="1" pInputTextarea [placeholder]="('post_detail.add_a_comment' | translate) + '...'" 
                     style="width: 100%; resize: none;" 
                     class="flex-1 text-sm border-0 py-1 outline-none shadow-none"></textarea>
 
         <!-- Post button -->
         <p-button [disabled]="!comment.text || comment.text.trim().length <= 0"
           (click)="postComment(); isEmojiPickerVisible = false"
-          [label]="('postComment' | translate)"
+          [label]="('post_detail.post_comment' | translate)"
           size="small"
           [text]="true"
           styleClass="shadow-none"

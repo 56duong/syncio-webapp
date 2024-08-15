@@ -51,8 +51,8 @@ export class ProfileFormComponent {
             };
             this.userService.saveUserResponseToLocalStorage(this.userResponse);
             this.toastService.showSuccess(
-              this.translateService.instant('success'),
-              this.translateService.instant('profileUpdatedSuccessfully')
+              this.translateService.instant('common.success'),
+              this.translateService.instant('profile_form.profile_updated_successfully')
             );
           },
           error: (error) => {

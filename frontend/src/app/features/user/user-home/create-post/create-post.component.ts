@@ -114,7 +114,7 @@ export class CreatePostComponent {
 
     //validate
     if (!post.caption && this.selectedPhotoFile.length === 0 && !this.selectedAudioFile) {
-      this.toastService.showError(this.translateService.instant('error'), this.translateService.instant('aPostMustHaveAtLeastOneImageOrOneAudioOrCaption'));
+      this.toastService.showError(this.translateService.instant('common.error'), this.translateService.instant('create_post.a_post_must_have_at_least_one_image_or_one_audio_or_caption'));
       return; // Stop execution if validation fails
     }
 
@@ -167,7 +167,7 @@ export class CreatePostComponent {
       },
       error: (error) => {
         this.loadingService.hide();
-        this.toastService.showError(this.translateService.instant('error'), 'An error occurred while creating the post');
+        this.toastService.showError(this.translateService.instant('common.error'), 'An error occurred while creating the post');
         console.error(error);
       },
     });
@@ -208,11 +208,11 @@ export class CreatePostComponent {
   getVisibilityLabel(visibility: Visibility): string {
     switch (visibility) {
       case Visibility.PUBLIC:
-        return this.translateService.instant('public');
+        return this.translateService.instant('create_post.public');
       case Visibility.PRIVATE:
-        return this.translateService.instant('private');
+        return this.translateService.instant('create_post.private');
       case Visibility.CLOSE_FRIENDS:
-        return this.translateService.instant('closeFriends');
+        return this.translateService.instant('create_post.close_friends');
       default:
         return 'Set Visibility'; // Label mặc định
     }

@@ -12,7 +12,7 @@
     </div>
     <!-- Left form -->
     <form class="col-12 sm:col-6 flex flex-column gap-5 justify-content-center align-items-center shadow-1">
-      <h1>{{ 'signUp' | translate }}</h1>
+      <h1>{{ 'register.sign_up' | translate }}</h1>
       <div class="flex flex-column gap-3 w-full">
         <!-- Email -->
         <div class="w-full">
@@ -36,7 +36,7 @@
         <div class="w-full">
           <input
             type="password"
-            [placeholder]="'password' | translate"
+            [placeholder]="'register.password' | translate"
             [(ngModel)]="password"
             name="password"
           />
@@ -45,7 +45,7 @@
         <div class="w-full">
           <input
             type="password"
-            [placeholder]="'passwordConfirm' | translate"
+            [placeholder]="'register.password_confirm' | translate"
             [(ngModel)]="retypePassword"
             name="retypePassword"
           />
@@ -55,17 +55,17 @@
       <p-button
         [disabled]="!email || !username || !password || !retypePassword"
         (click)="register()"
-        [label]=" 'signUp' | translate"
+        [label]=" 'register.sign_up' | translate"
         class="w-full"
         styleClass="w-full"
       />
       <!-- Login link -->
       <div>
         <p routerLink="/login" class="text-center cursor-pointer text-sm mt-2">
-          {{ 'haveAnAccount' | translate }} <span class="text-primary font-bold">{{ 'login' | translate }}</span>
+          {{ 'register.have_an_account' | translate }} <span class="text-primary font-bold">{{ 'register.login' | translate }}</span>
         </p>
         <p routerLink="/" class="text-center cursor-pointer text-sm mt-2">
-          {{ 'continueAsGuest' | translate }}
+          {{ 'register.continue_as_guest' | translate }}
         </p>
       </div>
     </form>

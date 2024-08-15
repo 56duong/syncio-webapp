@@ -2,7 +2,7 @@
   <!-- header desktop -->
   <header *ngIf="!isMobile" class="flex align-items-center gap-6 ml-6">
     <!-- Avatar -->
-    <div [title]="'uploadAvatar' | translate" class="border-circle overflow-hidden" style="width: 164px; height: 164px;">
+    <div [title]="'profile.upload_avatar' | translate" class="border-circle overflow-hidden" style="width: 164px; height: 164px;">
       <input
         #fileInput
         type="file"
@@ -28,28 +28,28 @@
         <!-- Follow button -->
         <p-button *ngIf="!isOwnerProfile && !userProfile.isFollowing"
           (click)="toggleFollow(userProfile.id)" 
-          [label]="'follow' | translate" severity="my-custom-primary">
+          [label]="'profile.follow' | translate" severity="my-custom-primary">
         </p-button>
         <!-- Unfollow button -->
         <p-button *ngIf="!isOwnerProfile && userProfile.isFollowing"
           (click)="dialogVisible = !dialogVisible" 
           icon="pi pi-angle-down" iconPos="right"
-          [label]="'unfollow' | translate" severity="my-custom-secondary">
+          [label]="'profile.unfollow' | translate" severity="my-custom-secondary">
         </p-button>
         <!-- Message -->
         <a *ngIf="!isOwnerProfile" href="/messages">
-          <p-button [label]="'messages' | translate" severity="my-custom-secondary"></p-button>
+          <p-button [label]="'profile.messages' | translate" severity="my-custom-secondary"></p-button>
         </a>
         <!-- Edit profile/ Setting -->
         <ng-container *ngIf="isOwnerProfile">
           <!-- Edit profile -->
           <div *ngIf="isOwnerProfile" routerLink="/account/edit-profile">
-            <p-button [label]="'editProfile' | translate" severity="my-custom-secondary"></p-button>
+            <p-button [label]="'profile.edit_profile' | translate" severity="my-custom-secondary"></p-button>
           </div>
           <!-- choose Label -->
           <p-button class="ml-2"
             (click)="showChooseLabelDialog()" 
-            [label]="'chooseLabel' | translate" severity="my-custom-primary">
+            [label]="'profile.choose_label' | translate" severity="my-custom-primary">
           </p-button>
 
           <!-- Setting -->
@@ -60,16 +60,16 @@
       <!-- Count section -->
       <ul class="flex align-items-center gap-4 list-none pl-0 m-0">
         <!-- posts -->
-        <li class="lowercase"><span class="font-semibold">{{ userProfile.postCount }}</span> {{'posts' | translate}}</li>
+        <li class="lowercase"><span class="font-semibold">{{ userProfile.postCount }}</span> {{'profile.posts' | translate}}</li>
         <!-- followers -->
         <li (click)="currentUserId && userProfile.followerCount > 0 ? isVisibleFollowers = true : ''"
           [ngClass]="currentUserId && userProfile.followerCount > 0 ? 'cursor-pointer lowercase' : 'lowercase'">
-          <span class="font-semibold">{{ userProfile.followerCount }}</span> {{'followers' | translate}}
+          <span class="font-semibold">{{ userProfile.followerCount }}</span> {{'profile.followers' | translate}}
         </li>
         <!-- following -->
         <li (click)="currentUserId && userProfile.followingCount > 0 ? isVisibleFollowing = true: ''"
           [ngClass]="currentUserId && userProfile.followingCount > 0 ? 'cursor-pointer lowercase' : 'lowercase'">
-          <span class="font-semibold">{{ userProfile.followingCount }}</span> {{'following' | translate}}
+          <span class="font-semibold">{{ userProfile.followingCount }}</span> {{'profile.following' | translate}}
         </li>
       </ul>
 
@@ -84,7 +84,7 @@
   <header *ngIf="isMobile" class="px-2 flex flex-column gap-3">
     <div class="flex align-items-center column-gap-3">
       <!-- Avatar -->
-      <div [title]="'uploadAvatar' | translate" class="border-circle overflow-hidden" style="min-width: 96px; height: 96px;">
+      <div [title]="'profile.upload_avatar' | translate" class="border-circle overflow-hidden" style="min-width: 96px; height: 96px;">
         <input
           #fileInput
           type="file"
@@ -113,19 +113,19 @@
           <!-- posts -->
           <li class="lowercase">
             <span class="font-semibold">{{ userProfile.postCount }}</span>
-            <span class="line-clamp">{{'posts' | translate}}</span>
+            <span class="line-clamp">{{'profile.posts' | translate}}</span>
           </li>
           <!-- followers -->
           <li (click)="currentUserId && userProfile.followerCount > 0 ? isVisibleFollowers = true : ''"
             [ngClass]="currentUserId && userProfile.followerCount > 0 ? 'cursor-pointer lowercase' : 'lowercase'">
             <span class="font-semibold">{{ userProfile.followerCount }}</span>
-            <span class="line-clamp">{{'followers' | translate}}</span>
+            <span class="line-clamp">{{'profile.followers' | translate}}</span>
           </li>
           <!-- following -->
           <li (click)="currentUserId && userProfile.followingCount > 0 ? isVisibleFollowing = true: ''"
             [ngClass]="currentUserId && userProfile.followingCount > 0 ? 'cursor-pointer lowercase' : 'lowercase'">
             <span class="font-semibold">{{ userProfile.followingCount }}</span> 
-            <span class="line-clamp">{{'following' | translate}}</span>
+            <span class="line-clamp">{{'profile.following' | translate}}</span>
           </li>
         </ul>
       </section>
@@ -141,7 +141,7 @@
           <!-- Follow button -->
           <p-button *ngIf="!isOwnerProfile && !userProfile.isFollowing"
             (click)="toggleFollow(userProfile.id)" 
-            [label]="'follow' | translate" severity="my-custom-primary"
+            [label]="'profile.follow' | translate" severity="my-custom-primary"
             class="flex-1"
             styleClass="w-full">
           </p-button>
@@ -149,24 +149,24 @@
           <p-button *ngIf="!isOwnerProfile && userProfile.isFollowing"
             (click)="dialogVisible = !dialogVisible" 
             icon="pi pi-angle-down" iconPos="right"
-            [label]="'unfollow' | translate" severity="my-custom-secondary"
+            [label]="'profile.unfollow' | translate" severity="my-custom-secondary"
             class="flex-1"
             styleClass="w-full">
           </p-button>
           <!-- Message -->
           <a *ngIf="!isOwnerProfile" href="/messages" class="flex-1">
-            <p-button [label]="'messages' | translate" severity="my-custom-secondary" styleClass="w-full"></p-button>
+            <p-button [label]="'profile.messages' | translate" severity="my-custom-secondary" styleClass="w-full"></p-button>
           </a>
           <!-- Edit profile/ Setting -->
           <ng-container *ngIf="isOwnerProfile">
             <!-- Edit profile -->
             <div *ngIf="isOwnerProfile" routerLink="/account/edit-profile" class="flex-1">
-              <p-button [label]="'editProfile' | translate" severity="my-custom-secondary" styleClass="w-full"></p-button>
+              <p-button [label]="'profile.edit_profile' | translate" severity="my-custom-secondary" styleClass="w-full"></p-button>
             </div>
             <!-- choose Label -->
             <p-button class="ml-2 flex-1" styleClass="w-full"
               (click)="showChooseLabelDialog()" 
-              [label]="'chooseLabel' | translate" severity="my-custom-primary">
+              [label]="'profile.choose_label' | translate" severity="my-custom-primary">
             </p-button>
     
             <!-- Setting -->
@@ -180,12 +180,12 @@
     <!-- POSTS -->
     <div (click)="selectTab(0)" [ngStyle]="{'border-top': selectedTab == 0 ? '1px solid' : ''}" title="View mode" class="transition-duration-200 py-3 flex justify-content-center align-items-center cursor-pointer">
       <i class="pi pi-table mr-1" style="font-size: 1rem"></i>
-      <span class="text-xs font-semibold uppercase">{{'posts' | translate}}</span>
+      <span class="text-xs font-semibold uppercase">{{'profile.posts' | translate}}</span>
     </div>
     <!-- COLLECTIONS -->
     <div (click)="selectTab(1)" [ngStyle]="{'border-top': selectedTab == 1 ? '1px solid' : ''}" class="transition-duration-200 py-3 flex justify-content-center align-items-center cursor-pointer">
       <i class="pi pi-objects-column mr-1" style="font-size: 1rem"></i>
-      <span class="text-xs font-semibold uppercase">{{'collections' | translate}}</span>
+      <span class="text-xs font-semibold uppercase">{{'profile.collections' | translate}}</span>
     </div>
   </div>
 
@@ -244,7 +244,7 @@
 </app-following-dialog>
 
 <!-- Choose Label -->
-<p-dialog [(visible)]="chooseLableDialog" [style]="{ width: '62rem' }" [header]="'chooseLabel' | translate" [modal]="true"
+<p-dialog [(visible)]="chooseLableDialog" [style]="{ width: '62rem' }" [header]="'profile.choose_label' | translate" [modal]="true"
 styleClass="p-fluid">
       <p-dataView #dv [value]="userLabelInfos" >
         <ng-template let-userLabelInfo pTemplate="listItem">
@@ -263,8 +263,8 @@ styleClass="p-fluid">
               </div>
               
               <div class="card flex justify-content-center">
-                <p-button [label]="'cancel' | translate" (click)="confirm(userLabelInfo)" *ngIf="userLabelInfo.isShow" icon="pi pi-times" severity="secondary" [rounded]="true"></p-button>
-                <p-button [label]="'confirm' | translate" (click)="confirm(userLabelInfo)" *ngIf="!userLabelInfo.isShow" [rounded]="true"></p-button>
+                <p-button [label]="'common.cancel' | translate" (click)="confirm(userLabelInfo)" *ngIf="userLabelInfo.isShow" icon="pi pi-times" severity="secondary" [rounded]="true"></p-button>
+                <p-button [label]="'common.confirm' | translate" (click)="confirm(userLabelInfo)" *ngIf="!userLabelInfo.isShow" [rounded]="true"></p-button>
             </div>
             </div>
           </div>
@@ -290,7 +290,7 @@ styleClass="p-fluid">
 <!-- View and sort -->
 <p-dialog
   class="viewmode-dialog"
-  [header]="'viewMode' | translate"
+  [header]="'profile.view_mode' | translate"
   [modal]="true"
   [(visible)]="isVisibleChooseViewMode"
   [dismissableMask]="true"
@@ -300,7 +300,7 @@ styleClass="p-fluid">
   
   <div class="modal-content p-3">
     <!-- view -->
-    <span class="block mb-2 mt-2 text-gray-500 text-sm">{{'viewMode' | translate}}</span>
+    <span class="block mb-2 mt-2 text-gray-500 text-sm">{{'profile.view_mode' | translate}}</span>
 
     <div *ngFor="let option of viewOptions" class="field-checkbox mb-2">
       <p-radioButton 
@@ -315,7 +315,7 @@ styleClass="p-fluid">
     </div>
 
     <!-- sorting -->
-    <span class="block mb-2 mt-3 text-gray-500 text-sm">{{'sort' | translate}}</span>
+    <span class="block mb-2 mt-3 text-gray-500 text-sm">{{'profile.sort' | translate}}</span>
 
     <div *ngFor="let option of sortOptions" class="field-checkbox mb-2">
       <p-radioButton 

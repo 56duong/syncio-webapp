@@ -73,14 +73,14 @@ export class LabelsShopComponent {
     }
     this.sortKey = '';
     this.sortOptions = [
-      { label: this.translateService.instant('priceHighToLow'), value: '!price' },
-      { label: this.translateService.instant('priceLowToHigh'), value: 'price' },
+      { label: this.translateService.instant('labels_shop.price_high_to_low'), value: '!price' },
+      { label: this.translateService.instant('labels_shop.price_low_to_high'), value: 'price' },
       { label: 'A-Z', value: 'name' },
       { label: 'Z-A', value: '!name' },
-      { label: 'Have owned', value: '!purcharse' },
-      { label: 'Not owned', value: 'purcharse' },
-      { label: 'High Quantity Sold', value: '!quantitySold' },
-      { label: 'Low Quantity Sold', value: 'quantitySold' }
+      { label: this.translateService.instant('labels_shop.have_owned'), value: '!purcharse' },
+      { label: this.translateService.instant('labels_shop.not_owned'), value: 'purcharse' },
+      { label: this.translateService.instant('labels_shop.high_quantity_sold'), value: '!quantitySold' },
+      { label: this.translateService.instant('labels_shop.low_quantity_sold'), value: 'quantitySold' }
     ];
   }
 

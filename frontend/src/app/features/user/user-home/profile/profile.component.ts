@@ -56,15 +56,15 @@ export class ProfileComponent implements OnInit {
   dialogVisible: boolean = false; // show/hide the unfollow dialog
   dialogItems: any = [
     {
-      label: this.translateService.instant('addToCloseFriends'),
+      label: this.translateService.instant('profile.add_to_close_friends'),
       action: () => this.toggleCloseFriend(this.userProfile.id),
     },
     {
-      label: this.translateService.instant('unfollow'),
+      label: this.translateService.instant('profile.unfollow'),
       action: () => this.toggleFollow(this.userProfile.id),
     },
     {
-      label: this.translateService.instant('cancel'),
+      label: this.translateService.instant('common.cancel'),
       action: () => (this.dialogVisible = false),
     },
     {
@@ -86,12 +86,12 @@ export class ProfileComponent implements OnInit {
   viewMode: 'grid' | 'list' = 'grid'; // view mode of the posts
   sortMode: 'newest' | 'oldest' = 'newest'; // sort mode of the posts
   viewOptions = [
-    { id: 'grid', label: this.translateService.instant('grid'), icon: 'pi pi-table' },
-    { id: 'list', label: this.translateService.instant('list'), icon: 'pi pi-bars' }
+    { id: 'grid', label: this.translateService.instant('profile.grid'), icon: 'pi pi-table' },
+    { id: 'list', label: this.translateService.instant('profile.list'), icon: 'pi pi-bars' }
   ];
   sortOptions = [
-    { id: 'desc', label: this.translateService.instant('newest'), value: 'newest', icon: 'pi pi-arrow-up' },
-    { id: 'asc', label: this.translateService.instant('oldest'), value: 'list', icon: 'pi pi-arrow-down' }
+    { id: 'desc', label: this.translateService.instant('profile.newest'), value: 'newest', icon: 'pi pi-arrow-up' },
+    { id: 'asc', label: this.translateService.instant('profile.oldest'), value: 'list', icon: 'pi pi-arrow-down' }
   ];
 
   selectedTab: number = 0;
@@ -158,8 +158,8 @@ export class ProfileComponent implements OnInit {
       this.location.replaceState('/profile/' + response.username);
       this.userProfile = { ...this.userProfile, ...response };
       this.dialogItems[0].label = response.isCloseFriend
-        ? this.translateService.instant('removeFromCloseFriends')
-        : this.translateService.instant('addToCloseFriends');
+        ? this.translateService.instant('profile.remove_from_close_friends')
+        : this.translateService.instant('profile.add_to_close_friends');
     });
   }
 
@@ -180,8 +180,8 @@ export class ProfileComponent implements OnInit {
       this.userService.changeAvatar(fd).subscribe({
         next: () => {
           this.toastService.showSuccess(
-            this.translateService.instant('success'),
-            this.translateService.instant('avatarUpdatedSuccessfully')
+            this.translateService.instant('common.success'),
+            this.translateService.instant('profile.avatar_updated_successfully')
           );
           setTimeout(() => {
             this.redirectService.reloadPage();
@@ -226,8 +226,8 @@ export class ProfileComponent implements OnInit {
               next: (response) => {
                 this.userProfile.isCloseFriend = !response;
                 this.dialogItems[0].label = response
-                  ? this.translateService.instant('addToCloseFriends')
-                  : this.translateService.instant('removeFromCloseFriends');
+                  ? this.translateService.instant('profile.add_to_close_friends')
+                  : this.translateService.instant('profile.remove_from_close_friends');
               },
               error: (error) => {
                 console.error('Error removing close friends', error);
@@ -252,8 +252,8 @@ export class ProfileComponent implements OnInit {
       next: (response) => {
         this.userProfile.isCloseFriend = response;
         this.dialogItems[0].label = response
-          ? this.translateService.instant('removeFromCloseFriends')
-          : this.translateService.instant('addToCloseFriends');
+          ? this.translateService.instant('profile.remove_from_close_friends')
+          : this.translateService.instant('profile.add_to_close_friends');
       },
       error: (error) => {
         console.error('Error toggling close friends', error);

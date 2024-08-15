@@ -3,15 +3,15 @@
   <div class="flex justify-content-start gap-2 align-items-center p-2">
     <!-- Back button -->
     <span *ngIf="isMobile" (click)="backToMessageContentList()" class="pi pi-arrow-left" style="font-size: 1.25rem;"></span>
-    <h3>{{ 'details' | translate }}</h3>
+    <h3>{{ 'message_room_detail.details' | translate }}</h3>
   </div>
 
   <p-divider></p-divider>
 
   <!-- Change group name -->
   <div *ngIf="messageRoom.group && isAdmin" class="flex align-items-center justify-content-between py-4 px-3">
-    <p>{{ 'changeGroupName' | translate }}</p>
-    <p-button (click)="isVisibleChangeGroupName = true" [label]="'change' | translate" severity="my-custom-secondary"></p-button>
+    <p>{{ 'message_room_detail.change_group_name' | translate }}</p>
+    <p-button (click)="isVisibleChangeGroupName = true" [label]="'message_room_detail.change' | translate" severity="my-custom-secondary"></p-button>
   </div>
   
   <p-divider *ngIf="isAdmin"></p-divider>
@@ -19,11 +19,11 @@
   <!-- Message room members -->
   <div class="py-4 flex flex-column flex-1 overflow-hidden">
     <div class="flex justify-content-between align-items-center mb-3 px-3">
-      <p>{{ 'members' | translate }}</p>
+      <p>{{ 'message_room_detail.members' | translate }}</p>
       <span *ngIf="messageRoom.group && isAdmin" 
         (click)="isVisibleAddPeople = true" 
         class="text-primary cursor-pointer font-semibold">
-        {{ 'addPeople' | translate }}
+        {{ 'message_room_detail.add_people' | translate }}
       </span>
     </div>
     <!-- Members list -->
@@ -36,7 +36,7 @@
           <!-- username and is admin -->
           <div class="flex flex-column gap-2">
             <p [title]="member.username ? member.username : (member.userId || '' | userIdToName | async)" class="my-0 line-clamp" style="word-break: break-word;">{{member.username ? member.username : (member.userId || '' | userIdToName | async)}}</p>
-            <p *ngIf="member.admin" class="text-gray-500 my-0 text-sm">{{ 'admin' | translate }}</p>
+            <p *ngIf="member.admin" class="text-gray-500 my-0 text-sm">{{ 'message_room_detail.admin' | translate }}</p>
           </div>
           <!-- 3 dots -->
           <i *ngIf="messageRoom.group && member.userId !== currentUser.id && member.userId !== messageRoom.createdBy && isAdmin" 
@@ -53,10 +53,10 @@
   <div *ngIf="messageRoom.group" class="pt-4 pb-3 px-3">
     <p (click)="isVisibleLeaveChat = true" 
       class="text-red-500 cursor-pointer font-semibold mb-2">
-      {{ 'leaveChat' | translate }}
+      {{ 'message_room_detail.leave_chat' | translate }}
     </p>
     <span class="text-sm text-gray-500">
-      {{ 'youWontBeAbleToSendOrReceiveMessagesUnlessSomeoneAddsYouBackToTheChat' | translate }}.
+      {{ 'message_room_detail.you_wont_be_able_to_send_or_receive_messages_unless_someone_adds_you_back_to_the_chat' | translate }}.
     </span>
   </div>
 
@@ -65,13 +65,13 @@
 
 
 <!-- Change group name dialog -->
-<p-dialog [header]="'changeGroupName' | translate" 
+<p-dialog [header]="'message_room_detail.change_group_name' | translate" 
   [modal]="true"
   [dismissableMask]="true" 
   [(visible)]="isVisibleChangeGroupName" 
   [style]="{ width: '40vw', minWidth: '320px' }">
   <p-divider></p-divider>
-  <span class="block p-3">{{ 'changingTheNameOfTheGroupWillChangeTheNameForAllMembers' | translate }}.</span>
+  <span class="block p-3">{{ 'message_room_detail.changing_the_name_of_the_group_will_change_the_name_for_all_members' | translate }}.</span>
 
   <!-- Input -->
   <div class="flex align-items-center gap-3 p-3 pt-0">
@@ -82,7 +82,7 @@
 
   <!-- Button -->
   <div class="p-fluid w-full p-3">
-    <p-button [label]="'save' | translate" (click)="updateGroupName()" />
+    <p-button [label]="'common.save' | translate" (click)="updateGroupName()" />
   </div>
 
 </p-dialog>
@@ -93,9 +93,9 @@
 <app-select-user-dialog
   [expectedUsers]="memberUserIds"
   [isDialogVisible]="isVisibleAddPeople"
-  [dialogTitle]="'addPeople' | translate"
-  [dialogDescription]="('to' | translate) + '...'"
-  [dialogSubmitLabel]="'add' | translate"
+  [dialogTitle]="'message_room_detail.add_people' | translate"
+  [dialogDescription]="('message_room_detail.to' | translate) + '...'"
+  [dialogSubmitLabel]="'message_room_detail.add' | translate"
   (selectedUsersEvent)="addPeople($event)"
   (visibleHide)="isVisibleAddPeople = false">
 </app-select-user-dialog>
@@ -115,7 +115,7 @@
 <app-global-dialog
   [display]="isVisibleLeaveChat"
   [items]="leaveChatDialogItems"
-  [title]=" 'leaveChat' | translate"
-  [description]=" 'youWontBeAbleToSendOrReceiveMessagesUnlessSomeoneAddsYouBackToTheChat' | translate"
+  [title]=" 'message_room_detail.leave_chat' | translate"
+  [description]=" 'message_room_detail.you_wont_be_able_to_send_or_receive_messages_unless_someone_adds_you_back_to_the_chat' | translate"
   (displayChange)="isVisibleLeaveChat = false">
 </app-global-dialog>

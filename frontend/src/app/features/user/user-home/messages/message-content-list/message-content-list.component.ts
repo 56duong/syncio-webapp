@@ -1,4 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, Output, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { ContextMenu } from 'primeng/contextmenu';
 import { Subscription } from 'rxjs';
 import { MessageContent, MessageContentTypeEnum } from 'src/app/core/interfaces/message-content';
@@ -37,7 +38,7 @@ export class MessageContentListComponent {
   replyingTo: MessageContent = {}; // Message content to reply to
   contextMenuItems: any[] = [
     {
-      label: 'Reply',
+      label: this.translateService.instant('message_content_list.reply'),
       icon: 'pi pi-reply',
       command: () => {
         this.messageContent.replyTo = {...this.replyingTo};
@@ -67,6 +68,7 @@ export class MessageContentListComponent {
   constructor(
     private messageContentService: MessageContentService,
     private messageRoomMemberService: MessageRoomMemberService,
+    private translateService: TranslateService
   ) { }
 
 

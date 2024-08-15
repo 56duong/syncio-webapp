@@ -64,47 +64,47 @@ export class LeftMenuComponent {
 
     this.menus = [
       {
-        label: this.translateService.instant('home'),
+        label: this.translateService.instant('left_menu.home'),
         icon: 'pi pi-home',
         routerLink: '/',
         id: 'HomeButton',
       },
       {
-        label: this.translateService.instant('search'),
+        label: this.translateService.instant('left_menu.search'),
         icon: 'pi pi-search',
         id: 'SearchButton',
       },
       {
-        label: this.translateService.instant('messages'),
+        label: this.translateService.instant('left_menu.messages'),
         icon: 'pi pi-comments',
         routerLink: 'messages',
         id: 'MessagesButton',
       },
       {
-        label: this.translateService.instant('notifications'),
+        label: this.translateService.instant('left_menu.notifications'),
         icon: 'pi pi-heart',
         id: 'NotificationsButton',
       },
       {
-        label: this.translateService.instant('labelShopping'),
+        label: this.translateService.instant('left_menu.label_shopping'),
         icon: 'pi pi-shopping-cart',
         routerLink: 'labels-shop',
       },
     ];
     this.createSubmenuItems = [
       {
-        label: this.translateService.instant('create'),
+        label: this.translateService.instant('left_menu.create'),
         icon: 'pi pi-pen-to-square',
         items: [
           {
-            label: this.translateService.instant('post'),
+            label: this.translateService.instant('left_menu.post'),
             icon: 'pi pi-table',
             command: () => {
               this.onCreateClick();
             },
           },
           {
-            label: this.translateService.instant('story'),
+            label: this.translateService.instant('left_menu.story'),
             icon: 'pi pi-history',
             command: () => {
               this.onCreateStoryClick();
@@ -115,7 +115,7 @@ export class LeftMenuComponent {
     ];
     this.settingSubmenuItems = [
       {
-        label: this.translateService.instant('settings'),
+        label: this.translateService.instant('left_menu.settings'),
         icon: 'pi pi-cog',
         items: [
           {
@@ -136,12 +136,12 @@ export class LeftMenuComponent {
             },
           },
           {
-            label: this.translateService.instant('help'),
+            label: this.translateService.instant('left_menu.help'),
             icon: 'pi pi-question-circle',
             route: '/help',
           },
           {
-            label: this.translateService.instant('reportAProblem'),
+            label: this.translateService.instant('left_menu.report_a_problem'),
             icon: 'pi pi-exclamation-circle',
             command: () => {
               if(!this.currentUserId) {
@@ -157,7 +157,7 @@ export class LeftMenuComponent {
 
     if(this.currentUserId) {
       this.settingSubmenuItems[0].items.push({
-        label: this.translateService.instant('logout'),
+        label: this.translateService.instant('left_menu.logout'),
         color: 'red',
         icon: 'pi pi-sign-out',
         command: () => {

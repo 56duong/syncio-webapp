@@ -1,252 +1,318 @@
 {
-  "LOGIN-----------------------------------------------------------------": "",
-  "login": "Log in",
-  "email": "Email",
-  "emailOrUsername": "Email or Username",
-  "bio": "Bio",
-  "password": "Password",
-  "forgotPassword": "Forgot password?",
-  "dontHaveAnAccount": "Don't have an account?",
-  "signUp": "Sign up",
-  "continueAsGuest": "Continue as guest",
-  "youNeedToLoginFirst": "You need to login first",
-
-
-  "REGISTER-----------------------------------------------------------------": "",
-  "passwordConfirm": "Confirm password",
-  "haveAnAccount": "Have an account?",
-  "usernameOnlyContain": "Username only contain letters, numbers and underscore",
-  "usernameShouldBeAtLeast3CharactersAndAtMost30Characters": "Username should be at least 3 characters and at most 30 characters",
-  "emailShouldContain": "Email should contain @ symbol",
-  "emailShouldContainADot": "Email should contain a domain name with at least one dot",
-  "emailInvalid": "Email is invalid",
-  "passwordShouldBeAtLeast6CharactersAndAtMost100Characters": "Password should be at least 6 characters and at most 100 characters",
-
-
-  "VALIDATE-----------------------------------------------------------------": "",
-  "emailIsRequired": "Email is required",
-  "passwordIsRequired": "Password is required",
-
-
-  "LEFT MENU-----------------------------------------------------------------": "",
-  "home": "Home",
-  "search": "Search",
-  "searchByUsernameOrEmail": "Search by username or email",
-  "messages": "Messages",
-  "notifications": "Notifications",
-  "labelShopping": "Label Shopping",
-  "create": "Create",
-  "post": "Post",
-  "story": "Story",
-  "settings": "Settings",
-  "help": "Help",
-  "logout": "Log out",
-
-
-  "STORY-----------------------------------------------------------------": "",
-  "expandStories": "Expand stories",
-  "collapseStories": "Collapse stories",
-  "yourStory": "Your story",
-
-
-  "HOME-----------------------------------------------------------------": "",
-  "suggestedForYou": "Suggested for you",
-  "youReachTheEnOfTheFeed": "You reach the end of the feed",
-
-
-  "POST-----------------------------------------------------------------": "",
-  "viewAll": "View all",
+  "date_time": {
+    "_preserve": true,
+    "justNow": "Just now",
+    "y": "y",
+    "mth": "mth",
+    "w": "w",
+    "d": "d",
+    "h": "h",
+    "m": "m",
+    "s": "s"
+  },
+  "login": {
+    "you_need_to_login_first": "You need to login first",
+    "login": "Login",
+    "email_or_username": "Email or username",
+    "password": "Password",
+    "forgot_password": "Forgot password",
+    "dont_have_an_account": "Dont have an account",
+    "sign_up": "Sign up",
+    "continue_as_guest": "Continue as guest",
+    "email_is_required": "Email is required",
+    "password_is_required": "Password is required"
+  },
+  "common": {
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "done": "Done",
+    "confirm": "Confirm",
+    "submit": "Submit",
+    "save": "Save"
+  },
+  "register": {
+    "sign_up": "Sign up",
+    "password": "Password",
+    "password_confirm": "Password confirm",
+    "have_an_account": "Have an account",
+    "login": "Login",
+    "continue_as_guest": "Continue as guest",
+    "email_should_contain_@": "Email should contain @",
+    "email_should_contain_a_dot": "Email should contain a dot",
+    "email_invalid": "Email invalid",
+    "username_only_contain": "Username only contain",
+    "username_should_be_at_least_3_characters_and_at_most_30_characters": "Username should be at least 3 characters and at most 30 characters",
+    "password_should_be_at_least_6_characters_and_at_most_100_characters": "Password should be at least 6 characters and at most 100 characters"
+  },
+  "story_list": {
+    "expand_stories": "Expand stories",
+    "collapse_stories": "Collapse stories",
+    "your_story": "Your story"
+  },
+  "create_post": {
+    "create_new_post": "Create new post",
+    "share": "Share",
+    "select_from_computer": "Select from computer",
+    "write_a_caption": "Write a caption",
+    "audio": "Audio",
+    "audience": "Audience",
+    "who_would_you_like_to_share_your_post_with": "Who would you like to share your post with",
+    "a_post_must_have_at_least_one_image_or_one_audio_or_caption": "A post must have at least one image or one audio or caption",
+    "public": "Public",
+    "private": "Private",
+    "close_friends": "Close friends"
+  },
+  "feed": {
+    "suggested_for_you": "Suggested for you",
+    "you_reach_the_end_of_the_feed": "You reach the end of the feed"
+  },
+  "labels_shop": {
+    "purchase_history": "Purchase history",
+    "in_stock": "In stock",
+    "out_of_stock": "Out of stock",
+    "gift": "Gift",
+    "buy": "Buy",
+    "buyed": "Buyed",
+    "payment_details": "Payment details",
+    "name": "Name",
+    "price": "Price",
+    "receiver": "Receiver",
+    "payment": "Payment",
+    "price_high_to_low": "Price high to low",
+    "price_low_to_high": "Price low to high",
+    "have_owned": "Have owned",
+    "not_owned": "Not owned",
+    "high_quantity_sold": "High quantity sold",
+    "low_quantity_sold": "Low quantity sold",
+    "select_sort_options": "Select sort options",
+    "search_by _name": "Search by name",
+    "order_no": "Order no",
+    "buyer": "Buyer",
+    "owner": "Owner",
+    "amount": "Amount",
+    "date_create": "Date create",
+    "status": "Status",
+    "in_total_there_are": "In total there are",
+    "bills": "bills"
+  },
+  "left_menu": {
+    "login": "Login",
+    "home": "Home",
+    "search": "Search",
+    "messages": "Messages",
+    "notifications": "Notifications",
+    "label_shopping": "Label shopping",
+    "create": "Create",
+    "post": "Post",
+    "story": "Story",
+    "settings": "Settings",
+    "help": "Help",
+    "report_a_problem": "Report a problem",
+    "logout": "Logout"
+  },
+  "mobile_top_menu": {
+    "help": "Help",
+    "report_a_problem": "Report a problem",
+    "post": "Post",
+    "story": "Story",
+    "logout": "Logout"
+  },
+  "message_content_list": {
+    "view_profile": "View profile",
+    "messages": "Messages",
+    "send": "Send",
+    "reply": "Reply",
+    "replying_to": "Replying to"
+  },
+  "message_room_detail": {
+    "details": "Details",
+    "change_group_name": "Change group name",
+    "change": "Change",
+    "members": "Members",
+    "add_people": "Add people",
+    "admin": "Admin",
+    "leave_chat": "Leave chat",
+    "you_wont_be_able_to_send_or_receive_messages_unless_someone_adds_you_back_to_the_chat": "You wont be able to send or receive messages unless someone adds you back to the chat",
+    "changing_the_name_of_the_group_will_change_the_name_for_all_members": "Changing the name of the group will change the name for all members",
+    "to": "To",
+    "add": "Add",
+    "remove_from_group": "Remove from group",
+    "make_admin": "Make admin",
+    "remove_admin": "Remove admin",
+    "notifications": "Notifications",
+    "this_month": "This month"
+  },
+  "messages": {
+    "messages": "Messages",
+    "your_messages": "Your messages",
+    "send_a_message_to_start_a_chat": "Send a message to start a chat",
+    "new_message": "New message",
+    "to": "To",
+    "chat": "Chat",
+    "send_message": "Send message"
+  },
+  "notifications_item": {
+    "and": "And",
+    "liked_your_post": "Liked your post",
+    "commented_on_your_post": "Commented on your post",
+    "replied_to_your_comment": "Replied to your comment",
+    "started_following_you": "Started following you",
+    "tagged_you_in_a_post": "Tagged you in a post"
+  },
+  "collection_grid": {
+    "new_collection": "New collection",
+    "edit_collection": "Edit collection",
+    "upload_image": "Upload image",
+    "delete_image": "Delete image",
+    "name": "Name",
+    "description": "Description",
+    "update_collection_successfully": "Update collection successfully",
+    "collection_created_successfully": "Collection created successfully",
+    "collection_image_deleted_successfully": "Collection image deleted successfully"
+  },
+  "follower_dialog": {
+    "followers": "Followers",
+    "follow": "Follow",
+    "remove": "Remove",
+    "unfollow": "Unfollow"
+  },
+  "following_dialog": {
+    "following": "Following",
+    "follow": "Follow",
+    "unfollow": "Unfollow"
+  },
+  "profile": {
+    "upload_avatar": "Upload avatar",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "messages": "Messages",
+    "edit_profile": "Edit profile",
+    "choose_label": "Choose label",
+    "posts": "Posts",
+    "followers": "Followers",
+    "following": "Following",
+    "collections": "Collections",
+    "view_mode": "View mode",
+    "sort": "Sort",
+    "add_to_close_friends": "Add to close friends",
+    "grid": "Grid",
+    "list": "List",
+    "newest": "Newest",
+    "oldest": "Oldest",
+    "remove_from_close_friends": "Remove from close friends",
+    "avatar_updated_successfully": "Avatar updated successfully"
+  },
+  "search_suggestion": {
+    "follower_other": "followers",
+    "follower_one": "follower",
+    "suggest_for_you": "Suggest for you"
+  },
+  "search": {
+    "search": "Search",
+    "by_image": "By image",
+    "search_by_username_or_email": "Search by username or email",
+    "recent": "Recent",
+    "clear_all": "Clear all"
+  },
+  "image_search": {
+    "image_search": "Image search",
+    "image_search_description": "Image search description",
+    "upload_new_image": "Upload new image",
+    "delete_image": "Delete image",
+    "image_search_updated_successfully": "Image search updated successfully",
+    "image_search_deleted_successfully": "Image search deleted successfully"
+  },
+  "profile_form": {
+    "email": "Email",
+    "bio": "Bio",
+    "profile_updated_successfully": "Profile updated successfully"
+  },
+  "setting": {
+    "settings": "Settings",
+    "how_you_use_syncio": "How you use Syncio",
+    "edit_profile": "Edit profile",
+    "how_people_find_and_contact_you": "How people find and contact you",
+    "image_search": "Image search"
+  },
+  "collection_detail": {
+    "no_posts_added_to_collection_yet": "No posts added to collection yet"
+  },
+  "collection_list": {
+    "save_to_collection": "Save to collection",
+    "new_collection": "New collection",
+    "upload_image": "Upload image",
+    "name": "Name",
+    "description": "Description",
+    "collection_created_successfully": "Collection created successfully",
+    "update_collection_successfully": "Update collection successfully"
+  },
   "like": {
-    "one": "Like",
-    "other": "Likes"
+    "like_other": "likes",
+    "like_one": "like",
+    "view_all": "View all",
+    "comment_other": "comments",
+    "comment_one": "comment"
   },
-  "comment": {
-    "one": "Comment",
-    "other": "Comments"
+  "post": {
+    "report": "Report",
+    "copy_link": "Copy link",
+    "save_to_collection": "Save to collection",
+    "link_copied_to_clipboard": "Link copied to clipboard"
   },
-
-
-  "POST_DETAIL-----------------------------------------------------------------": "",
-  "reply": "Reply",
-  "hideReplies": "Hide replies",
-  "viewReplies": "View replies",
-  "addAComment": "Add a comment",
-  "postComment": "Post",
-  "saveToCollection": "Save to collection",
-
-
-  "DATETIME-----------------------------------------------------------------": "",
-  "justNow": "Just now",
-  "y": "y",
-  "mth": "mth",
-  "w": "w",
-  "d": "d",
-  "h": "h",
-  "m": "m",
-  "s": "s",
-
-
-  "REPORT-----------------------------------------------------------------": "",
-  "report": "Report",
-  "reason": "Reason",
-  "selectAReason": "Select a reason",
-  "description": "Description",
-  "submit": "Submit",
-  "spam": "Spam",
-  "nude": "Nude",
-  "harassment": "Harassment",
-  "violence": "Violence",
-  "inappropriateContent": "Inappropriate content",
-  "thanksForLettingUsKnow": "Thanks for letting us know",
-  "yourFeedbackIsImportantInHelpingUsKeepTheCommunitySafe": "Your feedback is important in helping us keep the community safe",
-
-
-  "SEARCH-----------------------------------------------------------------": "",
-  "byImage": "By image",
-  "recent": "Recent",
-  "clearAll": "Clear all",
-  "suggestForYou": "Suggest for you",
-  "follower": {
-    "one": "follower",
-    "other": "followers"
+  "comment_list": {
+    "like_other": "likes",
+    "like_one": "like",
+    "reply": "Reply",
+    "hide_replies": "Hide replies",
+    "view_replies": "View replies"
   },
-
-
-  "MESSAGE-----------------------------------------------------------------": "",
-  "yourMessages": "Your messages",
-  "sendAMessageToStartAChat": "Send a message to start a chat",
-  "sendMessage": "Send message",
-  "newMessage": "New message",
-  "to": "To",
-  "chat": "Chat",
-  "details": "Details",
-  "changeGroupName": "Change group name",
-  "change": "Change",
-  "members": "Members",
-  "addPeople": "Add people",
-  "admin": "Admin",
-  "changingTheNameOfTheGroupWillChangeTheNameForAllMembers": "Changing the name of the group will change the name for all members",
-  "save": "Save",
-  "leaveChat": "Leave chat",
-  "youWontBeAbleToSendOrReceiveMessagesUnlessSomeoneAddsYouBackToTheChat": "You won't be able to send or receive messages unless someone adds you back to the chat",
-  "add": "Add",
-  "removeFromGroup": "Remove from group",
-  "makeAdmin": "Make admin",
-  "removeAdmin": "Remove admin",
-  "send": "Gửi",
-  "viewProfile": "View profile",
-
-
-  "OTHERS-----------------------------------------------------------------": "",
-  "error": "Error",
-  "success": "Success",
-  "copyLink": "Copy link",
-  "linkCopiedToClipboard": "Link copied to clipboard",
-  "cancel": "Cancel",
-
-
-  "NOTIFICATION-----------------------------------------------------------------": "",
-  "thisMonth": "This month",
-  "and": "and",
-  "other": {
-    "one": "other",
-    "other": "others"
+  "post_detail": {
+    "add_a_comment": "Add a comment",
+    "post_comment": "Post comment",
+    "report": "Report",
+    "copy_link": "Copy link",
+    "save_to_collection": "Save to collection",
+    "link_copied_to_clipboard": "Link copied to clipboard"
   },
-  "commentedOnYourPost": "commented on your post",
-  "likedYourPost": "liked your post",
-  "startedFollowingYou": "started following you",
-  "repliedToYourComment": "replied to your comment",
-  "taggedYouInAPost": "tagged you in a post",
-
-
-  "CREATE NEW POST-----------------------------------------------------------------": "",
-  "createNewPost": "Create new post",
-  "share": "Share",
-  "selectFromComputer": "Select from computer",
-  "writeACaption": "Write a caption",
-  "audio": "Audio",
-  "audience": "Audience",
-  "whoWouldYouLikeToShareYourPostWith": "Who would you like to share your post with",
-  "public": "Public",
-  "private": "Private",
-  "closeFriends": "Close friends",
-  "voiceRecorder": "Voice recorder",
-  "aPostMustHaveAtLeastOneImageOrOneAudioOrCaption": "A post must have at least one image or one audio or caption",
-
-
-  "PROFILE-----------------------------------------------------------------": "",
-  "uploadAvatar": "Upload avatar",
-  "editProfile": "Edit profile",
-  "follow": "Follow",
-  "unfollow": "Unfollow",
-  "followers": "Followers",
-  "following": "Following",
-  "posts": "Posts",
-  "chooseLabel": "Choose label",
-  "viewMode": "View mode",
-  "grid": "Grid",
-  "list": "List",
-  "sort": "Sort",
-  "newest": "Newest",
-  "oldest": "Oldest",
-  "addToCloseFriends": "Add to close friends",
-  "removeFromCloseFriends": "Remove from close friends",
-  "remove": "Remove",
-  "avatarUpdatedSuccessfully": "Avatar updated successfully",
-  "collections": "Collections",
-  "newCollection": "New collection",
-  "uploadImage": "Upload image",
-  "done": "Xong",
-  "collectionCreatedSuccessfully": "Collection created successfully",
-  "updateCollectionSuccessfully": "Update collection successfully",
-  "collectionImageDeletedSuccessfully": "Collection image deleted successfully",
-  "noPostsAddedToCollectionYet": "No posts added to collection yet",
-  "editCollection": "Edit collection",
-
-
-  "SETTING-----------------------------------------------------------------": "",
-  "howYouUseSyncio": "How you use Syncio",
-  "howPeopleFindAndContactYou": "How people find and contact you",
-  "imageSearch": "Image search",
-  "imageSearchDescription": "Image search allows other users to find you by searching for images of your face",
-  "uploadNewImage": "Upload new image",
-  "deleteImage": "Delete image",
-  "imageSearchUpdatedSuccessfully": "Image search updated successfully",
-  "imageSearchDeletedSuccessfully": "Image search deleted successfully",
-  "profileUpdatedSuccessfully": "Profile updated successfully",
-  "confirm": "Confirm",
-
-
-  "LABELSHOPPING-----------------------------------------------------------------": "",
-  "priceHighToLow": "Price high to low",
-  "priceLowToHigh": "Price low to high",
-  "purchaseHistory": "Purchase history",
-  "outOfStock": "Out of stock",
-  "inStock": "In stock",
-  "buy": "Buy",
-  "gift": "Gift",
-  "receiver": "Receiver",
-  "payment": "Payment",
-  "paymentDetails": "Payment details",
-  "name": "Name",
-  "price": "Price",
-  "buyed": "Buyed",
-
-
-  "USERREPORT-----------------------------------------------------------------": "",
-  "reportAProblem": "Report a problem",
-  "whyYouMakeThisReport": "Why you make this report",
-  "title": "Title",
-  "letUsKnowIfYouHaveIdeasThatCanHelpMakeOurProductsBetter": "Let us know if you have ideas that can help make our products better. If you need help solving a specific problem, please visit the Help Center.",
-  "somethingWentWrong": "Something went wrong",
-  "helpUsImproveSyncioByProvidingFeedback": "Help us improve Syncio by providing feedback",
-  "youCanUploadUpTo6Images": "You can upload up to 6 images",
-  "thankYouForReportingTheBugWeWillLookIntoIt": "Thank you for reporting the bug. We will look into it.",
-  "thankYouForYourFeedbackWeWillUseItToImproveSyncio  ": "Thank you for your feedback. We will use it to improve Syncio.",
-  "addScreenshots": "Add screenshots",
-  "reportABug": "Report a bug",
-  "HelpUsImproveSyncio": "Help us improve Syncio",
-  "pleaseIncludeAsMuchInfoAsPossible": "Please include as much info as possible..."
-
-
+  "report": {
+    "report": "Report",
+    "reason": "Reason",
+    "select_a_reason": "Select a reason",
+    "description": "Description",
+    "spam": "Spam",
+    "nude": "Nude",
+    "harassment": "Harassment",
+    "violence": "Violence",
+    "inappropriate_content": "Inappropriate content",
+    "thanks_for_letting_us_know": "Thanks for letting us know",
+    "your_feedback_is_important_in_helping_us_keep_the_community_safe": "Your feedback is important in helping us keep the community safe"
+  },
+  "user_report": {
+    "why_you_make_this_report": "Why you make this report",
+    "title": "Title",
+    "details": "Details",
+    "please_include_as_much_info_as_possible": "Please include as much info as possible",
+    "add_screenshots": "Add screenshots",
+    "let_us_know_if_you_have_ideas_that_can_help_make_our_products_better": "Let us know if you have ideas that can help make our products better",
+    "report_a_bug": "Report a bug",
+    "help_us_improve_syncio": "Help us improve Syncio",
+    "something_went_wrong": "Something went wrong",
+    "help_us_improve_syncio_by_providing_feedback": "Help us improve Syncio by providing feedback",
+    "you_can_upload_up_to_6_images": "You can upload up to 6 images",
+    "thank_you_for_reporting_the_bug_we_will_look_into_it": "Thank you for reporting the bug we will look into it",
+    "thank_you_for_your_feedback_we_will_use_it_to_improve_syncio": "Thank you for your feedback we will use it to improve Syncio",
+    "if_you_need_help_solving_a_specific_problem_please_visit_the_help_center": "If you need help solving a specific problem please visit the help center"
+  },
+  "voice_recorder_dialog": {
+    "voice_recorder": "Voice recorder"
+  },
+  "message_item": {
+    "create_this_group": "Create this group",
+    "named_the_group": "Named the group",
+    "added": "Added",
+    "removed": "Removed",
+    "left_the_group": "Left the group",
+    "you": "You"
+  }
 }

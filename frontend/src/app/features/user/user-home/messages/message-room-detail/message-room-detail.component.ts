@@ -43,7 +43,7 @@ export class MessageRoomDetailComponent {
   editMemberDialogItems: DialogItem[] = [];
   _editMemberDialogItems: DialogItem[] = [
     { 
-      label: this.translateService.instant('removeFromGroup'),
+      label: this.translateService.instant('message_room_detail.remove_from_group'),
       bold: 7,
       color: 'red', 
       action: () => this.removeMember(this.selectedMember)
@@ -53,13 +53,13 @@ export class MessageRoomDetailComponent {
   isVisibleLeaveChat: boolean = false; // Indicates if the leave chat dialog is visible
   leaveChatDialogItems: any = [
     { 
-      label: this.translateService.instant('leaveChat'),
+      label: this.translateService.instant('message_room_detail.leave_chat'),
       color: 'red', 
       bold: 7,
       action: () => this.leaveChat()
     },
     { 
-      label: this.translateService.instant('cancel'),
+      label: this.translateService.instant('common.cancel'),
       action: () => this.isVisibleLeaveChat = false
     }
   ]; // Dialog items for the leave chat dialog
@@ -87,7 +87,7 @@ export class MessageRoomDetailComponent {
       items = [
         ...items,
         { 
-          label: this.translateService.instant('makeAdmin'),
+          label: this.translateService.instant('message_room_detail.make_admin'),
           action: () => this.makeAdmin(this.selectedMember)
         }
       ];
@@ -96,7 +96,7 @@ export class MessageRoomDetailComponent {
       items = [
         ...items,
         { 
-          label: this.translateService.instant('removeAdmin'),
+          label: this.translateService.instant('message_room_detail.remove_admin'),
           action: () => this.removeAdmin(this.selectedMember)
         }
       ];
@@ -104,7 +104,7 @@ export class MessageRoomDetailComponent {
     this.editMemberDialogItems = [
       ...items,
       { 
-        label: this.translateService.instant('cancel'),
+        label: this.translateService.instant('common.cancel'),
         action: () => this.isVisibleEditMember = false
       }
     ];

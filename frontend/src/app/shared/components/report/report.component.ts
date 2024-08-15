@@ -39,11 +39,11 @@ export class ReportComponent implements OnInit {
     });
 
     this.reasons = [
-      { label: this.translateService.instant('spam'), value: 'SPAM' },
-      { label: this.translateService.instant('nude'), value: 'NUDE' },
-      { label: this.translateService.instant('harassment'), value: 'HARASSMENT' },
-      { label: this.translateService.instant('violence'), value: 'VIOLENCE' },
-      { label: this.translateService.instant('inappropriateContent'), value: 'INAPPROPRIATE_CONTENT' },
+      { label: this.translateService.instant('report.spam'), value: 'SPAM' },
+      { label: this.translateService.instant('report.nude'), value: 'NUDE' },
+      { label: this.translateService.instant('report.harassment'), value: 'HARASSMENT' },
+      { label: this.translateService.instant('report.violence'), value: 'VIOLENCE' },
+      { label: this.translateService.instant('report.inappropriate_content'), value: 'INAPPROPRIATE_CONTENT' },
     ];
   }
 
@@ -64,8 +64,8 @@ export class ReportComponent implements OnInit {
       this.reportService.createReport(report).subscribe(
         (response) => {
           this.toastService.showSuccess(
-            this.translateService.instant('thanksForLettingUsKnow'),
-            this.translateService.instant('yourFeedbackIsImportantInHelpingUsKeepTheCommunitySafe')
+            this.translateService.instant('report.thanks_for_letting_us_know'),
+            this.translateService.instant('report.your_feedback_is_important_in_helping_us_keep_the_community_safe')
           );
           console.log('Report submitted successfully:', report);
           // reset the form and close the modal after successful submission

@@ -41,8 +41,8 @@ export class RegisterComponent {
   }
 
   register() {
-    let errorText = this.translateService.instant('error');
-    let successText = this.translateService.instant('success');
+    let errorText = this.translateService.instant('common.error');
+    let successText = this.translateService.instant('common.success');
 
     const usernameRegex = /^[a-zA-Z0-9]{3,30}$/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -50,25 +50,25 @@ export class RegisterComponent {
     //validate email
     if (!emailRegex.test(this.email)) {
       if (!this.email.includes('@')) {
-        this.toastService.showError(errorText, this.translateService.instant('emailShouldContain'));
+        this.toastService.showError(errorText, this.translateService.instant('register.email_should_contain_@'));
         return;
       }
       if (!this.email.includes('.')) {
-        this.toastService.showError(errorText, this.translateService.instant('emailShouldContainADot'));
+        this.toastService.showError(errorText, this.translateService.instant('register.email_should_contain_a_dot'));
         return;
       }
-      this.toastService.showError(errorText, this.translateService.instant('emailInvalid'));
+      this.toastService.showError(errorText, this.translateService.instant('register.email_invalid'));
       return;
     }
 
     //validate username
     if (!usernameRegex.test(this.username)) {
       if (/[^a-zA-Z0-9]/.test(this.username)) {
-        this.toastService.showError(errorText, this.translateService.instant('usernameOnlyContain'));
+        this.toastService.showError(errorText, this.translateService.instant('register.username_only_contain'));
         return;
       }
       if (this.username.length < 3 || this.username.length > 50) {
-        this.toastService.showError(errorText, this.translateService.instant('usernameShouldBeAtLeast3CharactersAndAtMost30Characters'));
+        this.toastService.showError(errorText, this.translateService.instant('register.username_should_be_at_least_3_characters_and_at_most_30_characters'));
         return;
       }
     }
@@ -83,7 +83,7 @@ export class RegisterComponent {
     };
 
     if (this.password.length < 6 || this.password.length > 100) {
-      this.toastService.showError(errorText, this.translateService.instant('passwordShouldBeAtLeast6CharactersAndAtMost100Characters'));
+      this.toastService.showError(errorText, this.translateService.instant('register.password_should_be_at_least_6_characters_and_at_most_100_characters'));
       this.isLoading = false;
       return;
     }

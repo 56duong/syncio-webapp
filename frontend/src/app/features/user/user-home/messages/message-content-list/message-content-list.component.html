@@ -28,7 +28,7 @@
         <h2 *ngIf="currentUser.username" class="text-3xl mt-1 mb-0 p-2 text-center" style="font-weight: 500;">{{messageRoom.name}}</h2>
         <p-button *ngIf="!messageRoom.group && messageRoom.members" 
           [routerLink]="['/profile', getMemberNotMe()]" 
-          [label]="'viewProfile' | translate" severity="my-custom-secondary"
+          [label]="'message_content_list.view_profile' | translate" severity="my-custom-secondary"
           class="mt-3"></p-button>
       </div>
   
@@ -52,7 +52,7 @@
       <!-- Reply -->
       <div *ngIf="messageContent.replyTo"
         class="relative border-top-1 border-gray-300 w-full pb-3 pt-2">
-        <p class="my-2">Replying to {{messageContent.replyTo.user?.username}}</p>
+        <p class="my-2">{{'message_content_list.replying_to' | translate}} {{messageContent.replyTo.user?.username}}</p>
         <!-- Content -->
         <div class="message-content opacity-50 primary-scrollbar"
           style="max-height: 120px; overflow: scroll;">
@@ -104,14 +104,14 @@
         <p-editor (onTextChange)="textChange($event)" 
           [(ngModel)]="messageContent.message" 
           [formats]="['bold']"
-          [placeholder]="('messages' | translate) + '...'" [style]="{ maxHeight: '40px' }">
+          [placeholder]="('message_content_list.messages' | translate) + '...'" [style]="{ maxHeight: '40px' }">
           <ng-template pTemplate="header" hidden></ng-template>
         </p-editor>
   
         <!-- Send button -->
         <p-button [disabled]="plainComment.trim().length <= 0" 
           (click)="sendMessage(MessageContentTypeEnum.TEXT)"
-          [label]="'send' | translate" size="small" [text]="true"></p-button>    
+          [label]="'message_content_list.send' | translate" size="small" [text]="true"></p-button>    
       </div>
       
     </div>

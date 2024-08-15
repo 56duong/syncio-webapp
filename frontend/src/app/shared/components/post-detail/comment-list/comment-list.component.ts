@@ -205,7 +205,7 @@ export class CommentListComponent {
   getCommentsObservable() {
     this.subscriptionComments = this.commentService.getCommentsObservable().subscribe({
       next: (comment) => {
-        this.comments.unshift({ ...comment, createdDate: this.translateService.instant('justNow') });
+        this.comments.unshift({ ...comment, createdDate: this.translateService.instant('date_time.just_now') });
         // send notification to owner of the post
         // need to place here because we need to get the comment id, 
         // and the comment id is generated in the backend, 
