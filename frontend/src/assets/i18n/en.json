@@ -150,7 +150,7 @@
     "new_message": "New message",
     "to": "To",
     "chat": "Chat",
-    "send_message": null
+    "send_message": "Send message"
   },
   "notifications_item": {
     "and": "And",
