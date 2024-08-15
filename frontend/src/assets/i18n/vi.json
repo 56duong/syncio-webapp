@@ -109,7 +109,9 @@
     "settings": "Cài đặt",
     "help": "Trợ giúp",
     "report_a_problem": "Báo cáo vấn đề",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "dark_mode": "Chế độ tối",
+    "light_mode": "Chế độ sáng"
   },
   "mobile_top_menu": {
     "help": "Trợ giúp",
@@ -217,7 +219,7 @@
   },
   "image_search": {
     "image_search": "Tìm kiếm bằng hình ảnh",
-    "image_search_description": "Tìm kiếm bằng hình ảnh",
+    "image_search_allows_other_users_to_find_you_by_searching_for_images_of_your_face": "Tìm kiếm bằng hình ảnh cho phép người dùng khác tìm thấy bạn bằng cách tìm kiếm hình ảnh của khuôn mặt của bạn",
     "upload_new_image": "Tải ảnh mới lên",
     "delete_image": "Xóa ảnh",
     "image_search_updated_successfully": "Cập nhật tìm kiếm bằng hình ảnh thành công",
@@ -226,14 +228,18 @@
   "profile_form": {
     "email": "Email",
     "bio": "Tiểu sử",
-    "profile_updated_successfully": "Cập nhật hồ sơ thành công"
+    "profile_updated_successfully": "Cập nhật hồ sơ thành công",
+    "edit_profile": "Chỉnh sửa hồ sơ"
   },
   "setting": {
     "settings": "Cài đặt",
     "how_you_use_syncio": "Cách bạn sử dụng Syncio",
     "edit_profile": "Chỉnh sửa hồ sơ",
     "how_people_find_and_contact_you": "Cách mọi người tìm thấy và liên hệ với bạn",
-    "image_search": "Tìm kiếm bằng hình ảnh"
+    "image_search": "Tìm kiếm bằng hình ảnh",
+    "who_can_see_your_content": "Ai có thể xem nội dung của bạn",
+    "close_friends": "Bạn thân",
+    "messages": "Tin nhắn"
   },
   "collection_detail": {
     "no_posts_added_to_collection_yet": "Chưa có bài viết nào được thêm vào bộ sưu tập"
@@ -314,5 +320,20 @@
     "removed": "đã xóa",
     "left_the_group": "đã rời khỏi nhóm",
     "you": "Bạn"
+  },
+  "close_friends": {
+    "search_by_username": "Tìm kiếm theo tên đăng nhập",
+    "close_friends": "Bạn thân",
+    "we_dont_send_notifications_when_you_edit_your_close_friends_list": "Chúng tôi không gửi thông báo khi bạn chỉnh sửa danh sách bạn thân của mình",
+    "setting_saved": "Đã lưu cài đặt"
+  },
+  "message_controls": {
+    "message_controls": "Kiểm soát tin nhắn",
+    "everyone": "Mọi người",
+    "only_people_you_follow": "Chỉ những người mà bạn theo dõi",
+    "no_one": "Không ai có thể",
+    "who_can_add_you_to_group_chats": "Ai có thể thêm bạn vào nhóm trò chuyện",
+    "setting_saved": "Đã lưu cài đặt",
+    "who_can_start_a_new_chat_with_you": "Ai có thể bắt đầu một cuộc trò chuyện mới với bạn"
   }
 }

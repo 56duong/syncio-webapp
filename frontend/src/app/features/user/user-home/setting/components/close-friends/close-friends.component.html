@@ -1,0 +1,34 @@
+<div class="container col-12 xl:col-8 m-auto p-0 mt-3 pb-6">
+  <!-- header -->
+  <div class="mb-4">
+    <h1 class="text-2xl">{{'close_friends.close_friends' | translate}}</h1>
+    <small class="text-gray-500">{{'close_friends.we_dont_send_notifications_when_you_edit_your_close_friends_list' | translate}}.</small>
+  </div>
+
+  <!-- search -->
+  <div style="border: 1px solid var(--surface-border); border-radius: 5px; padding: 5px; margin-bottom: 1rem;">
+    <input #searchInput
+      type="text"
+      [placeholder]="'close_friends.search_by_username' | translate"
+      (keyup)="handleKeyup($event)"
+    />
+  </div>
+
+  <!-- list -->
+  <div *ngFor="let userFollowingCloseFriend of userFollowingCloseFriendsShow"
+    (click)="toggleCloseFriend(userFollowingCloseFriend.targetId)" 
+    class="field-checkbox cursor-pointer">
+    <!-- left -->
+    <label [for]="userFollowingCloseFriend.targetId" class="gap-2 flex align-items-center cursor-pointer">
+      <app-avatar [userId]="userFollowingCloseFriend.targetId" [width]="48"></app-avatar>
+      {{ userFollowingCloseFriend.targetUsername }}
+    </label>
+    <!-- right checkbox -->
+    <p-checkbox
+      [inputId]="userFollowingCloseFriend.targetId"
+      name="userFollowingCloseFriend" 
+      [value]="userFollowingCloseFriend.targetId" 
+      [(ngModel)]="selectedCloseFriends"
+       />
+  </div>
+</div>

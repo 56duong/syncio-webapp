@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { UserFollowingCloseFriend } from '../interfaces/user-following-close-friend';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,12 @@ export class UserCloseFriendService {
   removeCloseFriend(targetId: string): Observable<boolean> {
     const url = `${this.apiURL}/remove-close-friend/${targetId}`;
     return this.http.post<boolean>(url, {});
+  }
+
+
+  getFollowingCloseFriends(): Observable<UserFollowingCloseFriend[]> {
+    const url = `${this.apiURL}/following-close-friends`;
+    return this.http.get<UserFollowingCloseFriend[]>(url);
   }
 
 }

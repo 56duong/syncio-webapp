@@ -119,7 +119,7 @@ export class LeftMenuComponent {
         icon: 'pi pi-cog',
         items: [
           {
-            label: this.currentTheme === 'theme-light' ? 'Dark mode' : 'Light mode',
+            label: this.currentTheme === 'theme-light' ? this.translateService.instant('left_menu.dark_mode') : this.translateService.instant('left_menu.light_mode'),
             icon: 'pi ' + (this.currentTheme === 'theme-light' ? 'pi-moon' : 'pi-sun'),
             command: () => {
               this.themeService.switchTheme(this.currentTheme === 'theme-light' ? 'theme-dark' : 'theme-light');
@@ -190,7 +190,7 @@ export class LeftMenuComponent {
   updateTheme() {
     this.currentTheme = this.themeService.getCurrentTheme();
     this.settingSubmenuItems[0].items[0] = {
-      label: this.currentTheme === 'theme-light' ? 'Dark mode' : 'Light mode',
+      label: this.currentTheme === 'theme-light' ? this.translateService.instant('left_menu.dark_mode') : this.translateService.instant('left_menu.light_mode'),
       icon: 'pi ' + (this.currentTheme === 'theme-light' ? 'pi-moon' : 'pi-sun'),
       command: () => {
         this.themeService.switchTheme(this.currentTheme === 'theme-light' ? 'theme-dark' : 'theme-light');

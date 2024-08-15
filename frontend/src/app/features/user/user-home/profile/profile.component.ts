@@ -260,6 +260,7 @@ export class ProfileComponent implements OnInit {
       },
     });
   }
+  
   /**
    * Send follow notification to target user.
    * @param targetId

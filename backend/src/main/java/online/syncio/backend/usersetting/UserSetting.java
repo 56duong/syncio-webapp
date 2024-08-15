@@ -24,6 +24,12 @@ public class UserSetting {
 
     private String findableByImageUrl;
 
+    @Enumerated(EnumType.STRING)
+    private WhoCanAddYouToGroupChat whoCanAddYouToGroupChat;
+
+    @Enumerated(EnumType.STRING)
+    private WhoCanSendYouNewMessage whoCanSendYouNewMessage;
+
 //    User
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

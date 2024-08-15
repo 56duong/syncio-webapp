@@ -70,7 +70,6 @@ function setNestedKey(obj, key, value) {
 }
 
 // Function to clean up existing translations by removing non-existing keys
-// Function to clean up existing translations by removing non-existing keys
 function cleanTranslations(existing, newKeys, overwriteAll) {
   for (const key in existing) {
     if (typeof existing[key] === 'object' && existing[key] !== null) {
@@ -115,32 +114,27 @@ function mergeTranslations(existing, newKeys, overwriteAll) {
 function extractTranslations() {
   const argv = yargs(hideBin(process.argv))
     .option('key-as-default-value', {
-      alias: 'k',
+      alias: 'kd',
       type: 'boolean',
       description: 'Use key as default value'
     })
-    .option('key-as-initial-default-value', {
-      alias: 'ki',
-      type: 'boolean',
-      description: 'Use key as initial default value'
-    })
     .option('null-as-default-value', {
-      alias: 'n',
+      alias: 'nd',
       type: 'boolean',
       description: 'Use null as default value'
     })
     .option('string-as-default-value', {
-      alias: 'd',
+      alias: 'esd',
       type: 'string',
-      description: 'Use string as default value'
+      description: 'Use empty string as default value'
     })
-    .option('key-as-default-value-remove-underscore', {
-      alias: 'kr',
+    .option('remove-underscore', {
+      alias: 'ru',
       type: 'boolean',
       description: 'Use key as default value and remove underscores'
     })
     .option('uppercase', {
-      alias: 'u',
+      alias: 'up',
       type: 'boolean',
       description: 'Convert key to uppercase'
     })
@@ -188,25 +182,24 @@ function extractTranslations() {
   const files = readFiles(inputDir, argv.fileTypes);
   const newTranslations = {};
 
-  let allKeyCount = 0;
+  allKeyCount = 0;
   files.forEach(file => {
     const keys = extractKeysFromFile(file);
     keys.forEach(key => {
       allKeyCount++;
 
-      let transformedKey = key;
       let value = '';
 
-      if (argv.k) {
-        value = transformedKey;
-      } else if (argv.ki) {
-        value = transformedKey;
-      } else if (argv.n) {
+      if (argv.kd) {
+        value = key;
+      } else if (argv.nd) {
         value = null;
-      } else if (argv.d) {
-        value = argv.d;
-      } else if (argv.kr) {
-        value = transformedKey.replace(/_/g, ' ');
+      } else if (argv.esd) {
+        value = argv.esd;
+      } 
+      
+      if (argv.ru) {
+        value = value ? value.replace(/_/g, ' ') : value;
       }
 
       // Remove prefix from the value if it contains a dot
@@ -214,7 +207,7 @@ function extractTranslations() {
         value = value.substring(value.lastIndexOf('.') + 1);
       }
 
-      if (argv.u) {
+      if (argv.up) {
         value = value.toUpperCase();
       } else if (argv.c) {
         value = capitalizeWords(value);
@@ -231,7 +224,7 @@ function extractTranslations() {
         value = insertSpacesBeforeNumbers(value);
       }
 
-      setNestedKey(newTranslations, transformedKey, value);
+      setNestedKey(newTranslations, key, value);
     });
   });
 
@@ -242,7 +235,7 @@ function extractTranslations() {
     if (fs.existsSync(outputFilePath)) {
       existingTranslations = JSON.parse(fs.readFileSync(outputFilePath, 'utf8'));
     }
-
+// console.log('newTranslations', newTranslations);
     cleanTranslations(existingTranslations, newTranslations, argv.o);
     mergeTranslations(existingTranslations, newTranslations, argv.o);
 

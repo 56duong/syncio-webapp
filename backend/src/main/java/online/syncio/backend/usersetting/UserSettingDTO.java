@@ -8,5 +8,7 @@ import java.util.UUID;
 public class UserSettingDTO {
     private UUID id;
     private String findableByImageUrl;
+    private WhoCanAddYouToGroupChat whoCanAddYouToGroupChat;
+    private WhoCanSendYouNewMessage whoCanSendYouNewMessage;
     private UUID userId;
 }

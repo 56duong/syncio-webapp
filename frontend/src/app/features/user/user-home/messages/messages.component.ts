@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { MessageContent, MessageContentTypeEnum } from 'src/app/core/interfaces/message-content';
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
 import { User } from 'src/app/core/interfaces/user';
@@ -7,7 +8,9 @@ import { UserSearch } from 'src/app/core/interfaces/user-search';
 import { MessageContentService } from 'src/app/core/services/message-content.service';
 import { MessageRoomMemberService } from 'src/app/core/services/message-room-member.service';
 import { MessageRoomService } from 'src/app/core/services/message-room.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 import { TokenService } from 'src/app/core/services/token.service';
+import { UserSettingService } from 'src/app/core/services/user-setting.service';
 
 @Component({
   selector: 'app-messages',
@@ -37,6 +40,9 @@ export class MessagesComponent {
     private router: Router,
     private messageRoomMemberService: MessageRoomMemberService,
     private messageContentService: MessageContentService,
+    private toastService: ToastService,
+    private translateService: TranslateService,
+    private userSettingService: UserSettingService
   ) { 
     this.isMobile = window.innerWidth < 768;
   }
@@ -168,7 +174,19 @@ export class MessagesComponent {
             this.messageRoomService.getMessageRoomById(roomId).subscribe({
               next: (room) => {
                 if(room.id) {
-                  this.selectMessageRoom(room);
+                  this.userSettingService.checkWhoCanSendYouNewMessage(room.id).subscribe({
+                    next: (result) => {
+                      if(result) {
+                        this.selectMessageRoom(room);
+                      }
+                      else {
+                        this.router.navigate(['/messages']);
+                      }
+                    },
+                    error: (error) => {
+                      console.log(error);
+                    }
+                  });
                 }
               },
               error: (error) => {
@@ -307,6 +325,10 @@ export class MessagesComponent {
             },
             error: (error) => {
               console.log(error);
+              this.toastService.showError(
+                this.translateService.instant('common.error'),
+                error.error.message
+              )
             }
           });
         }
