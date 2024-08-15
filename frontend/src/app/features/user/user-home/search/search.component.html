@@ -9,7 +9,7 @@
 
     <div class="flex align-items-center justify-content-between my-3 px-3">  
       <!-- title -->
-      <h2 class="font-semibold">{{ 'search' | translate }}</h2>
+      <h2 class="font-semibold">{{ 'search.search' | translate }}</h2>
       <!-- search by image button -->
       <div>
         <input
@@ -18,7 +18,7 @@
           style="display: none"
           accept="image/*"
           (change)="onFileSelected($event)" />
-          <p-button (click)="fileInput.click()" [label]="'byImage' | translate" icon="pi pi-upload" severity="primary"></p-button>
+          <p-button (click)="fileInput.click()" [label]="'search.by_image' | translate" icon="pi pi-upload" severity="primary"></p-button>
       </div>
     </div>
 
@@ -26,7 +26,7 @@
     <form method="post" style="width: calc(100% - 2rem); margin: 0 auto; position: relative;">
       <input #searchInput
         type="text"
-        [placeholder]="'searchByUsernameOrEmail' | translate"
+        [placeholder]="'search.search_by_username_or_email' | translate"
         (keyup)="handleKeyup($event)"
       />
       <!-- loading and clear icon -->
@@ -41,8 +41,8 @@
     <div class="find primary-scrollbar overflow-y-scroll">
       <!-- recent and clear all -->
       <div class="desc px-3">
-        <h4 class="font-semibold mb-0">{{ 'recent' | translate }}</h4>
-        <p class="cursor-pointer"><a (click)="clickClearInput()">{{ 'clearAll' | translate }}</a></p>
+        <h4 class="font-semibold mb-0">{{ 'search.recent' | translate }}</h4>
+        <p class="cursor-pointer"><a (click)="clickClearInput()">{{ 'search.clear_all' | translate }}</a></p>
       </div>
       <!-- list of recent search -->
       <div class="account">

@@ -9,7 +9,7 @@
   <div class="p-3 flex flex-column gap-3">
     <!-- Option -->
     <div>
-      <span class="block">{{'whyYouMakeThisReport' | translate}}?</span>
+      <span class="block">{{'user_report.why_you_make_this_report' | translate}}?</span>
       <div class="p-fluid mt-2">
         <p-dropdown 
           [options]="options" 
@@ -22,17 +22,17 @@
 
     <!-- Title -->
     <div>
-      <span class="block">{{'title' | translate}}</span>
+      <span class="block">{{'user_report.title' | translate}}</span>
       <div class="flex align-items-center gap-3 pt-0 mt-2">
-        <input [(ngModel)]="title" pInputText id="details" class="flex-auto" autocomplete="off" [placeholder]="('title' | translate) + '...'" />
+        <input [(ngModel)]="title" pInputText id="details" class="flex-auto" autocomplete="off" [placeholder]="('user_report.title' | translate) + '...'" />
       </div>
     </div>
 
     <!-- Detail -->
     <div>
-      <span class="block">{{'details' | translate}}</span>
+      <span class="block">{{'user_report.details' | translate}}</span>
       <div class="flex align-items-center gap-3 pt-0 mt-2">
-        <textarea [(ngModel)]="details" pInputText id="details" class="flex-auto" autocomplete="off" rows="5" [placeholder]="'pleaseIncludeAsMuchInfoAsPossible' | translate"></textarea>
+        <textarea [(ngModel)]="details" pInputText id="details" class="flex-auto" autocomplete="off" rows="5" [placeholder]="'user_report.please_include_as_much_info_as_possible' | translate"></textarea>
       </div>
     </div>
 
@@ -46,7 +46,7 @@
 
   <!-- Button -->
   <div class="flex justify-content-between w-full p-3">
-    <p-button (click)="onSubmit()" [disabled]="!title || !selectedOption || !details" [label]="'submit' | translate" />
+    <p-button (click)="onSubmit()" [disabled]="!title || !selectedOption || !details" [label]="'common.submit' | translate" />
     <div>
       <input
         #fileInput
@@ -55,10 +55,10 @@
         accept="image/*"
         [multiple]="true"
         (change)="onFileSelected($event)" />
-      <p-button (click)="fileInput.click()" [label]="'addScreenshots' | translate" severity="my-custom-secondary" styleClass="h-auto"></p-button>
+      <p-button (click)="fileInput.click()" [label]="'user_report.add_screenshots' | translate" severity="my-custom-secondary" styleClass="h-auto"></p-button>
     </div>
   </div>
 
-  <small class="text-gray-500 p-3 pt-0 block">{{'letUsKnowIfYouHaveIdeasThatCanHelpMakeOurProductsBetter' | translate}}</small>
+  <small class="text-gray-500 p-3 pt-0 block">{{'user_report.let_us_know_if_you_have_ideas_that_can_help_make_our_products_better' | translate}}. {{'user_report.if_you_need_help_solving_a_specific_problem_please_visit_the_help_center' | translate}}.</small>
 
 </p-dialog>

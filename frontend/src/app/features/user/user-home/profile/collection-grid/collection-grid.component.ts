@@ -114,8 +114,8 @@ export class CollectionGridComponent {
         next: (data) => {
           this.isVisibleAddCollection = false;
           this.toastService.showSuccess(
-            this.translateService.instant('success'), 
-            this.translateService.instant('updateCollectionSuccessfully')
+            this.translateService.instant('common.success'), 
+            this.translateService.instant('collection_grid.update_collection_successfully')
           );
           this.imageUtils.refreshDateTime();
           // reset
@@ -136,8 +136,8 @@ export class CollectionGridComponent {
         next: (data) => {
           this.isVisibleAddCollection = false;
           this.toastService.showSuccess(
-            this.translateService.instant('success'), 
-            this.translateService.instant('collectionCreatedSuccessfully')
+            this.translateService.instant('common.success'), 
+            this.translateService.instant('collection_grid.collection_created_successfully')
           );
           // set sticker group id and add to table
           this.selectedCollection.id = data;
@@ -148,7 +148,7 @@ export class CollectionGridComponent {
         },
         error: (error) => {
           console.error(error);
-          this.toastService.showError(this.translateService.instant('error'), error.error.message);
+          this.toastService.showError(this.translateService.instant('common.error'), error.error.message);
         }
       });
     }
@@ -162,15 +162,15 @@ export class CollectionGridComponent {
       next: (data) => {
         if(data) {
           this.toastService.showSuccess(
-            this.translateService.instant('success'), 
-            this.translateService.instant('collectionImageDeletedSuccessfully')
+            this.translateService.instant('common.success'), 
+            this.translateService.instant('collection_grid.collection_image_deleted_successfully')
           );
           this.selectedImageDataUrl = null;
         }
       },
       error: (error) => {
         console.error(error);
-        this.toastService.showError(this.translateService.instant('error'), error.error.message);
+        this.toastService.showError(this.translateService.instant('common.error'), error.error.message);
       }
     });
   }

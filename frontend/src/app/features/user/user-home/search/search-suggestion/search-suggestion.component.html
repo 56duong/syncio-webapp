@@ -22,11 +22,11 @@
         *ngIf="suggestion.followerCount; else suggestForYou"
         class="search-result-username"
       >
-        {{ suggestion.followerCount }} {{ (suggestion.followerCount > 1 ? 'follower.other' : 'follower.one') | translate }}
+        {{ suggestion.followerCount }} {{ (suggestion.followerCount > 1 ? ('search_suggestion.follower_other' | translate) : ('search_suggestion.follower_one' | translate)) }}
       </span>
       <ng-template #suggestForYou
         ><span class="search-result-username"
-          >{{ 'suggestForYou' | translate }}</span
+          >{{ 'search_suggestion.suggest_for_you' | translate }}</span
         ></ng-template
       >
     </div>

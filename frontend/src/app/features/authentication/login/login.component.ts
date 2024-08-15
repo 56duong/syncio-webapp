@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit {
       let message = params['message'];
       let type = params['type'];
       if (message) {
-        let errorText = this.translateService.instant('error');
+        let errorText = this.translateService.instant('common.error');
         switch (type) {
           case 'success':
             this.toastService.showSuccess('Success', message);
@@ -111,13 +111,13 @@ export class LoginComponent implements OnInit {
 
   login() {
     console.log('login', this.emailOrUsername);
-    let errorText = this.translateService.instant('error');
+    let errorText = this.translateService.instant('common.error');
     if (this.emailOrUsername == null || this.emailOrUsername == '') {
-      this.toastService.showError(errorText, this.translateService.instant('emailIsRequired'));
+      this.toastService.showError(errorText, this.translateService.instant('login.email_is_required'));
       return;
     }
     if (this.password == null || this.password == '') {
-      this.toastService.showError(errorText, this.translateService.instant('passwordIsRequired'));
+      this.toastService.showError(errorText, this.translateService.instant('login.password_is_required'));
       return;
     }
     
@@ -243,7 +243,7 @@ export class LoginComponent implements OnInit {
     this.userService.confirmUserRegister(token).subscribe({
       next: (response: any) => {
         console.log('Registration confirmed:', response);
-        this.toastService.showSuccess(this.translateService.instant('success'), response.message);
+        this.toastService.showSuccess(this.translateService.instant('common.success'), response.message);
       },
       complete: () => {},
       error: (error: any) => {

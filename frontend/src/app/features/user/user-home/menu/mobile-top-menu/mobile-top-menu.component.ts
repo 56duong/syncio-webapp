@@ -44,12 +44,12 @@ export class MobileTopMenuComponent {
           },
         },
         {
-          label: this.translateService.instant('help'),
+          label: this.translateService.instant('mobile_top_menu.help'),
           icon: 'pi pi-question-circle',
           route: '/help',
         },
         {
-          label: this.translateService.instant('reportAProblem'),
+          label: this.translateService.instant('mobile_top_menu.report_a_problem'),
           icon: 'pi pi-exclamation-circle',
           command: () => {
             if(!this.currentUserId) {
@@ -68,14 +68,14 @@ export class MobileTopMenuComponent {
       icon: 'pi pi-pen-to-square',
       items: [
         {
-          label: this.translateService.instant('post'),
+          label: this.translateService.instant('mobile_top_menu.post'),
           icon: 'pi pi-table',
           command: () => {
             this.onCreateClick();
           },
         },
         {
-          label: this.translateService.instant('story'),
+          label: this.translateService.instant('mobile_top_menu.story'),
           icon: 'pi pi-history',
           route: '/story/create',
         },
@@ -98,7 +98,7 @@ export class MobileTopMenuComponent {
 
     if(this.currentUserId) {
       this.settingSubmenuItems[0].items.push({
-        label: this.translateService.instant('logout'),
+        label: this.translateService.instant('mobile_top_menu.logout'),
         color: 'red',
         icon: 'pi pi-sign-out',
         command: () => {

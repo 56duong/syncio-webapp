@@ -1,4 +1,4 @@
-<p-dialog [header]="'followers' | translate" 
+<p-dialog [header]="'follower_dialog.followers' | translate" 
   [modal]="true"
   [dismissableMask]="true" 
   [(visible)]="isVisibleFollowers" 
@@ -25,18 +25,18 @@
           <!-- follow button if not following and is owner profile -->
           <ng-container *ngIf="isOwnerProfile && !userFollow.following && userFollow.actorId != currentUserId">
             <span>·</span>
-            <span (click)="addFollow(userFollow)" style="font-size: 0.75rem;" class="text-primary font-semibold cursor-pointer">{{'follow' | translate}}</span>
+            <span (click)="addFollow(userFollow)" style="font-size: 0.75rem;" class="text-primary font-semibold cursor-pointer">{{'follower_dialog.follow' | translate}}</span>
           </ng-container>
         </div>
       </div>
       <!-- Remove follower -->
       <ng-container *ngIf="isOwnerProfile">
-        <p-button (click)="removeFollower(userFollow.actorId)" [label]="'remove' | translate" severity="my-custom-secondary"></p-button>
+        <p-button (click)="removeFollower(userFollow.actorId)" [label]="'follower_dialog.remove' | translate" severity="my-custom-secondary"></p-button>
       </ng-container>
       <!-- Follow/Unfollow button if not following and not owner profile -->
       <ng-container *ngIf="userFollow.actorId != currentUserId && !isOwnerProfile">
-        <p-button *ngIf="!userFollow.following" (click)="addFollow(userFollow)" [label]="'follow' | translate" severity="my-custom-primary"></p-button>
-        <p-button *ngIf="userFollow.following" (click)="unFollow(userFollow)" [label]="'unfollow' | translate" severity="my-custom-secondary"></p-button>
+        <p-button *ngIf="!userFollow.following" (click)="addFollow(userFollow)" [label]="'follower_dialog.follow' | translate" severity="my-custom-primary"></p-button>
+        <p-button *ngIf="userFollow.following" (click)="unFollow(userFollow)" [label]="'follower_dialog.unfollow' | translate" severity="my-custom-secondary"></p-button>
       </ng-container>
     </div>
 

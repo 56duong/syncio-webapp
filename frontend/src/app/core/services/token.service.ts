@@ -134,7 +134,7 @@ export class TokenService {
             this.router.navigate(['/login'], { 
                 queryParams: { 
                     type: 'error',
-                    message: this.translateService.instant('youNeedToLoginFirst')
+                    message: this.translateService.instant('login.you_need_to_login_first')
                 } 
             });
             return false;

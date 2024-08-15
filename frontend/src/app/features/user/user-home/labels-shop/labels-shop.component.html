@@ -3,14 +3,14 @@
     <p-toolbar styleClass="m-3 gap-2">
       <ng-template pTemplate="left">
         <div class="flex flex-column md:flex-row md:justify-content-between">
-          <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Select Sort Options" (onChange)="onSortChange($event)" styleClass="mb-2 md:mb-0"></p-dropdown>
-          <input type="text" pInputText placeholder="Search By Name" [(ngModel)]="searchTerm" (input)="filterNameLabels()" class="ml-2"/>
+          <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" [placeholder]="'labels_shop.select_sort_options' | translate" (onChange)="onSortChange($event)" styleClass="mb-2 md:mb-0"></p-dropdown>
+          <input type="text" pInputText [placeholder]="'labels_shop.search_by _name' | translate" [(ngModel)]="searchTerm" (input)="filterNameLabels()" class="ml-2"/>
       </div>
       </ng-template>
 
       <!-- Purchase History -->
       <ng-template pTemplate="right">
-        <button pButton pRipple [label]="'purchaseHistory' | translate" icon="pi pi-history" class="p-button-help"
+        <button pButton pRipple [label]="'labels_shop.purchase_history' | translate" icon="pi pi-history" class="p-button-help"
           (click)="openPurchaseHistory()"></button>
           
       </ng-template>
@@ -27,8 +27,8 @@
                 <span class="font-semibold text-sm">{{ label.type }}</span>
               </div>
               <div>
-                <p-tag *ngIf="label.status === 'ENABLED'" [severity]="'success'" styleClass="uppercase">{{'inStock' | translate}}</p-tag>
-                <p-tag *ngIf="label.status === 'DISABLED'" [severity]="'danger'" styleClass="uppercase">{{'outOfStock' | translate}}</p-tag>
+                <p-tag *ngIf="label.status === 'ENABLED'" [severity]="'success'" styleClass="uppercase">{{'labels_shop.in_stock' | translate}}</p-tag>
+                <p-tag *ngIf="label.status === 'DISABLED'" [severity]="'danger'" styleClass="uppercase">{{'labels_shop.out_of_stock' | translate}}</p-tag>
               </div>
             </div>
   
@@ -43,9 +43,9 @@
             </div>
             
             <div class="flex justify-content-between gap-2">
-              <p-button (click)="gift(label)" [label]="'gift' | translate" icon="pi pi-gift" severity="my-custom-secondary danger" class="flex-1" styleClass="w-full"></p-button>
-              <p-button *ngIf="!label.purcharse" [disabled]="label.status == 'DISABLED'" (click)="buyNow(label)" [label]="'buy' | translate" icon="pi pi-check-circle" severity="my-custom-primary" class="flex-1" styleClass="w-full"></p-button>
-              <p-button *ngIf="label.purcharse" [disabled]="true" [label]="'buyed' | translate" icon="pi pi-check-circle" severity="my-custom-primary" class="flex-1" styleClass="w-full"></p-button>
+              <p-button (click)="gift(label)" [label]="'labels_shop.gift' | translate" icon="pi pi-gift" severity="my-custom-secondary danger" class="flex-1" styleClass="w-full"></p-button>
+              <p-button *ngIf="!label.purcharse" [disabled]="label.status == 'DISABLED'" (click)="buyNow(label)" [label]="'labels_shop.buy' | translate" icon="pi pi-check-circle" severity="my-custom-primary" class="flex-1" styleClass="w-full"></p-button>
+              <p-button *ngIf="label.purcharse" [disabled]="true" [label]="'labels_shop.buyed' | translate" icon="pi pi-check-circle" severity="my-custom-primary" class="flex-1" styleClass="w-full"></p-button>
             </div>
           </div>
         </div>
@@ -54,19 +54,19 @@
   </div>
 
   <!-- Dialog -->
-  <p-dialog [(visible)]="labelDialog" [style]="{ width: '450px' }" [header]="'paymentDetails' | translate" [modal]="true"
+  <p-dialog [(visible)]="labelDialog" [style]="{ width: '450px' }" [header]="'labels_shop.payment_details' | translate" [modal]="true"
     styleClass="p-fluid">
     <ng-template pTemplate="content">
       <!-- Label name -->
       <div class="field">
-        <label for="name">{{'name' | translate}}</label>
+        <label for="name">{{'labels_shop.name' | translate}}</label>
         <input type="text" pInputText id="name" [(ngModel)]="label.name" required autofocus disabled="true" />
         <small class="p-error" *ngIf="submitted && !label.name">Name is required.</small>
       </div>
 
       <!-- Price -->
       <div class="field">
-        <label for="price">{{'price' | translate}}</label>
+        <label for="price">{{'labels_shop.price' | translate}}</label>
         <p-inputNumber id="price" [(ngModel)]="label.price" inputId="currency-vn" mode="currency" currency="VND"
           locale="vi-VN" [disabled]="true">
         </p-inputNumber>
@@ -75,7 +75,7 @@
 
       <!-- Receiver -->
       <div class="field">
-        <label for="receiver">{{'receiver' | translate}}</label>
+        <label for="receiver">{{'labels_shop.receiver' | translate}}</label>
         <input type="text" pInputText id="receiver" [(ngModel)]="label.owner" required autofocus />
         <small class="p-error" *ngIf="submitted && !label.owner">Owner is required.</small>
       </div>
@@ -83,15 +83,15 @@
 
     <ng-template pTemplate="footer">
       <!-- nut an -->
-      <button pButton pRipple [label]="'cancel' | translate" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+      <button pButton pRipple [label]="'common.cancel' | translate" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
 
       <!-- nut save -->
-      <button pButton pRipple [label]="'payment' | translate" icon="pi pi-check" class="p-button-text" (click)="sendGift()"></button>
+      <button pButton pRipple [label]="'labels_shop.payment' | translate" icon="pi pi-check" class="p-button-text" (click)="sendGift()"></button>
     </ng-template>
   </p-dialog>
 
   <!-- Bill of User Dialog -->
-  <p-dialog [(visible)]="billOfUserDialog" [style]="{ width: '62rem' }" header="Purchase History" [modal]="true"
+  <p-dialog [(visible)]="billOfUserDialog" [style]="{ width: '62rem' }" [header]="'labels_shop.purchase_history' | translate" [modal]="true"
     styleClass="p-fluid">
     <ng-template pTemplate="content">
       <p-table #dt [value]="bills" [rows]="8" [paginator]="true" [globalFilterFields]="[
@@ -105,20 +105,20 @@
         <ng-template pTemplate="header">
           <tr>
             <th pSortableColumn="orderNo" style="max-width: 2rem">
-              Order No <p-sortIcon field="orderNo"></p-sortIcon>
+              {{'labels_shop.order_no' | translate}} <p-sortIcon field="orderNo"></p-sortIcon>
             </th>
             <th pSortableColumn="buyer" style="max-width: 4rem">
-              Buyer <p-sortIcon field="buyer"></p-sortIcon>
+              {{'labels_shop.buyer' | translate}} <p-sortIcon field="buyer"></p-sortIcon>
             </th>
             <th pSortableColumn="owner" style="max-width: 4rem">
-              Owner <p-sortIcon field="owner"></p-sortIcon>
+              {{'labels_shop.owner' | translate}} <p-sortIcon field="owner"></p-sortIcon>
             </th>
             <th pSortableColumn="amount" style="max-width: 10rem">
-              Amount (VND) <p-sortIcon field="amount"></p-sortIcon>
+              {{'labels_shop.amount' | translate}} (VND) <p-sortIcon field="amount"></p-sortIcon>
             </th>
 
-            <th pSortableColumn="createDate" style="max-width: 4rem" >Date Create <p-sortIcon field="createDate"></p-sortIcon></th>
-            <th pSortableColumn="status" style="max-width:4rem">Status <p-sortIcon field="status"></p-sortIcon></th>
+            <th pSortableColumn="createDate" style="max-width: 4rem" >{{'labels_shop.date_create' | translate}} <p-sortIcon field="createDate"></p-sortIcon></th>
+            <th pSortableColumn="status" style="max-width:4rem">{{'labels_shop.status' | translate}} <p-sortIcon field="status"></p-sortIcon></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-bill>
@@ -136,7 +136,7 @@
         </ng-template>
         <ng-template pTemplate="summary">
           <div class="flex align-items-center justify-content-between">
-            In total there are {{ bills ? bills.length : 0 }} bills.
+            {{'labels_shop.in_total_there_are' | translate}} {{ bills ? bills.length : 0 }} {{'labels_shop.bills' | translate}}.
           </div>
         </ng-template>
       </p-table>

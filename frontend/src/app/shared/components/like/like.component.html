@@ -10,13 +10,13 @@
 <div class="flex align-items-center gap-2 mt-2">
   <small class="font-bold">
     {{likeCount}}
-    <span class="lowercase">{{ likeCount > 1 ? ('like.other' | translate) : ('like.one' | translate) }}</span>
+    <span class="lowercase">{{ likeCount > 1 ? ('like.like_other' | translate) : ('like.like_one' | translate) }}</span>
   </small>
   <ng-container *ngIf="!isOnPostDetails">
     <small class="text-gray-500">•</small>
     <small (click)="openDialog()" class="text-gray-500 cursor-pointer text-xs">
-      {{ 'viewAll' | translate }} {{commentCount}} 
-      <span class="lowercase">{{ commentCount > 1 ? ('comment.other' | translate) : ('comment.one' | translate) }}</span>
+      {{ 'like.view_all' | translate }} {{commentCount}} 
+      <span class="lowercase">{{ commentCount > 1 ? ('like.comment_other' | translate) : ('like.comment_one' | translate) }}</span>
     </small>
   </ng-container>
 </div>

@@ -19,7 +19,7 @@
     <app-post *ngFor="let post of posts" [post]="post"></app-post>
     
     <div *ngIf="endOfFollowing" class="text-gray-500" style="width: min(470px, 100vw - 1rem); margin: 2rem auto;">
-      <p>{{ 'suggestedForYou' | translate }}</p>
+      <p>{{ 'feed.suggested_for_you' | translate }}</p>
     </div>
     
     <!-- Suggested posts -->
@@ -32,7 +32,7 @@
 
     <!-- End of feed -->
     <div #endOfFeed *ngIf="endOfFeed" class="text-gray-500 text-center" style="width: min(470px, 100vw - 1rem); margin: 2rem auto;">
-      <small *ngIf="endOfFeed">{{ 'youReachTheEnOfTheFeed' | translate }}!</small> 
+      <small *ngIf="endOfFeed">{{ 'feed.you_reach_the_end_of_the_feed' | translate }}!</small> 
     </div>
 
   </div>

@@ -18,18 +18,18 @@ export class UserReportComponent {
   options: any = [
     {
       value: 'bug',
-      label: this.translateService.instant('reportABug')
+      label: this.translateService.instant('user_report.report_a_bug')
     }, 
     {
       value: 'improve',
-      label: this.translateService.instant('HelpUsImproveSyncio')
+      label: this.translateService.instant('user_report.help_us_improve_syncio')
     }
   ];
 
   /** Selected option in the dialog */
   selectedOption: any = this.options[0];
   /** Label for the selected option */
-  selectedOptionLabel: string = this.selectedOption.value === 'bug' ? this.translateService.instant('somethingWentWrong') : this.translateService.instant('helpUsImproveSyncioByProvidingFeedback');
+  selectedOptionLabel: string = this.selectedOption.value === 'bug' ? this.translateService.instant('user_report.something_went_wrong') : this.translateService.instant('user_report.help_us_improve_syncio_by_providing_feedback');
   /** Title of the issue to be created */
   title: string = '';
   /** Details of the issue to be created */
@@ -49,14 +49,14 @@ export class UserReportComponent {
 
   onOptionChange(event: any) {
     this.selectedOption = event;
-    this.selectedOptionLabel = this.selectedOption.value === 'bug' ? this.translateService.instant('somethingWentWrong') : this.translateService.instant('helpUsImproveSyncioByProvidingFeedback');
+    this.selectedOptionLabel = this.selectedOption.value === 'bug' ? this.translateService.instant('user_report.something_went_wrong') : this.translateService.instant('user_report.help_us_improve_syncio_by_providing_feedback');
   }
 
 
   onFileSelected(event: any) {
     if (event.target.files) {
       if(event.target.files.length > 6) {
-        alert(this.translateService.instant('youCanUploadUpTo6Images'));
+        alert(this.translateService.instant('user_report.you_can_upload_up_to_6_images'));
         return;
       }
 
@@ -85,12 +85,12 @@ export class UserReportComponent {
     await this.githubService.createIssue(this.title, this.details, this.selectedOption.value, imageUrls);
     
     this.toastService.showSuccess(
-      this.translateService.instant('success'), 
-      this.selectedOption.value === 'bug' ? this.translateService.instant('thankYouForReportingTheBugWeWillLookIntoIt') : this.translateService.instant('thankYouForYourFeedbackWeWillUseItToImproveSyncio'));
+      this.translateService.instant('common.success'), 
+      this.selectedOption.value === 'bug' ? this.translateService.instant('user_report.thank_you_for_reporting_the_bug_we_will_look_into_it') : this.translateService.instant('user_report.thank_you_for_your_feedback_we_will_use_it_to_improve_syncio'));
 
     // Reset form
     this.selectedOption = this.options[0];
-    this.selectedOptionLabel = this.selectedOption.value === 'bug' ? this.translateService.instant('somethingWentWrong') : this.translateService.instant('helpUsImproveSyncioByProvidingFeedback');
+    this.selectedOptionLabel = this.selectedOption.value === 'bug' ? this.translateService.instant('user_report.something_went_wrong') : this.translateService.instant('user_report.help_us_improve_syncio_by_providing_feedback');
     this.title = '';
     this.details = '';
     this.selectedFiles = [];

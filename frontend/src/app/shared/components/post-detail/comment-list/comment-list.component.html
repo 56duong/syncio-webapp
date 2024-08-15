@@ -40,7 +40,7 @@
       <div class="comment-text inline" [innerHTML]="c.text"></div>
       <!-- footer -->
       <div class="flex align-items-center gap-3 mt-2">
-        <small class="text-gray-500 text-xs" [title]="c.createdDate == ('justNow' | translate) ? c.createdDate : c.createdDate | date: 'HH:mm:ss dd/MM/yyyy'">
+        <small class="text-gray-500 text-xs" [title]="c.createdDate == ('date_time.just_now' | translate) ? c.createdDate : c.createdDate | date: 'HH:mm:ss dd/MM/yyyy'">
           {{c.createdDate | dateAgoPipe}}
         </small>
         <!-- Like -->
@@ -50,14 +50,14 @@
           style="font-size: 1rem"></span>
           <span class="text-gray-500 text-xs lowercase">
             {{c.likesCount}}
-            {{ c.likesCount != null && c.likesCount > 1 ? ('like.other' | translate) : ('like.one' | translate) }}
+            {{ c.likesCount != null && c.likesCount > 1 ? ('comment_list.like_other' | translate) : ('comment_list.like_one' | translate) }}
           </span>
         </div>
         <!-- Reply -->
         <small (click)="onReply(c.id || '', c.userId || '')"
           [ngClass]="{ 'text-blue-500 font-bold': c.id === comment.parentCommentId }"
           class="cursor-pointer text-xs">
-          {{ 'reply' | translate }}
+          {{ 'comment_list.reply' | translate }}
         </small>
         <!-- 3 dots -->
         <!-- <span class="pi pi-ellipsis-h cursor-pointer"></span> -->
@@ -70,7 +70,7 @@
           <small (click)="viewReplies(c)"
             class="cursor-pointer text-xs mt-3 block">
             ___
-            {{ (c.isShowReplies ? 'hideReplies' : 'viewReplies') | translate }}
+            {{ (c.isShowReplies ? ('comment_list.hide_replies' | translate) : ('comment_list.view_replies' | translate)) }}
             ({{ c.repliesCount }})
           </small>
           <!-- Reply List -->
@@ -102,13 +102,13 @@
                     style="font-size: 1rem"></span>
                     <span class="text-gray-500 text-xs lowercase">
                       {{reply.likesCount}}
-                      {{ reply.likesCount != null && reply.likesCount > 1 ? ('like.other' | translate) : ('like.one' | translate) }}
+                      {{ reply.likesCount != null && reply.likesCount > 1 ? ('comment_list.like_other' | translate) : ('comment_list.like_one' | translate) }}
                     </span>
                   </div>
                   <!-- Reply of reply -->
                   <small (click)="onReply(reply.parentCommentId ? reply.parentCommentId : '', reply.userId || '')"
                     class="cursor-pointer text-xs">
-                    {{ 'reply' | translate }}
+                    {{ 'comment_list.reply' | translate }}
                   </small>
                   <!-- 3 dots -->
                   <!-- <span class="pi pi-ellipsis-h cursor-pointer"></span> -->

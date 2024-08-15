@@ -19,11 +19,11 @@
     
         <!-- Others count if there are more than one actor -->
         <span *ngIf="notification.actorCount && notification.actorCount > 1">
-          {{ 'and' | translate }} {{notification.actorCount - 1}} {{ (notification.actorCount - 1 > 1 ? 'other.other' : 'other.one' ) | translate }}
+          {{ 'notifications_item.and' | translate }} {{notification.actorCount - 1}} {{ (notification.actorCount - 1 > 1 ? 'notifications_item.other.other' : 'notifications_item.other.one' ) | translate }}
         </span>
         
         <!-- Action -->
-        <span>{{ 'likedYourPost' | translate }}{{notification.previewText ? ': ' : ''}}</span>
+        <span>{{ 'notifications_item.liked_your_post' | translate }}{{notification.previewText ? ': ' : ''}}</span>
 
         <!-- if post has caption(previewText), show : caption -->
         <span *ngIf="notification.previewText" [innerHTML]="notification.previewText | tagToLink | async"></span>
@@ -57,11 +57,11 @@
     
         <!-- Others count if there are more than one actor -->
         <span *ngIf="notification.actorCount && notification.actorCount > 1">
-          {{ 'and' | translate }} {{notification.actorCount - 1}} {{ (notification.actorCount - 1 > 1 ? 'other.other' : 'other.one' ) | translate }}
+          {{ 'notifications_item.and' | translate }} {{notification.actorCount - 1}} {{ (notification.actorCount - 1 > 1 ? 'notifications_item.other.other' : 'notifications_item.other.one' ) | translate }}
         </span>
         
         <!-- Action -->
-        <span> {{ 'commentedOnYourPost' | translate }}{{notification.previewText ? ': ' : ''}}</span>
+        <span> {{ 'notifications_item.commented_on_your_post' | translate }}{{notification.previewText ? ': ' : ''}}</span>
 
         <!-- if has comment.text(previewText), show : comment.text -->
         <span *ngIf="notification.previewText" [innerHTML]="notification.previewText | tagToLink | async"></span>
@@ -95,11 +95,11 @@
     
         <!-- Others count if there are more than one actor -->
         <span *ngIf="notification.actorCount && notification.actorCount > 1">
-          {{ 'and' | translate }} {{notification.actorCount - 1}} {{ (notification.actorCount - 1 > 1 ? 'other.other' : 'other.one' ) | translate }}
+          {{ 'notifications_item.and' | translate }} {{notification.actorCount - 1}} {{ (notification.actorCount - 1 > 1 ? 'notifications_item.other.other' : 'notifications_item.other.one' ) | translate }}
         </span>
         
         <!-- Action -->
-        <span> {{ 'repliedToYourComment' | translate }}{{notification.previewText ? ': ' : ''}}</span>
+        <span> {{ 'notifications_item.replied_to_your_comment' | translate }}{{notification.previewText ? ': ' : ''}}</span>
   
         <!-- if has comment.text(previewText), show : comment.text -->
         <span *ngIf="notification.previewText" [innerHTML]="notification.previewText | tagToLink | async"></span>
@@ -131,7 +131,7 @@
         </span>
     
         <!-- Action -->
-        <span> {{ 'startedFollowingYou' | translate }}.</span>
+        <span> {{ 'notifications_item.started_following_you' | translate }}.</span>
       </div>
 
       <!-- Created date -->
@@ -155,7 +155,7 @@
         </span>
         
         <!-- Action -->
-        <span> {{ 'taggedYouInAPost' | translate }}.</span>
+        <span> {{ 'notifications_item.tagged_you_in_a_post' | translate }}.</span>
       </div>
 
       <!-- Created date -->

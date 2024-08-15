@@ -74,11 +74,11 @@ export class RedirectService {
    */
   needLogin() {
     if(!environment.windows) {
-      window.location.href = '/login?type=error&message=' + encodeURIComponent(this.translateService.instant('youNeedToLoginFirst'));
+      window.location.href = '/login?type=error&message=' + encodeURIComponent(this.translateService.instant('login.you_need_to_login_first'));
     }
     else {
       this.router.navigate(['/login'], { 
-        queryParams: { type: 'error', message: this.translateService.instant('youNeedToLoginFirst') } 
+        queryParams: { type: 'error', message: this.translateService.instant('login.you_need_to_login_first') } 
       }).then(() => {
         this.reloadPage('/login');
       });

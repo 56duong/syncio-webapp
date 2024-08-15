@@ -108,21 +108,21 @@ export class PostDetailComponent {
   updateDialogItems() {
     this.dialogItems = [
       { 
-        label: this.translateService.instant('report'), 
+        label: this.translateService.instant('post_detail.report'), 
         bold: 7,
         color: 'red', 
         action: () => this.currentUserId ? this.reportVisible = true : this.redirectService.needLogin()
       },
       { 
-        label: this.translateService.instant('copyLink'),
+        label: this.translateService.instant('post_detail.copy_link'),
         action: () => this.copyLink()
       },
       ...(this.post.createdBy === this.currentUserId ? [{ 
-        label: this.translateService.instant('saveToCollection'),
+        label: this.translateService.instant('post_detail.save_to_collection'),
         action: () => this.collectionVisible = true
       }] : []),
       { 
-        label: this.translateService.instant('cancel'),
+        label: this.translateService.instant('common.cancel'),
         action: () => this.dialogVisible = false
       }
     ];
@@ -220,8 +220,8 @@ export class PostDetailComponent {
   async copyLink() {
     await this.textUtils.copyToClipboard(window.location.href + 'post/' + this.post.id);
     this.toastService.showSuccess(
-      this.translateService.instant('success'), 
-      this.translateService.instant('linkCopiedToClipboard')
+      this.translateService.instant('common.success'), 
+      this.translateService.instant('post_detail.link_copied_to_clipboard')
     );
   }
 

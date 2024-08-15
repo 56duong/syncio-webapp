@@ -81,11 +81,11 @@
 
   <div class="form flex col-12 sm:col-8 p-0 align-items-stretch px-4">
     <form class="col-12 sm:col-6 flex flex-column gap-5 justify-content-center align-items-center shadow-1">
-      <h1>{{ 'login' | translate }}</h1>
+      <h1>{{ 'login.login' | translate }}</h1>
       <div class="flex flex-column gap-4 w-full">
         <div class="w-full">
           <input
-            [placeholder]="'emailOrUsername' | translate"
+            [placeholder]="'login.email_or_username' | translate"
             type="email"
             [(ngModel)]="emailOrUsername"
             name="email"
@@ -95,7 +95,7 @@
         <div class="w-full">
           <input
             type="password"
-            [placeholder]="'password' | translate"
+            [placeholder]="'login.password' | translate"
             [(ngModel)]="password"
             name="password"
           />
@@ -103,23 +103,23 @@
             class="text-right cursor-pointer text-sm mt-2"
             (click)="navigateToForgotPassword()"
           >
-            {{ 'forgotPassword' | translate }}
+            {{ 'login.forgot_password' | translate }}
           </p>
         </div>
       </div>
       <p-button
         (click)="login()"
-        [label]="'login' | translate"
+        [label]="'login.login' | translate"
         class="w-full"
         styleClass="w-full"
       />
       <div>
         <p routerLink="/register" class="text-center cursor-pointer text-sm mt-2">
-          {{ 'dontHaveAnAccount' | translate }}
-          <span class="text-primary font-bold">{{ 'signUp' | translate }}</span>
+          {{ 'login.dont_have_an_account' | translate }}
+          <span class="text-primary font-bold">{{ 'login.sign_up' | translate }}</span>
         </p>
         <p routerLink="/" class="text-center cursor-pointer text-sm mt-2">
-          {{ 'continueAsGuest' | translate }}
+          {{ 'login.continue_as_guest' | translate }}
         </p>
       </div>
     </form>

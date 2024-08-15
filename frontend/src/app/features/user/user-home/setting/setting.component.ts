@@ -12,20 +12,20 @@ export class SettingComponent {
   isMobile: boolean = false;
   menus = [
     {
-      title: this.translateService.instant('howYouUseSyncio'),
+      title: this.translateService.instant('setting.how_you_use_syncio'),
       items: [
         {
-          label: this.translateService.instant('editProfile'),
+          label: this.translateService.instant('setting.edit_profile'),
           icon: 'pi pi-user',
           link: 'edit-profile',
         }
       ]
     },
     {
-      title: this.translateService.instant('howPeopleFindAndContactYou'),
+      title: this.translateService.instant('setting.how_people_find_and_contact_you'),
       items: [
         {
-          label: this.translateService.instant('imageSearch'),
+          label: this.translateService.instant('setting.image_search'),
           icon: 'pi pi-image',
           link: 'image-search',
         }

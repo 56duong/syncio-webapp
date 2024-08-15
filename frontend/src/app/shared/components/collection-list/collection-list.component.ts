@@ -91,8 +91,8 @@ export class CollectionListComponent {
       next: (data) => {
         this.isShowNewCollection = false;
         this.toastService.showSuccess(
-          this.translateService.instant('success'), 
-          this.translateService.instant('collectionCreatedSuccessfully')
+          this.translateService.instant('common.success'), 
+          this.translateService.instant('collection_list.collection_created_successfully')
         );
         // set collection group id and add to table
         this.newCollection.id = data;
@@ -111,8 +111,8 @@ export class CollectionListComponent {
     this.postCollectionService.saveToCollections(this.postId, this.selectedCollectionIds).subscribe({
       next: (data) => {
         this.toastService.showSuccess(
-          this.translateService.instant('success'), 
-          this.translateService.instant('updateCollectionSuccessfully')
+          this.translateService.instant('common.success'), 
+          this.translateService.instant('collection_list.update_collection_successfully')
         );
         this.closeDialog();
       },

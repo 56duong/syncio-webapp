@@ -6,11 +6,11 @@
     style="width: min(470px, 100vw - 1rem); margin: 1rem auto 0.5rem auto; user-select: none;"
     class="cursor-pointer flex justify-content-end align-items-center gap-1">
     <ng-container *ngIf="!isExpandedStory" >
-      <small>{{ 'expandStories' | translate }}</small>
+      <small>{{ 'story_list.expand_stories' | translate }}</small>
       <i class="pi pi-th-large"></i>
     </ng-container>
     <ng-container *ngIf="isExpandedStory">
-      <small>{{ 'collapseStories' | translate }}</small>
+      <small>{{ 'story_list.collapse_stories' | translate }}</small>
       <i class="pi pi-ellipsis-h"></i>
     </ng-container>
   </div>
@@ -24,12 +24,12 @@
     <div *ngFor="let user of usersWithStories" 
       (click)="navigateToStory(user)"
       class="story-item cursor-pointer text-center"
-      [title]="currentUserId === user.id ? ('yourStory' | translate) : user.username">
+      [title]="currentUserId === user.id ? ('story_list.your_story' | translate) : user.username">
       <!-- Avatar -->
       <app-avatar [userId]="user.id" [width]="64" [userStory]="user"></app-avatar>
       <!-- Username -->
       <p class="mt-1" style="font-size: 0.75rem; width: 64px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-        {{currentUserId === user.id ? ('yourStory' | translate) : user.username}}
+        {{currentUserId === user.id ? ('story_list.your_story' | translate) : user.username}}
       </p>
     </div>
   </div>

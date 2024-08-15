@@ -61,8 +61,8 @@ export class ImageSearchComponent {
       this.userSettingService.updateImageSearch(fd).subscribe({
         next: () => {
           this.toastService.showSuccess(
-            this.translateService.instant('success'), 
-            this.translateService.instant('imageSearchUpdatedSuccessfully')
+            this.translateService.instant('common.success'), 
+            this.translateService.instant('image_search.image_search_updated_successfully')
           );
           this.currentDateTime = Date.now();
         },
@@ -79,8 +79,8 @@ export class ImageSearchComponent {
       next: (response) => {
         if(response) {
           this.toastService.showSuccess(
-            this.translateService.instant('success'), 
-            this.translateService.instant('imageSearchDeletedSuccessfully')
+            this.translateService.instant('common.success'), 
+            this.translateService.instant('image_search.image_search_deleted_successfully')
           );
           setTimeout(() => {
             this.redirectService.reloadPage();

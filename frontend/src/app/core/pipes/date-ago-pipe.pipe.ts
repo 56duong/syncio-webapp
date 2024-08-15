@@ -55,7 +55,7 @@ export class DateAgoPipePipe implements PipeTransform {
         if (counter > 0) {
           // If the count is 1, return the count and the interval in singular form.
           if ((counter === 1 || i !== type) && seconds < intervals[type]) {
-            let translationKey = this.translateService.instant(i);
+            let translationKey = this.translateService.instant('date_time.' + i);
             return counter + translationKey; // 1h, 1d, 3m, 6y
           } 
           else {

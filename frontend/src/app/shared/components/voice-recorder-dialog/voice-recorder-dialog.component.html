@@ -1,4 +1,4 @@
-<p-dialog [header]="'voiceRecorder' | translate" 
+<p-dialog [header]="'voice_recorder_dialog.voice_recorder' | translate" 
   [modal]="true"
   [dismissableMask]="true" 
   [(visible)]="isVisibleRecorder" 
@@ -27,7 +27,7 @@
       </div>
     </div>
     <!-- Submit button -->
-    <p-button [label]="'submit' | translate" [text]="true" (click)="submitAudio()" class="p-button-success" />
+    <p-button [label]="'common.submit' | translate" [text]="true" (click)="submitAudio()" class="p-button-success" />
   </div>
 
 </p-dialog>

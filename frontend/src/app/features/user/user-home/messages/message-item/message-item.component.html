@@ -39,34 +39,34 @@
   [title]="messageContent.dateSent | dateAgoPipe: 'h'" 
   [ngSwitch]="messageContent.type">
   <small class="block w-full my-1 text-center text-gray-600 font-semibold">
-    {{messageContent.user?.username == currentUser.username ? 'You' : messageContent.user?.username }}
+    {{messageContent.user?.username == currentUser.username ? ('message_item.you' | translate) : messageContent.user?.username }}
     <!-- CREATE_ROOM -->
     <ng-container *ngSwitchCase="MessageContentTypeEnum.NOTIFICATION_CREATE_ROOM">
-      create this group.
+      {{'message_item.create_this_group' | translate}}.
     </ng-container>
     <!-- CHANGE_NAME -->
     <ng-container *ngSwitchCase="MessageContentTypeEnum.NOTIFICATION_CHANGE_NAME">
-      named the group {{messageContent.message}}.
+      {{'message_item.named_the_group' | translate}} {{messageContent.message}}.
     </ng-container>
     <!-- ADD_MEMBER -->
     <ng-container *ngSwitchCase="MessageContentTypeEnum.NOTIFICATION_ADD_MEMBER">
-      added {{ membersAddedAsString }} to the group.
+      {{'message_item.added' | translate}} {{ membersAddedAsString }} to the group.
     </ng-container>
     <!-- REMOVE_MEMBER -->
     <ng-container *ngSwitchCase="MessageContentTypeEnum.NOTIFICATION_REMOVE_MEMBER">
-      removed {{ messageContent.message == currentUser.id ? 'You' : messageContent.message | userIdToName | async }} from the group.
+      {{'message_item.removed' | translate}} {{ messageContent.message == currentUser.id ? 'You' : messageContent.message | userIdToName | async }} from the group.
     </ng-container>
     <!-- LEAVE_ROOM -->
     <ng-container *ngSwitchCase="MessageContentTypeEnum.NOTIFICATION_LEAVE_ROOM">
-      left the group.
+      {{'message_item.left_the_group' | translate}}.
     </ng-container>
     <!-- MAKE_ADMIN -->
     <ng-container *ngSwitchCase="MessageContentTypeEnum.NOTIFICATION_MAKE_ADMIN">
-      added {{ messageContent.message == currentUser.id ? 'You' : messageContent.message | userIdToName | async }} as a group admin.
+      {{'message_item.added' | translate}} {{ messageContent.message == currentUser.id ? 'You' : messageContent.message | userIdToName | async }} as a group admin.
     </ng-container>
     <!-- REMOVE_ADMIN -->
     <ng-container *ngSwitchCase="MessageContentTypeEnum.NOTIFICATION_REMOVE_ADMIN">
-      removed {{ messageContent.message == currentUser.id ? 'You' : messageContent.message | userIdToName | async }} as a group admin.
+      {{'message_item.removed' | translate}} {{ messageContent.message == currentUser.id ? 'You' : messageContent.message | userIdToName | async }} as a group admin.
     </ng-container>
   </small>
 </div>

@@ -1,6 +1,6 @@
 <div *ngIf="currentUserId === userProfileId" class="flex justify-content-end mb-4">
   <!-- new collection button -->
-  <p-button (click)="newCollection()" [label]="'newCollection' | translate" icon="pi pi-plus" [text]="true"></p-button>
+  <p-button (click)="newCollection()" [label]="'collection_grid.new_collection' | translate" icon="pi pi-plus" [text]="true"></p-button>
 </div>
 
 <!-- list of collections -->
@@ -25,7 +25,7 @@
 
 
 <!-- Add collection -->
-<p-dialog [header]="(selectedCollection.id ? 'editCollection' : 'newCollection') | translate" 
+<p-dialog [header]="(selectedCollection.id ? ('collection_grid.edit_collection' | translate) : ('collection_grid.new_collection' | translate))" 
   [modal]="true"
   [dismissableMask]="true" 
   [(visible)]="isVisibleAddCollection" 
@@ -43,7 +43,7 @@
     <!-- upload image -->
     <p-fileUpload *ngIf="!selectedImage"
       mode="basic" 
-      [chooseLabel]="'uploadImage' | translate" 
+      [chooseLabel]="'collection_grid.upload_image' | translate" 
       chooseIcon="pi pi-upload"
       accept="image/*" 
       [maxFileSize]="1000000" 
@@ -52,20 +52,20 @@
       class="flex-1" />
 
     <!-- delete image -->
-    <p-button severity="danger" *ngIf="selectedImageDataUrl && !this.selectedImage" (click)="deleteImage()" [label]="'deleteImage' | translate" class="flex-1" styleClass="w-full" />
+    <p-button severity="danger" *ngIf="selectedImageDataUrl && !this.selectedImage" (click)="deleteImage()" [label]="'collection_grid.delete_image' | translate" class="flex-1" styleClass="w-full" />
   </div>
 
   <!-- Input -->
   <div class="flex flex-column align-items-stretch gap-3 p-3 pt-0">
-    <input [(ngModel)]="selectedCollection.name" pInputText id="name" [maxlength]="255" [placeholder]="'name' | translate" class="flex-auto" autocomplete="off" />
-    <textarea [(ngModel)]="selectedCollection.description" [maxLength]="2000" pInputText id="description" [placeholder]="'description' | translate" class="flex-auto" autocomplete="off"></textarea>
+    <input [(ngModel)]="selectedCollection.name" pInputText id="name" [maxlength]="255" [placeholder]="'collection_grid.name' | translate" class="flex-auto" autocomplete="off" />
+    <textarea [(ngModel)]="selectedCollection.description" [maxLength]="2000" pInputText id="description" [placeholder]="'collection_grid.description' | translate" class="flex-auto" autocomplete="off"></textarea>
   </div>
 
   <p-divider></p-divider>
 
   <!-- Button -->
   <div class="p-fluid w-full p-3">
-    <p-button [label]="'done' | translate" (click)="saveCollection()" />
+    <p-button [label]="'common.done' | translate" (click)="saveCollection()" />
   </div>
 
 </p-dialog>
