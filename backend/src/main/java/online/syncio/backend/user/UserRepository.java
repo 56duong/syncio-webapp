@@ -29,7 +29,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("SELECT u.id, u.username, size(u.followers) " +
             "FROM User u " +
-            "WHERE u.username LIKE %:username% OR u.email LIKE %:email% " +
+            "WHERE (u.username LIKE %:username% OR u.email LIKE %:email%) " +
+            "AND u.role = 'USER' " +
+            "AND u.status = 'ACTIVE' " +
             "ORDER BY CASE WHEN u.username = :username THEN 0 WHEN u.email = :email THEN 1 ELSE 2 END, u.username, u.email")
     List<Object[]> findTop20ByUsernameContainingOrEmailContaining(@Param("username") String username, @Param("email") String email, Pageable pageable);
 
