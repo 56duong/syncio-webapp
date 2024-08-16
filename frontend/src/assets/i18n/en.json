@@ -1,7 +1,7 @@
 {
   "date_time": {
     "_preserve": true,
-    "justNow": "Just now",
+    "just_now": "Just now",
     "y": "y",
     "mth": "mth",
     "w": "w",
@@ -127,7 +127,8 @@
     "messages": "Messages",
     "send": "Send",
     "reply": "Reply",
-    "replying_to": "Replying to"
+    "replying_to": "Replying to",
+    "unseen_message": "Unseen message"
   },
   "message_room_detail": {
     "details": "Details",
@@ -157,12 +158,12 @@
     "send_message": "Send message"
   },
   "notifications_item": {
-    "and": "And",
-    "liked_your_post": "Liked your post",
-    "commented_on_your_post": "Commented on your post",
-    "replied_to_your_comment": "Replied to your comment",
-    "started_following_you": "Started following you",
-    "tagged_you_in_a_post": "Tagged you in a post",
+    "and": "and",
+    "liked_your_post": "liked your post",
+    "commented_on_your_post": "commented on your post",
+    "replied_to_your_comment": "replied to your comment",
+    "started_following_you": "started following you",
+    "tagged_you_in_a_post": "tagged you in a post",
     "other_other": "others",
     "other_one": "other"
   },
@@ -279,7 +280,7 @@
   },
   "post_detail": {
     "add_a_comment": "Add a comment",
-    "post_comment": "Post comment",
+    "post": "Post",
     "report": "Report",
     "copy_link": "Copy link",
     "save_to_collection": "Save to collection",
@@ -318,12 +319,16 @@
     "voice_recorder": "Voice recorder"
   },
   "message_item": {
-    "create_this_group": "Create this group",
-    "named_the_group": "Named the group",
-    "added": "Added",
-    "removed": "Removed",
-    "left_the_group": "Left the group",
-    "you": "You"
+    "create_this_group": "create this group",
+    "named_the_group": "named the group",
+    "added": "added",
+    "removed": "removed",
+    "left_the_group": "left the group",
+    "you": "You",
+    "from_the_group": "from the group",
+    "as_a_group_admin": "as a group admin",
+    "to_the_group": "to the group",
+    "unseen_messages": "Unseen messages"
   },
   "close_friends": {
     "search_by_username": "Search by username",

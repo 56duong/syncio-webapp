@@ -14,7 +14,7 @@ export class NotificationService {
 
   private apiURL = environment.apiUrl + 'api/v1/notifications';
 
-  private webSocketURL = environment.apiUrl + 'live'; // WebSocket URL with 'live' is the endpoint for the WebSocket configuration in the backend. In WebSocketConfig.java, the endpoint is '/live'.
+  private webSocketURL = environment.apiUrl + 'api/live'; // WebSocket URL with 'api/live' is the endpoint for the WebSocket configuration in the backend. In WebSocketConfig.java, the endpoint is '/api/live'.
   private stompClient: CompatClient = {} as CompatClient;
   private notificationSubject: BehaviorSubject<Notification> = new BehaviorSubject<Notification>({}); // BehaviorSubject of Notification type. You can know when a new notification is received.
   private subscription: any

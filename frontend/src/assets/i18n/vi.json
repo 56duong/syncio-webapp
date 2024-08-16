@@ -1,7 +1,7 @@
 {
   "date_time": {
     "_preserve": true,
-    "justNow": "Vừa xong",
+    "just_now": "Vừa xong",
     "y": " năm",
     "mth": " tháng",
     "w": " tuần",
@@ -127,7 +127,8 @@
     "messages": "Tin nhắn",
     "send": "Gửi",
     "reply": "Trả lời",
-    "replying_to": "Trả lời"
+    "replying_to": "Trả lời",
+    "unseen_message": "Tin nhắn chưa đọc"
   },
   "message_room_detail": {
     "details": "Chi tiết",
@@ -279,7 +280,7 @@
   },
   "post_detail": {
     "add_a_comment": "Thêm bình luận",
-    "post_comment": "Bình luận",
+    "post": "Đăng",
     "report": "Báo cáo",
     "copy_link": "Sao chép liên kết",
     "save_to_collection": "Lưu vào bộ sưu tập",
@@ -323,7 +324,11 @@
     "added": "đã thêm",
     "removed": "đã xóa",
     "left_the_group": "đã rời khỏi nhóm",
-    "you": "Bạn"
+    "you": "Bạn",
+    "from_the_group": "ra khỏi nhóm",
+    "as_a_group_admin": "là quản trị viên nhóm",
+    "to_the_group": "vào nhóm",
+    "unseen_messages": "Tin nhắn chưa đọc"
   },
   "close_friends": {
     "search_by_username": "Tìm kiếm theo tên đăng nhập",

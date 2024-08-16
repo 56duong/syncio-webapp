@@ -14,7 +14,7 @@ export class CommentService {
   
   private apiURL = environment.apiUrl + 'api/v1/comments';
 
-  private webSocketURL = environment.apiUrl + 'live'; // WebSocket URL with 'live' is the endpoint for the WebSocket configuration in the backend. In WebSocketConfig.java, the endpoint is '/live'.
+  private webSocketURL = environment.apiUrl + 'api/live'; // WebSocket URL with 'api/live' is the endpoint for the WebSocket configuration in the backend. In WebSocketConfig.java, the endpoint is '/api/live'.
   private stompClient: CompatClient = {} as CompatClient;
   private commentSubject: BehaviorSubject<Comment> = new BehaviorSubject<Comment>({}); // BehaviorSubject of Comment type. You can know when a new comment is received.
   private subscription: any

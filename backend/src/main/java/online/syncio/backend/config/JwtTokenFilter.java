@@ -130,7 +130,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/stories/images/**", apiPrefix), "GET"),
 
                 // WebSocket
-                Pair.of("/live/**", "GET"),
+                Pair.of("/api/live/**", "GET"),
                 Pair.of("/uploads/**", "GET"),
 
                 // Global images view

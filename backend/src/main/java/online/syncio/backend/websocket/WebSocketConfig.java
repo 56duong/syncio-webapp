@@ -24,12 +24,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     /**
      * Register the endpoint for the WebSocket connection.
-     * /live is the endpoint that the client will connect to.
+     * /api/live is the endpoint that the client will connect to.
      * @param registry
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/live")
+        registry.addEndpoint("/api/live")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }

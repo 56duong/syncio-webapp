@@ -125,7 +125,7 @@
         <!-- Post button -->
         <p-button [disabled]="!comment.text || comment.text.trim().length <= 0"
           (click)="postComment(); isEmojiPickerVisible = false"
-          [label]="('post_detail.post_comment' | translate)"
+          [label]="('post_detail.post' | translate)"
           size="small"
           [text]="true"
           styleClass="shadow-none"
