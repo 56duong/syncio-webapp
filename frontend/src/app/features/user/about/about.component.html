@@ -1,0 +1,88 @@
+<div class="container">
+  <!-- menu -->
+   <div class="flex justify-content-between align-items-center lg:px-6 p-3 sticky top-0 surface-0 z-5">
+      <h1 class="text-4xl text-primary" style="font-weight: 900;">SYNCIO</h1>
+      <ul class="list-none lg:text-2xl text-xl flex gap-3 pl-0">
+        <li><p class="my-0 cursor-pointer">About</p></li>
+        <!-- <li><p (click)="navigateTo('/contact')" class="my-0 cursor-pointer">Contact</p></li> -->
+        <li><p (click)="navigateTo('/login')" class="text-primary font-semibold my-0 cursor-pointer">Login</p></li>
+      </ul>
+   </div>
+
+   <!-- content -->
+    <div>
+      <div class="fade-left lg:px-6 px-3 mb-8">
+        <div class="flex lg:flex-row flex-column align-items-center gap-3">
+          <h1 class="font-normal lg:text-8xl text-6xl"><span class="text-primary font-semibold">Connect</span> people to your own world</h1>
+          <img src="/assets/images/people.jpg" class="lg:col-6 col-12">
+        </div>
+        <h1 class="font-normal lg:text-7xl text-5xl text-right">with unique social networking</h1>
+        <img src="/assets/images/selfie.jpg" class="fade-in lg:col-5 col-8">
+      </div>
+
+      <!-- Join with Us -->
+      <div class="fade-right lg:px-6 px-3 lg:py-8 py-6 text-center">
+        <h1 class="font-normal lg:text-7xl text-5xl mb-3">Join with Us</h1>
+        <p class="my-0 text-2xl">You can create your own account to connect with your friends, family, and other people.</p>
+        <div style="transform: rotate(-90deg); cursor: pointer;" (click)="navigateTo('/register')">
+          <svg class="_ack3" width="96" height="112" viewBox="0 0 96 112" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.0691 67.5589L22.8279 67.5589C27.8908 67.5589 32.2155 68.7192 35.8017 71.0397C39.4935 73.4657 41.9722 76.8938 43.238 81.3239L43.238 7.91088L55.8954 7.91088L55.8954 81.3239C57.1611 76.8938 59.5871 73.4657 63.1734 71.0397C66.8651 68.7192 71.2425 67.5589 76.3055 67.5589L87.0643 67.5589L87.0643 81.1657L77.7294 81.1657C71.1897 81.1657 65.8631 82.9061 61.7494 86.3868C57.6358 89.8676 55.5789 94.7196 55.5789 100.943L55.5789 102.841L43.5544 102.841L43.5544 100.943C43.5544 94.7196 41.4976 89.8676 37.3839 86.3868C33.2702 82.9061 27.9436 81.1657 21.4039 81.1657L12.0691 81.1657L12.0691 67.5589Z" fill="#3B82F6"></path></svg>
+        </div>
+      </div>
+
+      <!-- We are a group of students -->
+      <div class="fade-left relative w-full my-6" style="height: 80vh;">
+        <img src="/assets/images/login-background.png" class="absolute top-0 left-0 w-full h-full" alt="">
+        <p class="absolute top-50 left-0 lg:text-7xl text-5xl lg:p-6 p-3 text-0 m-0" style="transform: translateY(-50%);">
+          We are a group of students. <br>
+          Aiming to create our own social media platform for groups, organizations, and nations.</p>
+      </div>
+
+      <div class="fade-right relative lg:px-8 px-4 flex align-items-start justify-content-between gap-4">
+        <img src="/assets/images/person.jpg" class="col-3 mt-6 p-0">
+        <img src="/assets/images/person-2.jpg" class="col-8">
+      </div>
+
+      <!-- Download -->
+      <div class="fade-in lg:px-6 px-3 py-8">
+        <h1 class="font-normal lg:text-7xl text-5xl text-center mb-3">Download for Android/Windows.</h1>
+        <div class="flex justify-content-center gap-3 lg:col-4 col-8 m-auto">
+          <a href="" class="col-6 block">
+            <img src="/assets/images/android-button.png" class="w-full" style="aspect-ratio: 3/1;" alt="">
+          </a>
+          <a href="" class="col-6 block">
+            <img src="/assets/images/windows-button.png" class="w-full" style="aspect-ratio: 3/1;" alt="">
+          </a>
+        </div>
+      </div>
+
+      <!-- Members -->
+      <div class="fade-in lg:px-6 px-3 py-4 bg-primary text-0">
+        <h1 class="font-normal lg:text-7xl text-5xl text-center mb-3">Our members</h1>
+        <div class="flex flex-column lg:flex-row justify-content-center lg:gap-6 gap-3 lg:col-4 col-8 m-auto text-center">
+          <div class="">
+            <img src="/assets/images/members/Duong.png" style="width: 196px; border-radius: 50%;" alt="">
+            <p class="text-3xl mt-2">Nguyen Ngoc <br> Thuy Duong</p>
+          </div>
+          <div class="">
+            <img src="/assets/images/members/Huy.png" style="width: 196px; border-radius: 50%;" alt="">
+            <p class="text-3xl mt-2">Than <br> Van Huy</p>
+          </div>
+          <div class="">
+            <img src="/assets/images/members/Sanh.png" style="width: 196px; border-radius: 50%;" alt="">
+            <p class="text-3xl mt-2">Nguyen <br> Xuan Sanh</p>
+          </div>
+        </div>
+        <div class="mt-3 flex flex-column lg:flex-row justify-content-center lg:gap-6 gap-3 lg:col-4 col-8 m-auto text-center">
+          <div class="">
+            <img src="/assets/images/members/Thanh.jpg" style="width: 196px; border-radius: 50%;" alt="">
+            <p class="text-3xl mt-2">Chu <br> Minh Thanh</p>
+          </div>
+          <div class="">
+            <img src="/assets/images/members/Thuan.jpg" style="width: 196px; border-radius: 50%;" alt="">
+            <p class="text-3xl mt-2">Nguyen Duong <br> Quoc Thuan</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>

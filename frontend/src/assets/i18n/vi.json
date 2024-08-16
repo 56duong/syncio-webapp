@@ -111,14 +111,16 @@
     "report_a_problem": "Báo cáo vấn đề",
     "logout": "Đăng xuất",
     "dark_mode": "Chế độ tối",
-    "light_mode": "Chế độ sáng"
+    "light_mode": "Chế độ sáng",
+    "about_us": "Về chúng tôi"
   },
   "mobile_top_menu": {
     "help": "Trợ giúp",
     "report_a_problem": "Báo cáo vấn đề",
     "post": "Bài viết",
     "story": "Tin",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "about_us": "Về chúng tôi"
   },
   "message_content_list": {
     "view_profile": "Xem hồ sơ",
@@ -160,7 +162,9 @@
     "commented_on_your_post": "bình luận về bài viết của bạn",
     "replied_to_your_comment": "trả lời bình luận của bạn",
     "started_following_you": "bắt đầu theo dõi bạn",
-    "tagged_you_in_a_post": "đã nhắc đến bạn trong một bài viết"
+    "tagged_you_in_a_post": "đã nhắc đến bạn trong một bài viết",
+    "other_other": "những người khác",
+    "other_one": "người khác"
   },
   "collection_grid": {
     "new_collection": "Bộ sưu tập mới",

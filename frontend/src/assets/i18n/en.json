@@ -111,14 +111,16 @@
     "report_a_problem": "Report a problem",
     "logout": "Logout",
     "dark_mode": "Dark mode",
-    "light_mode": "Light mode"
+    "light_mode": "Light mode",
+    "about_us": "About us"
   },
   "mobile_top_menu": {
     "help": "Help",
     "report_a_problem": "Report a problem",
     "post": "Post",
     "story": "Story",
-    "logout": "Logout"
+    "logout": "Logout",
+    "about_us": "About us"
   },
   "message_content_list": {
     "view_profile": "View profile",
@@ -160,7 +162,9 @@
     "commented_on_your_post": "Commented on your post",
     "replied_to_your_comment": "Replied to your comment",
     "started_following_you": "Started following you",
-    "tagged_you_in_a_post": "Tagged you in a post"
+    "tagged_you_in_a_post": "Tagged you in a post",
+    "other_other": "others",
+    "other_one": "other"
   },
   "collection_grid": {
     "new_collection": "New collection",

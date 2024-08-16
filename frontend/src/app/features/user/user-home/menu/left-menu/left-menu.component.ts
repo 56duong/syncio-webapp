@@ -142,7 +142,7 @@ export class LeftMenuComponent {
           },
           {
             label: this.translateService.instant('left_menu.report_a_problem'),
-            icon: 'pi pi-exclamation-circle',
+            icon: 'pi pi-flag',
             command: () => {
               if(!this.currentUserId) {
                 this.redirectService.needLogin();
@@ -150,6 +150,11 @@ export class LeftMenuComponent {
               }
               this.isVisibleReportAProblem = true;
             },
+          },
+          {
+            label: this.translateService.instant('left_menu.about_us'),
+            icon: 'pi pi-info-circle',
+            route: '/about',
           }
         ],
       },

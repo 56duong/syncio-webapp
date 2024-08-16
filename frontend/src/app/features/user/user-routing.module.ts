@@ -4,6 +4,7 @@ import { UserHomeComponent } from './user-home/user-home.component';
 import { FormsModule } from '@angular/forms';
 import { StoryComponent } from './story/story.component';
 import { HelpCenterComponent } from './help-center/help-center.component';
+import { AboutComponent } from './about/about.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,11 @@ const routes: Routes = [
     path: 'help',
     component: HelpCenterComponent,
     loadChildren: () => import('./help-center/help-center.module').then(m => m.HelpCenterModule),
+  },
+  {
+    path: 'about',
+    component: AboutComponent,
+    loadChildren: () => import('./about/about.module').then(m => m.AboutModule),
   }
 ];
 

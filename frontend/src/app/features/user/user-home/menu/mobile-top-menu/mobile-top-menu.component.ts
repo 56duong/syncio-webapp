@@ -50,7 +50,7 @@ export class MobileTopMenuComponent {
         },
         {
           label: this.translateService.instant('mobile_top_menu.report_a_problem'),
-          icon: 'pi pi-exclamation-circle',
+          icon: 'pi pi-flag',
           command: () => {
             if(!this.currentUserId) {
               this.redirectService.needLogin();
@@ -58,6 +58,11 @@ export class MobileTopMenuComponent {
             }
             this.isVisibleReportAProblem = true;
           },
+        },
+        {
+          label: this.translateService.instant('mobile_top_menu.about_us'),
+          icon: 'pi pi-info-circle',
+          route: '/about',
         }
       ],
     },
