@@ -9,12 +9,14 @@ import { ProfileFormComponent } from './components/profile-form/profile-form.com
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { CloseFriendsComponent } from './components/close-friends/close-friends.component';
+import { MessageControlsComponent } from './components/message-controls/message-controls.component';
 
 
 @NgModule({
   declarations: [
     ImageSearchComponent, 
-    ProfileFormComponent
+    ProfileFormComponent, CloseFriendsComponent, MessageControlsComponent
   ],
   imports: [
     CommonModule,

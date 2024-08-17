@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { Carousel } from 'primeng/carousel';
 import { tap } from 'rxjs';
 import { Post, Visibility } from 'src/app/core/interfaces/post';
 import { Report } from 'src/app/core/interfaces/report';
@@ -67,6 +68,9 @@ export class PostComponent {
   }
   
   ngOnInit(): void {
+    // fix cant touch and scroll on mobile
+    Carousel.prototype.onTouchMove = () => { };
+
     this.currentUserId = this.tokenService.extractUserIdFromToken();
     this.dialogItems = [
       { 

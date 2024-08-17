@@ -4,6 +4,9 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.NotFoundException;
+import online.syncio.backend.userfollow.UserFollowRepository;
+import online.syncio.backend.usersetting.UserSettingRepository;
+import online.syncio.backend.usersetting.WhoCanAddYouToGroupChat;
 import online.syncio.backend.utils.AuthUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,8 @@ public class MessageRoomMemberService {
     private final MessageRoomMemberRepository messageRoomMemberRepository;
     private final MessageRoomMemberMapper messageRoomMemberMapper;
     private final AuthUtils authUtils;
+    private final UserSettingRepository userSettingRepository;
+    private final UserFollowRepository userFollowRepository;
 
     
     public List<MessageRoomMemberDTO> findByMessageRoomId(final UUID messageRoomId) {
@@ -49,6 +54,7 @@ public class MessageRoomMemberService {
         // add the members
         return userIds.stream()
                 .map(userId -> {
+                    checkUserSettingsWhoCanAddYouToGroupChatAndThrowException(userId, currentUserId);
                     final MessageRoomMemberDTO messageRoomMemberDTO = new MessageRoomMemberDTO();
                     messageRoomMemberDTO.setMessageRoomId(messageRoomId);
                     messageRoomMemberDTO.setUserId(userId);
@@ -56,6 +62,28 @@ public class MessageRoomMemberService {
                     return messageRoomMemberDTO;
                 })
                 .toList();
+    }
+
+
+    /**
+     * Check the user settings of who can add you to group chat and throw an exception if the user cannot be added
+     * @param userId the user id to check
+     * @param currentUserId the current user id
+     */
+    public void checkUserSettingsWhoCanAddYouToGroupChatAndThrowException(UUID userId, UUID currentUserId) {
+        final WhoCanAddYouToGroupChat whoCanAddYouToGroupChat = userSettingRepository.getWhoCanAddYouToGroupChat(userId);
+        if(whoCanAddYouToGroupChat == null) {
+            return;
+        }
+        if(whoCanAddYouToGroupChat.equals(WhoCanAddYouToGroupChat.ONLY_PEOPLE_YOU_FOLLOW)) {
+            boolean isFollowing = userFollowRepository.existsByTargetIdAndActorId(currentUserId, userId);
+            if(!isFollowing) {
+                throw new AppException(HttpStatus.FORBIDDEN, "Some users cannot be added to the group chat cause they only allow people they follow to add them to group chats", null);
+            }
+        }
+        else if(whoCanAddYouToGroupChat.equals(WhoCanAddYouToGroupChat.NO_ONE)) {
+            throw new AppException(HttpStatus.FORBIDDEN, "Some users cannot be added to the group chat cause they don't allow anyone to add them to group chats", null);
+        }
     }
 
 

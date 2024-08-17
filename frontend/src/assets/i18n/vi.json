@@ -1,7 +1,7 @@
 {
   "date_time": {
     "_preserve": true,
-    "justNow": "Vừa xong",
+    "just_now": "Vừa xong",
     "y": " năm",
     "mth": " tháng",
     "w": " tuần",
@@ -109,21 +109,26 @@
     "settings": "Cài đặt",
     "help": "Trợ giúp",
     "report_a_problem": "Báo cáo vấn đề",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "dark_mode": "Chế độ tối",
+    "light_mode": "Chế độ sáng",
+    "about_us": "Về chúng tôi"
   },
   "mobile_top_menu": {
     "help": "Trợ giúp",
     "report_a_problem": "Báo cáo vấn đề",
     "post": "Bài viết",
     "story": "Tin",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "about_us": "Về chúng tôi"
   },
   "message_content_list": {
     "view_profile": "Xem hồ sơ",
     "messages": "Tin nhắn",
     "send": "Gửi",
     "reply": "Trả lời",
-    "replying_to": "Trả lời"
+    "replying_to": "Trả lời",
+    "unseen_message": "Tin nhắn chưa đọc"
   },
   "message_room_detail": {
     "details": "Chi tiết",
@@ -158,7 +163,9 @@
     "commented_on_your_post": "bình luận về bài viết của bạn",
     "replied_to_your_comment": "trả lời bình luận của bạn",
     "started_following_you": "bắt đầu theo dõi bạn",
-    "tagged_you_in_a_post": "đã nhắc đến bạn trong một bài viết"
+    "tagged_you_in_a_post": "đã nhắc đến bạn trong một bài viết",
+    "other_other": "những người khác",
+    "other_one": "người khác"
   },
   "collection_grid": {
     "new_collection": "Bộ sưu tập mới",
@@ -217,7 +224,7 @@
   },
   "image_search": {
     "image_search": "Tìm kiếm bằng hình ảnh",
-    "image_search_description": "Tìm kiếm bằng hình ảnh",
+    "image_search_allows_other_users_to_find_you_by_searching_for_images_of_your_face": "Tìm kiếm bằng hình ảnh cho phép người dùng khác tìm thấy bạn bằng cách tìm kiếm hình ảnh của khuôn mặt của bạn",
     "upload_new_image": "Tải ảnh mới lên",
     "delete_image": "Xóa ảnh",
     "image_search_updated_successfully": "Cập nhật tìm kiếm bằng hình ảnh thành công",
@@ -226,14 +233,18 @@
   "profile_form": {
     "email": "Email",
     "bio": "Tiểu sử",
-    "profile_updated_successfully": "Cập nhật hồ sơ thành công"
+    "profile_updated_successfully": "Cập nhật hồ sơ thành công",
+    "edit_profile": "Chỉnh sửa hồ sơ"
   },
   "setting": {
     "settings": "Cài đặt",
     "how_you_use_syncio": "Cách bạn sử dụng Syncio",
     "edit_profile": "Chỉnh sửa hồ sơ",
     "how_people_find_and_contact_you": "Cách mọi người tìm thấy và liên hệ với bạn",
-    "image_search": "Tìm kiếm bằng hình ảnh"
+    "image_search": "Tìm kiếm bằng hình ảnh",
+    "who_can_see_your_content": "Ai có thể xem nội dung của bạn",
+    "close_friends": "Bạn thân",
+    "messages": "Tin nhắn"
   },
   "collection_detail": {
     "no_posts_added_to_collection_yet": "Chưa có bài viết nào được thêm vào bộ sưu tập"
@@ -269,7 +280,7 @@
   },
   "post_detail": {
     "add_a_comment": "Thêm bình luận",
-    "post_comment": "Bình luận",
+    "post": "Đăng",
     "report": "Báo cáo",
     "copy_link": "Sao chép liên kết",
     "save_to_collection": "Lưu vào bộ sưu tập",
@@ -313,6 +324,25 @@
     "added": "đã thêm",
     "removed": "đã xóa",
     "left_the_group": "đã rời khỏi nhóm",
-    "you": "Bạn"
+    "you": "Bạn",
+    "from_the_group": "ra khỏi nhóm",
+    "as_a_group_admin": "là quản trị viên nhóm",
+    "to_the_group": "vào nhóm",
+    "unseen_messages": "Tin nhắn chưa đọc"
+  },
+  "close_friends": {
+    "search_by_username": "Tìm kiếm theo tên đăng nhập",
+    "close_friends": "Bạn thân",
+    "we_dont_send_notifications_when_you_edit_your_close_friends_list": "Chúng tôi không gửi thông báo khi bạn chỉnh sửa danh sách bạn thân của mình",
+    "setting_saved": "Đã lưu cài đặt"
+  },
+  "message_controls": {
+    "message_controls": "Kiểm soát tin nhắn",
+    "everyone": "Mọi người",
+    "only_people_you_follow": "Chỉ những người mà bạn theo dõi",
+    "no_one": "Không ai có thể",
+    "who_can_add_you_to_group_chats": "Ai có thể thêm bạn vào nhóm trò chuyện",
+    "setting_saved": "Đã lưu cài đặt",
+    "who_can_start_a_new_chat_with_you": "Ai có thể bắt đầu một cuộc trò chuyện mới với bạn"
   }
 }

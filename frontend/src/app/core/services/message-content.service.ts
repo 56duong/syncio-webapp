@@ -14,7 +14,7 @@ export class MessageContentService {
 
   private apiURL = environment.apiUrl + 'api/v1/messagecontents';
 
-  private webSocketURL = environment.apiUrl + 'live'; // WebSocket URL with 'live' is the endpoint for the WebSocket configuration in the backend. In WebSocketConfig.java, the endpoint is '/live'.
+  private webSocketURL = environment.apiUrl + 'api/live'; // WebSocket URL with 'api/live' is the endpoint for the WebSocket configuration in the backend. In WebSocketConfig.java, the endpoint is '/api/live'.
 
   private connections: Map<string, any> = new Map(); // Map to store the connections for each message room ID.
 

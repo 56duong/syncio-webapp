@@ -6,9 +6,12 @@ import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.NotFoundException;
+import online.syncio.backend.messageroommember.MessageRoomMember;
+import online.syncio.backend.messageroommember.MessageRoomMemberRepository;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserProfile;
 import online.syncio.backend.user.UserRepository;
+import online.syncio.backend.userfollow.UserFollowRepository;
 import online.syncio.backend.utils.AuthUtils;
 import online.syncio.backend.utils.FileUtils;
 import org.json.JSONArray;
@@ -36,12 +39,115 @@ public class UserSettingService {
     private final FileUtils fileUtils;
     private final UserRepository userRepository;
     private final UserSettingMapper userSettingMapper;
+    private final MessageRoomMemberRepository messageRoomMemberRepository;
+    private final UserFollowRepository userFollowRepository;
 
     @Value("${firebase.storage.type}")
     private String storageType;
 
     @Value("${image-search-service.url}")
     private String url;
+
+
+    public UserSettingDTO getUserSetting() {
+        final UUID userId = authUtils.getCurrentLoggedInUserId();
+        final Optional<UserSetting> userSettingOptional = userSettingRepository.findByUserId(userId);
+
+        if(userSettingOptional.isEmpty()) {
+            // If the user setting does not exist, create a new one
+            User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(User.class, "id", userId.toString()));
+            final UserSetting newUserSetting = new UserSetting();
+            newUserSetting.setUser(user);
+            newUserSetting.setWhoCanAddYouToGroupChat(WhoCanAddYouToGroupChat.EVERYONE);
+            userSettingRepository.save(newUserSetting);
+            return userSettingMapper.mapToDTO(newUserSetting, new UserSettingDTO());
+        }
+        else {
+            return userSettingMapper.mapToDTO(userSettingOptional.get(), new UserSettingDTO());
+        }
+    }
+
+
+    public UserSettingDTO updateWhoCanAddYouToGroupChat(final WhoCanAddYouToGroupChat whoCanAddYouToGroupChat) {
+        final UUID userId = authUtils.getCurrentLoggedInUserId();
+        final Optional<UserSetting> userSettingOptional = userSettingRepository.findByUserId(userId);
+
+        if(userSettingOptional.isEmpty()) {
+            // If the user setting does not exist, create a new one
+            User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(User.class, "id", userId.toString()));
+            final UserSetting newUserSetting = new UserSetting();
+            newUserSetting.setUser(user);
+            newUserSetting.setWhoCanAddYouToGroupChat(whoCanAddYouToGroupChat);
+            newUserSetting.setWhoCanSendYouNewMessage(WhoCanSendYouNewMessage.EVERYONE);
+            userSettingRepository.save(newUserSetting);
+            return userSettingMapper.mapToDTO(newUserSetting, new UserSettingDTO());
+        }
+        else {
+            UserSetting userSetting = userSettingOptional.get();
+            userSetting.setWhoCanAddYouToGroupChat(whoCanAddYouToGroupChat);
+            userSettingRepository.save(userSetting);
+            return userSettingMapper.mapToDTO(userSetting, new UserSettingDTO());
+        }
+    }
+
+
+    public UserSettingDTO updateWhoCanSendYouNewMessage(final WhoCanSendYouNewMessage whoCanSendMessage) {
+        final UUID userId = authUtils.getCurrentLoggedInUserId();
+        final Optional<UserSetting> userSettingOptional = userSettingRepository.findByUserId(userId);
+
+        if(userSettingOptional.isEmpty()) {
+            // If the user setting does not exist, create a new one
+            User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(User.class, "id", userId.toString()));
+            final UserSetting newUserSetting = new UserSetting();
+            newUserSetting.setUser(user);
+            newUserSetting.setWhoCanAddYouToGroupChat(WhoCanAddYouToGroupChat.EVERYONE);
+            newUserSetting.setWhoCanSendYouNewMessage(whoCanSendMessage);
+            userSettingRepository.save(newUserSetting);
+            return userSettingMapper.mapToDTO(newUserSetting, new UserSettingDTO());
+        }
+        else {
+            UserSetting userSetting = userSettingOptional.get();
+            userSetting.setWhoCanSendYouNewMessage(whoCanSendMessage);
+            userSettingRepository.save(userSetting);
+            return userSettingMapper.mapToDTO(userSetting, new UserSettingDTO());
+        }
+    }
+
+
+    public Boolean checkWhoCanSendYouNewMessage(final UUID roomId) {
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        // Get the other user in the room
+        final List<MessageRoomMember> messageRoomMembers = messageRoomMemberRepository.findByMessageRoomIdOrderByDateJoined(roomId);
+        final UUID userId = messageRoomMembers.stream()
+                .filter(messageRoomMember -> !messageRoomMember.getUser().getId().equals(currentUserId))
+                .map(messageRoomMember -> messageRoomMember.getUser().getId())
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException(MessageRoomMember.class, "messageRoomId", roomId.toString()));
+
+        final Optional<UserSetting> userSettingOptional = userSettingRepository.findByUserId(userId);
+        if(userSettingOptional.isEmpty()) {
+            // If the user setting does not exist, create a new one
+            User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(User.class, "id", userId.toString()));
+            final UserSetting newUserSetting = new UserSetting();
+            newUserSetting.setUser(user);
+            newUserSetting.setWhoCanAddYouToGroupChat(WhoCanAddYouToGroupChat.EVERYONE);
+            newUserSetting.setWhoCanSendYouNewMessage(WhoCanSendYouNewMessage.EVERYONE);
+            userSettingRepository.save(newUserSetting);
+            return true;
+        }
+        else {
+            UserSetting userSetting = userSettingOptional.get();
+            // check if the current user can send a new message to the other user
+            final WhoCanSendYouNewMessage whoCanSendYouNewMessage = userSetting.getWhoCanSendYouNewMessage();
+            if(whoCanSendYouNewMessage == null) {
+                return true;
+            }
+            if(whoCanSendYouNewMessage.equals(WhoCanSendYouNewMessage.ONLY_PEOPLE_YOU_FOLLOW)) {
+                return userFollowRepository.existsByTargetIdAndActorId(currentUserId, userId);
+            }
+            else return !whoCanSendYouNewMessage.equals(WhoCanSendYouNewMessage.NO_ONE);
+        }
+    }
 
 
     public String updateImageSearch(MultipartFile file) {
@@ -59,6 +165,8 @@ public class UserSettingService {
             UserSetting newUserSetting = new UserSetting();
             newUserSetting.setUser(user);
             newUserSetting.setFindableByImageUrl("image_search_" + user.getId() + ".jpg");
+            newUserSetting.setWhoCanAddYouToGroupChat(WhoCanAddYouToGroupChat.EVERYONE);
+            newUserSetting.setWhoCanSendYouNewMessage(WhoCanSendYouNewMessage.EVERYONE);
             userSettingRepository.save(newUserSetting);
         }
         else if(userSetting.get().getFindableByImageUrl() == null) {

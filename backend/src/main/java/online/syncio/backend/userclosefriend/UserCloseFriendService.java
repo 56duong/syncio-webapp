@@ -8,6 +8,7 @@ import online.syncio.backend.user.UserRepository;
 import online.syncio.backend.utils.AuthUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -70,6 +71,17 @@ public class UserCloseFriendService {
             return true; // Successfully removed from close friends
         }
         return false; // Not in close friends
+    }
+
+
+    public List<UserFollowingCloseFriendDTO> getFollowingCloseFriends() {
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        List<UserFollowingCloseFriendDTO> closeFriends = userCloseFriendRepository.getFollowingCloseFriends(currentUserId);
+
+        // Sort the list so that close friends come first
+        closeFriends.sort((friend1, friend2) -> Boolean.compare(friend2.isCloseFriend(), friend1.isCloseFriend()));
+
+        return closeFriends;
     }
 
 }

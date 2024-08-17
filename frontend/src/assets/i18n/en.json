@@ -1,7 +1,7 @@
 {
   "date_time": {
     "_preserve": true,
-    "justNow": "Just now",
+    "just_now": "Just now",
     "y": "y",
     "mth": "mth",
     "w": "w",
@@ -16,7 +16,7 @@
     "email_or_username": "Email or username",
     "password": "Password",
     "forgot_password": "Forgot password",
-    "dont_have_an_account": "Dont have an account",
+    "dont_have_an_account": "Don't have an account",
     "sign_up": "Sign up",
     "continue_as_guest": "Continue as guest",
     "email_is_required": "Email is required",
@@ -109,21 +109,26 @@
     "settings": "Settings",
     "help": "Help",
     "report_a_problem": "Report a problem",
-    "logout": "Logout"
+    "logout": "Logout",
+    "dark_mode": "Dark mode",
+    "light_mode": "Light mode",
+    "about_us": "About us"
   },
   "mobile_top_menu": {
     "help": "Help",
     "report_a_problem": "Report a problem",
     "post": "Post",
     "story": "Story",
-    "logout": "Logout"
+    "logout": "Logout",
+    "about_us": "About us"
   },
   "message_content_list": {
     "view_profile": "View profile",
     "messages": "Messages",
     "send": "Send",
     "reply": "Reply",
-    "replying_to": "Replying to"
+    "replying_to": "Replying to",
+    "unseen_message": "Unseen message"
   },
   "message_room_detail": {
     "details": "Details",
@@ -153,12 +158,14 @@
     "send_message": "Send message"
   },
   "notifications_item": {
-    "and": "And",
-    "liked_your_post": "Liked your post",
-    "commented_on_your_post": "Commented on your post",
-    "replied_to_your_comment": "Replied to your comment",
-    "started_following_you": "Started following you",
-    "tagged_you_in_a_post": "Tagged you in a post"
+    "and": "and",
+    "liked_your_post": "liked your post",
+    "commented_on_your_post": "commented on your post",
+    "replied_to_your_comment": "replied to your comment",
+    "started_following_you": "started following you",
+    "tagged_you_in_a_post": "tagged you in a post",
+    "other_other": "others",
+    "other_one": "other"
   },
   "collection_grid": {
     "new_collection": "New collection",
@@ -217,7 +224,7 @@
   },
   "image_search": {
     "image_search": "Image search",
-    "image_search_description": "Image search description",
+    "image_search_allows_other_users_to_find_you_by_searching_for_images_of_your_face": "Image search allows other users to find you by searching for images of your face",
     "upload_new_image": "Upload new image",
     "delete_image": "Delete image",
     "image_search_updated_successfully": "Image search updated successfully",
@@ -226,14 +233,18 @@
   "profile_form": {
     "email": "Email",
     "bio": "Bio",
-    "profile_updated_successfully": "Profile updated successfully"
+    "profile_updated_successfully": "Profile updated successfully",
+    "edit_profile": "Edit profile"
   },
   "setting": {
     "settings": "Settings",
     "how_you_use_syncio": "How you use Syncio",
     "edit_profile": "Edit profile",
     "how_people_find_and_contact_you": "How people find and contact you",
-    "image_search": "Image search"
+    "image_search": "Image search",
+    "who_can_see_your_content": "Who can see your content",
+    "close_friends": "Close friends",
+    "messages": "Messages"
   },
   "collection_detail": {
     "no_posts_added_to_collection_yet": "No posts added to collection yet"
@@ -269,7 +280,7 @@
   },
   "post_detail": {
     "add_a_comment": "Add a comment",
-    "post_comment": "Post comment",
+    "post": "Post",
     "report": "Report",
     "copy_link": "Copy link",
     "save_to_collection": "Save to collection",
@@ -308,11 +319,30 @@
     "voice_recorder": "Voice recorder"
   },
   "message_item": {
-    "create_this_group": "Create this group",
-    "named_the_group": "Named the group",
-    "added": "Added",
-    "removed": "Removed",
-    "left_the_group": "Left the group",
-    "you": "You"
+    "create_this_group": "create this group",
+    "named_the_group": "named the group",
+    "added": "added",
+    "removed": "removed",
+    "left_the_group": "left the group",
+    "you": "You",
+    "from_the_group": "from the group",
+    "as_a_group_admin": "as a group admin",
+    "to_the_group": "to the group",
+    "unseen_messages": "Unseen messages"
+  },
+  "close_friends": {
+    "search_by_username": "Search by username",
+    "close_friends": "Close friends",
+    "we_dont_send_notifications_when_you_edit_your_close_friends_list": "We don't send notifications when you edit your close friends list",
+    "setting_saved": "Setting saved"
+  },
+  "message_controls": {
+    "message_controls": "Message controls",
+    "everyone": "Everyone",
+    "only_people_you_follow": "Only people you follow",
+    "no_one": "No one",
+    "who_can_add_you_to_group_chats": "Who can add you to group chats",
+    "setting_saved": "Setting saved",
+    "who_can_start_a_new_chat_with_you": "Who can start a new chat with you"
   }
 }

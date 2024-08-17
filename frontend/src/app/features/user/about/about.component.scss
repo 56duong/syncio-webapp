@@ -1,0 +1,36 @@
+.fade-in {
+  opacity: 0;
+  transition: 1s;
+  visibility: hidden;
+}
+
+.fade-in.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.fade-left {
+  opacity: 0;
+  transition: 1s;
+  transform: translateX(-10%);
+  visibility: hidden;
+}
+
+.fade-left.show {
+  opacity: 1;
+  transform: translateX(0);
+  visibility: visible;
+}
+
+.fade-right {
+  opacity: 0;
+  transition: 1s;
+  transform: translateX(10%);
+  visibility: hidden;
+}
+
+.fade-right.show {
+  opacity: 1;
+  transform: translateX(0);
+  visibility: visible;
+}

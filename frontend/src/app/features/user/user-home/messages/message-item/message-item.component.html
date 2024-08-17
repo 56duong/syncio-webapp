@@ -1,6 +1,6 @@
 <!-- Unseen message section -->
 <div *ngIf="isLastSeen && messageRoom.unSeenCount > 0" class="text-center text-gray-500 my-3" id="unSeenMessage">
-  __________ Unseen messages ({{messageRoom.unSeenCount}}) __________
+  __________ {{'message_item.unseen_messages' | translate}} ({{messageRoom.unSeenCount}}) __________
 </div>
 
 <!-- Message item not notification -->
@@ -50,11 +50,11 @@
     </ng-container>
     <!-- ADD_MEMBER -->
     <ng-container *ngSwitchCase="MessageContentTypeEnum.NOTIFICATION_ADD_MEMBER">
-      {{'message_item.added' | translate}} {{ membersAddedAsString }} to the group.
+      {{'message_item.added' | translate}} {{ membersAddedAsString }} {{'message_item.to_the_group' | translate}}.
     </ng-container>
     <!-- REMOVE_MEMBER -->
     <ng-container *ngSwitchCase="MessageContentTypeEnum.NOTIFICATION_REMOVE_MEMBER">
-      {{'message_item.removed' | translate}} {{ messageContent.message == currentUser.id ? 'You' : messageContent.message | userIdToName | async }} from the group.
+      {{'message_item.removed' | translate}} {{ messageContent.message == currentUser.id ? 'You' : messageContent.message | userIdToName | async }} {{'message_item.from_the_group' | translate}}.
     </ng-container>
     <!-- LEAVE_ROOM -->
     <ng-container *ngSwitchCase="MessageContentTypeEnum.NOTIFICATION_LEAVE_ROOM">
@@ -62,11 +62,11 @@
     </ng-container>
     <!-- MAKE_ADMIN -->
     <ng-container *ngSwitchCase="MessageContentTypeEnum.NOTIFICATION_MAKE_ADMIN">
-      {{'message_item.added' | translate}} {{ messageContent.message == currentUser.id ? 'You' : messageContent.message | userIdToName | async }} as a group admin.
+      {{'message_item.added' | translate}} {{ messageContent.message == currentUser.id ? 'You' : messageContent.message | userIdToName | async }} {{'message_item.as_a_group_admin' | translate}}.
     </ng-container>
     <!-- REMOVE_ADMIN -->
     <ng-container *ngSwitchCase="MessageContentTypeEnum.NOTIFICATION_REMOVE_ADMIN">
-      {{'message_item.removed' | translate}} {{ messageContent.message == currentUser.id ? 'You' : messageContent.message | userIdToName | async }} as a group admin.
+      {{'message_item.removed' | translate}} {{ messageContent.message == currentUser.id ? 'You' : messageContent.message | userIdToName | async }} {{'message_item.as_a_group_admin' | translate}}.
     </ng-container>
   </small>
 </div>

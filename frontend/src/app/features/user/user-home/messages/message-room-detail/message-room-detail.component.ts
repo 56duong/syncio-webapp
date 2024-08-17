@@ -144,6 +144,10 @@ export class MessageRoomDetailComponent {
       },
       error: (error) => {
         console.log(error);
+        this.toastService.showError(
+          this.translateService.instant('common.error'),
+          error.error.message
+        )
       }
     });
     this.isVisibleAddPeople = true;

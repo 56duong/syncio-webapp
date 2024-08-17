@@ -47,6 +47,8 @@ public class UserSettingMapper {
     public UserSettingDTO mapToDTO (final UserSetting userSetting, final UserSettingDTO userSettingDTO) {
         userSettingDTO.setId(userSetting.getId());
         userSettingDTO.setFindableByImageUrl(userSetting.getFindableByImageUrl());
+        userSettingDTO.setWhoCanAddYouToGroupChat(userSetting.getWhoCanAddYouToGroupChat());
+        userSettingDTO.setWhoCanSendYouNewMessage(userSetting.getWhoCanSendYouNewMessage());
         userSettingDTO.setUserId(userSetting.getUser().getId());
         return userSettingDTO;
     }
@@ -54,6 +56,8 @@ public class UserSettingMapper {
 
     public UserSetting mapToEntity (final UserSettingDTO userSettingDTO, final UserSetting userSetting) {
         userSetting.setFindableByImageUrl(userSettingDTO.getFindableByImageUrl());
+        userSetting.setWhoCanAddYouToGroupChat(userSettingDTO.getWhoCanAddYouToGroupChat());
+        userSetting.setWhoCanSendYouNewMessage(userSettingDTO.getWhoCanSendYouNewMessage());
         return userSetting;
     }
 

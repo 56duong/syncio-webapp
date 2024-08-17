@@ -144,7 +144,7 @@
 
 <!-- scroll to unread message -->
 <div *ngIf="!alreadyScrolled && messageRoom.unSeenCount && messageRoom.unSeenCount > 0" (click)="scrollToElement('unSeenMessage')" class="unseen">
-  Unseen message <i class="pi pi-arrow-up"></i>
+  {{'message_content_list.unseen_message' | translate}} <i class="pi pi-arrow-up"></i>
 </div>
 
 

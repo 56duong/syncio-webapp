@@ -22,8 +22,6 @@ export class GithubService {
     this.octokit = new Octokit({
       auth: this.GITHUB_TOKEN
     });
-
-    console.log('GithubService initialized', this.GITHUB_TOKEN);
   }
 
 

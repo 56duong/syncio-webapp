@@ -1,0 +1,49 @@
+<div class="container col-12 xl:col-8 m-auto">
+  <!-- header -->
+  <div class="mb-4">
+    <h1 class="text-2xl">{{'message_controls.message_controls' | translate}}</h1>
+  </div>
+
+  <!-- Who can add you to group chats -->
+  <div class="my-5">
+    <h3 class="font-normal mb-2">{{'message_controls.who_can_add_you_to_group_chats' | translate}}</h3>
+    <div style="border: 1px solid var(--surface-border)" class="flex flex-column gap-3 p-3 border-round">
+      <div *ngFor="let whoCanAddYouToGroupChat of whoCanAddYouToGroupChatOptions"
+        class="flex align-items-center gap-2 mb-0 cursor-pointer">
+        <!-- right checkbox -->
+        <p-radioButton
+          [inputId]="'whoCanAddYouToGroupChat-' + whoCanAddYouToGroupChat.value"
+          name="whoCanAddYouToGroupChat" 
+          [value]="whoCanAddYouToGroupChat.value" 
+          [(ngModel)]="selectedWhoCanAddYouToGroupChat"
+          (ngModelChange)="updateWhoCanAddYouToGroupChat(whoCanAddYouToGroupChat.value)" />
+        <!-- left -->
+        <label [for]="'whoCanAddYouToGroupChat-' + whoCanAddYouToGroupChat.value" class="gap-2 flex align-items-center cursor-pointer">
+          {{ whoCanAddYouToGroupChat.label }}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- who can send message -->
+  <div class="my-5">
+    <h3 class="font-normal mb-2">{{'message_controls.who_can_start_a_new_chat_with_you' | translate}}</h3>
+    <div style="border: 1px solid var(--surface-border)" class="flex flex-column gap-3 p-3 border-round">
+      <div *ngFor="let whoCanSendMessage of whoCanSendMessageOptions"
+        class="flex align-items-center gap-2 mb-0 cursor-pointer">
+        <!-- left checkbox -->
+        <p-radioButton
+          [inputId]="'whoCanSendMessage-' + whoCanSendMessage.value"
+          name="whoCanSendMessage" 
+          [value]="whoCanSendMessage.value" 
+          [(ngModel)]="selectedWhoCanSendYouNewMessage"
+          (ngModelChange)="updateWhoCanSendYouNewMessage(whoCanSendMessage.value)" />
+        <!-- left -->
+        <label [for]="'whoCanSendMessage-' + whoCanSendMessage.value" class="gap-2 flex align-items-center cursor-pointer">
+          {{ whoCanSendMessage.label }}
+        </label>
+      </div>
+    </div>
+  </div>
+
+</div>

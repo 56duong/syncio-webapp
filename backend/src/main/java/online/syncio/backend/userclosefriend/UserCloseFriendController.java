@@ -2,11 +2,9 @@ package online.syncio.backend.userclosefriend;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -38,6 +36,17 @@ public class UserCloseFriendController {
     @PostMapping("/toggle-close-friend/{targetId}")
     public ResponseEntity<Boolean> toggleCloseFriend(@PathVariable UUID targetId) {
         return ResponseEntity.ok(userCloseFriendService.toggleCloseFriend(targetId));
+    }
+
+
+    /**
+     * Get the following of current user with close friend status.
+     * Order by the user is close friend first, then the rest of the following.
+     * @return
+     */
+    @GetMapping("/following-close-friends")
+    public ResponseEntity<List<UserFollowingCloseFriendDTO>> getFollowingCloseFriends() {
+        return ResponseEntity.ok(userCloseFriendService.getFollowingCloseFriends());
     }
 
 }

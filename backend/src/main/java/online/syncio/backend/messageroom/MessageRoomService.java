@@ -11,6 +11,10 @@ import online.syncio.backend.messageroommember.MessageRoomMemberRepository;
 import online.syncio.backend.messageroommember.MessageRoomMemberService;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
+import online.syncio.backend.userfollow.UserFollowRepository;
+import online.syncio.backend.usersetting.UserSettingRepository;
+import online.syncio.backend.usersetting.WhoCanAddYouToGroupChat;
+import online.syncio.backend.usersetting.WhoCanSendYouNewMessage;
 import online.syncio.backend.utils.AuthUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -32,7 +36,8 @@ public class MessageRoomService {
     private final AuthUtils authUtils;
     private final MessageContentService messageContentService;
     private final MessageRoomMemberService messageRoomMemberService;
-    private final MessageContentRepository messageContentRepository;
+    private final UserSettingRepository userSettingRepository;
+    private final UserFollowRepository userFollowRepository;
 
 
     public List<MessageRoomDTO> findAll() {
@@ -74,16 +79,44 @@ public class MessageRoomService {
         if (room.isPresent()) {
             return messageRoomMapper.mapToDTO(room.get(), new MessageRoomDTO());
         }
-        // if it doesn't exist, create a new room
-        final MessageRoom messageRoom = new MessageRoom();
-        messageRoom.setGroup(userIds.size() > 2);
-        final MessageRoom savedMessageRoom = messageRoomRepository.save(messageRoom);
 
-        // get current user to make as admin
+        // check if current user can add the users to a group chat
         UUID currentUserId = authUtils.getCurrentLoggedInUserId();
         if(currentUserId == null) {
             throw new AppException(HttpStatus.FORBIDDEN, "You must be logged in to create a room", null);
         }
+
+        // check if the current user can add the users to a group chat
+        if(userIds.size() > 2) {
+            userIds.forEach(userId -> {
+                if(userId.equals(currentUserId)) return;
+                messageRoomMemberService.checkUserSettingsWhoCanAddYouToGroupChatAndThrowException(userId, currentUserId);
+            });
+        }
+        else {
+            // check if the current user can send a new message to the other user
+            userIds.forEach(userId -> {
+                if(userId.equals(currentUserId)) return;
+                final WhoCanSendYouNewMessage whoCanSendYouNewMessage = userSettingRepository.getWhoCanSendYouNewMessage(userId);
+                if(whoCanSendYouNewMessage == null) {
+                    return;
+                }
+                if(whoCanSendYouNewMessage.equals(WhoCanSendYouNewMessage.ONLY_PEOPLE_YOU_FOLLOW)) {
+                    boolean isFollowing = userFollowRepository.existsByTargetIdAndActorId(currentUserId, userId);
+                    if(!isFollowing) {
+                        throw new AppException(HttpStatus.FORBIDDEN, "This user only allows people they follow to send them a new message", null);
+                    }
+                }
+                else if(whoCanSendYouNewMessage.equals(WhoCanSendYouNewMessage.NO_ONE)) {
+                    throw new AppException(HttpStatus.FORBIDDEN, "This user doesn't allow anyone to send them a new message", null);
+                }
+            });
+        }
+
+        // if it doesn't exist, create a new room
+        final MessageRoom messageRoom = new MessageRoom();
+        messageRoom.setGroup(userIds.size() > 2);
+        final MessageRoom savedMessageRoom = messageRoomRepository.save(messageRoom);
 
         // add the users to the room
         userIds.forEach(userId -> {

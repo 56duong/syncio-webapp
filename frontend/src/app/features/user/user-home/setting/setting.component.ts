@@ -28,9 +28,24 @@ export class SettingComponent {
           label: this.translateService.instant('setting.image_search'),
           icon: 'pi pi-image',
           link: 'image-search',
+        },
+        {
+          label: this.translateService.instant('setting.messages'),
+          icon: 'pi pi-comments',
+          link: 'message-controls',
         }
       ]
-    }
+    },
+    {
+      title: this.translateService.instant('setting.who_can_see_your_content'),
+      items: [
+        {
+          label: this.translateService.instant('setting.close_friends'),
+          icon: 'pi pi-star-fill',
+          link: 'close-friends',
+        }
+      ]
+    },
   ];
 
   constructor(
