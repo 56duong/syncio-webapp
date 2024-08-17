@@ -5,6 +5,7 @@ import { MessageContent, MessageContentTypeEnum } from 'src/app/core/interfaces/
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
 import { User } from 'src/app/core/interfaces/user';
 import { UserSearch } from 'src/app/core/interfaces/user-search';
+import { LoadingService } from 'src/app/core/services/loading.service';
 import { MessageContentService } from 'src/app/core/services/message-content.service';
 import { MessageRoomMemberService } from 'src/app/core/services/message-room-member.service';
 import { MessageRoomService } from 'src/app/core/services/message-room.service';
@@ -42,7 +43,8 @@ export class MessagesComponent {
     private messageContentService: MessageContentService,
     private toastService: ToastService,
     private translateService: TranslateService,
-    private userSettingService: UserSettingService
+    private userSettingService: UserSettingService,
+    private loadingService: LoadingService
   ) { 
     this.isMobile = window.innerWidth < 768;
   }
@@ -297,6 +299,8 @@ export class MessagesComponent {
     this.selectedUserMembers = event;
 
     if(this.selectedUserMembers.length <= 0) return;
+
+    this.loadingService.show();
     
     // extract list of id inside selectedUserMembers: User here
     const userIds = this.selectedUserMembers.map((user: any) => user.id);
@@ -310,6 +314,7 @@ export class MessagesComponent {
           this.isDialogVisible = false;
           this.navigateToMessageRoom(existsMessageRoom);
           this.selectedUserMembers = [];
+          this.loadingService.hide();
         }
         else {
           // if not exists, create a new room
@@ -322,9 +327,11 @@ export class MessagesComponent {
               this.isDialogVisible = false;
               this.navigateToMessageRoom(messageRoom);
               this.selectedUserMembers = [];
+              this.loadingService.hide();
             },
             error: (error) => {
               console.log(error);
+              this.loadingService.hide();
               this.toastService.showError(
                 this.translateService.instant('common.error'),
                 error.error.message
@@ -335,6 +342,7 @@ export class MessagesComponent {
       },
       error: (error) => {
         console.log(error);
+        this.loadingService.hide();
       }
     });
   }

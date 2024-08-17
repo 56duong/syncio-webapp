@@ -211,8 +211,8 @@
     "avatar_updated_successfully": "Cập nhật avatar thành công"
   },
   "search_suggestion": {
-    "follower_other": "Người theo dõi",
-    "follower_one": "Người theo dõi",
+    "follower_other": "người theo dõi",
+    "follower_one": "người theo dõi",
     "suggest_for_you": "Đề xuất cho bạn"
   },
   "search": {
