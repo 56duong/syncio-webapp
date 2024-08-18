@@ -15,7 +15,7 @@ export class UpdateIpComponent {
   ) {}
 
   updateIp(): void {
-    const newUrl = `http://${this.newIp}:8080/`;
+    const newUrl = `http://${this.newIp}/`;
     window.localStorage.setItem('apiUrl', newUrl);
     alert(`API URL updated to: ${newUrl}`);
     this.redirectService.redirectAndReload('/');

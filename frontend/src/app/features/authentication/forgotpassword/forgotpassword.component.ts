@@ -1,52 +1,72 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { Component, ViewChild } from '@angular/core';
 import { UserService } from 'src/app/core/services/user.service';
 import { FogotPasswordDTO } from './forgotpassword.dto';
-import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
+import { LangService } from 'src/app/core/services/lang.service';
+import { RedirectService } from 'src/app/core/services/redirect.service';
+import { ToastService } from 'src/app/core/services/toast.service';
+import { TranslateService } from '@ngx-translate/core';
+import { LoadingService } from 'src/app/core/services/loading.service';
+
 @Component({
   selector: 'app-forgotpassword',
   templateUrl: './forgotpassword.component.html',
   styleUrls: ['./forgotpassword.component.scss'],
-  providers: [MessageService],
 })
-export class ForgotpasswordComponent implements OnInit {
+
+export class ForgotpasswordComponent {
+
   @ViewChild('forgotpassword') forgotpassword!: NgForm;
   email: string = '';
-  ngOnInit() {}
+
   constructor(
-    private router: Router,
+    private langService: LangService,
+    private redirectService: RedirectService,
     private userService: UserService,
-    private messageService: MessageService
+    private toastService: ToastService,
+    private translateService: TranslateService,
+    private loadingService: LoadingService
   ) {}
 
-  showSuccess(message: string) {
-    this.messageService.add({
-      severity: 'Success',
-      detail: message,
-    });
+
+  switchLang(lang: string) {
+    this.langService.setLang(lang);
+    this.redirectService.reloadPage('/forgot_password');
   }
-  showError(message: string) {
-    this.messageService.add({
-      severity: 'error',
-      detail: message,
-    });
-  }
+
+
   sendPasswordToMail() {
     if (!this.email) {
-      alert('Please enter your email');
+      this.toastService.showError(
+        this.translateService.instant('common.error'),
+        this.translateService.instant('forgot_password.please_enter_your_email')
+      );
       return;
     }
+
+    this.loadingService.show();
+
     const fogotPasswordDTO: FogotPasswordDTO = {
       email: this.email,
     };
+
     this.userService.sendPasswordToMailSerive(fogotPasswordDTO).subscribe({
-      next: () =>
-        this.showSuccess('Please check your email to reset your password'),
+      next: () => {
+        this.loadingService.hide();
+        this.toastService.showSuccess(
+          this.translateService.instant('common.success'),
+          this.translateService.instant('forgot_password.please_check_your_email_to_reset_your_password')
+        );
+      },
       error: (error: any) => {
         console.log(error);
-        this.showError(error.error.message);
+        this.loadingService.hide();
+        this.toastService.showError(
+          this.translateService.instant('common.error'),
+          error.error.message
+        );
       },
     });
   }
+
 }

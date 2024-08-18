@@ -113,6 +113,12 @@ export class RegisterComponent {
     //   return;
     // }
 
+    if (this.password !== this.retypePassword) {
+      this.toastService.showError(errorText, this.translateService.instant('register.passwords_do_not_match'));
+      this.isLoading = false;
+      return;
+    }
+
     this.userService.register(registerDTO).subscribe({
       next: (response: any) => {
         if (response.status === 'CREATED') {

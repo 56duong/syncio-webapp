@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RouteController {
     /**
-     * For Android, this is used to check if the server is running.
+     * For Android and Windows, this is used to check if the server is running.
      * @return "Welcome to Syncio" message
      */
-    @RequestMapping(value = "/welcome-page")
+    @RequestMapping(value = "${api.prefix}/welcome-page")
     public ResponseEntity<ResponseObject> index() {
         System.out.println("Welcome to Syncio");
         return ResponseEntity.ok().body(

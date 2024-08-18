@@ -59,8 +59,16 @@
           </div>
           <br />
         </div>
-        <!-- 3 dots -->
-        <span (click)="dialogVisible = !dialogVisible" class="pi pi-ellipsis-h cursor-pointer"></span>
+
+        <div class="flex justify-content-center align-items-center gap-2">
+          <!-- Visibility -->
+          <div *ngIf="post.visibility === Visibility.PRIVATE || post.visibility === Visibility.CLOSE_FRIENDS" class="flex align-items-center gap-2">
+            <p-button *ngIf="post.visibility === Visibility.PRIVATE" class="close-friend" icon="pi pi-lock" severity="secondary" size="small" />
+            <p-button *ngIf="post.visibility === Visibility.CLOSE_FRIENDS" class="close-friend" icon="pi pi-star-fill" severity="success" size="small" />
+          </div>
+          <!-- 3 dots -->
+          <span (click)="dialogVisible = !dialogVisible" class="pi pi-ellipsis-h cursor-pointer"></span>
+        </div>
       </div>
 
       <div *ngIf="post.audioURL" class="px-3 pb-3">

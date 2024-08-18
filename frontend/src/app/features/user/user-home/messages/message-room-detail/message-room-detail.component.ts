@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
 import { MessageRoomMember } from 'src/app/core/interfaces/message-room-member';
 import { User } from 'src/app/core/interfaces/user';
+import { LoadingService } from 'src/app/core/services/loading.service';
 import { MessageRoomMemberService } from 'src/app/core/services/message-room-member.service';
 import { MessageRoomService } from 'src/app/core/services/message-room.service';
 import { RedirectService } from 'src/app/core/services/redirect.service';
@@ -73,7 +74,8 @@ export class MessageRoomDetailComponent {
     private messageRoomMemberService: MessageRoomMemberService,
     private toastService: ToastService,
     private translateService: TranslateService,
-    private redirectService: RedirectService
+    private redirectService: RedirectService,
+    private loadingService: LoadingService
   ) { }
 
   ngOnInit() {
@@ -135,15 +137,19 @@ export class MessageRoomDetailComponent {
     const userIds = event.map(user => user.id).filter((id): id is string => id !== undefined);
     if (!this.messageRoom.id || userIds.length === 0) return;
 
+    this.loadingService.show();
+
     this.messageRoomMemberService.addMessageRoomMembers(this.messageRoom.id, userIds).subscribe({
       next: (messageRoomMembers) => {
         console.log(messageRoomMembers);
         this.messageRoom.members = [...(this.messageRoom.members || []), ...messageRoomMembers];
         this.addPeopleEvent.emit(userIds.join(', '));
         this.isVisibleAddPeople = false;
+        this.loadingService.hide();
       },
       error: (error) => {
         console.log(error);
+        this.loadingService.hide();
         this.toastService.showError(
           this.translateService.instant('common.error'),
           error.error.message
