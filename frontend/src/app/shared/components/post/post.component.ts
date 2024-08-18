@@ -46,7 +46,7 @@ export class PostComponent {
 
   isViewMore: boolean = false;
 
-  Visibility = Visibility
+  Visibility = Visibility;
 
   collectionVisible: boolean = false;
 

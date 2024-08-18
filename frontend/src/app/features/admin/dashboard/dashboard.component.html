@@ -54,7 +54,7 @@
         </h3>
         <span class="pi pi-question-circle cursor-pointer" title="Top N users with most interactions, calculated by the sum of posts * 3 + comments * 2 + likes * 1"></span>
       </div>
-      <ul class="px-3">
+      <ul class="px-3 overflow-y-scroll primary-scrollbar" style="max-height: 675px;">
         <li *ngFor="let data of outstandingUsers" class="user-card" style="list-style: none;">  
           <div class="flex justify-content-between align-items-center">
             <div class="flex gap-2 align-items-center">

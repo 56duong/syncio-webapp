@@ -11,8 +11,10 @@ import { ThemeService } from './core/services/theme.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+
 export class AppComponent {
-  title = 'frontend';
+
+  title = 'Syncio';
 
   constructor(
     private translate: TranslateService,
@@ -28,7 +30,7 @@ export class AppComponent {
     translate.setDefaultLang(defaultLang);
     translate.use(defaultLang);
 
-    // set for android to enter the ip address of the server, for development purposes
+    // set for android, windows to enter the ip address of the server, for development purposes
     if(environment.android || environment.windows) {
       const hasChecked = sessionStorage.getItem('hasChecked'); // make sure to check only once when the app is opened
       if(hasChecked) return;
@@ -39,8 +41,9 @@ export class AppComponent {
     }
   }
 
+
   checkLocalhostAvailability(): void {
-    const url = environment.apiUrl + 'welcome-page';
+    const url = environment.apiUrl + 'api/v1/welcome-page';
     this.http.get(url).subscribe({
       next: (response) => {
         console.log('response', response);

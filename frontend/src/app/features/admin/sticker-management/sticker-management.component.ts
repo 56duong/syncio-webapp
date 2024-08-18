@@ -82,7 +82,9 @@ export class StickerManagementComponent {
   saveStickerGroup() {
     if (this.selectedStickerGroup.id) {
       // Update
-      this.stickerGroupService.updateStickerGroup(this.selectedStickerGroup).subscribe({
+      let stickerGroup = { ...this.selectedStickerGroup };
+      delete stickerGroup.stickers; // prevent sending stickers array
+      this.stickerGroupService.updateStickerGroup(stickerGroup).subscribe({
         next: (data) => {
           this.isStickerGroupDialogVisible = false;
           this.messageService.add({severity:'success', summary:'Success', detail:'Sticker Group Updated'});

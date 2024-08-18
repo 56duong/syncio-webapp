@@ -43,7 +43,8 @@
     "email_invalid": "Email không hợp lệ",
     "username_only_contain": "Tên đăng nhập chỉ chứa chữ cái, số và dấu gạch dưới",
     "username_should_be_at_least_3_characters_and_at_most_30_characters": "Tên đăng nhập cần ít nhất 3 ký tự và nhiều nhất 30 ký tự",
-    "password_should_be_at_least_6_characters_and_at_most_100_characters": "Mật khẩu cần ít nhất 6 ký tự và nhiều nhất 100 ký tự"
+    "password_should_be_at_least_6_characters_and_at_most_100_characters": "Mật khẩu cần ít nhất 6 ký tự và nhiều nhất 100 ký tự",
+    "passwords_do_not_match": "Mật khẩu không khớp"
   },
   "story_list": {
     "expand_stories": "Mở rộng tin",
@@ -344,5 +345,25 @@
     "who_can_add_you_to_group_chats": "Ai có thể thêm bạn vào nhóm trò chuyện",
     "setting_saved": "Đã lưu cài đặt",
     "who_can_start_a_new_chat_with_you": "Ai có thể bắt đầu một cuộc trò chuyện mới với bạn"
+  },
+  "forgot_password": {
+    "reset_your_password": "Đặt lại mật khẩu",
+    "email": "Email",
+    "send_reset_link": "Gửi liên kết khôi phục",
+    "dont_have_an_account": "Chưa có tài khoản",
+    "sign_up": "Đăng ký",
+    "back_to_login": "Quay lại đăng nhập",
+    "please_check_your_email_to_reset_your_password": "Vui lòng kiểm tra email của bạn để đặt lại mật khẩu",
+    "please_enter_your_email": "Vui lòng nhập email của bạn"
+  },
+  "change_password": {
+    "change_password": "Đổi mật khẩu",
+    "please_fill_in_both_fields": "Vui lòng điền vào cả hai trường",
+    "password_should_be_at_least_6_characters_and_at_most_100_characters": "Mật khẩu cần ít nhất 6 ký tự và nhiều nhất 100 ký tự",
+    "passwords_do_not_match": "Mật khẩu không khớp",
+    "password_changed_successfully": "Đổi mật khẩu thành công",
+    "new_password": "Mật khẩu mới",
+    "new_password_confirm": "Xác nhận mật khẩu mới",
+    "back_to_forgot_password": "Quay lại quên mật khẩu"
   }
 }

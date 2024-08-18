@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { Comment } from 'src/app/core/interfaces/comment';
 import { ActionEnum } from 'src/app/core/interfaces/notification';
-import { Post } from 'src/app/core/interfaces/post';
+import { Post, Visibility } from 'src/app/core/interfaces/post';
 import { CommentService } from 'src/app/core/services/comment.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { PostService } from 'src/app/core/services/post.service';
@@ -31,6 +31,7 @@ export class PostDetailComponent {
 
   currentUserId: string = ''; // The id of the current logged-in user
   isEmojiPickerVisible: boolean = false;
+  Visibility = Visibility;
   
   comment: Comment = {}; // Current comment to post
   subscriptionComments: Subscription = new Subscription(); // Subscription to the comments observable

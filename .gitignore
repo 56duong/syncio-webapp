@@ -13,7 +13,7 @@ backend/src/main/resources/static/syncio-bf6ca-firebase-adminsdk-68fpl-88eea603e
 backend/src/main/resources/static/syncio-bf6ca-firebase-adminsdk-68fpl-bf6eb06c71.json
 ca.pem
 
-android
+/frontend/android
 
 frontend/Syncio-win32-x64
 .DS_Store

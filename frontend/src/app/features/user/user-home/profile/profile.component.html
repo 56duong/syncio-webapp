@@ -276,14 +276,14 @@ styleClass="p-fluid">
   [(visible)]="qrCodeDialogVisible"
   [modal]="true"
   header="QR Code"
-  [style]="{ width: '50vw' }"
->
-  <img [src]="qrCodeUrl" alt="QR Code" style="width: 70%; height: auto" />
-  <p-button
+  (onHide)="qrCodeDialogVisible = false"
+  [style]="{ width: '40vw', minWidth: '320px' }">
+  <img [src]="qrCodeUrl" alt="QR Code" style="width: 80%; height: auto; display: block; margin: auto;" />
+  <!-- <p-button
     label="Close"
     icon="pi pi-times"
     (click)="qrCodeDialogVisible = false"
-  ></p-button>
+  ></p-button> -->
 </p-dialog>
 
 

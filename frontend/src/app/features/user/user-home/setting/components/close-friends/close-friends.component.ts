@@ -67,8 +67,15 @@ export class CloseFriendsComponent {
    * Toggle close friend.
    * @param targetId the user id to add/remove from close friends
    */
-  toggleCloseFriend(targetId: string | undefined) {
+  toggleCloseFriend(targetId: string | undefined, event: any) {
     if (!targetId) return;
+    // toggle the selected close friends when clicking on the div
+    if(!(event.target.className instanceof SVGAnimatedString) && event.target.className.includes('field-checkbox')) {
+      this.selectedCloseFriends = this.selectedCloseFriends.includes(targetId) 
+                                    ? this.selectedCloseFriends.filter(id => id !== targetId) 
+                                    : [...this.selectedCloseFriends, targetId];
+    }
+    
     this.userCloseFriendService.toggleCloseFriend(targetId).subscribe({
       next: (response) => {
         this.toastService.showSuccess(

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/api/v1/likes")
+@RequestMapping(value = "${api.prefix}/likes")
 public class LikeController {
 
     private final LikeService likeService;

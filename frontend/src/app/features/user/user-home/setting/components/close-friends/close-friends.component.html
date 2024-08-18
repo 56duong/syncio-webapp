@@ -16,10 +16,10 @@
 
   <!-- list -->
   <div *ngFor="let userFollowingCloseFriend of userFollowingCloseFriendsShow"
-    (click)="toggleCloseFriend(userFollowingCloseFriend.targetId)" 
+    (click)="toggleCloseFriend(userFollowingCloseFriend.targetId, $event)" 
     class="field-checkbox cursor-pointer">
     <!-- left -->
-    <label [for]="userFollowingCloseFriend.targetId" class="gap-2 flex align-items-center cursor-pointer">
+    <label (click)="$event.stopPropagation()" [for]="userFollowingCloseFriend.targetId" class="gap-2 flex align-items-center cursor-pointer">
       <app-avatar [userId]="userFollowingCloseFriend.targetId" [width]="48"></app-avatar>
       {{ userFollowingCloseFriend.targetUsername }}
     </label>
