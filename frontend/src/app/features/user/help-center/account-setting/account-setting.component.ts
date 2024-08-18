@@ -16,8 +16,16 @@ export class AccountSettingComponent {
     {
       label: 'Create an Syncio account',
       content: `
-        <p class="text-center">Note: you must be at least 13 years old to create an Instagram account.</p>
-       <p>There are two ways to create an Instagram account. You can create a new account from the Instagram app or Instagram.com. If you already have an existing Facebook or Instagram account, you can use your existing account to create a new Instagram account. Both accounts will be added to the same Accounts Centre and have access to connected experiences.</p>
+        <p>To register a new account:</p>
+    <ol style="list-style-type: decimal;">
+      <li class="mt-2">Visit the registration page from the homepage.</li>
+      <li class="mt-2">Enter your <strong>Email</strong> address in the provided field.</li>
+      <li class="mt-2">Choose a <strong>Username</strong> that will be unique to your account.</li>
+      <li class="mt-2">Set a <strong>Password</strong> and confirm it by typing it again.</li>
+      <li class="mt-2">Review all entered information for accuracy.</li>
+      <li class="mt-2">Click the <strong>Sign Up</strong> button to create your account.</li>
+      <li class="mt-2">Check your email for a confirmation link to activate your account.</li>
+    </ol>
       `,
       icon: 'pi pi-user-edit font-bold mx-2',
     },
@@ -51,18 +59,21 @@ export class AccountSettingComponent {
 
   loginPasswordItems: { label: string, content: string, icon: string }[] = [
     {
-      label: 'Change Password',
+      label: 'Forgot Password',
       content: `
-        <p>To change your password:</p>
+        <p>To reset your forgotten password:</p>
         <ol style="list-style-type: decimal;">
-          <li class="mt-2">Click on your profile picture in the top right corner.</li>
-          <li class="mt-2">Select <strong>Settings</strong> from the dropdown menu.</li>
-          <li class="mt-2">Click <i class="pi pi-lock mx-1" style="font-size: 1rem"></i> <strong>Change Password</strong>.</li>
-          <li class="mt-2">Enter your current password, followed by your new password.</li>
-          <li class="mt-2">Click <strong>Save</strong> to apply the changes.</li>
+          <li class="mt-2">Go to the <strong>Login</strong> page.</li>
+          <li class="mt-2">Click on the <strong>Forgot password?</strong> link below the password field.</li>
+          <li class="mt-2">Enter your registered <strong>Email</strong> address in the provided field.</li>
+          <li class="mt-2">Click the <strong>Submit</strong> button.</li>
+          <li class="mt-2">Check your email for a password reset link.</li>
+          <li class="mt-2">Follow the link and enter a new <strong>Password</strong>.</li>
+          <li class="mt-2">Confirm the new password and save your changes.</li>
+          <li class="mt-2">You can now log in with your new password.</li>
         </ol>
       `,
-      icon: 'pi pi-lock font-bold mx-2',
+      icon: 'pi pi-key font-bold mx-2',
     },
     {
       label: 'Two-Factor Authentication',
@@ -125,17 +136,19 @@ export class AccountSettingComponent {
       icon: 'pi pi-envelope font-bold mx-2',
     },
     {
-      label: 'Push Notifications ',
+      label: 'View Notifications',
       content: `
-        <p>To manage your push notifications:</p>
+        <p>To view your notifications:</p>
         <ol style="list-style-type: decimal;">
-          <li class="mt-2">Click on your profile picture in the top right corner.</li>
-          <li class="mt-2">Select <strong>Settings</strong> from the dropdown menu.</li>
-          <li class="mt-2">Click <i class="pi pi-bell mx-1" style="font-size: 1rem"></i> <strong>Push Notifications</strong>.</li>
-          <li class="mt-2">Toggle the switches to enable or disable specific push notifications.</li>
+          <li class="mt-2">Log in to your account.</li>
+          <li class="mt-2">On the left sidebar, click on the <strong>Notifications</strong> tab.</li>
+          <li class="mt-2">You will see a list of notifications related to your posts, comments, and likes.</li>
+          <li class="mt-2">Notifications are organized by date, showing the most recent activity first.</li>
+          <li class="mt-2">Click on any notification to view more details or to navigate to the related post.</li>
+          <li class="mt-2">You can also check the <strong>Suggested for you</strong> section for additional interactions.</li>
         </ol>
       `,
-      icon: 'pi pi-bell  font-bold mx-2',
+      icon: 'pi pi-bell font-bold mx-2',
     }
   ];
 
