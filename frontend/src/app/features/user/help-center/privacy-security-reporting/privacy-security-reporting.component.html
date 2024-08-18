@@ -32,4 +32,16 @@
       </li>
     </ul>
   </div>
+  <!-- New Community Guidelines section -->
+  <div *ngIf="selectedSubMenuItem === 'community-guidelines'">
+    <h5>Community Guidelines</h5>
+    <ul class="content-list">
+      <li *ngFor="let item of communityGuidelinesItems" [ngClass]="{'active': isContentVisible(item.label)}">
+        <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
+          <i [class]="item.icon"></i>{{item.label}}
+        </button>
+        <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
+      </li>
+    </ul>
+  </div>
 </div>
