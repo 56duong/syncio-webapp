@@ -33,8 +33,11 @@ export class LabelService {
         return this.http.get<Label[]>(this.apiURL);
     }
 
-    getLabelsWithPurchaseStatus(user_id: string): Observable<LabelResponse[]> {
-        const params = new HttpParams().set('user_id', user_id);
+    getLabelsWithPurchaseStatus(user_id: string | null): Observable<LabelResponse[]> {
+        let params = new HttpParams();
+        if(user_id) {
+            params = new HttpParams().set('user_id', user_id);
+        }
         return this.http.get<LabelResponse[]>(`${this.apiURL}/buy`, { params });
     }
 

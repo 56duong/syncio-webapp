@@ -70,13 +70,20 @@ public class LabelService {
         // lay ra tat ca cac label tu db
         List<Label> labels = labelRepository.findAll();
 
-        // lay thong tin cac label ma nguoi dung da mua
-        List<UserLabelInfo> userLabelInfos = userLabelInfoRepository.findByUserId(user_id);
+        Set<UUID> purcharsedLabelIds;
 
-        // chuyen danh sach UserLabelInfo sang danh sach ID Label ma nguoi dung da mua
-        Set<UUID> purcharsedLabelIds = userLabelInfos.stream()
-                .map(userLabelInfo -> userLabelInfo.getLabel().getId())
-                .collect(Collectors.toSet());
+        if(user_id != null) {
+            // lay thong tin cac label ma nguoi dung da mua
+            List<UserLabelInfo> userLabelInfos = userLabelInfoRepository.findByUserId(user_id);
+
+            // chuyen danh sach UserLabelInfo sang danh sach ID Label ma nguoi dung da mua
+            purcharsedLabelIds = userLabelInfos.stream()
+                    .map(userLabelInfo -> userLabelInfo.getLabel().getId())
+                    .collect(Collectors.toSet());
+        }
+        else {
+            purcharsedLabelIds = new HashSet<>();
+        }
 
         // dem so
         List<UserLabelInfo> listU = userLabelInfoRepository.findAll();
@@ -89,15 +96,6 @@ public class LabelService {
         for (UUID id : listID) {
             countMap.put(id, countMap.getOrDefault(id, 0) + 1);
         }
-
-        // TEST IN RA KQ
-        for (Map.Entry<UUID, Integer> entry : countMap.entrySet()) {
-            System.out.println("Số " + entry.getKey() + " xuất hiện " + entry.getValue() + " lần");
-        }
-
-        Set<UUID> a = listU.stream()
-                .map(b -> b.getLabel().getId())
-                .collect(Collectors.toSet());
 
         // tao danh sach DTO de tra ve, moi DTO chua thong tin label va trang thai mua
         return labels.stream().map(

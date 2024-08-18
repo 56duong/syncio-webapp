@@ -115,6 +115,13 @@ export class LabelsManagementComponent implements OnInit {
             return;
         }
 
+        // check price > 1000000000
+        if (this.label.price > 1000000000) {
+            this.toastService.showError('Error','Price must be less than or equal to 1.000.000.000');
+            return;
+        }
+
+
         const label: Label = {
             name: this.label.name,
             price: this.label.price,
