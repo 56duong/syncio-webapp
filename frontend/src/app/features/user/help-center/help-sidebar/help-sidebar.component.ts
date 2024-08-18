@@ -11,7 +11,7 @@ export class HelpSidebarComponent {
 
   items: MenuItem[] = [
     {
-      label: 'Instagram Features',
+      label: 'Syncio Features',
       icon: 'pi pi-fw pi-star',
       items: [
         {
@@ -19,7 +19,7 @@ export class HelpSidebarComponent {
           icon: 'pi pi-fw pi-user',
           items: [
             {
-              label: 'Photos and Videos You\'re Tagged In',
+              label: 'Photos and Audio your post',
               command: () => this.menuItemSelected.emit({menuItem: 'instagram-features', subMenuItem: 'your-profile', subSubMenuItem: 'photos-tagged'})
             },
             {
@@ -35,6 +35,16 @@ export class HelpSidebarComponent {
             {
               label: 'Search and Explore',
               command: () => this.menuItemSelected.emit({menuItem: 'instagram-features', subMenuItem: 'exploring-picture', subSubMenuItem: 'search-explore'})
+            }
+          ]
+        },
+        {
+          label: 'Buy super nice labels ',
+          icon: 'pi pi-fw pi-shop',
+          items: [
+            {
+              label: 'Buy super nice labels',
+              command: () => this.menuItemSelected.emit({menuItem: 'instagram-features', subMenuItem: 'buy-label', subSubMenuItem: 'buy-label'})
             }
           ]
         },
@@ -124,8 +134,14 @@ export class HelpSidebarComponent {
           label: 'Impersonation Accounts',
           icon: 'pi pi-fw pi-users',
           command: () => this.menuItemSelected.emit({menuItem: 'privacy-security-reporting', subMenuItem: 'impersonation-accounts'})
+        },
+        {
+          label: 'Community Guidelines',
+          icon: 'pi pi-fw pi-shield',
+          command: () => this.menuItemSelected.emit({menuItem: 'privacy-security-reporting', subMenuItem: 'community-guidelines'})
         }
       ]
     },
+    
   ];
 }

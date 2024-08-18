@@ -2,7 +2,7 @@
   <h2 class="text-xl">Syncio Features</h2>
   <div *ngIf="selectedSubMenuItem === 'your-profile'">
     <div *ngIf="selectedSubSubMenuItem === 'photos-tagged'">
-      <h5>Your-profile > Photos and Videos You're Tagged In</h5>
+      <h5>Your-profile > Photos and Videos your post</h5>
       <ul class="content-list">
         <li *ngFor="let item of taggedContentItems" [ngClass]="{'active': isContentVisible(item.label)}">
           <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
@@ -27,6 +27,19 @@
       <h5>Exploring Picture > Search and Explore</h5>
       <ul class="content-list">
         <li *ngFor="let item of exploringPictureItems" [ngClass]="{'active': isContentVisible(item.label)}">
+          <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
+            <i [class]="item.icon"></i>{{item.label}}</button>
+          <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div *ngIf="selectedSubMenuItem === 'buy-label'">
+    <h3>Label shopping</h3>
+    <div *ngIf="selectedSubSubMenuItem === 'buy-label'">
+      <h5>Label shopping > Your label</h5>
+      <ul class="content-list">
+        <li *ngFor="let item of buySuperLable" [ngClass]="{'active': isContentVisible(item.label)}">
           <button pButton class="p-button-light-gray" (click)="toggleContent(item.label)" [attr.data-toggle]="item.label">
             <i [class]="item.icon"></i>{{item.label}}</button>
           <div *ngIf="isContentVisible(item.label)" [innerHTML]="item.content" class="content"></div>
