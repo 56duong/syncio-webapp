@@ -29,7 +29,8 @@
     "done": "Done",
     "confirm": "Confirm",
     "submit": "Submit",
-    "save": "Save"
+    "save": "Save",
+    "something_went_wrong": "Something went wrong"
   },
   "register": {
     "sign_up": "Sign up",

@@ -113,9 +113,9 @@ export class MessageRoomDetailComponent {
   }
 
   selectMemberToEdit(member: MessageRoomMember) {
+    this.selectedMember = member;
     this.updateEditMemberDialogItems();
     this.isVisibleEditMember = true; 
-    this.selectedMember = member;
   }
 
   updateGroupName() {
@@ -141,7 +141,6 @@ export class MessageRoomDetailComponent {
 
     this.messageRoomMemberService.addMessageRoomMembers(this.messageRoom.id, userIds).subscribe({
       next: (messageRoomMembers) => {
-        console.log(messageRoomMembers);
         this.messageRoom.members = [...(this.messageRoom.members || []), ...messageRoomMembers];
         this.addPeopleEvent.emit(userIds.join(', '));
         this.isVisibleAddPeople = false;

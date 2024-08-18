@@ -169,8 +169,8 @@
                       <div class="mb-3">
                         <p>Rotate</p>
                         <p-slider 
-                          [ngModel]="selectedObject['style']['rotate'].replaceAll('deg', '')"
-                          (ngModelChange)="selectedObject['style']['rotate'] = $event+'deg'"  />
+                          [ngModel]="selectedObject['style']['transform'].replaceAll('rotate(', '').replaceAll('deg)', '')"
+                          (ngModelChange)="selectedObject['style']['transform'] = 'rotate('+$event+'deg)'" />
                       </div>
                       <!-- Border radius -->
                       <div class="flex align-items-center justify-content-between gap-1">

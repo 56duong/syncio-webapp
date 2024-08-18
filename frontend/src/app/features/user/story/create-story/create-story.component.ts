@@ -103,7 +103,7 @@ export class CreateStoryComponent {
       style: {
         'filter': 'none',
         'border-radius': '0px',
-        'rotate': '0deg',
+        'transform': 'rotate(0deg)',
       }
     }];
 
@@ -172,7 +172,7 @@ export class CreateStoryComponent {
             this.toastService.showSuccess('Success', 'Story created successfully');
             setTimeout(() => {
               this.redirectService.redirectAndReload('/');
-            }, 3000);
+            }, 2000);
           },
           error: (error) => {
             console.error(error);

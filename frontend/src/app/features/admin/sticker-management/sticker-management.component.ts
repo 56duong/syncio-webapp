@@ -192,11 +192,12 @@ export class StickerManagementComponent {
       // Create
       this.stickerService.createSticker(formData).subscribe({
         next: (data) => {
+          let date = new Date();
           // set sticker id, createdDate, createdBy, imageUrl
           this.selectedSticker = { 
             ...this.selectedSticker,
             id: data,
-            createdDate: new Date().toISOString(),
+            createdDate: new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString(),
             createdBy: this.currentUserId,
             imageUrl: "stickers/" + data + ".jpg"
           };

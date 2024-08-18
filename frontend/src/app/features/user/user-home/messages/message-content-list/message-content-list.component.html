@@ -80,8 +80,8 @@
         <div>
           <i (click)="op.toggle($event)" 
             class="fa-regular fa-note-sticky cursor-pointer text-xl"></i>
-          <p-overlayPanel #op>
-            <div class="flex flex-column gap-3 w-25rem" style="max-width: calc(100% - 1rem);">
+          <p-overlayPanel #op styleClass="max-w-screen">
+            <div class="flex flex-column gap-3 w-25rem" style="max-width: 100%;">
               <app-sticker (stickerClick)="sendSticker($event)"></app-sticker>
             </div>
           </p-overlayPanel>

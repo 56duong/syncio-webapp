@@ -29,7 +29,8 @@
     "done": "Xong",
     "confirm": "Xác nhận",
     "submit": "Gửi",
-    "save": "Lưu"
+    "save": "Lưu",
+    "something_went_wrong": "Có lỗi xảy ra"
   },
   "register": {
     "sign_up": "Đăng ký",
@@ -144,7 +145,7 @@
     "to": "Đến",
     "add": "Thêm",
     "remove_from_group": "Xóa khỏi nhóm",
-    "make_admin": "Chọn quản trị viên",
+    "make_admin": "Chọn làm quản trị viên",
     "remove_admin": "Xóa quyền quản trị viên",
     "notifications": "Thông báo",
     "this_month": "Tháng này"

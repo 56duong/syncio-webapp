@@ -104,10 +104,11 @@ export class CreatePostComponent {
       ({ modifiedText, taggedUserIds } = this.replaceMentionWithId(this.post.caption));
     }
 
+    let date = new Date();
     const formData = new FormData();
     const post: Post = {
       caption: modifiedText,
-      createdDate: new Date().toISOString(),
+      createdDate: new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString(),
       flag: true,
       visibility: this.selectedVisibility,
     };
@@ -167,7 +168,9 @@ export class CreatePostComponent {
       },
       error: (error) => {
         this.loadingService.hide();
-        this.toastService.showError(this.translateService.instant('common.error'), 'An error occurred while creating the post');
+        this.toastService.showError(
+          this.translateService.instant('common.error'), 
+          error.error.message || this.translateService.instant('common.something_went_wrong'));
         console.error(error);
       },
     });
