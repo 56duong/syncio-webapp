@@ -8,20 +8,21 @@ import { ToastService } from 'src/app/core/services/toast.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LangService } from 'src/app/core/services/lang.service';
 import { RedirectService } from 'src/app/core/services/redirect.service';
+import { PasswordValidationService } from 'src/app/core/services/password-validation.service';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
-
 export class RegisterComponent {
   constructor(
     private userService: UserService,
     private toastService: ToastService,
     private translateService: TranslateService,
     private langService: LangService,
-    private redirectService: RedirectService
+    private redirectService: RedirectService,
+    private passwordValidationService: PasswordValidationService
   ) {}
 
   isLoading: boolean = false;
@@ -50,29 +51,53 @@ export class RegisterComponent {
     //validate email
     if (!emailRegex.test(this.email)) {
       if (!this.email.includes('@')) {
-        this.toastService.showError(errorText, this.translateService.instant('register.email_should_contain_@'));
+        this.toastService.showError(
+          errorText,
+          this.translateService.instant('register.email_should_contain_@')
+        );
         return;
       }
       if (!this.email.includes('.')) {
-        this.toastService.showError(errorText, this.translateService.instant('register.email_should_contain_a_dot'));
+        this.toastService.showError(
+          errorText,
+          this.translateService.instant('register.email_should_contain_a_dot')
+        );
         return;
       }
-      this.toastService.showError(errorText, this.translateService.instant('register.email_invalid'));
+      this.toastService.showError(
+        errorText,
+        this.translateService.instant('register.email_invalid')
+      );
       return;
     }
 
     //validate username
     if (!usernameRegex.test(this.username)) {
       if (/[^a-zA-Z0-9]/.test(this.username)) {
-        this.toastService.showError(errorText, this.translateService.instant('register.username_only_contain'));
+        this.toastService.showError(
+          errorText,
+          this.translateService.instant('register.username_only_contain')
+        );
         return;
       }
       if (this.username.length < 3 || this.username.length > 50) {
-        this.toastService.showError(errorText, this.translateService.instant('register.username_should_be_at_least_3_characters_and_at_most_30_characters'));
+        this.toastService.showError(
+          errorText,
+          this.translateService.instant(
+            'register.username_should_be_at_least_3_characters_and_at_most_30_characters'
+          )
+        );
         return;
       }
     }
-    
+
+    const passwordValidationMessage =
+      this.passwordValidationService.validatePassword(this.password);
+    if (passwordValidationMessage) {
+      this.toastService.showError(errorText, passwordValidationMessage);
+      return;
+    }
+
     this.isLoading = true;
 
     const registerDTO: RegisterDTO = {
@@ -82,11 +107,11 @@ export class RegisterComponent {
       retype_password: this.retypePassword,
     };
 
-    if (this.password.length < 6 || this.password.length > 100) {
-      this.toastService.showError(errorText, this.translateService.instant('register.password_should_be_at_least_6_characters_and_at_most_100_characters'));
-      this.isLoading = false;
-      return;
-    }
+    // if (this.password.length < 6 || this.password.length > 100) {
+    //   this.toastService.showError(errorText, this.translateService.instant('register.password_should_be_at_least_6_characters_and_at_most_100_characters'));
+    //   this.isLoading = false;
+    //   return;
+    // }
 
     this.userService.register(registerDTO).subscribe({
       next: (response: any) => {
@@ -101,5 +126,33 @@ export class RegisterComponent {
         this.isLoading = false;
       },
     });
+  }
+
+  validatePassword(password: string): string | null {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const hasSpace = /\s/.test(password);
+    if (password.length < minLength) {
+      return `Password must be at least ${minLength} characters long.`;
+    }
+    if (!hasUpperCase) {
+      return 'Password must contain at least one uppercase letter.';
+    }
+    if (!hasLowerCase) {
+      return 'Password must contain at least one lowercase letter.';
+    }
+    if (!hasNumber) {
+      return 'Password must contain at least one number.';
+    }
+    if (!hasSpecialChar) {
+      return 'Password must contain at least one special character.';
+    }
+    if (hasSpace) {
+      return 'Password must not contain spaces.';
+    }
+    return null;
   }
 }

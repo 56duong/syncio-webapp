@@ -156,17 +156,27 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
                 // Get URL Label
                 Pair.of(String.format("%s/user-label-infos/labelURL", apiPrefix), "GET"),
-          
+
                 //swagger
-                Pair.of("/api-docs", "GET"),
-                Pair.of("/api-docs/**", "GET"),
-                Pair.of("/swagger-resources", "GET"),
-                Pair.of("/swagger-resources/**", "GET"),
-                Pair.of("/configuration/ui", "GET"),
-                Pair.of("/configuration/security", "GET"),
-                Pair.of("/swagger-ui/**", "GET"),
-                Pair.of("/swagger-ui.html", "GET"),
-                Pair.of("/swagger-ui/index.html", "GET")
+//                Pair.of("/api-docs", "GET"),
+//                Pair.of("/api-docs/**", "GET"),
+//                Pair.of("/swagger-resources", "GET"),
+//                Pair.of("/swagger-resources/**", "GET"),
+//                Pair.of("/configuration/ui", "GET"),
+//                Pair.of("/configuration/security", "GET"),
+//                Pair.of("/swagger-ui/**", "GET"),
+//                Pair.of("/swagger-ui.html", "GET"),
+//                Pair.of("/swagger-ui/index.html", "GET"),
+
+                Pair.of(String.format("%s/api-docs", apiPrefix), "GET"),
+                Pair.of(String.format("%s/api-docs/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/swagger-resources", apiPrefix), "GET"),
+                Pair.of(String.format("%s/swagger-resources/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/configuration/ui", apiPrefix), "GET"),
+                Pair.of(String.format("%s/configuration/security", apiPrefix), "GET"),
+                Pair.of(String.format("%s/swagger-ui/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/swagger-ui.html", apiPrefix), "GET"),
+                Pair.of(String.format("%s/swagger-ui/index.html", apiPrefix), "GET")
           
         );
 

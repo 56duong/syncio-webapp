@@ -4,6 +4,7 @@ import { UserService } from 'src/app/core/services/user.service';
 import { FogotPasswordDTO } from './changepassword.dto';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { PasswordValidationService } from 'src/app/core/services/password-validation.service';
 @Component({
   selector: 'app-change-password',
   templateUrl: './changepassword.component.html',
@@ -22,7 +23,8 @@ export class ChangePasswordComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private userService: UserService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private passwordValidationService: PasswordValidationService
   ) {}
 
   showSuccess(message: string) {
@@ -40,7 +42,8 @@ export class ChangePasswordComponent implements OnInit {
 
   changePassword() {
     if (this.password && this.retypePassword) {
-      const passwordValidationMessage = this.validatePassword(this.password);
+      const passwordValidationMessage =
+        this.passwordValidationService.validatePassword(this.password);
       if (passwordValidationMessage) {
         this.showError(passwordValidationMessage);
       } else if (this.password !== this.retypePassword) {
@@ -57,32 +60,5 @@ export class ChangePasswordComponent implements OnInit {
     } else {
       alert('Please fill out the form correctly');
     }
-  }
-  validatePassword(password: string): string | null {
-    const minLength = 8;
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    const hasSpace = /\s/.test(password);
-    if (password.length < minLength) {
-      return `Password must be at least ${minLength} characters long.`;
-    }
-    if (!hasUpperCase) {
-      return 'Password must contain at least one uppercase letter.';
-    }
-    if (!hasLowerCase) {
-      return 'Password must contain at least one lowercase letter.';
-    }
-    if (!hasNumber) {
-      return 'Password must contain at least one number.';
-    }
-    if (!hasSpecialChar) {
-      return 'Password must contain at least one special character.';
-    }
-    if (hasSpace) {
-      return 'Password must not contain spaces.';
-    }
-    return null;
   }
 }
