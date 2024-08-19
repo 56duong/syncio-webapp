@@ -42,10 +42,11 @@
     "email_should_contain_@": "Email should contain @",
     "email_should_contain_a_dot": "Email should contain a dot",
     "email_invalid": "Email invalid",
-    "username_only_contain": "Username only contain",
+    "username_only_contain": "Username only contain characters, numbers and underscore",
     "username_should_be_at_least_3_characters_and_at_most_30_characters": "Username should be at least 3 characters and at most 30 characters",
     "password_should_be_at_least_6_characters_and_at_most_100_characters": "Password should be at least 6 characters and at most 100 characters",
-    "passwords_do_not_match": "Passwords do not match"
+    "passwords_do_not_match": "Passwords do not match",
+    "password_must_contain_at_least_one_letter_and_one_number": "Password must contain at least one letter and one number"
   },
   "story_list": {
     "expand_stories": "Expand stories",

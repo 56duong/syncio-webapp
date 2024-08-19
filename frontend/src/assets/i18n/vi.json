@@ -45,7 +45,8 @@
     "username_only_contain": "Tên đăng nhập chỉ chứa chữ cái, số và dấu gạch dưới",
     "username_should_be_at_least_3_characters_and_at_most_30_characters": "Tên đăng nhập cần ít nhất 3 ký tự và nhiều nhất 30 ký tự",
     "password_should_be_at_least_6_characters_and_at_most_100_characters": "Mật khẩu cần ít nhất 6 ký tự và nhiều nhất 100 ký tự",
-    "passwords_do_not_match": "Mật khẩu không khớp"
+    "passwords_do_not_match": "Mật khẩu không khớp",
+    "password_must_contain_at_least_one_letter_and_one_number": "Mật khẩu cần chứa ít nhất một chữ cái và một số"
   },
   "story_list": {
     "expand_stories": "Mở rộng tin",

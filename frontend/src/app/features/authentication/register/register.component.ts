@@ -45,7 +45,7 @@ export class RegisterComponent {
     let errorText = this.translateService.instant('common.error');
     let successText = this.translateService.instant('common.success');
 
-    const usernameRegex = /^[a-zA-Z0-9]{3,30}$/;
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     //validate email
@@ -73,28 +73,37 @@ export class RegisterComponent {
 
     //validate username
     if (!usernameRegex.test(this.username)) {
-      if (/[^a-zA-Z0-9]/.test(this.username)) {
-        this.toastService.showError(
-          errorText,
-          this.translateService.instant('register.username_only_contain')
-        );
-        return;
-      }
-      if (this.username.length < 3 || this.username.length > 50) {
-        this.toastService.showError(
-          errorText,
-          this.translateService.instant(
-            'register.username_should_be_at_least_3_characters_and_at_most_30_characters'
-          )
-        );
-        return;
-      }
+      this.toastService.showError(
+        errorText,
+        this.translateService.instant('register.username_only_contain')
+      );
+      return;
     }
 
-    const passwordValidationMessage =
-      this.passwordValidationService.validatePassword(this.password);
-    if (passwordValidationMessage) {
-      this.toastService.showError(errorText, passwordValidationMessage);
+    if (this.username.length < 3 || this.username.length > 30) {
+      this.toastService.showError(
+        errorText,
+        this.translateService.instant(
+          'register.username_should_be_at_least_3_characters_and_at_most_30_characters'
+        )
+      );
+      return;
+    }
+
+    // Password validation
+    if (this.password.length < 6 || this.password.length > 100) {
+      this.toastService.showError(errorText, this.translateService.instant('register.password_should_be_at_least_6_characters_and_at_most_100_characters'));
+      return;
+    }
+
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/;
+    if (!passwordRegex.test(this.password)) {
+      this.toastService.showError(errorText, this.translateService.instant('register.password_must_contain_at_least_one_letter_and_one_number'));
+      return;
+    }
+
+    if (this.password !== this.retypePassword) {
+      this.toastService.showError(errorText, this.translateService.instant('register.passwords_do_not_match'));
       return;
     }
 
@@ -106,18 +115,6 @@ export class RegisterComponent {
       password: this.password,
       retype_password: this.retypePassword,
     };
-
-    // if (this.password.length < 6 || this.password.length > 100) {
-    //   this.toastService.showError(errorText, this.translateService.instant('register.password_should_be_at_least_6_characters_and_at_most_100_characters'));
-    //   this.isLoading = false;
-    //   return;
-    // }
-
-    if (this.password !== this.retypePassword) {
-      this.toastService.showError(errorText, this.translateService.instant('register.passwords_do_not_match'));
-      this.isLoading = false;
-      return;
-    }
 
     this.userService.register(registerDTO).subscribe({
       next: (response: any) => {
@@ -134,31 +131,4 @@ export class RegisterComponent {
     });
   }
 
-  validatePassword(password: string): string | null {
-    const minLength = 8;
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    const hasSpace = /\s/.test(password);
-    if (password.length < minLength) {
-      return `Password must be at least ${minLength} characters long.`;
-    }
-    if (!hasUpperCase) {
-      return 'Password must contain at least one uppercase letter.';
-    }
-    if (!hasLowerCase) {
-      return 'Password must contain at least one lowercase letter.';
-    }
-    if (!hasNumber) {
-      return 'Password must contain at least one number.';
-    }
-    if (!hasSpecialChar) {
-      return 'Password must contain at least one special character.';
-    }
-    if (hasSpace) {
-      return 'Password must not contain spaces.';
-    }
-    return null;
-  }
 }
