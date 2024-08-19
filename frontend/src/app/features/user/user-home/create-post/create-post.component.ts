@@ -20,11 +20,13 @@ import { UserService } from 'src/app/core/services/user.service';
 export class CreatePostComponent {
   @Input() isMobile: boolean = false; // Flag to indicate if the device is mobile
 
-  @ViewChild('fileUploader') fileUploader: any; // photo upload
   isVisible!: boolean; // Used to show/hide the create post dialog
   post: Post = {}; // The post object to be created
-  selectedPhotos: string[] = []; // The selected photos to be displayed
-  selectedPhotoFile: File[] = []; // The selected photos file to be uploaded
+
+  @ViewChild('fileUploader') fileUploader!: ElementRef<HTMLInputElement>; // photo upload
+  selectedFilesDisplay: string[] = []; // The selected photos to be displayed
+  selectedFiles: File[] = []; // The selected photos file to be uploaded
+
   isEmojiPickerVisible: boolean = false; // Used to show/hide the emoji picker
 
   currentUsername: any;
@@ -88,8 +90,8 @@ export class CreatePostComponent {
    */
   onCancel() {
     this.post = {}; // Reset the post object
-    this.selectedPhotos = []; // Clear selected photos display
-    this.selectedPhotoFile = [];
+    this.selectedFilesDisplay = []; // Clear selected photos display
+    this.selectedFiles = [];
     this.selectedAudioFile = null;
     this.isVisible = false;
   }
@@ -108,13 +110,12 @@ export class CreatePostComponent {
     const formData = new FormData();
     const post: Post = {
       caption: modifiedText,
-      createdDate: new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString(),
       flag: true,
       visibility: this.selectedVisibility,
     };
 
     //validate
-    if (!post.caption && this.selectedPhotoFile.length === 0 && !this.selectedAudioFile) {
+    if (!post.caption && this.selectedFiles.length === 0 && !this.selectedAudioFile) {
       this.toastService.showError(this.translateService.instant('common.error'), this.translateService.instant('create_post.a_post_must_have_at_least_one_image_or_one_audio_or_caption'));
       return; // Stop execution if validation fails
     }
@@ -130,7 +131,7 @@ export class CreatePostComponent {
     );
 
     // add photos to form data
-    this.selectedPhotoFile.forEach((photo: File, index) => {
+    this.selectedFiles.forEach((photo: File, index) => {
       formData.append(`images`, photo);
     });
 
@@ -160,11 +161,12 @@ export class CreatePostComponent {
         }
         
         this.post = {}; // Reset the post object
-        this.selectedPhotos = []; // Clear selected photos display
-        this.selectedPhotoFile = [];
+        this.selectedFilesDisplay = []; // Clear selected photos display
+        this.selectedFiles = [];
         this.selectedAudioFile = null;
         this.audioInput.nativeElement.value = ''; // Clear the audio input
         this.isVisible = false;
+        this.selectedVisibility = Visibility.PUBLIC; // Reset the visibility
       },
       error: (error) => {
         this.loadingService.hide();
@@ -177,20 +179,83 @@ export class CreatePostComponent {
 
   }
 
-  onPhotoSelected(event: any) {
-    this.selectedPhotoFile = Array.from(event.files);
-    this.selectedPhotos = [];
 
-    for (let file of this.selectedPhotoFile) {
+  /**
+   * Handle the file selected event.
+   * For photos, only allow up to 6 photos.
+   * For videos, only allow 1 video.
+   * @param event 
+   * @returns 
+   */
+  onFileSelected(event: any) {
+    let files: File[] = Array.from(event.target.files); // Handle both cases
+    let videos = files.filter((file: any) => file.type.startsWith('video'));
+
+    // check length videos case
+    // if contains video, only allow 1 video
+    if(videos.length > 0) {
+      // check length
+      if(files.length > 1) {
+        this.toastService.showError(
+          this.translateService.instant('common.error'), 
+          this.translateService.instant('create_post.only_one_video_per_post'));
+        this.fileUploader.nativeElement.value = ''; // Clear the file input
+        return;
+      }
+      // check size
+      if(files[0].size > 100 * 1024 * 1024) { // 100MB size limit
+        this.toastService.showError(
+          this.translateService.instant('common.error'), 
+          this.translateService.instant('create_post.maximum_100MB_video')
+        );
+        this.fileUploader.nativeElement.value = ''; // Clear the file input
+        return;
+      }
+      // check format
+      const videoExtensions = ['mp4', 'webm', 'ogg', 'mov'];
+      const extension = files[0].name.split('.').pop();
+      if (extension && !videoExtensions.includes(extension)) {
+        this.toastService.showError(
+          this.translateService.instant('common.error'), 
+          this.translateService.instant('create_post.video_format_not_supported_only_allow_mp4_webm_ogg_mov')
+        );
+        this.fileUploader.nativeElement.value = ''; // Clear the file input
+        return;
+      }
+    }
+
+    // check length photos case
+    if (files.length > 6) {
+      this.toastService.showError(
+        this.translateService.instant('common.error'), 
+        this.translateService.instant('create_post.maximum_6_images')
+      );
+      this.fileUploader.nativeElement.value = ''; // Clear the file input
+      return;
+    }
+
+    this.selectedFiles = Array.from(event.target.files);
+    this.selectedFilesDisplay = [];
+
+    for (let file of this.selectedFiles) {
+      // check if the file is an image
+      if (!file.type.startsWith('image') && !file.type.startsWith('video')) {
+        this.toastService.showError(
+          this.translateService.instant('common.error'), 
+          this.translateService.instant('create_post.file_must_be_image')
+        );
+        break;
+      }
+
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.selectedPhotos = [...this.selectedPhotos, e.target.result];
+        this.selectedFilesDisplay = [...this.selectedFilesDisplay, e.target.result];
 
         this.cdr.detectChanges();
       };
       reader.readAsDataURL(file);
     }
-    this.fileUploader.clear();
+    this.fileUploader.nativeElement.value = ''; // Clear the file input
   }
 
   // show the emoji picker (icon)

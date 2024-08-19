@@ -239,4 +239,17 @@ export class PostDetailComponent {
     this.dialogVisible = false;
   }
 
+
+  /**
+   * Check if the URL is a video by the extension ('mp4', 'webm', 'ogg').
+   * @param url 
+   * @returns true if the URL is a video, false otherwise.
+   */
+  isVideo(url: string | undefined): boolean {
+    if (!url) return false;
+    const videoExtensions = ['mp4', 'webm', 'ogg', 'mov'];
+    const extension = url.split('.').pop();
+    return extension ? videoExtensions.includes(extension) : false;
+  }
+
 }

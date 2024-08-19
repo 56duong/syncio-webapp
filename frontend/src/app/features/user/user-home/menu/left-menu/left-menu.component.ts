@@ -17,11 +17,10 @@ import { ThemeService } from 'src/app/core/services/theme.service';
 export class LeftMenuComponent {
   @ViewChild(CreatePostComponent) createPostComponent: any;
 
-  @Output() actionToggle = new EventEmitter<string>();
+  @Output() actionToggle = new EventEmitter<any>();
 
   toggleSearch(): void {
-    if(!this.currentUserId) this.redirectService.needLogin();
-    else this.actionToggle.emit('search');
+    this.actionToggle.emit({ type: 'search', state: 'open' });
   }
 
   visible: boolean = false;
@@ -217,7 +216,7 @@ export class LeftMenuComponent {
 
   toggleNotifications(): void {
     if(!this.currentUserId) this.redirectService.needLogin();
-    else this.actionToggle.emit('notifications');
+    else this.actionToggle.emit({ type: 'notifications', state: 'open' });
   }
 
   logout(): void {
@@ -231,6 +230,12 @@ export class LeftMenuComponent {
         console.error(error);
       },
     });
+  }
+
+
+  closeSearchAndNotifications(): void {
+    this.actionToggle.emit({ type: 'search', state: 'close' });
+    this.actionToggle.emit({ type: 'notifications', state: 'close' });
   }
   
 }

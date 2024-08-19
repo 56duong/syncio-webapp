@@ -97,7 +97,7 @@ public class PostController {
                                         @RequestPart(name = "audio", required = false) MultipartFile audio) throws IOException {
 
         if (images != null && !images.isEmpty()) {
-            createPostDTO.setPhotos(images);
+            createPostDTO.setFiles(images);
         }
         if (audio != null) {
             createPostDTO.setAudio(audio);

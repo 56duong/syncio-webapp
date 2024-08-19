@@ -18,7 +18,7 @@
           style="display: none"
           accept="image/*"
           (change)="onFileSelected($event)" />
-          <p-button (click)="fileInput.click()" [label]="'search.by_image' | translate" icon="pi pi-upload" severity="primary"></p-button>
+          <p-button *ngIf="currentUserId" (click)="fileInput.click()" [label]="'search.by_image' | translate" icon="pi pi-upload" severity="primary"></p-button>
       </div>
     </div>
 
@@ -41,8 +41,8 @@
     <div class="find primary-scrollbar overflow-y-scroll">
       <!-- recent and clear all -->
       <div class="desc px-3">
-        <h4 class="font-semibold mb-0">{{ 'search.recent' | translate }}</h4>
-        <p class="cursor-pointer"><a (click)="clickClearInput()">{{ 'search.clear_all' | translate }}</a></p>
+        <h4 class="font-semibold mb-0">{{ 'search.result' | translate }}</h4>
+        <!-- <p class="cursor-pointer"><a (click)="clickClearInput()">{{ 'search.clear_all' | translate }}</a></p> -->
       </div>
       <!-- list of recent search -->
       <div class="account">
@@ -53,6 +53,10 @@
               [suggestion]="suggestion"
             ></app-search-suggestion>
           </div>
+        </div>
+        <div *ngIf="suggestions.length === 0 && searchInput.value.length > 0 && !isLoading"
+          class="px-3">
+          <p class="text-gray-500">{{ 'search.no_result_found' | translate }}</p>
         </div>
       </div>
     </div>

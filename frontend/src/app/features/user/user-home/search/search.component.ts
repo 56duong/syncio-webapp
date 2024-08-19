@@ -12,6 +12,7 @@ import { Search } from 'src/app/core/interfaces/search';
 import { UserSettingService } from 'src/app/core/services/user-setting.service';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
 import { ToastService } from 'src/app/core/services/toast.service';
+import { TokenService } from 'src/app/core/services/token.service';
 
 @Component({
   selector: 'app-search',
@@ -31,30 +32,34 @@ export class SearchComponent implements OnInit {
   isLoading: boolean = false; // Flag to indicate if the data is being fetched
   @ViewChild('searchInput') searchInput: any;
 
+  currentUserId: string = '';
+
   constructor(
     private userService: UserService,
     private userSettingService: UserSettingService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private tokenService: TokenService,
   ) {}
 
 
   ngOnInit(): void {
+    this.currentUserId = this.tokenService.extractUserIdFromToken();
+
     this.getRecommendations(this.userResponse?.username);
     // add debounce time to search input
     this.searchSubscription = this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((term: string) => {
-        this.isLoading = true;
         return this.userService.searchUsers(term, term);
       }),
     ).subscribe(suggestions => {
-      this.isLoading = false
       this.suggestions = suggestions.map(suggestion => ({
         id: suggestion.id,
         username: suggestion.username,
         followerCount: suggestion.followerCount,
       }));
+      this.isLoading = false;
     });
   }
 
@@ -95,6 +100,11 @@ export class SearchComponent implements OnInit {
 
   /** When type in the search input */
   public handleKeyup(event: any) {
+    if(!event.target.value) {
+      this.suggestions = [];
+      return;
+    }
+    this.isLoading = true;
     this.searchTerms.next(event.target.value);
   }
 

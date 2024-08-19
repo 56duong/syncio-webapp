@@ -23,8 +23,6 @@ export class HelpCenterComponent implements OnInit {
     this.selectedMenuItem = event.menuItem;
     this.selectedSubMenuItem = event.subMenuItem || '';
     this.selectedSubSubMenuItem = event.subSubMenuItem || '';
-
-    console.log('Selected sub sub menu item:', this.selectedSubSubMenuItem);
     
   }
 }

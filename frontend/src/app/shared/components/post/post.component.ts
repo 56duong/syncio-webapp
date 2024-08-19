@@ -100,7 +100,6 @@ export class PostComponent {
 
   getReports(): void {
     if (this.post.id) {
-      console.log('Post ID:', this.post.id);
       this.reportService.getReportsByPostId(this.post.id).pipe(
         tap(reports => this.reports = reports),
         tap(reports => this.countReasons(reports))
@@ -203,6 +202,19 @@ export class PostComponent {
   
     // Toggle isViewMore if not clicked on a .profile-link
     this.isViewMore = !this.isViewMore;
+  }
+
+
+  /**
+   * Check if the URL is a video by the extension ('mp4', 'webm', 'ogg').
+   * @param url 
+   * @returns true if the URL is a video, false otherwise.
+   */
+  isVideo(url: string | undefined): boolean {
+    if (!url) return false;
+    const videoExtensions = ['mp4', 'webm', 'ogg', 'mov'];
+    const extension = url.split('.').pop();
+    return extension ? videoExtensions.includes(extension) : false;
   }
 
 }

@@ -64,7 +64,12 @@
     "a_post_must_have_at_least_one_image_or_one_audio_or_caption": "Một bài viết cần ít nhất một hình ảnh hoặc một âm thanh hoặc chú thích",
     "public": "Công khai",
     "private": "Riêng tư",
-    "close_friends": "Bạn thân"
+    "close_friends": "Bạn thân",
+    "only_one_video_per_post": "Chỉ một video cho mỗi bài viết",
+    "maximum_100MB_video": "Tối đa 100MB cho video",
+    "video_format_not_supported_only_allow_mp4_webm_ogg_mov": "Định dạng video không được hỗ trợ, chỉ cho phép mp4, webm, ogg, mov",
+    "maximum_6_images": "Tối đa 6 hình ảnh",
+    "file_must_be_image": "Tệp phải là hình ảnh"
   },
   "feed": {
     "suggested_for_you": "Đề xuất cho bạn",
@@ -222,8 +227,9 @@
     "search": "Tìm kiếm",
     "by_image": "Bằng hình ảnh",
     "search_by_username_or_email": "Tìm kiếm theo tên đăng nhập hoặc email",
-    "recent": "Gần đây",
-    "clear_all": "Xóa tất cả"
+    "clear_all": "Xóa tất cả",
+    "no_result_found": "Không tìm thấy kết quả",
+    "result": "Kết quả"
   },
   "image_search": {
     "image_search": "Tìm kiếm bằng hình ảnh",

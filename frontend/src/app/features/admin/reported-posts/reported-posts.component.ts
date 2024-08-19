@@ -31,7 +31,6 @@ export class ReportedPostsComponent {
     this.router.events.subscribe((val: any) => {
       if(val instanceof NavigationEnd) {
         let url = val.url;
-        console.log('URL:', url);
         this.isReportedPostsPage = url.includes('reported-posts');
         
       }

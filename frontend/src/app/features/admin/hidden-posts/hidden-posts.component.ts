@@ -29,7 +29,6 @@ export class HiddenPostsComponent {
     this.router.events.subscribe((val) => {
       if(val instanceof NavigationEnd) {
         let url = val.url;
-        console.log('URL:', url);
         this.isHiddenPostsPage = url.includes('hidden-posts');
         
       }

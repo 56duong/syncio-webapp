@@ -46,28 +46,40 @@
     <div class="col-7 p-0">
       <div class="p-fluid">
         <div class="flex justify-content-center align-items-center" style="height: 500px">
-          <p-fileUpload *ngIf="selectedPhotos.length === 0"
+          <input *ngIf="selectedFiles.length === 0" 
             #fileUploader
+            type="file"
+            style="display: none"
             name="photo[]"
-            mode="basic"
-            [chooseLabel]="'create_post.select_from_computer' | translate"
-            chooseIcon="pi pi-upload"
-            (onSelect)="onPhotoSelected($event)"
-            [multiple]="true"
-            accept="image/*">
-          </p-fileUpload>
-          <p-carousel *ngIf="selectedPhotos.length > 0"
-            [value]="selectedPhotos"
+            multiple
+            (change)="onFileSelected($event)"
+            accept="image/*, video/*" >
+          <p-button *ngIf="selectedFiles.length === 0"
+            [label]="'create_post.select_from_computer' | translate"
+            icon="pi pi-upload"
+            (click)="fileUploader.nativeElement.click()">
+          </p-button>
+
+          <!-- images preview -->
+          <p-carousel *ngIf="selectedFilesDisplay.length > 0 && !selectedFiles[0].type.startsWith('video')"
+            [value]="selectedFilesDisplay"
             [numVisible]="1"
             [numScroll]="1"
             [circular]="false"
-            [ngClass]="selectedPhotos.length == 1 ? 'hide-slide-control' : ''">
+            [ngClass]="selectedFilesDisplay.length == 1 ? 'hide-slide-control' : ''">
             <ng-template let-photo pTemplate="item">
-              <img src="{{ photo }}"
+              <img [src]="photo"
                 class="w-full h-full"
                 style="object-fit: cover" />
             </ng-template>
           </p-carousel>
+
+          <!-- video preview -->
+          <video *ngIf="selectedFiles[0] && selectedFiles[0].type.startsWith('video')"
+            [src]="selectedFilesDisplay[0]" controls muted 
+            class="w-full h-full"
+            style="object-fit: cover">
+          </video>
         </div>
       </div>
     </div>

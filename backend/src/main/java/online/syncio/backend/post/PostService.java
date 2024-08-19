@@ -73,16 +73,34 @@ public class PostService {
     }
 
 
+    /**
+     * Create a new post.
+     * If the post contains a video, only 1 video is allowed.
+     * If the post contains images, maximum 6 images are allowed. It will generate alt text for the images.
+     * If the caption is not null, it will extract keywords from the caption and set them for the post.
+     * @param createPostDTO
+     * @return
+     * @throws IOException
+     */
     @Transactional
     public PostDTO create (final CreatePostDTO createPostDTO) throws IOException {
         Post post = new Post();
+        boolean containsVideo;
 
         //Upload image
-        List<MultipartFile> files = createPostDTO.getPhotos();
+        List<MultipartFile> files = createPostDTO.getFiles();
         List<String> filenames = new ArrayList<>();
 
+        // check if createPostDTO.getFiles() contain video
+        containsVideo = createPostDTO.getFiles().stream().anyMatch(file ->
+                file.getContentType() != null && file.getContentType().startsWith("video/")
+        );
+
         if (files != null && !files.isEmpty()) {
-            if (files.size() > 6) {
+            if (containsVideo && files.size() > 1) {
+                throw new AppException(HttpStatus.PAYLOAD_TOO_LARGE, "Only 1 video allowed", null);
+            }
+            else if (files.size() > 6) {
                 throw new AppException(HttpStatus.PAYLOAD_TOO_LARGE, "Maximum 6 images allowed", null);
             }
 
@@ -90,7 +108,7 @@ public class PostService {
                 if (file.getSize() == 0) {
                     continue;
                 }
-                String filename = processImage(file);
+                String filename = containsVideo ? processVideo(file) : processImage(file);
                 filenames.add(filename);
             }
         }
@@ -108,7 +126,7 @@ public class PostService {
                     photo.setUrl(filename);
                     photo.setPost(post);
 
-                    if(hfInference != null) {
+                    if(!containsVideo && hfInference != null) {
                         // Generate alt text for the image
                         String altTexts = null;
                         try {
@@ -173,6 +191,24 @@ public class PostService {
             throw new AppException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "File must be an image", null);
         }
         return fileUtils.storeFile(image, "posts", false);
+    }
+
+
+    /**
+     * Validate and store the video file.
+     * Throws an AppException if the file is too large(>100MB) or not an video file.
+     * @param video
+     * @return video file name. Example: 1234-5678-90ab-cdef.mp4
+     * @throws IOException
+     */
+    private String processVideo(MultipartFile video) throws IOException {
+        if (video.getSize() > 100 * 1024 * 1024) {
+            throw new AppException(HttpStatus.PAYLOAD_TOO_LARGE, "File size is too large", null);
+        }
+        if (video.getContentType() == null || !video.getContentType().startsWith("video/")) {
+            throw new AppException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "File must be an image", null);
+        }
+        return fileUtils.storeFile(video, "posts", false);
     }
 
 

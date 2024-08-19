@@ -36,7 +36,7 @@
             routerLinkActive="menu-active"
             [routerLink]="menu.routerLink"
             [routerLinkActiveOptions]="{ exact: true }"
-            (click)="menu.id === 'SearchButton' ? toggleSearch() : menu.id === 'NotificationsButton' ? toggleNotifications() : null"
+            (click)="menu.id === 'SearchButton' ? toggleSearch() : menu.id === 'NotificationsButton' ? toggleNotifications() : closeSearchAndNotifications()"
             [label]="menu.label"
             [icon]="menu.icon"
             [text]="true"
@@ -44,7 +44,7 @@
           />
         </li>
         <!-- Create -->
-        <li class="p-fluid w-full">
+        <li class="p-fluid w-full" (click)="closeSearchAndNotifications()">
           <p-tieredMenu [model]="createSubmenuItems"
             styleClass="w-full border-none shadow-none">
             <ng-template pTemplate="item" let-item let-hasSubmenu="hasSubmenu">
@@ -84,7 +84,7 @@
           </p-tieredMenu>
         </li>
         <!-- Profile -->
-        <li class="p-fluid w-full">
+        <li class="p-fluid w-full" (click)="closeSearchAndNotifications()">
           <!-- Not logged in -->
           <p-button *ngIf="!currentUserId" 
             [id]="'ProfileButton'" class="text-left" styleClass="shadow-none" [text]="true" [plain]="true"
@@ -102,10 +102,9 @@
             </p-button>
           </div>
         </li>
-
       </div>
       <!-- Setting -->
-      <div class="setting p-fluid w-full sm:mt-auto mt-0 mobile-hidden">
+      <div class="setting p-fluid w-full sm:mt-auto mt-0 mobile-hidden" (click)="closeSearchAndNotifications()">
         <p-tieredMenu [model]="settingSubmenuItems"
             styleClass="w-full border-none shadow-none">
             <ng-template pTemplate="item" let-item let-hasSubmenu="hasSubmenu">

@@ -64,7 +64,12 @@
     "a_post_must_have_at_least_one_image_or_one_audio_or_caption": "A post must have at least one image or one audio or caption",
     "public": "Public",
     "private": "Private",
-    "close_friends": "Close friends"
+    "close_friends": "Close friends",
+    "only_one_video_per_post": "Only one video per post",
+    "maximum_100MB_video": "Maximum 100MB video",
+    "video_format_not_supported_only_allow_mp4_webm_ogg_mov": "Video format not supported, only allow mp4, webm, ogg, mov",
+    "maximum_6_images": "Maximum 6 images",
+    "file_must_be_image": "File must be image"
   },
   "feed": {
     "suggested_for_you": "Suggested for you",
@@ -222,8 +227,9 @@
     "search": "Search",
     "by_image": "By image",
     "search_by_username_or_email": "Search by username or email",
-    "recent": "Recent",
-    "clear_all": "Clear all"
+    "clear_all": "Clear all",
+    "no_result_found": "No result found",
+    "result": "Result"
   },
   "image_search": {
     "image_search": "Image search",

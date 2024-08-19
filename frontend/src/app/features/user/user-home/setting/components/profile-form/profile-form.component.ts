@@ -37,7 +37,6 @@ export class ProfileFormComponent {
       ),
       bio: new FormControl(`${this.userResponse?.bio || ''}`),
     });
-    console.log('this.userResponse', this.userResponse);
   }
 
   updateProfile(): void {

@@ -193,7 +193,7 @@ public class UserSettingService {
 
         // Check if the user setting exists
         final Optional<UserSetting> userSetting = userSettingRepository.findByUserId(id);
-        if (!userSetting.isPresent()) {
+        if (userSetting.isEmpty()) {
             throw new AppException(HttpStatus.BAD_REQUEST, "User setting not found", null);
         }
 
@@ -231,7 +231,10 @@ public class UserSettingService {
                 .map(userSetting -> {
                     Map<String, String> map = new HashMap<>();
                     map.put("id", userSetting.getUser().getId().toString());
-                    map.put("url", userSetting.getImageUrl(storageType).replaceAll("localhost", "host.docker.internal"));
+                    final String imageUrl = userSetting.getImageUrl(storageType);
+                    if(imageUrl != null) {
+                        map.put("url", imageUrl);
+                    }
                     return map;
                 })
                 .collect(Collectors.toList());

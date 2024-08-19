@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.beans.Visibility;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -16,7 +15,7 @@ public class CreatePostDTO {
 
     private String caption;
 
-    private List<MultipartFile> photos;
+    private List<MultipartFile> files;
 
     private MultipartFile audio;
 

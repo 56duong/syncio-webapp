@@ -53,6 +53,9 @@ public class FileUtils {
 
     /**
      * Will store the file to the local storage or firebase storage based on the storage type.
+     * If file is image, the file will be stored with the 'jpg' extension. Example: '1234-5678-90ab-cdef.jpg'
+     * If file is audio, the file will be stored with the 'wav' extension. Example: '1234-5678-90ab-cdef.wav'
+     * If file is video, the file will be stored with the current file extension.
      * @param file
      * @param folderName Folder name where the file will be stored. Example: stickers
      * @param isKeepCurrentName If true, the file will be stored with the current file name. If false, the file will be stored with a new file name. Maybe used for cases where the file name also is the id.
@@ -81,13 +84,8 @@ public class FileUtils {
             return firebaseStorageService.uploadFileKeepCurrentName(file, folderName);
         }
         else {
-            boolean isImage = Objects.requireNonNull(file.getContentType()).startsWith("image");
-            boolean isAudio = file.getContentType().startsWith("audio");
-            return firebaseStorageService.uploadFile(file, folderName, isImage
-                                                                            ? FILE_IMAGE_EXTENSION
-                                                                            : isAudio
-                                                                                ? FILE_AUDIO_EXTENSION
-                                                                                : null);
+            String fileExtension = determineFileExtension(file);
+            return firebaseStorageService.uploadFile(file, folderName, fileExtension);
         }
     }
 
@@ -97,16 +95,14 @@ public class FileUtils {
         boolean isImage = file.getContentType().startsWith("image");
 
         String newFileName = file.getOriginalFilename();
-        if (isImage) {
+        if (isImage && !isKeepCurrentName) {
             // generate new file name with default extension
-            if (!isKeepCurrentName) {
-                newFileName = UUID.randomUUID() + "." + FILE_IMAGE_EXTENSION;
-            }
+            newFileName = UUID.randomUUID() + "." + FILE_IMAGE_EXTENSION;
         }
         else {
+            String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
             if (!isKeepCurrentName) {
                 // if file is not image, get the file extension and generate new file name with the extension
-                String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
                 newFileName = UUID.randomUUID() + "." + fileExtension;
             }
         }
@@ -134,6 +130,29 @@ public class FileUtils {
         else {
             Path path = Paths.get(UPLOADS_FOLDER, fileName);
             return Files.deleteIfExists(path);
+        }
+    }
+
+
+    public String getFileExtension(String fileName) {
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
+
+
+    private String determineFileExtension(MultipartFile file) {
+        boolean isImage = Objects.requireNonNull(file.getContentType()).startsWith("image");
+        boolean isAudio = file.getContentType().startsWith("audio");
+        boolean isVideo = file.getContentType().startsWith("video");
+        String fileExtension = getFileExtension(file.getOriginalFilename());
+
+        if (isImage) {
+            return FILE_IMAGE_EXTENSION;
+        } else if (isAudio) {
+            return FILE_AUDIO_EXTENSION;
+        } else if (isVideo) {
+            return fileExtension;
+        } else {
+            return null;
         }
     }
 

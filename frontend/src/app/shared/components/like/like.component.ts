@@ -51,7 +51,6 @@ export class LikeComponent {
     //not logged in
     if(!this.userResponse?.id) this.redirectService.needLogin();
 
-    console.log('likePost');
     this.likeService.toggleLikes(this.postId, this.userResponse?.id).subscribe({
       next: () => {
         this.isLiked = !this.isLiked;

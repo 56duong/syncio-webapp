@@ -110,7 +110,6 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    console.log('login', this.emailOrUsername);
     let errorText = this.translateService.instant('common.error');
     if (this.emailOrUsername == null || this.emailOrUsername == '') {
       this.toastService.showError(errorText, this.translateService.instant('login.email_is_required'));
@@ -242,7 +241,6 @@ export class LoginComponent implements OnInit {
   confirmRegistration(token: string): void {
     this.userService.confirmUserRegister(token).subscribe({
       next: (response: any) => {
-        console.log('Registration confirmed:', response);
         this.toastService.showSuccess(this.translateService.instant('common.success'), response.message);
       },
       complete: () => {},
