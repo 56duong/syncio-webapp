@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RedirectService } from 'src/app/core/services/redirect.service';
+import { TokenService } from 'src/app/core/services/token.service';
 
 @Component({
   selector: 'app-about',
@@ -9,13 +10,17 @@ import { RedirectService } from 'src/app/core/services/redirect.service';
 
 export class AboutComponent {
   observer: IntersectionObserver | undefined;
+  currentUserId: string = '';
 
   constructor(
     private redirectService: RedirectService,
+    private tokenService: TokenService
   ) {}
 
 
   ngOnInit() {
+    this.currentUserId = this.tokenService.extractUserIdFromToken();
+
     document.body.style.overflowX = 'hidden';
 
     this.observer = new IntersectionObserver((entries) => {
@@ -35,6 +40,20 @@ export class AboutComponent {
 
   navigateTo(url: string) {
     this.redirectService.redirectAndReload(url);
+  }
+  
+  
+  /**
+   * Scroll to the element with the given id.
+   * @param id 
+   */
+  scrollToElement(id: string): void {
+    const element = document.getElementById(id);
+    element?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start',
+      inline: 'start' 
+    });
   }
 
 }

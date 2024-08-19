@@ -373,5 +373,30 @@
     "new_password": "Mật khẩu mới",
     "new_password_confirm": "Xác nhận mật khẩu mới",
     "back_to_forgot_password": "Quay lại quên mật khẩu"
+  },
+  "about": {
+    "login": "Đăng nhập",
+    "sign_up": "Đăng ký",
+    "download": "Tải xuống",
+    "members": "Thành viên",
+    "connect": "Kết nối",
+    "people_to_your_own_world": "Mọi người đến thế giới của riêng bạn",
+    "with_unique_social_networking": "Với mạng xã hội độc đáo",
+    "join_with_us": "Tham gia với chúng tôi",
+    "you_can_create_your_own_account_to_connect_with_your_friends_family_and_other_people": "Bạn có thể tạo tài khoản của riêng mình để kết nối với bạn bè, gia đình và những người khác",
+    "we_are_a_group_of_students": "Chúng tôi là một nhóm sinh viên",
+    "want_to_create_our_own_social_media_platform_for_groups_organizations_and_nations": "Mong muốn tạo ra nền tảng truyền thông xã hội riêng cho các nhóm, tổ chức và quốc gia",
+    "download_for_Android/Windows": "Tải xuống cho Android/Windows",
+    "our_members": "Thành viên của chúng tôi",
+    "nguyen_ngoc": "Nguyễn Ngọc",
+    "thuy_duong": "Thùy Dương",
+    "than": "Thân",
+    "van_huy": "Văn Huy",
+    "nguyen": "Nguyễn",
+    "xuan_sanh": "Xuân Sanh",
+    "chu": "Chu",
+    "minh_thanh": "Minh Thành",
+    "nguyen_duong": "Nguyễn Dương",
+    "quoc_thuan": "Quốc Thuận"
   }
 }

@@ -16,7 +16,7 @@ export class LangInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const lang = this.langService.getLang() || 'en';
+    const lang = this.langService.getLang() || 'vi';
     request = request.clone({
       setHeaders: {
         'Accept-Language': lang

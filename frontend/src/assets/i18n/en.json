@@ -373,5 +373,30 @@
     "new_password": "New password",
     "new_password_confirm": "New password confirm",
     "back_to_forgot_password": "Back to forgot password"
+  },
+  "about": {
+    "login": "Login",
+    "sign_up": "Sign up",
+    "download": "Download",
+    "members": "Members",
+    "connect": "Connect",
+    "people_to_your_own_world": "people to your own world",
+    "with_unique_social_networking": "with unique social networking",
+    "join_with_us": "Join with Us",
+    "you_can_create_your_own_account_to_connect_with_your_friends_family_and_other_people": "You can create your own account to connect with your friends, family and other people",
+    "we_are_a_group_of_students": "We are a group of students",
+    "want_to_create_our_own_social_media_platform_for_groups_organizations_and_nations": "Want to create our own social media platform for groups, organizations and nations",
+    "download_for_Android/Windows": "Download for Android/Windows",
+    "our_members": "Our members",
+    "nguyen_ngoc": "Nguyen Ngoc",
+    "thuy_duong": "Thuy Duong",
+    "than": "Than",
+    "van_huy": "Van Huy",
+    "nguyen": "Nguyen",
+    "xuan_sanh":  "Xuan Sanh",
+    "chu": "Chu",
+    "minh_thanh": "Minh Thanh",
+    "nguyen_duong": "Nguyen Duong",
+    "quoc_thuan": "Quoc Thuan"
   }
 }

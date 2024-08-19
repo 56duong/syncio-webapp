@@ -9,7 +9,7 @@ export class LangService {
   constructor() { }
 
   getLang() {
-    return window.localStorage.getItem('lang') || 'en';
+    return window.localStorage.getItem('lang') || 'vi';
   }
 
   setLang(lang: string) {
