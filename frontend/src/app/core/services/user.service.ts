@@ -188,9 +188,9 @@ export class UserService {
     return this.http.get<UserProfile>(url, {});
   }
 
-  updateUser(user: User, userId: any): Observable<User> {
+  updateUser(user: User, userId: any): Observable<UserResponse> {
     const url = `${this.apiURL}/update-profile/${userId}`;
-    return this.http.put<User>(url, user);
+    return this.http.put<UserResponse>(url, user);
   }
 
   /**

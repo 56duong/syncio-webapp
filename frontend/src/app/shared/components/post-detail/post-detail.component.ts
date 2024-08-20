@@ -7,6 +7,7 @@ import { Comment } from 'src/app/core/interfaces/comment';
 import { ActionEnum } from 'src/app/core/interfaces/notification';
 import { Post, Visibility } from 'src/app/core/interfaces/post';
 import { CommentService } from 'src/app/core/services/comment.service';
+import { LoginDialogService } from 'src/app/core/services/login-dialog.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { PostService } from 'src/app/core/services/post.service';
 import { RedirectService } from 'src/app/core/services/redirect.service';
@@ -55,7 +56,8 @@ export class PostDetailComponent {
     private textUtils: TextUtils,
     private toastService: ToastService,
     private translateService: TranslateService,
-    private redirectService: RedirectService
+    private redirectService: RedirectService,
+    private loginDialogService: LoginDialogService,
   ) { 
     this.isMobile = window.innerWidth < 768;
   }
@@ -154,7 +156,8 @@ export class PostDetailComponent {
   postComment() {
     // Not logged in
     if(this.currentUserId == null) {
-      this.redirectService.needLogin();
+      this.loginDialogService.show();
+      return;
     }
 
     if (!this.post.id) return;

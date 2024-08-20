@@ -91,12 +91,12 @@ public class PostService {
         List<MultipartFile> files = createPostDTO.getFiles();
         List<String> filenames = new ArrayList<>();
 
-        // check if createPostDTO.getFiles() contain video
-        containsVideo = createPostDTO.getFiles().stream().anyMatch(file ->
-                file.getContentType() != null && file.getContentType().startsWith("video/")
-        );
-
         if (files != null && !files.isEmpty()) {
+            // check if createPostDTO.getFiles() contain video
+            containsVideo = createPostDTO.getFiles().stream().anyMatch(file ->
+                    file.getContentType() != null && file.getContentType().startsWith("video/")
+            );
+
             if (containsVideo && files.size() > 1) {
                 throw new AppException(HttpStatus.PAYLOAD_TOO_LARGE, "Only 1 video allowed", null);
             }
@@ -111,6 +111,9 @@ public class PostService {
                 String filename = containsVideo ? processVideo(file) : processImage(file);
                 filenames.add(filename);
             }
+        }
+        else {
+            containsVideo = false;
         }
 
         // Initialize the Hugging Face Inference object

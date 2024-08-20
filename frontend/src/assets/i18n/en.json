@@ -243,7 +243,10 @@
     "email": "Email",
     "bio": "Bio",
     "profile_updated_successfully": "Profile updated successfully",
-    "edit_profile": "Edit profile"
+    "edit_profile": "Edit profile",
+    "username_should_be_at_least_3_characters_and_at_most_30_characters": "Username should be at least 3 characters and at most 30 characters",
+    "username_only_contain": "Username only contain characters, numbers and underscore",
+    "bio_should_be_at_most_255_characters": "Bio should be at most 255 characters"
   },
   "setting": {
     "settings": "Settings",
@@ -393,7 +396,7 @@
     "than": "Than",
     "van_huy": "Van Huy",
     "nguyen": "Nguyen",
-    "xuan_sanh":  "Xuan Sanh",
+    "xuan_sanh": "Xuan Sanh",
     "chu": "Chu",
     "minh_thanh": "Minh Thanh",
     "nguyen_duong": "Nguyen Duong",

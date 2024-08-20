@@ -243,7 +243,10 @@
     "email": "Email",
     "bio": "Tiểu sử",
     "profile_updated_successfully": "Cập nhật hồ sơ thành công",
-    "edit_profile": "Chỉnh sửa hồ sơ"
+    "edit_profile": "Chỉnh sửa hồ sơ",
+    "username_should_be_at_least_3_characters_and_at_most_30_characters": "Tên đăng nhập cần ít nhất 3 ký tự và nhiều nhất 30 ký tự",
+    "username_only_contain": "Tên đăng nhập chỉ chứa chữ cái, số và dấu gạch dưới",
+    "bio_should_be_at_most_255_characters": "Tiểu sử cần nhiều nhất 255 ký tự"
   },
   "setting": {
     "settings": "Cài đặt",

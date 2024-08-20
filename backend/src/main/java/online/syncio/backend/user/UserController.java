@@ -2,13 +2,10 @@ package online.syncio.backend.user;
 
 import com.google.zxing.WriterException;
 import jakarta.validation.Valid;
-import online.syncio.backend.auth.responses.LoginResponse;
-import online.syncio.backend.auth.responses.ResponseObject;
+import online.syncio.backend.auth.responses.AuthResponse;
 import online.syncio.backend.exception.AppException;
-import online.syncio.backend.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,13 +14,13 @@ import java.io.IOException;
 import java.util.*;
 
 @RestController
-@RequestMapping(value = "/api/v1/users")
+@RequestMapping(value = "${api.prefix}/users")
 public class UserController {
 
     private final UserService userService;
-
-
     private final UserRedisService userRedisService;
+
+
     public UserController (final UserService userService, PasswordEncoder passwordEncoder, UserRedisService userRedisService) {
         this.userService = userService;
         this.userRedisService = userRedisService;
@@ -116,29 +113,9 @@ public class UserController {
     }
 
     @PutMapping("/update-profile/{id}")
-    public ResponseEntity<?> updateProfile(@PathVariable(name = "id") final UUID id, @RequestBody UpdateProfileDTO user) {
-        try {
-            User userDetail = userService.updateProfile( id,user);
-            LoginResponse loginResponse = LoginResponse
-                    .builder()
-                    .message("Login successfully")
-                    .bio(userDetail.getBio())
-                    .email(userDetail.getEmail())
-                    .username(userDetail.getUsername())
-                    .roles(userDetail.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
-                    .id(userDetail.getId())
-                    .build();
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Update successfully")
-                    .data(loginResponse)
-                    .status(HttpStatus.OK)
-                    .build());
-
-        } catch (NotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().body( ex.getMessage());
-        }
+    public ResponseEntity<AuthResponse> updateProfile(@PathVariable(name = "id") final UUID id, @RequestBody @Valid UpdateProfileDTO user) {
+        final AuthResponse userDetail = userService.updateProfile(id, user);
+        return ResponseEntity.ok(userDetail);
     }
 
     @PostMapping("/update-avatar")

@@ -83,9 +83,7 @@ export class RegisterComponent {
     if (this.username.length < 3 || this.username.length > 30) {
       this.toastService.showError(
         errorText,
-        this.translateService.instant(
-          'register.username_should_be_at_least_3_characters_and_at_most_30_characters'
-        )
+        this.translateService.instant('register.username_should_be_at_least_3_characters_and_at_most_30_characters')
       );
       return;
     }

@@ -10,11 +10,14 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import lombok.RequiredArgsConstructor;
+import online.syncio.backend.auth.responses.AuthResponse;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.utils.AuthUtils;
 import online.syncio.backend.utils.Constants;
 import online.syncio.backend.utils.FileUtils;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -42,6 +45,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final FileUtils fileUtils;
     private final UserMapper userMapper;
+    private final MessageSource messageSource;
 
     public List<UserDTO> findAll (Optional<String> username) {
 //        final List<User> users = userRepository.findAll(Sort.by("createdDate").descending());
@@ -84,30 +88,45 @@ public class UserService {
     }
 
     @jakarta.transaction.Transactional
-    public User updateProfile(final UUID id,UpdateProfileDTO updatedUser) throws Exception {
+    public AuthResponse updateProfile(final UUID id, final UpdateProfileDTO updatedUser) {
+        final String currentUserId = authUtils.getCurrentLoggedInUserId().toString();
+
+        // check if the user is authorized to update the profile
+        if (!currentUserId.equals(id.toString())) {
+            throw new AppException(HttpStatus.UNAUTHORIZED, messageSource.getMessage("update.profile.unauthorized", null, LocaleContextHolder.getLocale()), null);
+        }
+
         final User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
 
         if (!existingUser.getUsername().equals(updatedUser.getUsername())) {
-            if (existingUser.getUsernameLastModified() != null &&
-                    ChronoUnit.DAYS.between(existingUser.getUsernameLastModified(), LocalDateTime.now()) < 60) {
-                throw new Exception("Username can only be changed once every 60 days.");
+            // check if the user has changed the username in the last 60 days
+            if (existingUser.getUsernameLastModified() != null
+                    && ChronoUnit.DAYS.between(existingUser.getUsernameLastModified(), LocalDateTime.now()) < 60) {
+                throw new AppException(HttpStatus.BAD_REQUEST, "You can only change your username once every 60 days", null);
+            }
+            // check if the new username is already taken
+            if (userRepository.existsByUsername(updatedUser.getUsername())) {
+                throw new AppException(HttpStatus.BAD_REQUEST, "Username already exists", null);
             }
             existingUser.setUsername(updatedUser.getUsername());
             existingUser.setUsernameLastModified(LocalDateTime.now());
-        }
-
-        if (updatedUser.getEmail() != null) {
-            existingUser.setEmail(updatedUser.getEmail());
         }
 
         if (updatedUser.getBio() != null) {
             existingUser.setBio(updatedUser.getBio());
         }
 
+        userRepository.save(existingUser);
 
-        return userRepository.save(existingUser);
-
+        return new AuthResponse(
+                existingUser.getId(),
+                existingUser.getUsername(),
+                existingUser.getEmail(),
+                existingUser.getStatus().toString(),
+                existingUser.getRole(),
+                existingUser.getBio()
+        );
     }
 
     public List<UserSearchDTO> findTop20ByUsernameContainingOrEmailContaining (final String username, final String email) {
