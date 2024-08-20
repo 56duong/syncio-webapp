@@ -1,7 +1,9 @@
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { PostCollection } from 'src/app/core/interfaces/post-collection';
 import { ConstructImageUrlPipe } from 'src/app/core/pipes/construct-image-url.pipe';
+import { LoginDialogService } from 'src/app/core/services/login-dialog.service';
 import { PostCollectionService } from 'src/app/core/services/post-collection.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { ImageUtils } from 'src/app/core/utils/image-utils';
@@ -29,7 +31,9 @@ export class CollectionGridComponent {
     private toastService: ToastService,
     private translateService: TranslateService,
     private constructImageUrlPipe: ConstructImageUrlPipe,
-    public imageUtils: ImageUtils
+    public imageUtils: ImageUtils,
+    private router: Router,
+    private loginDialogService: LoginDialogService
   ) { }
 
 
@@ -181,6 +185,16 @@ export class CollectionGridComponent {
     this.selectedImage = null;
     this.selectedImageDataUrl = null;
     this.isVisibleAddCollection = false;
+  }
+
+
+  viewCollectionDetail(collection: PostCollection) {
+    if(!this.currentUserId) {
+      this.loginDialogService.show();
+    }
+    else {
+      this.router.navigate(['/profile', this.userProfileId, collection.id]);
+    }
   }
 
 }

@@ -193,6 +193,9 @@ export class MessagesComponent {
               },
               error: (error) => {
                 console.log(error);
+                if(error.status === 404) {
+                  this.router.navigate(['/not-found']);
+                }
               }
             });
           }
@@ -321,7 +324,7 @@ export class MessagesComponent {
           this.messageRoomService.createMessageRoomWithUsers(userIds).subscribe({
             next: (messageRoom) => {
               // update the avatarURL of the message room if the room is a direct message between two users
-              if(userIds.length === 2) messageRoom.avatarURL = this.currentUser.id;
+              if(userIds.length === 2) messageRoom.avatarURL = userIds.filter((id: string) => id !== this.currentUser.id)[0];
               this.messageRooms = [messageRoom, ...this.messageRooms];
               this.selectMessageRoom(messageRoom);
               this.isDialogVisible = false;

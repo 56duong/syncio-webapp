@@ -1,11 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActionEnum } from 'src/app/core/interfaces/notification';
 import { CommentService } from 'src/app/core/services/comment.service';
 import { LikeService } from 'src/app/core/services/like.service';
+import { LoginDialogService } from 'src/app/core/services/login-dialog.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { RedirectService } from 'src/app/core/services/redirect.service';
-import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
 import { UserResponse } from 'src/app/features/authentication/login/user.response';
 
@@ -32,7 +31,8 @@ export class LikeComponent {
     private commentService: CommentService,
     private userService: UserService,
     private notificationService: NotificationService,
-    private redirectService: RedirectService
+    private redirectService: RedirectService,
+    private loginDialogService: LoginDialogService,
   ) {}
 
   ngOnInit() {
@@ -49,11 +49,14 @@ export class LikeComponent {
 
   likePost() {
     //not logged in
-    if(!this.userResponse?.id) this.redirectService.needLogin();
+    if(!this.userResponse?.id) {
+      this.loginDialogService.show();
+      return;
+    }
 
+    this.isLiked = !this.isLiked;
     this.likeService.toggleLikes(this.postId, this.userResponse?.id).subscribe({
       next: () => {
-        this.isLiked = !this.isLiked;
         this.countLikes();
 
         // send notification
@@ -67,7 +70,10 @@ export class LikeComponent {
           });
         }
       },
-      error: (error: any) => {},
+      error: (error: any) => {
+        this.isLiked = !this.isLiked;
+        console.error('Error liking post:', error);
+      },
     });
   }
 

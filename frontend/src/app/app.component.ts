@@ -26,36 +26,36 @@ export class AppComponent {
     let currentTheme = localStorage.getItem('theme') || 'theme-light';
     this.themeService.applyTheme(currentTheme);
 
-    const defaultLang = langService.getLang() || 'en';
+    const defaultLang = langService.getLang() || 'vi';
     translate.setDefaultLang(defaultLang);
     translate.use(defaultLang);
 
-    // set for android, windows to enter the ip address of the server, for development purposes
-    if(environment.android || environment.windows) {
-      const hasChecked = sessionStorage.getItem('hasChecked'); // make sure to check only once when the app is opened
-      if(hasChecked) return;
+    // // set for android, windows to enter the ip address of the server, for development purposes
+    // if(environment.android || environment.windows) {
+    //   const hasChecked = sessionStorage.getItem('hasChecked'); // make sure to check only once when the app is opened
+    //   if(hasChecked) return;
       
-      if(this.router.url !== '/update-ip') {
-        this.checkLocalhostAvailability();
-      }
-    }
+    //   if(this.router.url !== '/update-ip') {
+    //     this.checkLocalhostAvailability();
+    //   }
+    // }
   }
 
 
-  checkLocalhostAvailability(): void {
-    const url = environment.apiUrl + 'api/v1/welcome-page';
-    this.http.get(url).subscribe({
-      next: (response) => {
-        console.log('response', response);
-      },
-      error: (e) => {
-        console.log('error', JSON.stringify(e));
-        this.router.navigate(['/update-ip']);
-      },
-      complete: () => {
-        sessionStorage.setItem('hasChecked', 'true');
-      }
-    });
-  }
+  // checkLocalhostAvailability(): void {
+  //   const url = environment.apiUrl + 'api/v1/welcome-page';
+  //   this.http.get(url).subscribe({
+  //     next: (response) => {
+  //       console.log('response', response);
+  //     },
+  //     error: (e) => {
+  //       console.log('error', JSON.stringify(e));
+  //       this.router.navigate(['/update-ip']);
+  //     },
+  //     complete: () => {
+  //       sessionStorage.setItem('hasChecked', 'true');
+  //     }
+  //   });
+  // }
 
 }

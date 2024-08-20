@@ -25,14 +25,22 @@ export class UserHomeComponent {
   actionToggle(event: any) {
     switch (event.type) {
       case 'search':
-        this.showSearch = event.state === 'open';
-        if (event.state === 'open') {
+        if (event.state === 'toggle') {
+          this.showSearch = !this.showSearch;
+        } else {
+          this.showSearch = event.state === 'open';
+        }
+        if (this.showSearch) {
           this.showNotifications = false;
         }
         break;
       case 'notifications':
-        this.showNotifications = event.state === 'open';
-        if (event.state === 'open') {
+        if (event.state === 'toggle') {
+          this.showNotifications = !this.showNotifications;
+        } else {
+          this.showNotifications = event.state === 'open';
+        }
+        if (this.showNotifications) {
           this.showSearch = false;
         }
         break;

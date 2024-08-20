@@ -84,6 +84,9 @@ export class PostDetailComponent {
             },
             error: (error) => {
               console.log(error);
+              if(error.status === 404) {
+                this.router.navigate(['/not-found']);
+              }
             },
           });
         }

@@ -6,6 +6,8 @@ import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
 import { RedirectService } from 'src/app/core/services/redirect.service';
 import { ThemeService } from 'src/app/core/services/theme.service';
+import { LoginDialogService } from 'src/app/core/services/login-dialog.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-mobile-top-menu',
@@ -53,7 +55,7 @@ export class MobileTopMenuComponent {
           icon: 'pi pi-flag',
           command: () => {
             if(!this.currentUserId) {
-              this.redirectService.needLogin();
+              this.loginDialogService.show();
               return;
             }
             this.isVisibleReportAProblem = true;
@@ -82,7 +84,9 @@ export class MobileTopMenuComponent {
         {
           label: this.translateService.instant('mobile_top_menu.story'),
           icon: 'pi pi-history',
-          route: '/story/create',
+          command: () => {
+            this.onCreateStoryClick();
+          },
         },
       ],
     },
@@ -95,6 +99,8 @@ export class MobileTopMenuComponent {
     private userService: UserService,
     public redirectService: RedirectService,
     private themeService: ThemeService,
+    private loginDialogService: LoginDialogService,
+    private router: Router
   ) { }
 
 
@@ -129,7 +135,20 @@ export class MobileTopMenuComponent {
 
 
   onCreateClick() {
-    this.createPostComponent.showDialog();
+    if(!this.currentUserId) {
+      this.loginDialogService.show();
+      return;
+    }
+    else this.createPostComponent.showDialog();
+  }
+
+
+  onCreateStoryClick() {
+    if(!this.currentUserId) {
+      this.loginDialogService.show();
+      return;
+    }
+    else this.router.navigate(['/story/create']);
   }
 
 

@@ -418,4 +418,10 @@ export class CreatePostComponent {
     return { modifiedText, taggedUserIds };
   }
 
+
+  onRemoveSelectedFiles() {
+    this.selectedFilesDisplay = [];
+    this.selectedFiles = [];
+  }
+
 }

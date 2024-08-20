@@ -45,7 +45,7 @@
     <!-- Left content / Photos -->
     <div class="col-7 p-0">
       <div class="p-fluid">
-        <div class="flex justify-content-center align-items-center" style="height: 500px">
+        <div class="flex justify-content-center align-items-center relative" style="height: 500px">
           <input *ngIf="selectedFiles.length === 0" 
             #fileUploader
             type="file"
@@ -80,6 +80,13 @@
             class="w-full h-full"
             style="object-fit: cover">
           </video>
+
+          <!-- remove button -->
+          <span *ngIf="selectedFiles.length > 0" 
+            (click)="onRemoveSelectedFiles()"
+            class="pi pi-times cursor-pointer absolute top-0 right-0 p-2"
+            style="font-size: 1.25rem;" >
+          </span>
         </div>
       </div>
     </div>

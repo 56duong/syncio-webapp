@@ -8,7 +8,7 @@
     >
       <!-- Logo -->
       <div class="mobile-hidden logo">
-        <li (click)="redirectService.reloadPage()" class="p-fluid">
+        <li (click)="redirectService.redirectAndReload('/')" class="p-fluid">
           <p-button
             class="logo-big"
             styleClass="shadow-none"
@@ -36,7 +36,7 @@
             routerLinkActive="menu-active"
             [routerLink]="menu.routerLink"
             [routerLinkActiveOptions]="{ exact: true }"
-            (click)="menu.id === 'SearchButton' ? toggleSearch() : menu.id === 'NotificationsButton' ? toggleNotifications() : closeSearchAndNotifications()"
+            (click)="onMenuClick(menu)"
             [label]="menu.label"
             [icon]="menu.icon"
             [text]="true"

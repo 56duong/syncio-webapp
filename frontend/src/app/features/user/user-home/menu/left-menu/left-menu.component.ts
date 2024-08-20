@@ -8,20 +8,17 @@ import { LangService } from 'src/app/core/services/lang.service';
 import { UserLabelInfoService } from'src/app/core/services/user-label-info.service';
 import { RedirectService } from 'src/app/core/services/redirect.service';
 import { ThemeService } from 'src/app/core/services/theme.service';
+import { LoginDialogService } from 'src/app/core/services/login-dialog.service';
 
 @Component({
   selector: 'app-left-menu',
   templateUrl: './left-menu.component.html',
   styleUrls: ['./left-menu.component.scss'],
 })
+
 export class LeftMenuComponent {
   @ViewChild(CreatePostComponent) createPostComponent: any;
-
   @Output() actionToggle = new EventEmitter<any>();
-
-  toggleSearch(): void {
-    this.actionToggle.emit({ type: 'search', state: 'open' });
-  }
 
   visible: boolean = false;
   isHideMenuLabel: boolean = false; // Hide the menu label for specific tabs
@@ -53,6 +50,7 @@ export class LeftMenuComponent {
     private userLabelInfoService: UserLabelInfoService,
     public redirectService: RedirectService,
     private themeService: ThemeService,
+    private loginDialogService: LoginDialogService
   ) { }
 
 
@@ -76,7 +74,6 @@ export class LeftMenuComponent {
       {
         label: this.translateService.instant('left_menu.messages'),
         icon: 'pi pi-comments',
-        routerLink: 'messages',
         id: 'MessagesButton',
       },
       {
@@ -144,7 +141,7 @@ export class LeftMenuComponent {
             icon: 'pi pi-flag',
             command: () => {
               if(!this.currentUserId) {
-                this.redirectService.needLogin();
+                this.loginDialogService.show();
                 return;
               }
               this.isVisibleReportAProblem = true;
@@ -190,6 +187,7 @@ export class LeftMenuComponent {
       }
     });
   }
+  
 
   updateTheme() {
     this.currentTheme = this.themeService.getCurrentTheme();
@@ -204,20 +202,72 @@ export class LeftMenuComponent {
     this.settingSubmenuItems = [...this.settingSubmenuItems];
   }
 
+
+  onMenuClick(menu: any): void {
+    switch(menu.id) {
+      case 'SearchButton':
+        this.toggleSearch();
+        break;
+      case 'NotificationsButton':
+        this.toggleNotifications();
+        break;
+      case 'MessagesButton':
+        this.onMessagesClick();
+        break;
+      default:
+        this.closeSearchAndNotifications();
+        break;
+    }
+  }
+
+
   onCreateClick() {
-    if(!this.currentUserId) this.redirectService.needLogin();
+    if(!this.currentUserId) {
+      this.loginDialogService.show();
+      return;
+    }
     else this.createPostComponent.showDialog();
   }
 
+
   onCreateStoryClick() {
-    if(!this.currentUserId) this.redirectService.needLogin();
+    if(!this.currentUserId) {
+      this.loginDialogService.show();
+      return;
+    }
     else this.router.navigate(['/story/create']);
   }
 
-  toggleNotifications(): void {
-    if(!this.currentUserId) this.redirectService.needLogin();
-    else this.actionToggle.emit({ type: 'notifications', state: 'open' });
+
+  onMessagesClick(): void {
+    this.closeSearchAndNotifications();
+    if(!this.currentUserId) {
+      this.loginDialogService.show();
+      return;
+    }
+    else this.router.navigate(['/messages']);
   }
+
+
+  toggleNotifications(): void {
+    if(!this.currentUserId) {
+      this.loginDialogService.show();
+      return;
+    }
+    else this.actionToggle.emit({ type: 'notifications', state: 'toggle' });
+  }
+
+
+  toggleSearch(): void {
+    this.actionToggle.emit({ type: 'search', state: 'toggle' });
+  }
+
+
+  closeSearchAndNotifications(): void {
+    this.actionToggle.emit({ type: 'search', state: 'close' });
+    this.actionToggle.emit({ type: 'notifications', state: 'close' });
+  }
+
 
   logout(): void {
     this.userService.logout().subscribe({
@@ -230,12 +280,6 @@ export class LeftMenuComponent {
         console.error(error);
       },
     });
-  }
-
-
-  closeSearchAndNotifications(): void {
-    this.actionToggle.emit({ type: 'search', state: 'close' });
-    this.actionToggle.emit({ type: 'notifications', state: 'close' });
   }
   
 }

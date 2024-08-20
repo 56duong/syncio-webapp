@@ -37,7 +37,7 @@
           [label]="'profile.unfollow' | translate" severity="my-custom-secondary">
         </p-button>
         <!-- Message -->
-        <a *ngIf="!isOwnerProfile" href="/messages">
+        <a *ngIf="!isOwnerProfile" [href]="currentUserId ? '/messages' : '/login'">
           <p-button [label]="'profile.messages' | translate" severity="my-custom-secondary"></p-button>
         </a>
         <!-- Edit profile/ Setting -->

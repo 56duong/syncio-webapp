@@ -23,6 +23,7 @@ import { UpdateIpComponent } from './components/update-ip/update-ip.component';
 import { CollectionListComponent } from './components/collection-list/collection-list.component';
 import { CollectionDetailComponent } from './components/collection-detail/collection-detail.component';
 import { UserReportComponent } from './components/user-report/user-report.component';
+import { LoginDialogComponent } from './login-dialog/login-dialog.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { UserReportComponent } from './components/user-report/user-report.compon
     UpdateIpComponent,
     CollectionListComponent,
     CollectionDetailComponent,
-    UserReportComponent
+    UserReportComponent,
+    LoginDialogComponent
   ],
   imports: [
     PickerComponent,
@@ -65,7 +67,8 @@ import { UserReportComponent } from './components/user-report/user-report.compon
     UsernameLabelComponent,
     LoadingComponent,
     CollectionListComponent,
-    UserReportComponent
+    UserReportComponent,
+    LoginDialogComponent
   ],
 })
 export class SharedModule {}

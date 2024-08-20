@@ -8,7 +8,7 @@
           [text]="true"
           [routerLink]="menu.routerLink"
           routerLinkActive="menu-active"
-          (click)="menu.id === 'SearchButton' ? toggleSearch() : menu.id === 'NotificationsButton' ? toggleNotifications() : null" />
+          (click)="onMenuClick(menu)" />
       </li>
       <!-- profile -->
       <li>

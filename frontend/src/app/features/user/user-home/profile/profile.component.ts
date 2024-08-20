@@ -19,6 +19,7 @@ import { RedirectService } from 'src/app/core/services/redirect.service';
 import { TranslateService } from '@ngx-translate/core';
 import { lastValueFrom } from 'rxjs';
 import { ImageUtils } from 'src/app/core/utils/image-utils';
+import { LoginDialogService } from 'src/app/core/services/login-dialog.service';
 
 @Component({
   selector: 'app-profile',
@@ -111,7 +112,8 @@ export class ProfileComponent implements OnInit {
     private storyService: StoryService,
     private redirectService: RedirectService,
     private translateService: TranslateService,
-    public imageUtils: ImageUtils
+    public imageUtils: ImageUtils,
+    private loginDialogService: LoginDialogService
   ) {
     this.isMobile = window.innerWidth < 768;
   }
@@ -130,13 +132,17 @@ export class ProfileComponent implements OnInit {
       //check if the profileId is a username
       if(user.indexOf('-') === -1) {
         const { userId } = await lastValueFrom(this.userService.getUserIdByUsername(user));
+        if(!userId) {
+          this.router.navigate(['/not-found']);
+          return;
+        }
         this.profileId = userId;
       }
       else {
         this.profileId = user;
       }
-      this.getUserStory();
       this.getUserProfile();
+      this.getUserStory();
     });
   }
 
@@ -154,12 +160,17 @@ export class ProfileComponent implements OnInit {
   }
 
   getUserProfile() {
-    this.userService.getUserProfile(this.profileId).subscribe((response) => {
-      this.location.replaceState('/profile/' + response.username);
-      this.userProfile = { ...this.userProfile, ...response };
-      this.dialogItems[0].label = response.isCloseFriend
-        ? this.translateService.instant('profile.remove_from_close_friends')
-        : this.translateService.instant('profile.add_to_close_friends');
+    this.userService.getUserProfile(this.profileId).subscribe({
+      next: (response) => {
+        this.location.replaceState('/profile/' + response.username);
+        this.userProfile = { ...this.userProfile, ...response };
+        this.dialogItems[0].label = response.isCloseFriend
+          ? this.translateService.instant('profile.remove_from_close_friends')
+          : this.translateService.instant('profile.add_to_close_friends');
+      },
+      error: (error) => {
+        console.error('Error getting user profile', error);
+      },
     });
   }
 
@@ -201,7 +212,7 @@ export class ProfileComponent implements OnInit {
    */
   toggleFollow(targetId: string | undefined) {
     if (!this.currentUserId) {
-      this.router.navigate(['/login']);
+      this.loginDialogService.show();
       return;
     }
     if (!targetId) return;
