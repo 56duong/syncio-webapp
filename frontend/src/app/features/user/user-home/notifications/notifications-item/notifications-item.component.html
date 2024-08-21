@@ -57,7 +57,7 @@
     
         <!-- Others count if there are more than one actor -->
         <span *ngIf="notification.actorCount && notification.actorCount > 1">
-          {{ 'notifications_item.and' | translate }} {{notification.actorCount - 1}} {{ (notification.actorCount - 1 > 1 ? 'notifications_item.other.other' : 'notifications_item.other.one' ) | translate }}
+          {{ 'notifications_item.and' | translate }} {{notification.actorCount - 1}} {{ (notification.actorCount - 1 > 1 ? 'notifications_item.other_other' : 'notifications_item.other_one' ) | translate }}
         </span>
         
         <!-- Action -->
