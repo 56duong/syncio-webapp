@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -50,4 +51,34 @@ public class UserRedisService {
 
         }
     }
+
+    public UserProfile getCachedUserProfile(UUID userId) {
+        String key = "userProfile:" + userId;
+        String json = redisTemplate.opsForValue().get(key);
+        if (json != null) {
+            try {
+                return redisObjectMapper.readValue(json, UserProfile.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
+
+    public void cacheUserProfile(UUID userId, UserProfile userProfile) {
+        String key = "userProfile:" + userId;
+        try {
+            String json = redisObjectMapper.writeValueAsString(userProfile);
+            redisTemplate.opsForValue().set(key, json);
+        } catch (JsonProcessingException e) {
+            System.out.println("Error caching user profile "+ e);
+            throw new RuntimeException(e);
+        }
+    }
+    public void invalidateUserProfileCache(UUID userId) {
+        String key = "userProfile:" + userId;
+        redisTemplate.delete(key); // Xóa cache theo key
+    }
+
+
 }

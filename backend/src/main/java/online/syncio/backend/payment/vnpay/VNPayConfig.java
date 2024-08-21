@@ -1,16 +1,24 @@
 package online.syncio.backend.payment.vnpay;
 
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Configuration
 public class VNPayConfig {
+
+    @Value("${url.backend}")
+    private String urlBackend;
+
     @Getter
     public String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public String vnp_ReturnUrl = "http://localhost:8080/api/v1/payment/vnpay-callback";
+    public String vnp_ReturnUrl = urlBackend + "api/v1/payment/vnpay-callback";
+
     public String vnp_TmnCode = "FT91TB2X";
     @Getter
     public String secretKey = "MF98URJP1EVWBE9PHV96QFLLRW16KQ2M";
@@ -19,7 +27,13 @@ public class VNPayConfig {
     public String vnp_Command = "pay";
     public String orderType = "other";
 
+    @PostConstruct
+    public void init() {
+        this.vnp_ReturnUrl = urlBackend + "api/v1/payment/vnpay-callback";
+    }
+
     public Map<String, String> getVNPayConfig() {
+        System.out.println("vnp_ReturnUrl: " + this.vnp_ReturnUrl);
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", this.vnp_Version);
         vnp_Params.put("vnp_Command", this.vnp_Command);

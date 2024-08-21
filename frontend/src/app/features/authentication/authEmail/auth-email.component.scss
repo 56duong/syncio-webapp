@@ -1,0 +1,44 @@
+.wrapper {
+    min-height: 100vh;
+    min-width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form {
+    min-height: 480px;
+}
+
+.form form {
+    border-radius: 8px;
+    background-color: var(--surface-0);
+    padding: 1rem 2rem;
+}
+
+@media screen and (min-width: 576px) {
+    .form {
+        min-width: 480px;
+    }
+
+    .form form {
+        border-radius: 8px 0 0 8px;
+        padding: 2rem 4rem !important;
+    }
+}
+
+.form input {
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    outline: none;
+    padding: 0.625rem 0.5rem;
+    width: 100%;
+}
+
+.form input::placeholder {
+    color: #ccc;
+}
+
+.form input:focus {
+    border-color: #0095f6;
+}

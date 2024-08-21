@@ -25,6 +25,7 @@ export class UserService {
   private apiLogin = environment.apiUrl + 'api/v1/users/login';
   private apiUserDetail = environment.apiUrl + 'api/v1/users/details';
   private apiPython = environment.apiPythonUrl;
+  private apiResendEmail = environment.apiUrl + 'api/v1/users/resend-email';
   private apiConfig = {
     headers: this.httpUtilService.createHeaders(),
   };
@@ -45,7 +46,10 @@ export class UserService {
   register(registerDTO: RegisterDTO): Observable<any> {
     return this.http.post(this.apiRegister, registerDTO, this.apiConfig);
   }
-
+  resendRegistrationEmail(email: string): Observable<any> {
+    const params = new HttpParams().set('email', email);
+    return this.http.post(this.apiResendEmail, {}, { params });
+  }
   // Create user using User Controller
   createUserInAdmin(user: User): Observable<any> {
     return this.http.post(this.apiURL, user, this.apiConfig);
@@ -212,8 +216,6 @@ export class UserService {
     return this.http.get<Object>(url);
   }
 
-  
-
   /**
    * Get user id by username.
    * @param userId
@@ -237,7 +239,7 @@ export class UserService {
     const url = `${this.apiURL}/getQrcode/${userId}`;
     return this.http.get(url, { responseType: 'text' });
   }
-  
+
   /**
    * Search users by username or email.
    * @param username - The username to search if exists.

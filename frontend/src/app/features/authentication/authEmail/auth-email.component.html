@@ -1,0 +1,70 @@
+<div
+  class="wrapper"
+  style="background-image: url('assets/images/login-background.png')"
+>
+  <!-- lang -->
+  <div
+    class="absolute top-0 right-0 p-4 flex align-items-center gap-4"
+    style="color: var(--surface-900)"
+  >
+    <p (click)="switchLang('en')" class="underline cursor-pointer">English</p>
+    <p (click)="switchLang('vi')" class="underline cursor-pointer">
+      Tiếng Việt
+    </p>
+    <span
+      class="pi pi-question-circle cursor-pointer"
+      routerLink="/help"
+      style="font-size: 1.25rem"
+    ></span>
+  </div>
+
+  <div class="form flex col-12 sm:col-4 p-0 align-items-stretch px-4">
+    <form
+      class="col-12 flex flex-column gap-5 justify-content-center align-items-center shadow-1"
+    >
+      <!-- title -->
+      <h1 class="text-center">
+        {{ "verify-email.verify_email" | translate }}
+      </h1>
+      <!-- email -->
+      <div class="flex flex-column gap-4 w-full">
+        <div class="w-full">
+          <input
+            [placeholder]="'verify-email.email' | translate"
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+          />
+        </div>
+      </div>
+      <!-- submit button -->
+      <p-button
+      [disabled]="!email || isButtonDisabled"
+      (click)="sendEmail()"
+      [label]="
+        isButtonDisabled
+          ? ('verify-email.resend_verification_email_in' | translate : { seconds: countdown })
+          : ('verify-email.resend_verification_email' | translate)
+      "
+      class="w-full"
+      styleClass="w-full"
+    ></p-button>
+    
+      <!-- back to login/register -->
+      <div>
+        <p
+          routerLink="/register"
+          class="text-center cursor-pointer text-sm mt-2"
+        >
+          {{ "verify-email.dont_have_an_account" | translate }}
+          <span class="text-primary font-bold">{{
+            "verify-email.sign_up" | translate
+          }}</span>
+        </p>
+        <p routerLink="/login" class="text-center cursor-pointer text-sm mt-2">
+          {{ "verify-email.back_to_login" | translate }}
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

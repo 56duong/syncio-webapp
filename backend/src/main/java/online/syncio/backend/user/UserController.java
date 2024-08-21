@@ -112,6 +112,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserProfile(id));
     }
 
+    @GetMapping("/profile-test/{id}")
+    public ResponseEntity<UserProfile> getUserProfileNotUseCache (@PathVariable(name = "id") final UUID id) {
+        return ResponseEntity.ok(userService.getUserProfileNotUseCache(id));
+    }
+
     @PutMapping("/update-profile/{id}")
     public ResponseEntity<AuthResponse> updateProfile(@PathVariable(name = "id") final UUID id, @RequestBody @Valid UpdateProfileDTO user) {
         final AuthResponse userDetail = userService.updateProfile(id, user);

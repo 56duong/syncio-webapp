@@ -131,6 +131,7 @@ export class LoginComponent implements OnInit {
       next: (response: LoginResponse) => {
         const { token, refresh_token } = response.data;
         this.tokenService.setToken(token);
+        this
 
         this.userService.getUserDetail(token).subscribe({
           next: (response: any) => {

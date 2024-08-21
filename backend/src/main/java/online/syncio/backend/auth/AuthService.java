@@ -1,5 +1,6 @@
 package online.syncio.backend.auth;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.auth.request.RegisterDTO;
 import online.syncio.backend.exception.AppException;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -97,7 +99,7 @@ public class AuthService {
         Token confirmationToken = Token.builder()
                 .token(token)
                 .user(newUser)
-                .expirationDate(LocalDateTime.now().plusMinutes(30)) //30 minutes
+                .expirationDate(LocalDateTime.now().plusMinutes(1)) //30 minutes
                 .revoked(false)
                 .build();
 
@@ -212,4 +214,18 @@ public class AuthService {
         //      Upload S3 AWS
     }
 
+    public void resendRegistrationEmail(String email) throws DataNotFoundException, MessagingException, UnsupportedEncodingException {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("User not found"));
+        String token = UUID.randomUUID().toString();
+        Token confirmationToken = Token.builder()
+                .token(token)
+                .user(user)
+                .expirationDate(LocalDateTime.now().plusMinutes(1))
+                .revoked(false)
+                .build();
+
+        tokenRepository.save(confirmationToken);
+        String link = urlFE + "/confirm-user-register?token=" + token;
+        CustomerForgetPasswordUtil.sendEmailTokenRegister(link, email, settingService);
+    }
 }

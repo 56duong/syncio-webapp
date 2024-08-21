@@ -9,6 +9,7 @@ import online.syncio.backend.userlabelinfo.UserLabelInfo;
 import online.syncio.backend.userlabelinfo.UserLabelInfoRepository;
 import online.syncio.backend.utils.AuthUtils;
 import online.syncio.backend.utils.FileUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -59,13 +60,14 @@ public class LabelService {
     }
 
     // CRUD
+    @Cacheable(value = "labels")
     public List<LabelDTO> findAll(){
         final List<Label> labels = labelRepository.findAll(Sort.by("createdDate").descending());
         return labels.stream()
                 .map(label -> mapToDTO(label, new LabelDTO()))
                 .toList();
     }
-
+    @Cacheable(value = "labelsWithPurchaseStatus", key = "#user_id")
     public List<LabelResponseDTO> getAllLabelWithPurcharseStatus (UUID user_id) {
         // lay ra tat ca cac label tu db
         List<Label> labels = labelRepository.findAll();

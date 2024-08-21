@@ -14,8 +14,8 @@ import online.syncio.backend.auth.responses.AuthResponse;
 import online.syncio.backend.exception.AppException;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.utils.AuthUtils;
-import online.syncio.backend.utils.Constants;
 import online.syncio.backend.utils.FileUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.PageRequest;
@@ -46,6 +46,10 @@ public class UserService {
     private final FileUtils fileUtils;
     private final UserMapper userMapper;
     private final MessageSource messageSource;
+    private final UserRedisService userRedisService;
+
+    @Value("${url.frontend}")
+    private String frontendUrl;
 
     public List<UserDTO> findAll (Optional<String> username) {
 //        final List<User> users = userRepository.findAll(Sort.by("createdDate").descending());
@@ -82,16 +86,34 @@ public class UserService {
     }
 
     public UserProfile getUserProfile (final UUID id)  {
+//        return userRepository.findByIdWithPosts(id)
+//                             .map(user -> userMapper.mapToUserProfile(user, new UserProfile()))
+//                             .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+
+        UserProfile cachedUserProfile = userRedisService.getCachedUserProfile(id);
+        if (cachedUserProfile != null) {
+            return cachedUserProfile;
+        }
+
+        // If not in cache, fetch from the database
+        UserProfile userProfile = userRepository.findByIdWithPosts(id)
+                .map(user -> userMapper.mapToUserProfile(user, new UserProfile()))
+                .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
+
+        userRedisService.cacheUserProfile(id, userProfile);
+
+        return userProfile;
+    }
+    public UserProfile getUserProfileNotUseCache (final UUID id) {
         return userRepository.findByIdWithPosts(id)
                              .map(user -> userMapper.mapToUserProfile(user, new UserProfile()))
                              .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
     }
-
     @jakarta.transaction.Transactional
     public AuthResponse updateProfile(final UUID id, final UpdateProfileDTO updatedUser) {
         final String currentUserId = authUtils.getCurrentLoggedInUserId().toString();
 
-        // check if the user is authorized to update the profile
+        // Kiểm tra xem người dùng có quyền cập nhật hồ sơ không
         if (!currentUserId.equals(id.toString())) {
             throw new AppException(HttpStatus.UNAUTHORIZED, messageSource.getMessage("update.profile.unauthorized", null, LocaleContextHolder.getLocale()), null);
         }
@@ -99,25 +121,38 @@ public class UserService {
         final User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
 
+        boolean isUsernameChanged = false;
+
         if (!existingUser.getUsername().equals(updatedUser.getUsername())) {
-            // check if the user has changed the username in the last 60 days
+            // Kiểm tra xem người dùng đã thay đổi username trong 60 ngày qua chưa
             if (existingUser.getUsernameLastModified() != null
                     && ChronoUnit.DAYS.between(existingUser.getUsernameLastModified(), LocalDateTime.now()) < 60) {
                 throw new AppException(HttpStatus.BAD_REQUEST, "You can only change your username once every 60 days", null);
             }
-            // check if the new username is already taken
+            // Kiểm tra xem username mới đã tồn tại chưa
             if (userRepository.existsByUsername(updatedUser.getUsername())) {
                 throw new AppException(HttpStatus.BAD_REQUEST, "Username already exists", null);
             }
             existingUser.setUsername(updatedUser.getUsername());
             existingUser.setUsernameLastModified(LocalDateTime.now());
+            isUsernameChanged = true;
         }
 
         if (updatedUser.getBio() != null) {
             existingUser.setBio(updatedUser.getBio());
         }
 
+        // Lưu người dùng vào cơ sở dữ liệu
         userRepository.save(existingUser);
+
+        // Xóa cache cũ và cập nhật cache mới nếu username thay đổi
+        if (isUsernameChanged) {
+            userRedisService.invalidateUserProfileCache(id); // Xóa cache cũ
+            userRedisService.cacheUserProfile(id, userMapper.mapToUserProfile(existingUser, new UserProfile())); // Cập nhật cache mới
+        } else {
+            // Nếu không thay đổi username, chỉ cần cập nhật cache với thông tin mới
+            userRedisService.cacheUserProfile(id, userMapper.mapToUserProfile(existingUser, new UserProfile()));
+        }
 
         return new AuthResponse(
                 existingUser.getId(),
@@ -223,7 +258,7 @@ public class UserService {
 
     public String generateQRCodeAndUploadToFirebase(String text, int width, int height) throws WriterException, IOException {
 
-        String baseUrl = Constants.FRONTEND_URL + "/profile/";
+        String baseUrl = frontendUrl + "/profile/";
         String fullUrl = baseUrl + text;
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();

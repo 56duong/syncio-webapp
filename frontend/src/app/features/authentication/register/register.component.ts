@@ -22,7 +22,8 @@ export class RegisterComponent {
     private translateService: TranslateService,
     private langService: LangService,
     private redirectService: RedirectService,
-    private passwordValidationService: PasswordValidationService
+    private passwordValidationService: PasswordValidationService,
+    private router: Router
   ) {}
 
   isLoading: boolean = false;
@@ -83,28 +84,93 @@ export class RegisterComponent {
     if (this.username.length < 3 || this.username.length > 30) {
       this.toastService.showError(
         errorText,
-        this.translateService.instant('register.username_should_be_at_least_3_characters_and_at_most_30_characters')
+        this.translateService.instant(
+          'register.username_should_be_at_least_3_characters_and_at_most_30_characters'
+        )
       );
       return;
     }
 
     // Password validation
     if (this.password.length < 6 || this.password.length > 100) {
-      this.toastService.showError(errorText, this.translateService.instant('register.password_should_be_at_least_6_characters_and_at_most_100_characters'));
+      this.toastService.showError(
+        errorText,
+        this.translateService.instant(
+          'register.password_should_be_at_least_6_characters_and_at_most_100_characters'
+        )
+      );
       return;
     }
 
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/;
-    if (!passwordRegex.test(this.password)) {
-      this.toastService.showError(errorText, this.translateService.instant('register.password_must_contain_at_least_one_letter_and_one_number'));
+    if (!/[a-z]/.test(this.password)) {
+      this.toastService.showError(
+        errorText,
+        this.translateService.instant(
+          'Mật khẩu phải chứa ít nhất một chữ cái viết thường.'
+        )
+      );
+      return;
+    }
+
+    if (!/[!@#$&*]/.test(this.password)) {
+      this.toastService.showError(
+        errorText,
+        this.translateService.instant(
+          'Mật khẩu phải chứa ít nhất một ký tự đặc biệt (như !@#$&*).'
+        )
+      );
+      return;
+    }
+
+    // Kiểm tra số lượng chữ cái viết thường, viết hoa, và số
+    if (this.password.replace(/[^A-Z]/g, '').length < 1) {
+      this.toastService.showError(
+        errorText,
+        this.translateService.instant(
+          'Mật khẩu phải chứa ít nhất một chữ cái viết hoa.'
+        )
+      );
+      return;
+    }
+
+    if (this.password.replace(/[^a-z]/g, '').length < 3) {
+      this.toastService.showError(
+        errorText,
+        this.translateService.instant(
+          'Mật khẩu phải chứa ít nhất ba chữ cái viết thường.'
+        )
+      );
       return;
     }
 
     if (this.password !== this.retypePassword) {
-      this.toastService.showError(errorText, this.translateService.instant('register.passwords_do_not_match'));
+      this.toastService.showError(
+        errorText,
+        this.translateService.instant('register.passwords_do_not_match')
+      );
       return;
     }
 
+    if (/\s/.test(this.password)) {
+      this.toastService.showError(
+        errorText,
+        this.translateService.instant('Mật khẩu không được chứa khoảng trắng.')
+      );
+      return;
+    }
+
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{6,}$/;
+
+    if (!passwordRegex.test(this.password)) {
+      this.toastService.showError(
+        errorText,
+        this.translateService.instant(
+          'register.password_must_contain_at_least_one_letter_and_one_number'
+        )
+      );
+      return;
+    }
     this.isLoading = true;
 
     const registerDTO: RegisterDTO = {
@@ -118,6 +184,9 @@ export class RegisterComponent {
       next: (response: any) => {
         if (response.status === 'CREATED') {
           this.toastService.showSuccess(successText, response.message);
+          this.router.navigate(['/auth-email'], {
+            queryParams: { email: this.email },
+          });
         }
         this.isLoading = false;
       },
@@ -128,5 +197,4 @@ export class RegisterComponent {
       },
     });
   }
-
 }

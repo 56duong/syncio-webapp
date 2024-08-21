@@ -3,11 +3,12 @@ package online.syncio.backend.label;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
-public class LabelDTO {
+public class LabelDTO implements Serializable {
         private UUID id;
 
         @NotNull

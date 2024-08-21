@@ -58,8 +58,6 @@ public class AuthController {
     ) throws Exception {
 
         User user = authService.createUser(registerDTO);
-
-//        rabbitMQService.sendMessage("New user registered: " + user.getEmail());
         String message = messageSource.getMessage("user.register.verify.account", null, LocaleContextHolder.getLocale());
         return ResponseEntity.ok(ResponseObject.builder()
                 .status(HttpStatus.CREATED)
@@ -240,6 +238,11 @@ public class AuthController {
     }
 
 
+    @PostMapping("/resend-email")
+    public ResponseEntity<Void> resendRegistrationEmail(@RequestParam String email) throws Exception {
+        authService.resendRegistrationEmail(email);
+        return ResponseEntity.ok().build();
+    }
 
 
 }

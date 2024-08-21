@@ -17,9 +17,10 @@ import { RoleEnum } from './core/interfaces/user';
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 import { NotAuthorizedComponent } from './shared/components/not-authorized/not-authorized.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule } from "./shared/shared.module";
+import { SharedModule } from './shared/shared.module';
 import { UpdateIpComponent } from './shared/components/update-ip/update-ip.component';
 import { environment } from 'src/environments/environment';
+import { AuthEmailComponent } from './features/authentication/authEmail/auth-email.component';
 
 const routes: Routes = [
   {
@@ -35,7 +36,7 @@ const routes: Routes = [
     loadChildren: () =>
       import('./features/admin/admin.module').then((m) => m.AdminModule),
     canActivate: [authGuard],
-    data: { requiredRoles: [RoleEnum.ADMIN] }
+    data: { requiredRoles: [RoleEnum.ADMIN] },
   },
   {
     path: 'login',
@@ -46,6 +47,11 @@ const routes: Routes = [
     path: 'register',
     title: 'Register',
     component: RegisterComponent,
+  },
+  {
+    path: 'auth-email',
+    title: 'Auth Email',
+    component: AuthEmailComponent,
   },
   {
     path: 'forgot_password',
@@ -64,20 +70,20 @@ const routes: Routes = [
   },
   { path: 'search', component: SearchComponent },
   {
-    path: "not-found",
-    title: "Not Found",
-    component: NotFoundComponent
+    path: 'not-found',
+    title: 'Not Found',
+    component: NotFoundComponent,
   },
   {
-    path: "not-authorized",
-    title: "Not Authorized",
-    component: NotAuthorizedComponent
+    path: 'not-authorized',
+    title: 'Not Authorized',
+    component: NotAuthorizedComponent,
   },
   {
-    path: "update-ip",
-    title: "Update IP",
-    component: UpdateIpComponent
-  }
+    path: 'update-ip',
+    title: 'Update IP',
+    component: UpdateIpComponent,
+  },
 ];
 
 @NgModule({
@@ -85,19 +91,22 @@ const routes: Routes = [
     LoginComponent,
     ForgotpasswordComponent,
     ChangePasswordComponent,
-    RegisterComponent
+    RegisterComponent,
+    AuthEmailComponent,
   ],
   imports: [
     FormsModule,
     CommonModule,
     BrowserModule,
-    RouterModule.forRoot(routes, { useHash: environment.windows ? true : false }), // useHash(#) for Windows app
+    RouterModule.forRoot(routes, {
+      useHash: environment.windows ? true : false,
+    }), // useHash(#) for Windows app
     ToastModule,
     DialogModule,
     PrimengModule,
     TranslateModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
   ],
   exports: [RouterModule],
 })
