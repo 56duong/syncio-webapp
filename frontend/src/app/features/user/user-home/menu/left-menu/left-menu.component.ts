@@ -128,7 +128,9 @@ export class LeftMenuComponent {
             command: () => {
               const lang = this.langService.getLang() === 'en' ? 'vi' : 'en';
               this.langService.setLang(lang);
-              this.redirectService.reloadPage();
+              setTimeout(() => {
+                this.redirectService.reloadPage();
+              }, 50);
             },
           },
           {

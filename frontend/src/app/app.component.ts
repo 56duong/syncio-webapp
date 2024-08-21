@@ -26,7 +26,7 @@ export class AppComponent {
     let currentTheme = localStorage.getItem('theme') || 'theme-light';
     this.themeService.applyTheme(currentTheme);
 
-    const defaultLang = langService.getLang() || 'vi';
+    const defaultLang = langService.getLang();
     translate.setDefaultLang(defaultLang);
     translate.use(defaultLang);
 

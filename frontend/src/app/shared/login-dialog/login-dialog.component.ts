@@ -83,7 +83,7 @@ export class LoginDialogComponent {
             if (this.userResponse?.role == 'ADMIN') {
               this.router.navigate(['/admin']);
             } else if (this.userResponse?.role == 'USER') {
-              this.redirectService.redirectAndReload('/');
+              this.redirectService.reloadPage();
             }
           },
           complete: () => {},

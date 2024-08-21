@@ -26,7 +26,7 @@ import { environment } from 'src/environments/environment';
 import { AppInterceptor } from './core/interceptors/app.interceptor';
 
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
 }
 
 @NgModule({
