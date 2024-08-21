@@ -19,6 +19,7 @@ public class PostCollectionMapper {
         postCollectionDTO.setDescription(postCollection.getDescription());
         postCollectionDTO.setCreatedDate(postCollection.getCreatedDate());
         postCollectionDTO.setCreatedById(postCollection.getCreatedBy() == null ? null : postCollection.getCreatedBy().getId());
+        postCollectionDTO.setCreatedByUsername(postCollection.getCreatedBy() == null ? null : postCollection.getCreatedBy().getUsername());
         postCollectionDTO.setImageUrl("collections/" + postCollection.getId() + ".jpg");
         return postCollectionDTO;
     }

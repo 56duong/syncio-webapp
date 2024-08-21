@@ -25,5 +25,7 @@ public class PostCollectionDTO {
 
     private UUID createdById;
 
+    private String createdByUsername;
+
     private String imageUrl;
 }

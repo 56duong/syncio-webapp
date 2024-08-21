@@ -55,10 +55,10 @@ export class LikeComponent {
     }
 
     this.isLiked = !this.isLiked;
+    this.likeCount = this.isLiked ? this.likeCount + 1 : this.likeCount - 1;
+
     this.likeService.toggleLikes(this.postId, this.userResponse?.id).subscribe({
       next: () => {
-        this.countLikes();
-
         // send notification
         if (this.createdBy != this.userResponse?.id && this.isLiked) {
           this.notificationService.sendNotification({
@@ -72,6 +72,7 @@ export class LikeComponent {
       },
       error: (error: any) => {
         this.isLiked = !this.isLiked;
+        this.likeCount = this.isLiked ? this.likeCount - 1 : this.likeCount + 1;
         console.error('Error liking post:', error);
       },
     });
@@ -111,7 +112,9 @@ export class LikeComponent {
       next: (count) => {
         this.commentCount = count;
       },
-      error: (error) => {},
+      error: (error) => {
+        console.error('Error counting comments:', error);
+      },
     });
   }
 }

@@ -20,6 +20,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { lastValueFrom } from 'rxjs';
 import { ImageUtils } from 'src/app/core/utils/image-utils';
 import { LoginDialogService } from 'src/app/core/services/login-dialog.service';
+import { ConstructImageUrlPipe } from 'src/app/core/pipes/construct-image-url.pipe';
+import { SeoService } from 'src/app/core/services/seo.service';
 
 @Component({
   selector: 'app-profile',
@@ -113,7 +115,8 @@ export class ProfileComponent implements OnInit {
     private redirectService: RedirectService,
     private translateService: TranslateService,
     public imageUtils: ImageUtils,
-    private loginDialogService: LoginDialogService
+    private loginDialogService: LoginDialogService,
+    private seoService: SeoService,
   ) {
     this.isMobile = window.innerWidth < 768;
   }
@@ -167,12 +170,42 @@ export class ProfileComponent implements OnInit {
         this.dialogItems[0].label = response.isCloseFriend
           ? this.translateService.instant('profile.remove_from_close_friends')
           : this.translateService.instant('profile.add_to_close_friends');
+
+        this.setMetaTags(this.userProfile);
       },
       error: (error) => {
         console.error('Error getting user profile', error);
       },
     });
   }
+
+
+  setMetaTags(userProfile: UserProfile) {
+    const maxLength = 150;
+    let bio = userProfile.bio;
+    if (bio && bio.length > maxLength) {
+      bio = bio.substring(0, maxLength) + '...';
+    }
+
+    const description = `${userProfile.username} has ${userProfile.followerCount} followers and ${userProfile.postCount} posts. ${bio || ''}`;
+
+    this.seoService.setMetaTags({
+      title: `${userProfile.username} | Syncio`,
+      description: description,
+      image: this.getAvatarURL(userProfile.id),
+      keywords: `${userProfile.username}, Syncio, profile, social media`
+    });
+  }
+
+
+  getAvatarURL(userId: string): string {
+    const constructImageUrlPipe = new ConstructImageUrlPipe(); // Manually create an instance
+    let baseUrl = 'users/' + userId + '.jpg'; // Construct the base URL
+    // Use the pipe to transform the URL
+    let fullUrl = constructImageUrlPipe.transform(baseUrl);
+    return fullUrl;
+  }
+
 
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];

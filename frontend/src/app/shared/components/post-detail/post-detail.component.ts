@@ -11,6 +11,7 @@ import { LoginDialogService } from 'src/app/core/services/login-dialog.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { PostService } from 'src/app/core/services/post.service';
 import { RedirectService } from 'src/app/core/services/redirect.service';
+import { SeoService } from 'src/app/core/services/seo.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { TokenService } from 'src/app/core/services/token.service';
 import { TextUtils } from 'src/app/core/utils/text-utils';
@@ -58,6 +59,7 @@ export class PostDetailComponent {
     private translateService: TranslateService,
     private redirectService: RedirectService,
     private loginDialogService: LoginDialogService,
+    private seoService: SeoService
   ) { 
     this.isMobile = window.innerWidth < 768;
   }
@@ -83,6 +85,7 @@ export class PostDetailComponent {
               this.post = { ...post};
               this.post.photos = this.post.photos;
               this.updateDialogItems();
+              this.setMetaTags(this.post);
             },
             error: (error) => {
               console.log(error);
@@ -99,6 +102,7 @@ export class PostDetailComponent {
         this.post.photos = this.post.photos;
       }, 0);
       this.updateDialogItems();
+      this.setMetaTags(this.post);
     }
 
     // If user is logged in, connect to the WebSocket for notifications.
@@ -109,6 +113,19 @@ export class PostDetailComponent {
 
   ngOnDestroy() {
     if(this.currentUserId) this.notificationService.disconnect();
+  }
+
+  setMetaTags(post: Post) {
+    const caption = post.caption;
+    let description = '';
+    if(caption) {
+      description = caption.length > 150 ? caption.substring(0, 150) + '...' : caption;
+    }
+    const title = `${post.username} | ${description ? (description + ' | ') : ''}Syncio`;
+    this.seoService.setMetaTags({
+      title: title,
+      description: `${post.username}${description ? (' - ' + description) : ''}`,
+    });
   }
 
   updateDialogItems() {

@@ -5,6 +5,7 @@ export interface PostCollection {
   createdDate?: string;
   status?: PostCollectionEnum;
   createdById?: string;
+  createdByUsername?: string;
   imageUrl?: string;
 }
 
