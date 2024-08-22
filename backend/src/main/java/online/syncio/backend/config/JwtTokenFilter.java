@@ -110,7 +110,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/posts/images/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/posts/", apiPrefix), "GET"),
                 Pair.of(String.format("%s/posts/feed", apiPrefix), "POST"),
-                Pair.of(String.format("%s/posts/details/**", apiPrefix), "GET"),
 
                 // PostCollection
                 Pair.of(String.format("%s/postcollections/user/**", apiPrefix), "GET"),
@@ -209,7 +208,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private boolean isHandleBothCases(@NonNull HttpServletRequest request) {
         final List<Pair<String, String>> bypassTokens = Arrays.asList(
                 Pair.of(String.format("%s/users/profile/**", apiPrefix), "GET"),
-                Pair.of(String.format("%s/posts/user-posts/**", apiPrefix), "GET")
+                Pair.of(String.format("%s/posts/user-posts/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/posts/details/**", apiPrefix), "GET")
         );
 
         String requestPath = request.getServletPath();

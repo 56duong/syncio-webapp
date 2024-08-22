@@ -9,10 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, UUID> {
@@ -159,5 +156,19 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
             "UNION SELECT DISTINCT DATE(created_date) FROM comment WHERE created_date >= :startDate) as date_table " +
             "ORDER BY date DESC", nativeQuery = true)
     List<Map<String, Object>> countEngagementMetricsSince(@Param("startDate") LocalDateTime startDate);
+
+    @Query(value = "SELECT p.* " +
+            "FROM post p " +
+                "LEFT JOIN user_close_friend ucf ON p.user_id = ucf.user_id " +
+                "LEFT JOIN user u ON :userId = u.id " +
+            "WHERE p.flag = true " +
+                "AND p.id = :postId " +
+                "AND (u.role = 'ADMIN' OR " +
+                    "p.user_id = :userId OR " +
+                    "p.visibility = 'PUBLIC' OR " +
+                    "(p.visibility = 'CLOSE_FRIENDS' AND ucf.close_friend_id = :userId) OR " +
+                    "(p.visibility = 'PRIVATE' AND p.user_id = :userId)) " +
+            "GROUP BY p.id ", nativeQuery = true)
+    Optional<Post> findById(@Param("postId") UUID postId, @Param("userId") UUID userId);
 
 }

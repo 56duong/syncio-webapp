@@ -67,7 +67,8 @@ public class PostService {
 
 
     public PostDTO get (final UUID id) {
-        return postRepository.findById(id)
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        return postRepository.findById(id, currentUserId)
                              .map(post -> postMapper.mapToDTO(post, new PostDTO()))
                              .orElseThrow(() -> new NotFoundException(Post.class, "id", id.toString()));
     }
