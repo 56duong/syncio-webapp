@@ -23,7 +23,7 @@ import { UpdateIpComponent } from './components/update-ip/update-ip.component';
 import { CollectionListComponent } from './components/collection-list/collection-list.component';
 import { CollectionDetailComponent } from './components/collection-detail/collection-detail.component';
 import { UserReportComponent } from './components/user-report/user-report.component';
-import { LoginDialogComponent } from './login-dialog/login-dialog.component';
+import { LoginDialogComponent } from './components/login-dialog/login-dialog.component';
 
 @NgModule({
   declarations: [
