@@ -64,6 +64,7 @@ export class PostDetailComponent {
     this.isMobile = window.innerWidth < 768;
   }
 
+
   ngOnInit() {
     this.currentUserId = this.tokenService.extractUserIdFromToken();
 
@@ -111,9 +112,11 @@ export class PostDetailComponent {
     }
   }
 
+
   ngOnDestroy() {
     if(this.currentUserId) this.notificationService.disconnect();
   }
+
 
   setMetaTags(post: Post) {
     const caption = post.caption;
@@ -127,6 +130,7 @@ export class PostDetailComponent {
       description: `${post.username}${description ? (' - ' + description) : ''}`,
     });
   }
+
 
   updateDialogItems() {
     this.dialogItems = [
@@ -151,14 +155,17 @@ export class PostDetailComponent {
     ];
   }
 
+
   closeDialog() {
     this.visibleChange.emit(false);
     this.location.replaceState('/');
   }
 
+
   addEmoji(event: any) {
     this.comment.text = `${this.comment.text || ''}${event.emoji.native}`;
   }
+
 
   /**
    * Prepares a reply to a comment.
@@ -169,6 +176,7 @@ export class PostDetailComponent {
     this.comment.parentCommentId = commentId;
     this.ownerParentCommentId = ownerParentCommentId;
   }
+
 
   postComment() {
     // Not logged in
@@ -193,6 +201,9 @@ export class PostDetailComponent {
 
     // If the comment is a parent comment, send the comment (realtime).
     if (!this.comment.parentCommentId) {
+      // append the comment to the comments array immediately
+      this.commentService.commentSubject.next(this.comment);
+      // send comment websocket
       this.commentService.sendComment(this.comment);
       // send notification to owner of the post
       if (this.post.createdBy != this.currentUserId) {
@@ -241,6 +252,7 @@ export class PostDetailComponent {
     }
   }
 
+
   async copyLink() {
     await this.textUtils.copyToClipboard(window.location.href + 'post/' + this.post.id);
     this.toastService.showSuccess(
@@ -248,6 +260,7 @@ export class PostDetailComponent {
       this.translateService.instant('post_detail.link_copied_to_clipboard')
     );
   }
+
 
   handleReportModalVisibility(event: boolean) {
     if(!this.currentUserId) {
@@ -257,6 +270,7 @@ export class PostDetailComponent {
       this.reportVisible = event; // Update reportVisible based on the event emitted from ReportComponent
     }
   }
+
 
   hideDialog() {
     this.dialogVisible = false;

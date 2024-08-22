@@ -4,6 +4,7 @@ import { ProfileFormComponent } from './components/profile-form/profile-form.com
 import { ImageSearchComponent } from './components/image-search/image-search.component';
 import { CloseFriendsComponent } from './components/close-friends/close-friends.component';
 import { MessageControlsComponent } from './components/message-controls/message-controls.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,10 @@ const routes: Routes = [
     path: 'message-controls',
     component: MessageControlsComponent,
   },
+  {
+    path: 'change-password',
+    component: ChangePasswordComponent,
+  }
 ];
 
 @NgModule({

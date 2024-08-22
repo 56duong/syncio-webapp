@@ -80,6 +80,6 @@ export class AuthEmailComponent implements OnInit {
         this.isButtonDisabled = false;
         clearInterval(interval);
       }
-    }, 6000);
+    }, 1000);
   }
 }

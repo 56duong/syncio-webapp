@@ -9,7 +9,7 @@
   [ngClass]="{'my-message': isCurrentUser()}"
   [id]="messageContent.id" class="message-content-item">
   <!-- Avatar -->
-  <app-avatar *ngIf="messageContent.user.id != currentUser?.id" [userId]="messageContent.user.id" [width]="32"></app-avatar>
+  <app-avatar *ngIf="messageContent.user && messageContent.user.id != currentUser?.id" [userId]="messageContent.user.id" [width]="32"></app-avatar>
   <div class="flex flex-column w-full" [style.align-items]="isCurrentUser() ? 'flex-end' : 'flex-start'">
     <!-- Username (with reply) -->
     <small *ngIf="shouldShowUsername()" class="block text-xs text-gray-600" style="margin-left: 6px;">

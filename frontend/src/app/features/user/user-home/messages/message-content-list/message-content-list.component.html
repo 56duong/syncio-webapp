@@ -101,7 +101,7 @@
         </div>
   
         <!-- Input -->
-        <p-editor (onTextChange)="textChange($event)" 
+        <p-editor #editor (onTextChange)="textChange($event)" 
           [(ngModel)]="messageContent.message" 
           [formats]="['bold']"
           [placeholder]="('message_content_list.messages' | translate) + '...'" [style]="{ maxHeight: '40px' }">

@@ -21,6 +21,7 @@
             placeholder="Email"
             [(ngModel)]="email"
             name="email"
+            (keydown.enter)="onSubmit()"
           />
         </div>
         <!-- Username -->
@@ -30,6 +31,7 @@
             [(ngModel)]="username"
             name="username"
             placeholder="Username"
+            (keydown.enter)="onSubmit()"
           />
         </div>
         <!-- Password -->
@@ -39,6 +41,7 @@
             [placeholder]="'register.password' | translate"
             [(ngModel)]="password"
             name="password"
+            (keydown.enter)="onSubmit()"
           />
         </div>
         <!-- Confirm Password -->
@@ -48,6 +51,7 @@
             [placeholder]="'register.password_confirm' | translate"
             [(ngModel)]="retypePassword"
             name="retypePassword"
+            (keydown.enter)="onSubmit()"
           />
         </div>
       </div>

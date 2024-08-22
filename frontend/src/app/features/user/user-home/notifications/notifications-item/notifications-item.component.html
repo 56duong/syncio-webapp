@@ -37,7 +37,7 @@
     </div>
 
     <!-- First photo of the post if it exists  -->
-    <img *ngIf="notification.imageURL" [src]="notification.imageURL | constructImageUrl" style="width: 48px; height: 49px; object-fit: cover;">
+    <img *ngIf="notification.imageURL && !isVideo(notification.imageURL)" [src]="notification.imageURL | constructImageUrl" style="width: 48px; height: 49px; object-fit: cover;">
   </div>
 
 
@@ -75,7 +75,7 @@
     </div>
 
     <!-- First photo of the post if it exists  -->
-    <img *ngIf="notification.imageURL" [src]="notification.imageURL | constructImageUrl" style="width: 48px; height: 49px; object-fit: cover;">
+    <img *ngIf="notification.imageURL && !isVideo(notification.imageURL)" [src]="notification.imageURL | constructImageUrl" style="width: 48px; height: 49px; object-fit: cover;">
   </div>
 
 
@@ -113,7 +113,7 @@
     </div>
 
     <!-- First photo of the post if it exists  -->
-    <img *ngIf="notification.imageURL" [src]="notification.imageURL | constructImageUrl" style="width: 48px; height: 49px; object-fit: cover;">
+    <img *ngIf="notification.imageURL && !isVideo(notification.imageURL)" [src]="notification.imageURL | constructImageUrl" style="width: 48px; height: 49px; object-fit: cover;">
   </div>
 
   <!-- FOLLOW -->
@@ -164,7 +164,7 @@
     </div>
 
     <!-- First photo of the post if it exists  -->
-    <img *ngIf="notification.imageURL" [src]="notification.imageURL | constructImageUrl" style="width: 48px; height: 49px; object-fit: cover;">
+    <img *ngIf="notification.imageURL && !isVideo(notification.imageURL)" [src]="notification.imageURL | constructImageUrl" style="width: 48px; height: 49px; object-fit: cover;">
   </div>
 
 </div>

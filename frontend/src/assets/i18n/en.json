@@ -46,7 +46,9 @@
     "username_should_be_at_least_3_characters_and_at_most_30_characters": "Username should be at least 3 characters and at most 30 characters",
     "password_should_be_at_least_6_characters_and_at_most_100_characters": "Password should be at least 6 characters and at most 100 characters",
     "passwords_do_not_match": "Passwords do not match",
-    "password_must_contain_at_least_one_letter_and_one_number": "Password must contain at least one letter and one number and one special character"
+    "password_must_contain_at_least_one_number": "Password must contain at least one number",
+    "password_must_not_contain_whitespace": "Password must not contain whitespace",
+    "password_must_contain_letter_or_special_character": "Password must contain letter or special character"
   },
   "story_list": {
     "expand_stories": "Expand stories",
@@ -152,9 +154,7 @@
     "add": "Add",
     "remove_from_group": "Remove from group",
     "make_admin": "Make admin",
-    "remove_admin": "Remove admin",
-    "notifications": "Notifications",
-    "this_month": "This month"
+    "remove_admin": "Remove admin"
   },
   "messages": {
     "messages": "Messages",
@@ -256,7 +256,8 @@
     "image_search": "Image search",
     "who_can_see_your_content": "Who can see your content",
     "close_friends": "Close friends",
-    "messages": "Messages"
+    "messages": "Messages",
+    "change_password": "Change password"
   },
   "collection_detail": {
     "no_posts_added_to_collection_yet": "No posts added to collection yet"
@@ -375,17 +376,29 @@
     "password_changed_successfully": "Password changed successfully",
     "new_password": "New password",
     "new_password_confirm": "New password confirm",
-    "back_to_forgot_password": "Back to forgot password"
+    "back_to_forgot_password": "Back to forgot password",
+    "current_password": "Current password",
+    "confirm_new_password": "Confirm new password",
+    "forgot_password": "Forgot password",
+    "current_password_should_be_at_least_6_characters_and_at_most_100_characters": "Current password should be at least 6 characters and at most 100 characters",
+    "new_password_should_be_at_least_6_characters_and_at_most_100_characters": "New password should be at least 6 characters and at most 100 characters",
+    "current_password_must_contain_at_least_one_number": "Current password must contain at least one number",
+    "new_password_must_contain_at_least_one_number": "New password must contain at least one number",
+    "current_password_must_not_contain_whitespace": "Current password must not contain whitespace",
+    "new_password_must_not_contain_whitespace": "New password must not contain whitespace",
+    "new_passwords_do_not_match": "New passwords do not match",
+    "current_password_must_contain_letter_or_special_character": "Current password must contain letter or special character",
+    "new_password_must_contain_letter_or_special_character": "New password must contain letter or special character",
+    "password_changed_successfully_will_be_auto_logged_out_in_5_seconds": "Password changed successfully, will be auto logged out in 5 seconds"
   },
-  "verify-email":{
+  "verify-email": {
     "verify_email": "Verify email",
-    "please_check_your_email_to_verify_your_account": "Please check your email to verify your account",
     "resend_verification_email": "Resend email",
     "back_to_login": "Back to login",
     "dont_have_an_account": "Don't have an account",
     "sign_up": "Sign up",
     "email": "Email",
-    "resend_verification_email_in": "wait resend email in {{seconds}}s"
+    "resend_verification_email_in": "Wait resend email in {{seconds}}s"
   },
   "about": {
     "login": "Login",
@@ -411,5 +424,10 @@
     "minh_thanh": "Minh Thanh",
     "nguyen_duong": "Nguyen Duong",
     "quoc_thuan": "Quoc Thuan"
+  },
+  "notifications": {
+    "notifications": "Notifications",
+    "this_month": "This month",
+    "no_result_found": "No result found"
   }
 }

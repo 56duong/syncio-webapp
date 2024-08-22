@@ -3,15 +3,13 @@ package online.syncio.backend.auth;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import online.syncio.backend.auth.request.RegisterDTO;
-import online.syncio.backend.exception.AppException;
-import online.syncio.backend.exception.DataNotFoundException;
-import online.syncio.backend.exception.ExpiredTokenException;
-import online.syncio.backend.exception.InvalidParamException;
+import online.syncio.backend.exception.*;
 import online.syncio.backend.setting.SettingService;
 import online.syncio.backend.user.RoleEnum;
 import online.syncio.backend.user.StatusEnum;
 import online.syncio.backend.user.User;
 import online.syncio.backend.user.UserRepository;
+import online.syncio.backend.utils.AuthUtils;
 import online.syncio.backend.utils.CustomerForgetPasswordUtil;
 import online.syncio.backend.utils.CustomerRegisterUtil;
 import online.syncio.backend.utils.JwtTokenUtils;
@@ -46,9 +44,9 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
-    private final  TokenService tokenService;
     private final SettingService settingService;
     private final MessageSource messageSource;
+    private final AuthUtils authUtils;
 
     @Value("${url.frontend}")
     private String urlFE;
@@ -228,4 +226,21 @@ public class AuthService {
         String link = urlFE + "/confirm-user-register?token=" + token;
         CustomerForgetPasswordUtil.sendEmailTokenRegister(link, email, settingService);
     }
+
+
+    public Boolean changePassword(final String oldPassword, final String newPassword) {
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        final User user = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new NotFoundException(User.class, "id", currentUserId.toString()));
+
+        if (passwordEncoder.matches(oldPassword, user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            return true;
+        }
+        else {
+            throw new AppException(HttpStatus.FORBIDDEN, "Old password is incorrect", null);
+        }
+    }
+
 }

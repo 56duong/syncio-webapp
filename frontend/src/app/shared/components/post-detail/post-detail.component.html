@@ -34,7 +34,7 @@
         </ng-template>
       </p-carousel>
       <!-- video -->
-      <video *ngIf="post.photos && post.photos.length > 0 && post.photos[0] && isVideo(post.photos[0].url)" controls
+      <video *ngIf="post.photos && post.photos.length > 0 && post.photos[0] && isVideo(post.photos[0].url)" controls autoplay [muted]="true"
         class="w-full h-full"
         style="object-fit: cover">
         <source [src]="post.photos[0].url | constructImageUrl">

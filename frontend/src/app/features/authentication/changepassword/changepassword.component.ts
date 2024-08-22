@@ -88,4 +88,13 @@ export class ChangePasswordComponent implements OnInit {
       },
     });
   }
+
+
+  /**
+   * When user press enter key
+   */
+  onSubmit() {
+    this.changePassword();
+  }
+
 }

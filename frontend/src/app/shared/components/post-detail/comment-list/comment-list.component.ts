@@ -200,6 +200,8 @@ export class CommentListComponent {
   }
 
   /**
+   * When receiving a new comment of other users, 
+   * the comment of the current user will be appended to comments array immediately by using next() method of the observable.
    * Subscribe to the comments observable to get the Comment object in real-time.
    */
   getCommentsObservable() {

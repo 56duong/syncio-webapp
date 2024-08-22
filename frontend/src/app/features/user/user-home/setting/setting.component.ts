@@ -18,6 +18,11 @@ export class SettingComponent {
           label: this.translateService.instant('setting.edit_profile'),
           icon: 'pi pi-user',
           link: 'edit-profile',
+        },
+        {
+          label: this.translateService.instant('setting.change_password'),
+          icon: 'pi pi-lock',
+          link: 'change-password',
         }
       ]
     },

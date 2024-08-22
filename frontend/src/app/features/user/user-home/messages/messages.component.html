@@ -76,7 +76,7 @@
   <p-divider [layout]="'vertical'"></p-divider>
 
   <!-- Message Content -->
-  <div class="right col-9 message-content p-0 relative">
+  <div class="right col-9 message-content p-0">
     <app-message-content-list *ngIf="selectedMessageRoom" 
       [isMobile]="isMobile"
       [messageRoom]="selectedMessageRoom"
@@ -86,7 +86,7 @@
       (backToMessageRoomListEvent)="backToMessageRoomListEvent($event)">
     </app-message-content-list>
 
-    <div *ngIf="!selectedMessageRoom" class="flex flex-column justify-content-center align-items-center gap-3 absolute top-50 left-50" style="transform: translate(-50%, -50%);">
+    <div *ngIf="!selectedMessageRoom && !isMobile" class="flex flex-column justify-content-center align-items-center gap-3 absolute top-50 left-50" style="transform: translate(-50%, -50%);">
       <i class="pi pi-comments" style="font-size: 4rem"></i>
       <p class="my-0 text-xl">{{ 'messages.your_messages' | translate }}</p>
       <small>{{ 'messages.send_a_message_to_start_a_chat' | translate }}.</small>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { CreatePostComponent } from '../../create-post/create-post.component';
 import { Router } from '@angular/router';
 import { TokenService } from 'src/app/core/services/token.service';
@@ -9,6 +9,7 @@ import { UserLabelInfoService } from'src/app/core/services/user-label-info.servi
 import { RedirectService } from 'src/app/core/services/redirect.service';
 import { ThemeService } from 'src/app/core/services/theme.service';
 import { LoginDialogService } from 'src/app/core/services/login-dialog.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-left-menu',
@@ -41,6 +42,8 @@ export class LeftMenuComponent {
   /** Indicates if the report a problem dialog is visible */
   isVisibleReportAProblem: boolean = false;
 
+  private langChangeSubscription: Subscription = new Subscription();; // subscription to the language change event
+
   constructor(
     private router: Router,
     private tokenService: TokenService,
@@ -50,7 +53,8 @@ export class LeftMenuComponent {
     private userLabelInfoService: UserLabelInfoService,
     public redirectService: RedirectService,
     private themeService: ThemeService,
-    private loginDialogService: LoginDialogService
+    private loginDialogService: LoginDialogService,
+    private cdr: ChangeDetectorRef
   ) { }
 
 
@@ -59,6 +63,44 @@ export class LeftMenuComponent {
     this.currentUsername = this.tokenService.extractUsernameFromToken();
     this.currentTheme = this.themeService.getCurrentTheme();
 
+    this.initializeMenuItems();
+    // Subscribe to language change events
+    this.langChangeSubscription = this.translateService.onLangChange.subscribe(() => {
+      this.initializeMenuItems();
+      this.cdr.detectChanges(); // Manually trigger change detection
+    });
+
+    // Get the current tab when routing changes
+    this.router.events.subscribe(() => {
+      this.currentTab = this.router.url.split('/')[1].split('?')[0];
+      this.isHideMenuLabel = this.hideTabs.includes(this.currentTab);
+    });
+
+    // user-label
+    this.userLabelInfoService.getLabelURL(this.currentUserId).subscribe({
+      next: (resp) => {
+        if (resp) {
+          this.gifUrl = resp;
+        } else {
+          this.gifUrl = ''; // gifUrl là undefined nếu resp là null
+        }
+      },
+      error: (error) => {
+        this.gifUrl = ''; // gifUrl là undefined nếu có lỗi
+      }
+    });
+  }
+
+
+  ngOnDestroy() {
+    // Unsubscribe to avoid memory leaks
+    if (this.langChangeSubscription) {
+      this.langChangeSubscription.unsubscribe();
+    }
+  }
+
+
+  initializeMenuItems() {
     this.menus = [
       {
         label: this.translateService.instant('left_menu.home'),
@@ -128,9 +170,6 @@ export class LeftMenuComponent {
             command: () => {
               const lang = this.langService.getLang() === 'en' ? 'vi' : 'en';
               this.langService.setLang(lang);
-              setTimeout(() => {
-                this.redirectService.reloadPage();
-              }, 50);
             },
           },
           {
@@ -168,26 +207,6 @@ export class LeftMenuComponent {
         },
       });
     }
-
-    // Get the current tab when routing changes
-    this.router.events.subscribe(() => {
-      this.currentTab = this.router.url.split('/')[1].split('?')[0];
-      this.isHideMenuLabel = this.hideTabs.includes(this.currentTab);
-    });
-
-    // user-label
-    this.userLabelInfoService.getLabelURL(this.currentUserId).subscribe({
-      next: (resp) => {
-        if (resp) {
-          this.gifUrl = resp;
-        } else {
-          this.gifUrl = ''; // gifUrl là undefined nếu resp là null
-        }
-      },
-      error: (error) => {
-        this.gifUrl = ''; // gifUrl là undefined nếu có lỗi
-      }
-    });
   }
   
 

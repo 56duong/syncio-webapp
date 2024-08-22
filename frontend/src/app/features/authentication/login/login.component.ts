@@ -250,4 +250,13 @@ export class LoginComponent implements OnInit {
       },
     });
   }
+
+
+  /**
+   * When user press enter key
+   */
+  onSubmit() {
+    this.login();
+  }
+
 }

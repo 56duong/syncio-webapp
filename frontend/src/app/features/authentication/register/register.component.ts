@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NotificationService } from 'src/app/core/services/notification.service';
+import { Router } from '@angular/router';
 import { UserService } from 'src/app/core/services/user.service';
 import { UserResponse } from '../login/user.response';
 import { RegisterDTO } from './register.dto';
@@ -15,6 +14,7 @@ import { PasswordValidationService } from 'src/app/core/services/password-valida
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
+
 export class RegisterComponent {
   constructor(
     private userService: UserService,
@@ -95,50 +95,34 @@ export class RegisterComponent {
     if (this.password.length < 6 || this.password.length > 100) {
       this.toastService.showError(
         errorText,
-        this.translateService.instant(
-          'register.password_should_be_at_least_6_characters_and_at_most_100_characters'
-        )
+        this.translateService.instant('register.password_should_be_at_least_6_characters_and_at_most_100_characters')
       );
       return;
     }
 
-    if (!/[a-z]/.test(this.password)) {
+    // Check if the password contains at least one letter
+    if (!/[a-zA-Z!@#$%^&*(),.?":{}|<>]/.test(this.password)) {
       this.toastService.showError(
         errorText,
-        this.translateService.instant(
-          'Mật khẩu phải chứa ít nhất một chữ cái viết thường.'
-        )
+        this.translateService.instant('register.password_must_contain_letter_or_special_character')
       );
       return;
     }
 
-    if (!/[!@#$&*]/.test(this.password)) {
+    // Check if the password contains at least one number
+    if (!/[0-9]/.test(this.password)) {
       this.toastService.showError(
         errorText,
-        this.translateService.instant(
-          'Mật khẩu phải chứa ít nhất một ký tự đặc biệt (như !@#$&*).'
-        )
+        this.translateService.instant('register.password_must_contain_at_least_one_number')
       );
       return;
     }
 
-    // Kiểm tra số lượng chữ cái viết thường, viết hoa, và số
-    if (this.password.replace(/[^A-Z]/g, '').length < 1) {
+    // Check if the password contains space
+    if (/\s/.test(this.password)) {
       this.toastService.showError(
         errorText,
-        this.translateService.instant(
-          'Mật khẩu phải chứa ít nhất một chữ cái viết hoa.'
-        )
-      );
-      return;
-    }
-
-    if (this.password.replace(/[^a-z]/g, '').length < 3) {
-      this.toastService.showError(
-        errorText,
-        this.translateService.instant(
-          'Mật khẩu phải chứa ít nhất ba chữ cái viết thường.'
-        )
+        this.translateService.instant('register.password_must_not_contain_whitespace')
       );
       return;
     }
@@ -151,26 +135,6 @@ export class RegisterComponent {
       return;
     }
 
-    if (/\s/.test(this.password)) {
-      this.toastService.showError(
-        errorText,
-        this.translateService.instant('Mật khẩu không được chứa khoảng trắng.')
-      );
-      return;
-    }
-
-    const passwordRegex =
-      /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{6,}$/;
-
-    if (!passwordRegex.test(this.password)) {
-      this.toastService.showError(
-        errorText,
-        this.translateService.instant(
-          'register.password_must_contain_at_least_one_letter_and_one_number'
-        )
-      );
-      return;
-    }
     this.isLoading = true;
 
     const registerDTO: RegisterDTO = {
@@ -197,4 +161,13 @@ export class RegisterComponent {
       },
     });
   }
+
+
+  /**
+   * When user press enter key
+   */
+  onSubmit() {
+    this.register();
+  }
+
 }

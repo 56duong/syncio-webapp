@@ -1,6 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, Output, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextMenu } from 'primeng/contextmenu';
+import { Editor } from 'primeng/editor';
 import { Subscription } from 'rxjs';
 import { MessageContent, MessageContentTypeEnum } from 'src/app/core/interfaces/message-content';
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
@@ -64,6 +65,8 @@ export class MessageContentListComponent {
   @ViewChild('unseen') unseenElement: any;
 
   showLoading: boolean = false;
+
+  @ViewChild('editor') editor: Editor | undefined;
 
   constructor(
     private messageContentService: MessageContentService,
@@ -173,6 +176,7 @@ export class MessageContentListComponent {
     this.subscriptionMessageContents.unsubscribe();
     this.subscriptionMessageContents = this.messageContentService.getMessageContentsObservable(this.messageRoom.id).subscribe({
       next: (messageContent) => {
+        messageContent.dateSent = new Date().toISOString();
         if(Object.keys(messageContent).length > 0) {
           // append the new message content to the message contents array
           this.messageContents = [...this.messageContents, messageContent];
@@ -189,9 +193,22 @@ export class MessageContentListComponent {
 
   
   addEmoji(event: any) {
-    this.messageContent.message = `${this.messageContent.message || ''}${event.emoji.native}`;
-    // Update the plain comment with the emoji.
-    this.plainComment = event.emoji.native;
+    const emoji = event.emoji.native;
+    const editor = this.editor as any; // Assuming you have a reference to the p-editor component
+  
+    if (editor) {
+      const quill = editor.getQuill();
+      
+      // Get the length of the current content
+      const contentLength = quill.getLength();
+      
+      // Insert emoji at the very end of the content
+      quill.insertText(contentLength - 1, emoji);
+  
+      // Update the message content and plain comment
+      this.messageContent.message = quill.root.innerHTML;
+      this.plainComment = quill.root.innerText;
+    }
   }
   
   /**
@@ -210,7 +227,6 @@ export class MessageContentListComponent {
   sendMessage(type: MessageContentTypeEnum) {
     if(type === 'TEXT' && this.plainComment.trim() === '') return;
 
-    let date = new Date();
     this.messageContent = {
       ...this.messageContent,
       user: {
@@ -218,7 +234,6 @@ export class MessageContentListComponent {
         username: this.currentUser.username,
       },
       messageRoomId: this.messageRoom.id,
-      dateSent: new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString(),
       type: type,
     };
 

@@ -291,4 +291,11 @@ export class UserService {
       { headers: headers }
     );
   }
+
+
+  changePassword(oldPassword: string, newPassword: string): Observable<any> {
+    const url = `${this.apiURL}/change-password`;
+    return this.http.post(url, { oldPassword, newPassword });
+  }
+
 }

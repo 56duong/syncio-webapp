@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { Comment } from '../interfaces/comment';
 import { CompatClient, IMessage, Stomp } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
+import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +17,13 @@ export class CommentService {
 
   private webSocketURL = environment.apiUrl + 'api/live'; // WebSocket URL with 'api/live' is the endpoint for the WebSocket configuration in the backend. In WebSocketConfig.java, the endpoint is '/api/live'.
   private stompClient: CompatClient = {} as CompatClient;
-  private commentSubject: BehaviorSubject<Comment> = new BehaviorSubject<Comment>({}); // BehaviorSubject of Comment type. You can know when a new comment is received.
+  public commentSubject: BehaviorSubject<Comment> = new BehaviorSubject<Comment>({}); // BehaviorSubject of Comment type. You can know when a new comment is received.
   private subscription: any
 
-  constructor(private http: HttpClient) { 
+  constructor(
+    private http: HttpClient,
+    private tokenService: TokenService,
+  ) { 
     if (environment.android || environment.windows) {
       this.webSocketURL = this.webSocketURL.replace(environment.apiUrl, window.localStorage.getItem('apiUrl') || environment.apiUrl);
     }
@@ -48,7 +52,12 @@ export class CommentService {
 
     this.stompClient.connect({}, () => {
       this.subscription = this.stompClient.subscribe(`/topic/comment/${postId}`, (comment: IMessage) => {
-        this.commentSubject.next(JSON.parse(comment.body));
+        const cmt = JSON.parse(comment.body);
+        // the comment of the current user is append immediately in the post detail component using next method.
+        // here we are checking if the comment is not from the current user to avoid duplication.
+        if(cmt.userId !== this.tokenService.extractUserIdFromToken()) {
+          this.commentSubject.next(JSON.parse(comment.body));
+        }
       }),
       (error: any) => {
         console.error(error);

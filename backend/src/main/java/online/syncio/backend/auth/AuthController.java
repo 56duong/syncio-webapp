@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("${api.prefix}/users")
@@ -242,6 +243,15 @@ public class AuthController {
     public ResponseEntity<Void> resendRegistrationEmail(@RequestParam String email) throws Exception {
         authService.resendRegistrationEmail(email);
         return ResponseEntity.ok().build();
+    }
+
+
+    @PostMapping("/change-password")
+    public ResponseEntity<Boolean> changePassword(@RequestBody Map<String, String> passwordMap) {
+        String oldPassword = passwordMap.get("oldPassword");
+        String newPassword = passwordMap.get("newPassword");
+        final Boolean isSuccess = authService.changePassword(oldPassword, newPassword);
+        return ResponseEntity.ok(isSuccess);
     }
 
 

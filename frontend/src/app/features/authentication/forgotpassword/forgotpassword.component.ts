@@ -69,4 +69,12 @@ export class ForgotpasswordComponent {
     });
   }
 
+
+  /**
+   * When user press enter key
+   */
+  onSubmit() {
+    this.sendPasswordToMail();
+  }
+
 }

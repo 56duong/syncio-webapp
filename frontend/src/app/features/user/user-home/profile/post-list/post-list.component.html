@@ -1,7 +1,8 @@
 <!-- Grid -->
 <article *ngIf="viewMode === 'grid'" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px">
   <ng-container *ngFor="let post of posts">
-    <div *ngIf="post.photos && post.photos.length > 0" 
+    <!-- photos -->
+    <div *ngIf="post.photos && post.photos.length > 0 && !isVideo(post.photos[0].url)" 
       style="aspect-ratio: 1/1; cursor: pointer;"
       (click)="handleShowPostDetail(post)">
       <img height="100%"
@@ -9,6 +10,19 @@
         [src]="post.photos[0].url | constructImageUrl"
         [alt]="post.photos[0].altText"
         style="object-fit: cover; display: block;" />
+    </div>
+    <!-- video -->
+    <div *ngIf="post.photos && post.photos.length > 0 && post.photos[0] && isVideo(post.photos[0].url)"
+      class="relative"
+      style="aspect-ratio: 1/1; cursor: pointer;"
+      (click)="handleShowPostDetail(post)">
+      <video muted
+        class="w-full h-full"
+        style="object-fit: cover">
+        <source [src]="post.photos[0].url | constructImageUrl">
+        Your browser does not support the video tag.
+      </video>
+      <span class="pi pi-video absolute top-0 right-0 p-2" style="color: var(--surface-0)"></span>
     </div>
   </ng-container>
 
