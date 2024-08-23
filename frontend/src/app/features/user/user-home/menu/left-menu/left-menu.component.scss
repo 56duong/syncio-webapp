@@ -247,6 +247,12 @@ p-tieredMenu ::ng-deep {
   }
 }
 
+.main ::ng-deep .has-unseen-messages {
+  .p-button-icon {
+    color: red !important;
+  }
+}
+
 // xu ly hien thi user label
 @media (max-width: 992px) {
   .user-label {

@@ -157,4 +157,11 @@ public class UserController {
         return ResponseEntity.ok(Collections.singletonMap("userId", userId));
     }
 
+
+    @GetMapping("/check-status/{id}")
+    public ResponseEntity<Map<String, String>> checkUserStatusById(@PathVariable(name = "id") final UUID id) {
+        final String status = userService.checkUserStatusById(id);
+        return ResponseEntity.ok(Collections.singletonMap("status", status));
+    }
+
 }

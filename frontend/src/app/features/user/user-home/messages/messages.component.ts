@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { filter, Subscription } from 'rxjs';
 import { MessageContent, MessageContentTypeEnum } from 'src/app/core/interfaces/message-content';
 import { MessageRoom } from 'src/app/core/interfaces/message-room';
 import { User } from 'src/app/core/interfaces/user';
@@ -34,7 +35,8 @@ export class MessagesComponent {
   MessageContentTypeEnum = MessageContentTypeEnum;
 
   subscriptionMessageContentsMap: Map<string, any> = new Map(); // Map of subscriptions to the message contents observable
-  
+  private routerSubscription: Subscription = new Subscription();
+
   constructor(
     private messageRoomService: MessageRoomService,
     private tokenService: TokenService,
@@ -66,6 +68,19 @@ export class MessagesComponent {
 
     this.messageRoomService.connectWebSocketFirstMessage();
     this.getMessageRoomsFirstMessageObservable();
+
+    // when change route, reset the selected message room
+    this.routerSubscription = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe({
+      next: (event) => {
+        if(this.router.url.includes('/messages/inbox')) return;
+        this.selectedMessageRoom = {} as MessageRoom;
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
 
 
@@ -96,10 +111,13 @@ export class MessagesComponent {
       else {
         room = {...room, lastMessage: messageContent, unSeenCount: room.unSeenCount ? room.unSeenCount + 1 : 1};
       }
+      
       // Remove the room from its current position
       this.messageRooms.splice(roomIndex, 1);
       // Unshift the room to the beginning of the array
       this.messageRooms.unshift(room);
+
+      this.checkUnSeenCount(this.messageRooms);
     }
   }
 
@@ -161,6 +179,7 @@ export class MessagesComponent {
       next: (messageRooms) => {
         this.messageRooms = messageRooms;
         this.connectAndSubscribeToMessageRooms();
+        this.checkUnSeenCount(this.messageRooms);
         // Get the selected message room from the URL in case of page refresh.
         const roomId = this.router.url.split('/')[3];
         if(roomId) {
@@ -258,10 +277,14 @@ export class MessagesComponent {
     this.updateLastSeenMessage(this.selectedMessageRoom);
 
     this.selectedMessageRoom = {...messageRoom};
+    this.selectedMessageRoom = this.selectedMessageRoom;
+    console.log(this.selectedMessageRoom);
+    
     // Reset the unSeenCount to 0 when the message room is selected.
     const index = this.messageRooms.findIndex(room => room.id === this.selectedMessageRoom.id);
     if(index !== -1) {
       this.messageRooms[index].unSeenCount = 0;
+      this.checkUnSeenCount(this.messageRooms);
     }
     
     this.updateLastSeenMessage(messageRoom);
@@ -416,6 +439,17 @@ export class MessagesComponent {
     }
     else {
       this.messageContainerElement.nativeElement.scrollLeft += this.messageContainerElement.nativeElement.scrollWidth;
+    }
+  }
+
+
+  checkUnSeenCount(messageRooms: MessageRoom[]) {
+    let isHaveUnseen = messageRooms.some(room => (room.unSeenCount ?? 0) > 0);
+    if(isHaveUnseen) {
+      document.getElementById('MessagesButton')?.classList.add('has-unseen-messages');
+    }
+    else {
+      document.getElementById('MessagesButton')?.classList.remove('has-unseen-messages');
     }
   }
 

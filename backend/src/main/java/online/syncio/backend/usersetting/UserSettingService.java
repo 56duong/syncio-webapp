@@ -220,7 +220,7 @@ public class UserSettingService {
         RestTemplate restTemplate = new RestTemplate();
 
         // find all the images in the database
-        List<UserSetting> userSettings = userSettingRepository.findAllByFindableByImageUrlNotNull();
+        List<UserSetting> userSettings = userSettingRepository.findAllByFindableByImageUrlNotNullAndUserIsActive();
 
         if (userSettings.isEmpty()) {
             throw new AppException(HttpStatus.BAD_REQUEST, "No matching images found", null);

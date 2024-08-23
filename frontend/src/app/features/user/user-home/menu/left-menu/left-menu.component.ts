@@ -10,11 +10,14 @@ import { RedirectService } from 'src/app/core/services/redirect.service';
 import { ThemeService } from 'src/app/core/services/theme.service';
 import { LoginDialogService } from 'src/app/core/services/login-dialog.service';
 import { Subscription } from 'rxjs';
+import { MessagesComponent } from '../../messages/messages.component';
+import { MessageContentService } from 'src/app/core/services/message-content.service';
 
 @Component({
   selector: 'app-left-menu',
   templateUrl: './left-menu.component.html',
   styleUrls: ['./left-menu.component.scss'],
+  providers: [MessagesComponent],
 })
 
 export class LeftMenuComponent {
@@ -54,7 +57,8 @@ export class LeftMenuComponent {
     public redirectService: RedirectService,
     private themeService: ThemeService,
     private loginDialogService: LoginDialogService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private messageContentService: MessageContentService,
   ) { }
 
 
@@ -89,6 +93,20 @@ export class LeftMenuComponent {
         this.gifUrl = ''; // gifUrl là undefined nếu có lỗi
       }
     });
+
+    // message
+    if(this.currentUserId) {
+      this.messageContentService.existsUnseenMessages().subscribe({
+        next: (resp) => {
+          if(resp) {
+            document.getElementById('MessagesButton')?.classList.add('has-unseen-messages');
+          }
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      });
+    }
   }
 
 

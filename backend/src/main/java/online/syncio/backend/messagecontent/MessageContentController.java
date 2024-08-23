@@ -77,4 +77,10 @@ public class MessageContentController {
         return ResponseEntity.ok(messageContentService.uploadPhotos(photos));
     }
 
+
+    @GetMapping("/exists-unseen-messages")
+    public ResponseEntity<Boolean> existsUnseenMessages() {
+        return ResponseEntity.ok(messageContentService.existsUnseenMessages());
+    }
+
 }

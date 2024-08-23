@@ -43,7 +43,7 @@ export class MessageRoomService {
   /**
    * Subscription for first message.
    */
-  private subscriptionFirstMessage: any
+  private subscriptionFirstMessage: any;
 
   constructor(
     private http: HttpClient,

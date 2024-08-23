@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Post } from 'src/app/core/interfaces/post';
 import { PostCollection } from 'src/app/core/interfaces/post-collection';
 import { PostCollectionDetailService } from 'src/app/core/services/post-collection-detail.service';
@@ -23,7 +23,8 @@ export class CollectionDetailComponent {
     private route: ActivatedRoute,
     private postCollectionService: PostCollectionService,
     private postCollectionDetailService: PostCollectionDetailService,
-    private seoService: SeoService
+    private seoService: SeoService,
+    private router: Router,
   ) { }
 
 
@@ -46,6 +47,10 @@ export class CollectionDetailComponent {
       },
       error: (error) => {
         console.error(error);
+        if (error.status === 404) {
+          // redirect to 404 page
+          this.router.navigate(['/not-found']);
+        }
       }
     });
   }

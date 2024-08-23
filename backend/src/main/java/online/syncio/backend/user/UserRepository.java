@@ -45,7 +45,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     void saveQRCODE(@Param("userQRCode") String userQRCode, @Param("id") UUID id);
 
 
-    @Query("SELECT u FROM User u LEFT JOIN FETCH u.posts WHERE u.id = :id")
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.posts WHERE u.id = :id AND u.status = 'ACTIVE'")
     Optional<User> findByIdWithPosts(@Param("id") UUID id);
 
     @Query("SELECT u.username FROM User u WHERE u.id = :id")
@@ -104,5 +104,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
                 "ORDER BY total_interactions DESC",
             nativeQuery = true)
     List<Object[]> findTopUsersByInteractionsInNDays(@Param("startDate") LocalDateTime startDate, @Param("limit") int limit);
+
+    @Query("SELECT u.status FROM User u WHERE u.id = :id")
+    Optional<String> findStatusById(UUID id);
 
 }
