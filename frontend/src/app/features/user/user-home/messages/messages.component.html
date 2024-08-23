@@ -77,7 +77,7 @@
 
   <!-- Message Content -->
   <div class="right col-9 message-content p-0">
-    <app-message-content-list *ngIf="selectedMessageRoom" 
+    <app-message-content-list *ngIf="selectedMessageRoom && selectedMessageRoom.id" 
       [isMobile]="isMobile"
       [messageRoom]="selectedMessageRoom"
       [currentUser]="currentUser"
@@ -86,7 +86,7 @@
       (backToMessageRoomListEvent)="backToMessageRoomListEvent($event)">
     </app-message-content-list>
 
-    <div *ngIf="!selectedMessageRoom && !isMobile" class="flex flex-column justify-content-center align-items-center gap-3 absolute top-50 left-50" style="transform: translate(-50%, -50%);">
+    <div *ngIf="(!selectedMessageRoom || !selectedMessageRoom.id) && !isMobile" class="flex flex-column justify-content-center align-items-center gap-3 h-full">
       <i class="pi pi-comments" style="font-size: 4rem"></i>
       <p class="my-0 text-xl">{{ 'messages.your_messages' | translate }}</p>
       <small>{{ 'messages.send_a_message_to_start_a_chat' | translate }}.</small>

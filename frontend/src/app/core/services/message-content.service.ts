@@ -157,4 +157,10 @@ export class MessageContentService {
     return this.http.post<string[]>(`${this.apiURL}/upload`, formData);
   }
 
+
+  existsUnseenMessages(): Observable<boolean> {
+    const url = `${this.apiURL}/exists-unseen-messages`;
+    return this.http.get<boolean>(url);
+  }
+
 }

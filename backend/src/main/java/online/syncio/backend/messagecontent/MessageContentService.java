@@ -93,4 +93,9 @@ public class MessageContentService {
         return true;
     }
 
+
+    public boolean existsUnseenMessages() {
+        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
+        return messageContentRepository.existsUnseenMessages(currentUserId);
+    }
 }

@@ -2,6 +2,7 @@ package online.syncio.backend.messagecontent;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -18,5 +19,8 @@ public interface MessageContentRepository extends JpaRepository<MessageContent, 
     Long countByMessageRoomIdAndDateSentAfterAndUserIdNot(UUID messageRoomId, LocalDateTime dateSent, UUID userId);
 
     Optional<MessageContent> findFirstByMessageRoomIdOrderByDateSentDesc(UUID messageRoomId);
+
+    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END FROM MessageContent m JOIN MessageRoomMember mm ON m.messageRoom.id = mm.messageRoom.id WHERE mm.user.id = :userId AND m.dateSent > mm.lastSeen")
+    boolean existsUnseenMessages(@Param("userId") UUID userId);
 
 }

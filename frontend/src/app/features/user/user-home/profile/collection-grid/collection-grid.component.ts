@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { PostCollection } from 'src/app/core/interfaces/post-collection';
 import { ConstructImageUrlPipe } from 'src/app/core/pipes/construct-image-url.pipe';
+import { LoadingService } from 'src/app/core/services/loading.service';
 import { LoginDialogService } from 'src/app/core/services/login-dialog.service';
 import { PostCollectionService } from 'src/app/core/services/post-collection.service';
 import { ToastService } from 'src/app/core/services/toast.service';
@@ -33,7 +34,8 @@ export class CollectionGridComponent {
     private constructImageUrlPipe: ConstructImageUrlPipe,
     public imageUtils: ImageUtils,
     private router: Router,
-    private loginDialogService: LoginDialogService
+    private loginDialogService: LoginDialogService,
+    private loadingService: LoadingService
   ) { }
 
 
@@ -99,6 +101,8 @@ export class CollectionGridComponent {
 
 
   saveCollection() {
+    this.loadingService.show();
+
     const formData = new FormData();
     formData.append('postCollection', new Blob(
       [JSON.stringify(this.selectedCollection)], 
@@ -116,6 +120,12 @@ export class CollectionGridComponent {
       // Update
       this.postCollectionService.update(formData).subscribe({
         next: (data) => {
+          //update in list 
+          let index = this.collections.findIndex(x => x.id == this.selectedCollection.id);
+          if(index != -1) {
+            this.collections[index] = { ...this.selectedCollection };
+          }
+          
           this.isVisibleAddCollection = false;
           this.toastService.showSuccess(
             this.translateService.instant('common.success'), 
@@ -124,9 +134,15 @@ export class CollectionGridComponent {
           this.imageUtils.refreshDateTime();
           // reset
           this.reset();
+          this.loadingService.hide();
         },
         error: (error) => {
           console.error(error);
+          this.loadingService.hide();
+          this.toastService.showError(
+            this.translateService.instant('common.error'),
+            error.error.message
+          );
         }
       });
     } 
@@ -146,9 +162,11 @@ export class CollectionGridComponent {
           // set sticker group id and add to table
           this.selectedCollection.id = data;
           this.selectedCollection.imageUrl = "collections/" + data + ".jpg";
+          this.selectedCollection.createdById = this.currentUserId;
           this.collections = [this.selectedCollection, ...(this.collections || [])];
           // reset
           this.reset();
+          this.loadingService.hide();
         },
         error: (error) => {
           console.error(error);
