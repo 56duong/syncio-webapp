@@ -16,6 +16,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+import java.util.TimeZone;
 
 @SpringBootApplication
 @EnableJpaAuditing
@@ -30,6 +31,7 @@ public class BackendApplication {
 	@Autowired
 	PasswordEncoder passwordEncoder;
 	public static void main(String[] args) {
+		TimeZone.setDefault(TimeZone.getTimeZone("GMT+7:00"));
 		SpringApplication.run(BackendApplication.class, args);
 	}
 

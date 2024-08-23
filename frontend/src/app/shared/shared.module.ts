@@ -27,8 +27,8 @@ import { LoginDialogComponent } from './components/login-dialog/login-dialog.com
 
 @NgModule({
   declarations: [
-    PostComponent, 
-    LikeComponent, 
+    PostComponent,
+    LikeComponent,
     PostDetailComponent,
     ReportComponent,
     ResizableDraggableComponent,
@@ -45,7 +45,7 @@ import { LoginDialogComponent } from './components/login-dialog/login-dialog.com
     CollectionListComponent,
     CollectionDetailComponent,
     UserReportComponent,
-    LoginDialogComponent
+    LoginDialogComponent,
   ],
   imports: [
     PickerComponent,
@@ -54,7 +54,7 @@ import { LoginDialogComponent } from './components/login-dialog/login-dialog.com
     PrimengModule,
     FormsModule,
     ReactiveFormsModule,
-    TranslateModule
+    TranslateModule,
   ],
   exports: [
     PostComponent,
@@ -68,7 +68,7 @@ import { LoginDialogComponent } from './components/login-dialog/login-dialog.com
     LoadingComponent,
     CollectionListComponent,
     UserReportComponent,
-    LoginDialogComponent
+    LoginDialogComponent,
   ],
 })
 export class SharedModule {}

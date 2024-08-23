@@ -67,7 +67,7 @@ public class LabelService {
                 .map(label -> mapToDTO(label, new LabelDTO()))
                 .toList();
     }
-    @Cacheable(value = "labelsWithPurchaseStatus", key = "#user_id")
+   @Cacheable(value = "labelsWithPurchaseStatus", key = "#user_id", condition = "#user_id != null")
     public List<LabelResponseDTO> getAllLabelWithPurcharseStatus (UUID user_id) {
         // lay ra tat ca cac label tu db
         List<Label> labels = labelRepository.findAll();

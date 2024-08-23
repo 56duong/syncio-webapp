@@ -60,7 +60,10 @@ public class ReportService {
     }
     public void sendImageForVerification(String imageUrl, UUID postId) {
         if (imageUrl != null && !imageUrl.isEmpty()) {
-            String fullImageUrl = frontendUrl + "/api/v1/posts/images/" + imageUrl + "?postId=" + postId;
+            String firebaseBaseUrl = "https://firebasestorage.googleapis.com/v0/b/syncio-bf6ca.appspot.com/o/";
+            String encodedImageUrl = imageUrl.replaceAll("/", "%2F");
+            String fullImageUrl = firebaseBaseUrl + encodedImageUrl + "?alt=media" + "?postId=" + postId;;
+//            String fullImageUrl = frontendUrl + "api/v1/posts/images/" + imageUrl + "?postId=" + postId;
             try {
                 System.out.println("Sending image for verification: " + fullImageUrl);
                 rabbitTemplate.convertAndSend(JobQueue.EXCHANGE_CHECKIMAGE_AI, JobQueue.ROUTING_KEY_CHECKIMAGE_AI, fullImageUrl);
