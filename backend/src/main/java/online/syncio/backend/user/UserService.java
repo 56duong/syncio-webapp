@@ -92,7 +92,9 @@ public class UserService {
 
         UserProfile cachedUserProfile = userRedisService.getCachedUserProfile(id);
         if (cachedUserProfile != null) {
-            return cachedUserProfile;
+            if(checkUserStatusById(id).equals("ACTIVE")) {
+                return cachedUserProfile;
+            }
         }
 
         // If not in cache, fetch from the database
@@ -104,6 +106,7 @@ public class UserService {
 
         return userProfile;
     }
+
     public UserProfile getUserProfileNotUseCache (final UUID id) {
         return userRepository.findByIdWithPosts(id)
                              .map(user -> userMapper.mapToUserProfile(user, new UserProfile()))
@@ -308,6 +311,12 @@ public class UserService {
 
     public UUID getUserIdByUsername(final String username) {
         return userRepository.findUserIdByUsername(username);
+    }
+
+
+    public String checkUserStatusById(UUID id) {
+        return userRepository.findStatusById(id)
+                .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
     }
 
 }

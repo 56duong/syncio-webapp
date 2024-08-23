@@ -1,5 +1,6 @@
 package online.syncio.backend.story;
 
+import online.syncio.backend.user.StatusEnum;
 import online.syncio.backend.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,12 +21,12 @@ public interface StoryRepository extends JpaRepository<Story, UUID> {
      * @param createdDate
      * @return
      */
-    List<Story> findAllByCreatedBy_IdAndCreatedDateAfterOrderByCreatedDate(UUID userId, LocalDateTime createdDate);
+    List<Story> findAllByCreatedBy_IdAndCreatedBy_StatusAndCreatedDateAfterOrderByCreatedDate(UUID userId, StatusEnum status, LocalDateTime createdDate);
 
-    @Query("SELECT u FROM User u JOIN u.stories s WHERE s.createdDate > :createdDate")
+    @Query("SELECT u FROM User u JOIN u.stories s WHERE s.createdDate > :createdDate AND u.status = 'ACTIVE'")
     List<User> findAllUsersWithAtLeastOneStoryAfterCreatedDate(LocalDateTime createdDate);
 
-    @Query("SELECT u FROM User u JOIN u.stories s WHERE s.createdDate > :createdDate AND u.id = :userId")
+    @Query("SELECT u FROM User u JOIN u.stories s WHERE s.createdDate > :createdDate AND u.id = :userId AND u.status = 'ACTIVE'")
     User findUserWithAtLeastOneStoryAfterCreatedDate(UUID userId, LocalDateTime createdDate);
 
 }

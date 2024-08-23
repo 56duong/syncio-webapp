@@ -175,6 +175,9 @@ export class ProfileComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error getting user profile', error);
+        if (error.status === 404) {
+          this.router.navigate(['/not-found']);
+        }
       },
     });
   }

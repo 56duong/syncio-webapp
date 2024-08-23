@@ -12,7 +12,8 @@ import java.util.UUID;
 public interface UserSettingRepository extends JpaRepository<UserSetting, UUID> {
     Optional<UserSetting> findByUserId(UUID userId);
 
-    List<UserSetting> findAllByFindableByImageUrlNotNull();
+    @Query(value = "SELECT us FROM UserSetting us JOIN us.user u WHERE us.findableByImageUrl IS NOT NULL AND u.status = 'ACTIVE'")
+    List<UserSetting> findAllByFindableByImageUrlNotNullAndUserIsActive();
 
     @Query(value = "SELECT who_can_add_you_to_group_chat FROM user_setting WHERE user_id = :id", nativeQuery = true)
     WhoCanAddYouToGroupChat getWhoCanAddYouToGroupChat(UUID id);

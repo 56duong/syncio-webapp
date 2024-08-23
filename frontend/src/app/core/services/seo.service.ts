@@ -30,7 +30,6 @@ export class SeoService {
     }
     
     const fullUrl = window.location.href;
-    console.log(fullUrl);
     this.meta.updateTag({ property: 'og:url', content: fullUrl });
   }
 

@@ -68,14 +68,14 @@ public class PostCollectionService {
 
 
     public PostCollectionDTO findById(final UUID id) {
-        return postCollectionRepository.findById(id)
+        return postCollectionRepository.findByIdAndCreatedByIsActive(id)
                 .map(postCollection -> postCollectionMapper.mapToDTO(postCollection, new PostCollectionDTO()))
                 .orElseThrow(() -> new NotFoundException(PostCollection.class, "id", id.toString()));
     }
 
 
     public List<PostCollectionDTO> findByCreatedById(final UUID userId) {
-        final List<PostCollection> posts = postCollectionRepository.findByCreatedByIdOrderByCreatedDateDesc(userId);
+        final List<PostCollection> posts = postCollectionRepository.findByCreatedByIdAndCreatedByIsActiveOrderByCreatedDateDesc(userId);
         return posts.stream()
                     .map(postCollection -> postCollectionMapper.mapToDTO(postCollection, new PostCollectionDTO()))
                     .collect(Collectors.toList());

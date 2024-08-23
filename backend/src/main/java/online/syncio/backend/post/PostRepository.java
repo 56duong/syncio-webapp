@@ -1,6 +1,5 @@
 package online.syncio.backend.post;
 
-import online.syncio.backend.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,13 +20,13 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
      */
     @Query(value = "SELECT p.*, ucf.user_id AS ucf_user_id " +
             "FROM post p " +
-            "LEFT JOIN user_close_friend ucf ON p.user_id = ucf.user_id " +
+                "LEFT JOIN user_close_friend ucf ON p.user_id = ucf.user_id " +
             "WHERE p.flag = true " +
-            "AND p.user_id = :userId " +
-            "AND (p.user_id = :currentUserId OR " +
-            "p.visibility = 'PUBLIC' OR " +
-            "(p.visibility = 'CLOSE_FRIENDS' AND ucf.close_friend_id = :currentUserId) OR " +
-            "(p.visibility = 'PRIVATE' AND p.user_id = :currentUserId)) " +
+                "AND p.user_id = :userId " +
+                "AND (p.user_id = :currentUserId OR " +
+                    "p.visibility = 'PUBLIC' OR " +
+                    "(p.visibility = 'CLOSE_FRIENDS' AND ucf.close_friend_id = :currentUserId) OR " +
+                    "(p.visibility = 'PRIVATE' AND p.user_id = :currentUserId)) " +
             "ORDER BY p.created_date DESC", nativeQuery = true)
     List<Post> findAllPostsByUser(@Param("userId") UUID userId, @Param("currentUserId") UUID currentUserId);
 
@@ -65,10 +64,6 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
     @Query(value = "SELECT url FROM post_photos WHERE post_id = :postId LIMIT 1", nativeQuery = true)
     String findFirstPhotoIdByPostId(UUID postId);
 
-    long countByCreatedByAndCreatedDateAfter(User user, LocalDateTime date);
-
-    long countByCreatedBy_Id (UUID id);
-
     Page<Post> findByReportsIsNotNullAndFlagTrue(Pageable pageable);
     Page<Post> findByReportsIsNotNullAndFlagFalse(Pageable pageable);
 
@@ -83,10 +78,12 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
      * @param daysAgo the number of days ago that the post was created
      * @return
      */
-    @Query(value = "SELECT p.*, ucf.user_id AS ucf_user_id " +
+    @Query(value = "SELECT ucf.user_id AS ucf_user_id, u.id AS uid, p.* " +
         "FROM post p " +
             "LEFT JOIN user_close_friend ucf ON p.user_id = ucf.user_id " +
+            "LEFT JOIN user u ON p.user_id = u.id " +
             "WHERE p.flag = true " +
+                "AND u.status = 'ACTIVE' " +
                 "AND p.user_id IN (:users) " +
                 "AND p.created_date >= :daysAgo " +
                 "AND (p.user_id = :userId OR " +
@@ -110,13 +107,15 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
      * @param keywords the keywords to match in the posts.
      * @return
      */
-    @Query(value = "SELECT * " +
+    @Query(value = "SELECT p.*, u.id AS uid, p.user_id AS post_user_id " +
             "FROM post p " +
+                "LEFT JOIN user u ON p.user_id = u.id " +
             "WHERE p.flag = true " +
-            "AND p.visibility = 'PUBLIC' " +
-            "AND (COALESCE(:following) IS NULL OR p.user_id NOT IN :following) " +
-            "AND (COALESCE(:postIds) IS NULL OR p.id NOT IN :postIds) " +
-            "AND (COALESCE(:keywords) IS NULL OR p.keywords REGEXP :keywords) " +
+                "AND u.status = 'ACTIVE' " +
+                "AND p.visibility = 'PUBLIC' " +
+                "AND (COALESCE(:following) IS NULL OR p.user_id NOT IN :following) " +
+                "AND (COALESCE(:postIds) IS NULL OR p.id NOT IN :postIds) " +
+                "AND (COALESCE(:keywords) IS NULL OR p.keywords REGEXP :keywords) " +
             "ORDER BY LENGTH(REPLACE(p.keywords, COALESCE(:keywords, ''), '')) DESC", nativeQuery = true)
     Page<Post> findPostsByUserInterests(Pageable pageable, @Param("following") Set<UUID> following, @Param("postIds") Set<UUID> postIds, @Param("keywords") String keywords);
 
@@ -130,19 +129,23 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
      * @param
      * @return
      */
-    @Query(value = "SELECT * " +
+    @Query(value = "SELECT p.*, u.id AS uid " +
             "FROM post p " +
+                "LEFT JOIN user u ON p.user_id = u.id " +
             "WHERE p.flag = true " +
-            "AND p.visibility = 'PUBLIC' " +
-            "AND (COALESCE(:postIds) IS NULL OR p.id NOT IN :postIds) " +
+                "AND u.status = 'ACTIVE' " +
+                "AND p.visibility = 'PUBLIC' " +
+                "AND (COALESCE(:postIds) IS NULL OR p.id NOT IN :postIds) " +
             "ORDER BY p.created_date DESC", nativeQuery = true)
     Page<Post> findPostsFeed(@Param("postIds") Set<UUID> postIds, Pageable pageable);
 
-    @Query(value = "SELECT * " +
+    @Query(value = "SELECT p.*, u.id AS uid " +
             "FROM post p " +
+                "LEFT JOIN user u ON p.user_id = u.id " +
             "WHERE p.flag = true " +
-            "AND p.visibility = :visibility " +
-            "AND p.user_id = :userId ", nativeQuery = true)
+                "AND u.status = 'ACTIVE' " +
+                "AND p.visibility = :visibility " +
+                "AND p.user_id = :userId ", nativeQuery = true)
     Page<Post> findPostsByVisibilityAndUserId(@Param("visibility") String visibility, @Param("userId") UUID userId, Pageable pageable);
 
     Long countByCreatedById(UUID userId);
@@ -157,14 +160,14 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
             "ORDER BY date DESC", nativeQuery = true)
     List<Map<String, Object>> countEngagementMetricsSince(@Param("startDate") LocalDateTime startDate);
 
-    @Query(value = "SELECT p.* " +
+    @Query(value = "SELECT ucf.user_id AS ucf_user_id, u.id AS uid, p.* " +
             "FROM post p " +
                 "LEFT JOIN user_close_friend ucf ON p.user_id = ucf.user_id " +
-                "LEFT JOIN user u ON :userId = u.id " +
+                "LEFT JOIN user u ON p.user_id = u.id " +
             "WHERE p.flag = true " +
+                "AND u.status = 'ACTIVE' " +
                 "AND p.id = :postId " +
                 "AND (u.role = 'ADMIN' OR " +
-                    "p.user_id = :userId OR " +
                     "p.visibility = 'PUBLIC' OR " +
                     "(p.visibility = 'CLOSE_FRIENDS' AND ucf.close_friend_id = :userId) OR " +
                     "(p.visibility = 'PRIVATE' AND p.user_id = :userId)) " +

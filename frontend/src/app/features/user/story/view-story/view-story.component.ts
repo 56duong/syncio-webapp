@@ -57,6 +57,10 @@ export class ViewStoryComponent {
   getStoriesByUserId(userId: string) {
     this.storyService.getStoriesByUserId(userId).subscribe({
       next: (stories) => {
+        if(!stories || stories.length === 0) {
+          this.router.navigate(['/not-found']);
+          return;
+        }
         this.stories = stories;
         // Find the first unread story
         const index = this.stories.findIndex(story => !story.viewed);

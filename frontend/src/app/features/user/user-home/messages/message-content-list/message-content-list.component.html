@@ -64,7 +64,7 @@
         </i>
       </div>
   
-      <div class="message-input flex justify-content-between align-items-center w-full px-2 gap-2">
+      <div *ngIf="isAvailableRoom" class="message-input flex justify-content-between align-items-center w-full px-2 gap-2">
         <!-- Emoji -->
         <div class="relative">
           <i (click)="isEmojiPickerVisible = !isEmojiPickerVisible"
@@ -78,7 +78,7 @@
   
         <!-- Sticker -->
         <div>
-          <i (click)="op.toggle($event)" 
+          <i (click)="op.toggle($event); isEmojiPickerVisible = false;" 
             class="fa-regular fa-note-sticky cursor-pointer text-xl"></i>
           <p-overlayPanel #op styleClass="max-w-screen">
             <div class="flex flex-column gap-3 w-25rem" style="max-width: 100%;">

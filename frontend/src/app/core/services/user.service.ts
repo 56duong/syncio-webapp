@@ -298,4 +298,10 @@ export class UserService {
     return this.http.post(url, { oldPassword, newPassword });
   }
 
+
+  checkUserStatusById(userId: string): Observable<any> {
+    const url = `${this.apiURL}/check-status/${userId}`;
+    return this.http.get(url);
+  }
+
 }

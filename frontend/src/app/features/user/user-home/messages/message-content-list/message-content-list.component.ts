@@ -9,6 +9,7 @@ import { Sticker } from 'src/app/core/interfaces/sticker';
 import { User } from 'src/app/core/interfaces/user';
 import { MessageContentService } from 'src/app/core/services/message-content.service';
 import { MessageRoomMemberService } from 'src/app/core/services/message-room-member.service';
+import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-message-content-list',
@@ -68,10 +69,13 @@ export class MessageContentListComponent {
 
   @ViewChild('editor') editor: Editor | undefined;
 
+  isAvailableRoom: boolean = false;
+
   constructor(
     private messageContentService: MessageContentService,
     private messageRoomMemberService: MessageRoomMemberService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private userService: UserService,
   ) { }
 
 
@@ -160,6 +164,20 @@ export class MessageContentListComponent {
           ...this.messageRoom,
           members: messageRoomMembers
         };
+        // if not group check status of the other user
+        if(this.messageRoom.group) {
+          this.isAvailableRoom = true;
+        }
+        else {
+          this.userService.checkUserStatusById(this.getMemberNotMe()).subscribe({
+            next: (response) => {
+              this.isAvailableRoom = response.status === 'ACTIVE';
+            },
+            error: (error) => {
+              console.log(error);
+            }
+          });
+        }
       },
       error: (error) => {
         console.log(error);
@@ -227,6 +245,8 @@ export class MessageContentListComponent {
   sendMessage(type: MessageContentTypeEnum) {
     if(type === 'TEXT' && this.plainComment.trim() === '') return;
 
+    this.isEmojiPickerVisible = false;
+
     this.messageContent = {
       ...this.messageContent,
       user: {
@@ -285,6 +305,8 @@ export class MessageContentListComponent {
    * @param event The event object containing the selected photos.
    */
   sendPhotos(event: any) {
+    this.isEmojiPickerVisible = false;
+    
     const selectedPhotos = Array.from(event.files);
 
     const formData = new FormData();
