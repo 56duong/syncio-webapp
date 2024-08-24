@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.user.User;
+import online.syncio.backend.user.UserRedisService;
 import online.syncio.backend.user.UserRepository;
 import online.syncio.backend.utils.AuthUtils;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class UserCloseFriendService {
     private final UserCloseFriendRepository userCloseFriendRepository;
     private final AuthUtils authUtils;
     private final UserRepository userRepository;
-
+    private final UserRedisService userRedisService;
 
     /**
      * Toggle close friend status of a user.
@@ -57,10 +58,6 @@ public class UserCloseFriendService {
      */
     public boolean removeCloseFriend(UUID targetId) {
         final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
-        User user = userRepository.findById(currentUserId)
-                .orElseThrow(() -> new NotFoundException(User.class, "id", currentUserId.toString()));
-        User target = userRepository.findById(targetId)
-                .orElseThrow(() -> new NotFoundException(User.class, "id", targetId.toString()));
 
         boolean isCloseFriend = userCloseFriendRepository.existsByTargetIdAndActorId(targetId, currentUserId);
 
@@ -68,9 +65,12 @@ public class UserCloseFriendService {
         if (isCloseFriend) {
             // remove from close friends
             userCloseFriendRepository.deleteByTargetIdAndActorId(targetId, currentUserId);
+            userRedisService.invalidateUserProfileCache(targetId);
             return true; // Successfully removed from close friends
         }
+        userRedisService.invalidateUserProfileCache(targetId);
         return false; // Not in close friends
+
     }
 
 

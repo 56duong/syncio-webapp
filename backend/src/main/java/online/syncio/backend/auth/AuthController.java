@@ -46,8 +46,7 @@ public class AuthController {
 
     @Value("${url.frontend}")
     private String urlFE;
-//    private final RabbitTemplate rabbitTemplate;
-//    private final RabbitMQUtils rabbitMQService;
+
     /**
      * Register a new user
      * @param registerDTO
@@ -152,7 +151,7 @@ public class AuthController {
             return new ResponseEntity<>(new DataNotFoundException("User not exist"), HttpStatus.BAD_REQUEST);
         }
         String token = authService.updateResetPasswordToken(forgotPasswordForm.getEmail());
-        String link = urlFE + "/reset_password?token=" + token;
+        String link = urlFE + "reset_password?token=" + token;
 
         CustomerForgetPasswordUtil.sendEmail(link, forgotPasswordForm.getEmail(), settingService);
 

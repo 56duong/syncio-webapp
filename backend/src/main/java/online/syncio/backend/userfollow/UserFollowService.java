@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import online.syncio.backend.exception.NotFoundException;
 import online.syncio.backend.user.User;
+import online.syncio.backend.user.UserRedisService;
 import online.syncio.backend.user.UserRepository;
 import online.syncio.backend.utils.AuthUtils;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,7 @@ public class UserFollowService {
     private final AuthUtils authUtils;
     private final UserRepository userRepository;
     private final UserFollowMapper userFollowMapper;
-
+    private final UserRedisService userRedisService;
 
     @Transactional
     public boolean toggleFollow(final UUID targetId) {
@@ -31,9 +32,9 @@ public class UserFollowService {
                 .orElseThrow(() -> new NotFoundException(User.class, "id", targetId.toString()));
 
         boolean isFollowing = userFollowRepository.existsByTargetIdAndActorId(targetId, currentUserId);
-
         if (isFollowing) {
             userFollowRepository.deleteByTargetIdAndActorId(targetId, currentUserId);
+            userRedisService.invalidateUserProfileCache(targetId);
             return false; // Successfully unfollowed
         }
         else {
@@ -41,29 +42,11 @@ public class UserFollowService {
             userFollow.setTarget(target);
             userFollow.setActor(user);
             userFollowRepository.save(userFollow);
+            userRedisService.invalidateUserProfileCache(targetId);
             return true; // Successfully followed
         }
     }
 
-    public boolean addFollow(UUID targetId) {
-        final UUID currentUserId = authUtils.getCurrentLoggedInUserId();
-        User user = userRepository.findById(currentUserId)
-                .orElseThrow(() -> new NotFoundException(User.class, "id", currentUserId.toString()));
-        User target = userRepository.findById(targetId)
-                .orElseThrow(() -> new NotFoundException(User.class, "id", targetId.toString()));
-
-        boolean isFollow = userFollowRepository.existsByTargetIdAndActorId(targetId, currentUserId);
-
-        // if not following
-        if (!isFollow) {
-            UserFollow userFollow = new UserFollow();
-            userFollow.setTarget(target);
-            userFollow.setActor(user);
-            userFollowRepository.save(userFollow);
-            return true; // Successfully added to following
-        }
-        return false; // Already following
-    }
 
     @Transactional
     public boolean removeFollower(UUID actorId) {

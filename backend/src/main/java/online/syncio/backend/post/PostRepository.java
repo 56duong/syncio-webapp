@@ -41,6 +41,7 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
                 "LEFT JOIN user_close_friend ucf ON p.user_id = ucf.user_id " +
             "WHERE p.flag = true " +
                 "AND p.user_id = :userId " +
+                "AND p.visibility != 'BLOCKED' " +
                 "AND (p.user_id = :currentUserId OR " +
                     "p.visibility = 'PUBLIC' OR " +
                     "(p.visibility = 'CLOSE_FRIENDS' AND ucf.close_friend_id = :currentUserId) OR " +
@@ -141,11 +142,12 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
 
     @Query(value = "SELECT p.*, u.id AS uid " +
             "FROM post p " +
-                "LEFT JOIN user u ON p.user_id = u.id " +
+            "LEFT JOIN user u ON p.user_id = u.id " +
             "WHERE p.flag = true " +
-                "AND u.status = 'ACTIVE' " +
-                "AND p.visibility = :visibility " +
-                "AND p.user_id = :userId ", nativeQuery = true)
+            "AND u.status = 'ACTIVE' " +
+            "AND p.visibility = :visibility " +
+            "AND p.user_id = :userId " +
+            "AND p.visibility != 'BLOCKED'", nativeQuery = true)
     Page<Post> findPostsByVisibilityAndUserId(@Param("visibility") String visibility, @Param("userId") UUID userId, Pageable pageable);
 
     Long countByCreatedById(UUID userId);

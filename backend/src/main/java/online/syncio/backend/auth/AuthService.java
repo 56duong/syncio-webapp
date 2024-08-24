@@ -102,7 +102,7 @@ public class AuthService {
                 .build();
 
         tokenRepository.save(confirmationToken);
-        String link = urlFE + "/confirm-user-register?token=" + token;
+        String link = urlFE + "confirm-user-register?token=" + token;
         CustomerForgetPasswordUtil.sendEmailTokenRegister(link, email, settingService);
         return newUser;
     }
@@ -223,7 +223,7 @@ public class AuthService {
                 .build();
 
         tokenRepository.save(confirmationToken);
-        String link = urlFE + "/confirm-user-register?token=" + token;
+        String link = urlFE + "confirm-user-register?token=" + token;
         CustomerForgetPasswordUtil.sendEmailTokenRegister(link, email, settingService);
     }
 
