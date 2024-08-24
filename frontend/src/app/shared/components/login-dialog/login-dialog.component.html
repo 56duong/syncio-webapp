@@ -17,14 +17,16 @@
           [placeholder]="'login.email_or_username' | translate"
           type="email"
           [(ngModel)]="emailOrUsername"
-          name="email" />
+          name="email"
+          (keydown.enter)="onSubmit()" />
       </div>
       <div class="w-full">
         <input
           type="password"
           [placeholder]="'login.password' | translate"
           [(ngModel)]="password"
-          name="password" />
+          name="password"
+          (keydown.enter)="onSubmit()" />
         <p class="text-right cursor-pointer text-sm mt-2"
           (click)="navigateToForgotPassword()">
           {{ 'login.forgot_password' | translate }}

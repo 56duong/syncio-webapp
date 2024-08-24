@@ -123,4 +123,8 @@ export class LoginDialogComponent {
     });
   }
 
+  onSubmit() {
+    this.login();
+  }
+
 }

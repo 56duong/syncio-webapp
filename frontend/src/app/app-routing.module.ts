@@ -25,7 +25,7 @@ import { AuthEmailComponent } from './features/authentication/authEmail/auth-ema
 const routes: Routes = [
   {
     path: '',
-    title: 'Syncio',
+    title: 'Syncio Social Media',
     loadChildren: () =>
       import('./features/user/user.module').then((m) => m.UserModule),
   },
@@ -40,43 +40,43 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    title: 'Login',
+    title: 'Login | Syncio',
     component: LoginComponent,
   },
   {
     path: 'register',
-    title: 'Register',
+    title: 'Register | Syncio',
     component: RegisterComponent,
   },
   {
     path: 'auth-email',
-    title: 'Auth Email',
+    title: 'Auth Email | Syncio',
     component: AuthEmailComponent,
   },
   {
     path: 'forgot_password',
-    title: 'Forgot Password',
+    title: 'Forgot Password | Syncio',
     component: ForgotpasswordComponent,
   },
   {
     path: 'reset_password',
-    title: 'Change Password',
+    title: 'Change Password | Syncio',
     component: ChangePasswordComponent,
   },
   {
     path: 'confirm-user-register',
-    title: 'confirm-user-register',
+    title: 'Confirm User Register | Syncio',
     component: LoginComponent,
   },
   { path: 'search', component: SearchComponent },
   {
     path: 'not-found',
-    title: 'Not Found',
+    title: 'Not Found | Syncio',
     component: NotFoundComponent,
   },
   {
     path: 'not-authorized',
-    title: 'Not Authorized',
+    title: 'Not Authorized | Syncio',
     component: NotAuthorizedComponent,
   },
   {

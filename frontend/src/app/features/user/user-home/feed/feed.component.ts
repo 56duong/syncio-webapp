@@ -15,7 +15,7 @@ export class FeedComponent {
   suggestedPosts: Post[] | undefined;
 
   pageNumber: number = 0;
-  pageSize: number = 10; // set số bài viết cần lấy trên 1 trang
+  pageSize: number = 8; // set số bài viết cần lấy trên 1 trang
   loading: boolean = false;
 
   endOfFollowing: boolean = false; // If it already shows all the posts from the users that the current user is following

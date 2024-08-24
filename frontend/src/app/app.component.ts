@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LangService } from './core/services/lang.service';
-import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { ThemeService } from './core/services/theme.service';
+import { SeoService } from './core/services/seo.service';
 
 @Component({
   selector: 'app-root',
@@ -19,9 +17,8 @@ export class AppComponent {
   constructor(
     private translate: TranslateService,
     private langService: LangService,
-    private http: HttpClient,
-    private router: Router,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private seoService: SeoService
   ) {
     let currentTheme = localStorage.getItem('theme') || 'theme-light';
     this.themeService.applyTheme(currentTheme);
@@ -30,32 +27,7 @@ export class AppComponent {
     translate.setDefaultLang(defaultLang);
     translate.use(defaultLang);
 
-    // // set for android, windows to enter the ip address of the server, for development purposes
-    // if(environment.android || environment.windows) {
-    //   const hasChecked = sessionStorage.getItem('hasChecked'); // make sure to check only once when the app is opened
-    //   if(hasChecked) return;
-      
-    //   if(this.router.url !== '/update-ip') {
-    //     this.checkLocalhostAvailability();
-    //   }
-    // }
+    this.seoService.updateTitleAndCanonical();
   }
-
-
-  // checkLocalhostAvailability(): void {
-  //   const url = environment.apiUrl + 'api/v1/welcome-page';
-  //   this.http.get(url).subscribe({
-  //     next: (response) => {
-  //       console.log('response', response);
-  //     },
-  //     error: (e) => {
-  //       console.log('error', JSON.stringify(e));
-  //       this.router.navigate(['/update-ip']);
-  //     },
-  //     complete: () => {
-  //       sessionStorage.setItem('hasChecked', 'true');
-  //     }
-  //   });
-  // }
 
 }

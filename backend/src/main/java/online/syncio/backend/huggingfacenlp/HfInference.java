@@ -1,6 +1,5 @@
 package online.syncio.backend.huggingfacenlp;
 
-import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
 
 /**
