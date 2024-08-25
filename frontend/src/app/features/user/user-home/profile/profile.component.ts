@@ -1,5 +1,11 @@
 import { Location } from '@angular/common';
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActionEnum } from 'src/app/core/interfaces/notification';
 import { Post } from 'src/app/core/interfaces/post';
@@ -89,12 +95,30 @@ export class ProfileComponent implements OnInit {
   viewMode: 'grid' | 'list' = 'grid'; // view mode of the posts
   sortMode: 'newest' | 'oldest' = 'newest'; // sort mode of the posts
   viewOptions = [
-    { id: 'grid', label: this.translateService.instant('profile.grid'), icon: 'pi pi-table' },
-    { id: 'list', label: this.translateService.instant('profile.list'), icon: 'pi pi-bars' }
+    {
+      id: 'grid',
+      label: this.translateService.instant('profile.grid'),
+      icon: 'pi pi-table',
+    },
+    {
+      id: 'list',
+      label: this.translateService.instant('profile.list'),
+      icon: 'pi pi-bars',
+    },
   ];
   sortOptions = [
-    { id: 'desc', label: this.translateService.instant('profile.newest'), value: 'newest', icon: 'pi pi-arrow-up' },
-    { id: 'asc', label: this.translateService.instant('profile.oldest'), value: 'list', icon: 'pi pi-arrow-down' }
+    {
+      id: 'desc',
+      label: this.translateService.instant('profile.newest'),
+      value: 'newest',
+      icon: 'pi pi-arrow-up',
+    },
+    {
+      id: 'asc',
+      label: this.translateService.instant('profile.oldest'),
+      value: 'list',
+      icon: 'pi pi-arrow-down',
+    },
   ];
 
   selectedTab: number = 0;
@@ -116,7 +140,7 @@ export class ProfileComponent implements OnInit {
     private translateService: TranslateService,
     public imageUtils: ImageUtils,
     private loginDialogService: LoginDialogService,
-    private seoService: SeoService,
+    private seoService: SeoService
   ) {
     this.isMobile = window.innerWidth < 768;
   }
@@ -133,22 +157,25 @@ export class ProfileComponent implements OnInit {
     this.route.params.subscribe(async (params) => {
       let user = params['userId']; // user may be username or user id
       //check if the profileId is a username
-      if(user.indexOf('-') === -1) {
-        const { userId } = await lastValueFrom(this.userService.getUserIdByUsername(user));
-        if(!userId) {
+      if (user.indexOf('-') === -1) {
+        const { userId } = await lastValueFrom(
+          this.userService.getUserIdByUsername(user)
+        );
+        if (!userId) {
           this.router.navigate(['/not-found']);
           return;
         }
         this.profileId = userId;
-      }
-      else {
+      } else {
         this.profileId = user;
       }
       this.getUserProfile();
       this.getUserStory();
     });
   }
-
+  triggerFileInputClick(): void {
+    this.fileInput.nativeElement.click();
+  }
   getUserStory() {
     if (this.currentUserId) {
       this.storyService.getUserStory(this.profileId).subscribe({
@@ -182,7 +209,6 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-
   setMetaTags(userProfile: UserProfile) {
     const maxLength = 150;
     let bio = userProfile.bio;
@@ -190,16 +216,17 @@ export class ProfileComponent implements OnInit {
       bio = bio.substring(0, maxLength) + '...';
     }
 
-    const description = `${userProfile.username} has ${userProfile.followerCount} followers and ${userProfile.postCount} posts. ${bio || ''}`;
+    const description = `${userProfile.username} has ${
+      userProfile.followerCount
+    } followers and ${userProfile.postCount} posts. ${bio || ''}`;
 
     this.seoService.setMetaTags({
       title: `${userProfile.username} | Syncio`,
       description: description,
       image: this.getAvatarURL(userProfile.id),
-      keywords: `${userProfile.username}, Syncio, profile, social media`
+      keywords: `${userProfile.username}, Syncio, profile, social media`,
     });
   }
-
 
   getAvatarURL(userId: string): string {
     const constructImageUrlPipe = new ConstructImageUrlPipe(); // Manually create an instance
@@ -208,7 +235,6 @@ export class ProfileComponent implements OnInit {
     let fullUrl = constructImageUrlPipe.transform(baseUrl);
     return fullUrl;
   }
-
 
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
@@ -273,8 +299,12 @@ export class ProfileComponent implements OnInit {
               next: (response) => {
                 this.userProfile.isCloseFriend = !response;
                 this.dialogItems[0].label = response
-                  ? this.translateService.instant('profile.add_to_close_friends')
-                  : this.translateService.instant('profile.remove_from_close_friends');
+                  ? this.translateService.instant(
+                      'profile.add_to_close_friends'
+                    )
+                  : this.translateService.instant(
+                      'profile.remove_from_close_friends'
+                    );
               },
               error: (error) => {
                 console.error('Error removing close friends', error);
@@ -307,7 +337,7 @@ export class ProfileComponent implements OnInit {
       },
     });
   }
-  
+
   /**
    * Send follow notification to target user.
    * @param targetId
@@ -392,12 +422,10 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  
   selectTab(tab: number) {
-    if(this.selectedTab === tab && tab === 0) {
+    if (this.selectedTab === tab && tab === 0) {
       this.isVisibleChooseViewMode = true;
     }
     this.selectedTab = tab;
   }
-
 }

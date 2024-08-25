@@ -147,9 +147,10 @@ public class AuthController {
     public ResponseEntity<?> forgotPassword(HttpServletRequest request,@Valid @RequestBody ForgotPasswordForm forgotPasswordForm) throws Exception {
 
 
-        if (!authService.existsByEmail(forgotPasswordForm.getEmail())) {
-            return new ResponseEntity<>(new DataNotFoundException("User not exist"), HttpStatus.BAD_REQUEST);
-        }
+//        if (!authService.existsByEmail(forgotPasswordForm.getEmail())) {
+//            return new ResponseEntity<>(new DataNotFoundException("User not exist"), HttpStatus.BAD_REQUEST);
+//        }
+
         String token = authService.updateResetPasswordToken(forgotPasswordForm.getEmail());
         String link = urlFE + "reset_password?token=" + token;
 

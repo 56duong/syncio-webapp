@@ -2,10 +2,11 @@ package online.syncio.backend.label;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Data
-public class LabelResponseDTO {
+public class LabelResponseDTO implements Serializable {
     private UUID id;
     private String name;
     private Long price;

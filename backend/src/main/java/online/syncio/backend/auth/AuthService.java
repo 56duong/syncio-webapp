@@ -54,7 +54,6 @@ public class AuthService {
         // TODO Auto-generated method stub
         return userRepository.existsByEmail(email);
     }
-
     public UUID getCurrentLoggedInUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
@@ -185,7 +184,9 @@ public class AuthService {
     }
     public String updateResetPasswordToken(String email) throws Exception {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("User not found"));;
-
+            if(!user.getStatus().equals(StatusEnum.ACTIVE)) {
+                throw new DataNotFoundException("User is not active, please contact admin for more information");
+            }
             String token = RandomString.make(30);
 
             user.setResetPasswordToken(token);
