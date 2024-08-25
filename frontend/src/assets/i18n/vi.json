@@ -105,7 +105,8 @@
     "status": "Trạng thái",
     "in_total_there_are": "Tổng cộng có",
     "bills": "đơn hàng",
-    "quantitySold": "Đã bán"
+    "quantitySold": "Đã bán",
+    "decorate": "Trang trí"
   },
   "left_menu": {
     "login": "Đăng nhập",

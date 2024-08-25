@@ -105,7 +105,8 @@
     "status": "Status",
     "in_total_there_are": "In total there are",
     "bills": "bills",
-    "quantitySold": "Sold"
+    "quantitySold": "Sold",
+    "decorate": "Decorate"
   },
   "left_menu": {
     "login": "Login",

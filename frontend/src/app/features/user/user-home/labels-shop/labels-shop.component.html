@@ -24,7 +24,8 @@
             <div class="flex justify-content-between align-items-center">
               <div>
                 <i class="pi pi-tag mr-1"></i>
-                <span class="font-semibold text-sm">{{ label.type }}</span>
+                <!-- <span class="font-semibold text-sm">{{ label.type }}</span> -->
+                <span class="font-semibold text-sm">{{'labels_shop.decorate' | translate}}</span>
               </div>
               <div>
                 <p-tag *ngIf="label.status === 'ENABLED'" [severity]="'success'" styleClass="uppercase">{{'labels_shop.in_stock' | translate}}</p-tag>
