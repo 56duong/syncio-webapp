@@ -80,8 +80,7 @@ public class UserController {
             throw new AppException(HttpStatus.BAD_REQUEST, "Email already exists!", null);
         }
 
-        userService.create(userDTO);
-        return ResponseEntity.ok(userDTO.getId());
+        return ResponseEntity.ok(userService.create(userDTO));
     }
 
     @PutMapping("/{id}")
