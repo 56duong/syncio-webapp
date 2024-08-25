@@ -69,12 +69,12 @@ public class AuthService {
         String email = userDTO.getEmail();
         if( userRepository.existsByEmail(email)) {
             String message = messageSource.getMessage("user.register.email.exist", null, LocaleContextHolder.getLocale());
-            throw new AppException(HttpStatus.BAD_REQUEST, message, null);
+            throw new AppException(HttpStatus.CONFLICT, message, null);
         }
         String username = userDTO.getUsername();
         if( userRepository.existsByUsername(username)) {
             String message = messageSource.getMessage("user.register.username.exist", null, LocaleContextHolder.getLocale());
-            throw new AppException(HttpStatus.BAD_REQUEST, message, null);
+            throw new AppException(HttpStatus.CONFLICT, message, null);
         }
         if (!userDTO.getPassword().equals(userDTO.getRetypePassword())) {
             String message = messageSource.getMessage("user.register.password.not.match", null, LocaleContextHolder.getLocale());

@@ -252,14 +252,14 @@
   },
   "setting": {
     "settings": "Cài đặt",
-    "how_you_use_syncio": "Cách bạn sử dụng Syncio",
     "edit_profile": "Chỉnh sửa hồ sơ",
     "how_people_find_and_contact_you": "Cách mọi người tìm thấy và liên hệ với bạn",
     "image_search": "Tìm kiếm bằng hình ảnh",
     "who_can_see_your_content": "Ai có thể xem nội dung của bạn",
     "close_friends": "Bạn thân",
     "messages": "Tin nhắn",
-    "change_password": "Đổi mật khẩu"
+    "change_password": "Đổi mật khẩu",
+    "account_setting": "Cài đặt tài khoản"
   },
   "collection_detail": {
     "no_posts_added_to_collection_yet": "Chưa có bài viết nào được thêm vào bộ sưu tập"

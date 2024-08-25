@@ -38,7 +38,8 @@ export class RedirectService {
    */
   reloadPage(route?: string) {
     if(!environment.windows) {
-      window.location.reload();
+      if(route) window.location.href = route;
+      else window.location.reload();
     }
     else {
       if (window.electronAPI && typeof window.electronAPI.reloadPage === 'function') {

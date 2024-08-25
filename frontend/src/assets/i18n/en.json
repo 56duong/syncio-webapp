@@ -252,14 +252,14 @@
   },
   "setting": {
     "settings": "Settings",
-    "how_you_use_syncio": "How you use Syncio",
     "edit_profile": "Edit profile",
     "how_people_find_and_contact_you": "How people find and contact you",
     "image_search": "Image search",
     "who_can_see_your_content": "Who can see your content",
     "close_friends": "Close friends",
     "messages": "Messages",
-    "change_password": "Change password"
+    "change_password": "Change password",
+    "account_setting": "Account setting"
   },
   "collection_detail": {
     "no_posts_added_to_collection_yet": "No posts added to collection yet"
