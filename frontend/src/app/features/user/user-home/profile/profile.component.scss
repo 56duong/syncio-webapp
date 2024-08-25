@@ -87,7 +87,18 @@ p-radioButton ::ng-deep {
 }
 
 p-dialog ::ng-deep {
-  .p-dialog-header {
-    padding: 0.75rem 1rem;
+  .p-dialog-header,
+  .p-dialog-content {
+    padding: 0.75rem 1rem 1rem 0.75rem;
+    color: var(--surface-0);
+    background-color: var(--primary-color);
+  }
+
+  .p-dialog-content {
+    padding-bottom: 2rem;
+  }
+
+  .p-dialog .p-dialog-header .p-dialog-header-icon {
+    color: var(--surface-0);
   }
 }

@@ -163,4 +163,10 @@ public class UserController {
         return ResponseEntity.ok(Collections.singletonMap("status", status));
     }
 
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> countUsers() {
+        return ResponseEntity.ok(userService.countUsers());
+    }
+
 }

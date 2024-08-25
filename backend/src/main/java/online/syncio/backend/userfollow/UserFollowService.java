@@ -56,7 +56,7 @@ public class UserFollowService {
         User actor = userRepository.findById(actorId)
                 .orElseThrow(() -> new NotFoundException(User.class, "id", actorId.toString()));
 
-        boolean isFollow = userFollowRepository.existsByTargetIdAndActorId(actorId, currentUserId);
+        boolean isFollow = userFollowRepository.existsByTargetIdAndActorId(currentUserId, actorId);
 
         // if already following
         if (isFollow) {

@@ -29,7 +29,7 @@
           (keydown.enter)="onSubmit()" />
         <p class="text-right cursor-pointer text-sm mt-2"
           (click)="navigateToForgotPassword()">
-          {{ 'login.forgot_password' | translate }}
+          {{ 'login.forgot_password' | translate }}?
         </p>
       </div>
     </div>
@@ -39,9 +39,9 @@
       class="w-full"
       styleClass="w-full" />
     <div>
-      <p routerLink="/register" class="text-center cursor-pointer text-sm mt-2">
+      <p (click)="visible = false" routerLink="/register" class="text-center text-sm mt-2">
         {{ 'login.dont_have_an_account' | translate }}?
-        <span class="text-primary font-bold">{{ 'login.sign_up' | translate }}</span>
+        <span class="text-primary font-bold cursor-pointer">{{ 'login.sign_up' | translate }}</span>
       </p>
     </div>
   </form>

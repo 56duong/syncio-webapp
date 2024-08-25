@@ -319,5 +319,10 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
     }
 
+
+    public Long countUsers() {
+        return userRepository.count();
+    }
+
 }
 

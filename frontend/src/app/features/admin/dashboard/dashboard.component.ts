@@ -39,7 +39,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getDataAndCreateCharts();    
+    // this.getDataAndCreateCharts();    
   }
 
   getDataAndCreateCharts() {
@@ -150,7 +150,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getNewUsersChartData() {
     const startDate = new Date();
-    startDate.setDate(startDate.getDate()  - this.selectedDays); // Adjust start date based on selected days
+    startDate.setDate(startDate.getDate() - this.selectedDays); // Adjust start date based on selected days
     
     this.userService.getNewUsersLastNDays(this.selectedDays).subscribe(data => {
       const dates = [];
@@ -159,14 +159,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
       for (let i = this.selectedDays ; i >= 0; i--) {
         const currentDate = new Date(startDate);
         currentDate.setDate(startDate.getDate() + i);
-        dates.push(currentDate);
 
         const dateString = currentDate.toISOString().split('T')[0];
         counts.push(data[dateString] || 0); // Get count for current date or 0 if not available
+        dates.push(dateString);
       }
 
       const canvasId = 'newUsersChart';
-      const label = `New Users in Last ${this.selectedDays} Days`;
+      const label = `New Users`;
 
       const chart = new Chart(canvasId, {
         type: 'bar',

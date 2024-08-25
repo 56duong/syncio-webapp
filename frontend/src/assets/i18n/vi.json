@@ -35,8 +35,6 @@
   "register": {
     "sign_up": "Đăng ký",
     "password": "Mật khẩu",
-    "password_confirm": "Mật khẩu xác nhận",
-    "have_an_account": "Đã có tài khoản",
     "login": "Đăng nhập",
     "continue_as_guest": "Tiếp tục với vai trò khách",
     "email_should_contain_@": "Email cần chứa ký tự @",
@@ -48,7 +46,9 @@
     "passwords_do_not_match": "Mật khẩu không khớp",
     "password_must_contain_at_least_one_number": "Mật khẩu phải chứa ít nhất một số",
     "password_must_not_contain_whitespace": "Mật khẩu không được chứa khoảng trắng",
-    "password_must_contain_letter_or_special_character": "Mật khẩu phải chứa chữ cái hoặc ký tự đặc biệt"
+    "password_must_contain_letter_or_special_character": "Mật khẩu phải chứa chữ cái hoặc ký tự đặc biệt",
+    "already_have_an_account": "Đã có tài khoản",
+    "confirm_password": "Xác nhận mật khẩu"
   },
   "story_list": {
     "expand_stories": "Mở rộng tin",
@@ -216,7 +216,9 @@
     "newest": "Mới nhất",
     "oldest": "Cũ nhất",
     "remove_from_close_friends": "Xóa khỏi bạn thân",
-    "avatar_updated_successfully": "Cập nhật avatar thành công"
+    "avatar_updated_successfully": "Cập nhật avatar thành công",
+    "follower": "người theo dõi",
+    "followings": "đang theo dõi"
   },
   "search_suggestion": {
     "follower_other": "người theo dõi",
@@ -269,7 +271,8 @@
     "name": "Tên",
     "description": "Mô tả",
     "collection_created_successfully": "Tạo bộ sưu tập thành công",
-    "update_collection_successfully": "Cập nhật bộ sưu tập thành công"
+    "update_collection_successfully": "Cập nhật bộ sưu tập thành công",
+    "no_collections_yet": "Chưa có bộ sưu tập nào"
   },
   "like": {
     "like_other": "thích",
@@ -375,7 +378,6 @@
     "passwords_do_not_match": "Mật khẩu không khớp",
     "password_changed_successfully": "Đổi mật khẩu thành công",
     "new_password": "Mật khẩu mới",
-    "new_password_confirm": "Xác nhận mật khẩu mới",
     "back_to_forgot_password": "Quay lại quên mật khẩu",
     "current_password": "Mật khẩu hiện tại",
     "confirm_new_password": "Xác nhận mật khẩu mới",
@@ -429,5 +431,8 @@
     "notifications": "Thông báo",
     "this_month": "Tháng này",
     "no_result_found": "Không tìm thấy kết quả"
+  },
+  "post_list": {
+    "no_posts_yet": "Chưa có bài viết nào"
   }
 }

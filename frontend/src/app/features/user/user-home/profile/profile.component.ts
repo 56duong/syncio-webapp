@@ -174,6 +174,7 @@ export class ProfileComponent implements OnInit {
     });
   }
   triggerFileInputClick(): void {
+    if (!this.isOwnerProfile) return;
     this.fileInput.nativeElement.click();
   }
   getUserStory() {

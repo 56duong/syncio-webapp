@@ -48,7 +48,7 @@
         <div class="w-full">
           <input
             type="password"
-            [placeholder]="'register.password_confirm' | translate"
+            [placeholder]="'register.confirm_password' | translate"
             [(ngModel)]="retypePassword"
             name="retypePassword"
             (keydown.enter)="onSubmit()"
@@ -65,10 +65,10 @@
       />
       <!-- Login link -->
       <div>
-        <p routerLink="/login" class="text-center cursor-pointer text-sm mt-2">
-          {{ 'register.have_an_account' | translate }} <span class="text-primary font-bold">{{ 'register.login' | translate }}</span>
+        <p routerLink="/login" class="text-center text-sm mt-2">
+          {{ 'register.already_have_an_account' | translate }}? <span class="text-primary font-bold cursor-pointer">{{ 'register.login' | translate }}</span>
         </p>
-        <p routerLink="/" class="text-center cursor-pointer text-sm mt-2">
+        <p routerLink="/" class="text-primary font-bold text-center cursor-pointer text-sm mt-2">
           {{ 'register.continue_as_guest' | translate }}
         </p>
       </div>

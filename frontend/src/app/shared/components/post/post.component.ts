@@ -1,9 +1,9 @@
 import { Location } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Carousel } from 'primeng/carousel';
-import { tap } from 'rxjs';
+import { Subscription, tap } from 'rxjs';
 import { Post, Visibility } from 'src/app/core/interfaces/post';
 import { Report } from 'src/app/core/interfaces/report';
 import { RedirectService } from 'src/app/core/services/redirect.service';
@@ -52,6 +52,8 @@ export class PostComponent {
 
   currentUserId: string = '';
 
+  private langChangeSubscription: Subscription = new Subscription();
+
   constructor(
     private location: Location,
     private textUtils: TextUtils,
@@ -60,7 +62,8 @@ export class PostComponent {
     private translateService: TranslateService,
     private tokenService: TokenService,
     private redirectService: RedirectService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   hideDialog() {
@@ -72,6 +75,29 @@ export class PostComponent {
     Carousel.prototype.onTouchMove = () => { };
 
     this.currentUserId = this.tokenService.extractUserIdFromToken();
+
+    this.initializeDialogItems();
+    // Subscribe to language change events
+    this.langChangeSubscription = this.translateService.onLangChange.subscribe(() => {
+      this.initializeDialogItems();
+      this.cdr.detectChanges(); // Manually trigger change detection
+    });
+
+    if (this.isReportedPostsPage) {
+      this.getReports();
+    }
+  }
+
+
+  ngOnDestroy() {
+    // Unsubscribe to avoid memory leaks
+    if (this.langChangeSubscription) {
+      this.langChangeSubscription.unsubscribe();
+    }
+  }
+
+
+  initializeDialogItems() {
     this.dialogItems = [
       { 
         label: this.translateService.instant('post.report'), 
@@ -92,11 +118,8 @@ export class PostComponent {
         action: () => this.dialogVisible = false
       }
     ];
-
-    if (this.isReportedPostsPage) {
-      this.getReports();
-    }
   }
+
 
   getReports(): void {
     if (this.post.id) {

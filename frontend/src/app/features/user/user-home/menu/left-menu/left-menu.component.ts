@@ -45,7 +45,7 @@ export class LeftMenuComponent {
   /** Indicates if the report a problem dialog is visible */
   isVisibleReportAProblem: boolean = false;
 
-  private langChangeSubscription: Subscription = new Subscription();; // subscription to the language change event
+  private langChangeSubscription: Subscription = new Subscription(); // subscription to the language change event
 
   constructor(
     private router: Router,

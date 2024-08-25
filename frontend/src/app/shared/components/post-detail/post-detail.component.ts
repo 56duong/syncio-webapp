@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
@@ -46,6 +46,8 @@ export class PostDetailComponent {
 
   collectionVisible: boolean = false;
 
+  private langChangeSubscription: Subscription = new Subscription();
+
   constructor(
     private postService: PostService,
     private commentService: CommentService,
@@ -59,7 +61,8 @@ export class PostDetailComponent {
     private translateService: TranslateService,
     private redirectService: RedirectService,
     private loginDialogService: LoginDialogService,
-    private seoService: SeoService
+    private seoService: SeoService,
+    private cdr: ChangeDetectorRef
   ) { 
     this.isMobile = window.innerWidth < 768;
   }
@@ -110,11 +113,21 @@ export class PostDetailComponent {
     if(this.currentUserId) {
       this.notificationService.connectWebSocket(this.currentUserId);
     }
+
+    // Subscribe to language change events
+    this.langChangeSubscription = this.translateService.onLangChange.subscribe(() => {
+      this.updateDialogItems();
+      this.cdr.detectChanges(); // Manually trigger change detection
+    });
   }
 
 
   ngOnDestroy() {
     if(this.currentUserId) this.notificationService.disconnect();
+    // Unsubscribe to avoid memory leaks
+    if (this.langChangeSubscription) {
+      this.langChangeSubscription.unsubscribe();
+    }
   }
 
 

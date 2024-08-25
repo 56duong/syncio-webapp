@@ -23,6 +23,11 @@
   </ng-container>
 </article>
 
+<!-- No collection -->
+<div *ngIf="collections.length === 0" class="mt-4">
+  <p class="text-center mt-1 text-gray-500">{{ 'collection_list.no_collections_yet' | translate}}</p>
+</div>
+
 
 <!-- Add collection -->
 <p-dialog [header]="(selectedCollection.id ? ('collection_grid.edit_collection' | translate) : ('collection_grid.new_collection' | translate))" 

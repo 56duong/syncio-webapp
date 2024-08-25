@@ -35,8 +35,6 @@
   "register": {
     "sign_up": "Sign up",
     "password": "Password",
-    "password_confirm": "Password confirm",
-    "have_an_account": "Have an account",
     "login": "Login",
     "continue_as_guest": "Continue as guest",
     "email_should_contain_@": "Email should contain @",
@@ -48,7 +46,9 @@
     "passwords_do_not_match": "Passwords do not match",
     "password_must_contain_at_least_one_number": "Password must contain at least one number",
     "password_must_not_contain_whitespace": "Password must not contain whitespace",
-    "password_must_contain_letter_or_special_character": "Password must contain letter or special character"
+    "password_must_contain_letter_or_special_character": "Password must contain letter or special character",
+    "already_have_an_account": "Already have an account",
+    "confirm_password": "Confirm password"
   },
   "story_list": {
     "expand_stories": "Expand stories",
@@ -216,7 +216,9 @@
     "newest": "Newest",
     "oldest": "Oldest",
     "remove_from_close_friends": "Remove from close friends",
-    "avatar_updated_successfully": "Avatar updated successfully"
+    "avatar_updated_successfully": "Avatar updated successfully",
+    "follower": "follower",
+    "followings": "followings"
   },
   "search_suggestion": {
     "follower_other": "followers",
@@ -269,7 +271,8 @@
     "name": "Name",
     "description": "Description",
     "collection_created_successfully": "Collection created successfully",
-    "update_collection_successfully": "Update collection successfully"
+    "update_collection_successfully": "Update collection successfully",
+    "no_collections_yet": "No collections yet"
   },
   "like": {
     "like_other": "likes",
@@ -375,7 +378,6 @@
     "passwords_do_not_match": "Passwords do not match",
     "password_changed_successfully": "Password changed successfully",
     "new_password": "New password",
-    "new_password_confirm": "New password confirm",
     "back_to_forgot_password": "Back to forgot password",
     "current_password": "Current password",
     "confirm_new_password": "Confirm new password",
@@ -429,5 +431,8 @@
     "notifications": "Notifications",
     "this_month": "This month",
     "no_result_found": "No result found"
+  },
+  "post_list": {
+    "no_posts_yet": "No posts yet"
   }
 }

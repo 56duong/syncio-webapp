@@ -24,7 +24,7 @@
       ></p-button>
     </form>
   </div>
-  <p-dialog
+  <!-- <p-dialog
     [(visible)]="qrCodeDialogVisible"
     [modal]="true"
     header="QR Code"
@@ -36,7 +36,21 @@
       icon="pi pi-times"
       (click)="qrCodeDialogVisible = false"
     ></p-button>
-  </p-dialog>
+  </p-dialog> -->
 </div>
+
+<p-dialog
+  [(visible)]="qrCodeDialogVisible"
+  [modal]="true"
+  header="QR Code"
+  (onHide)="qrCodeDialogVisible = false"
+  [style]="{ width: '40vw', minWidth: '320px' }">
+  <div class="text-center">
+    <p class="my-0">QR code helps people follow others easily.</p>
+    <p class="mb-3 mt-0">People can scan QR code with their smartphone’s camera to see others’ profile.</p>
+    <img [src]="qrCodeUrl" alt="QR Code" style="width: 80%; max-width: 280px; height: auto; display: block; margin: auto;" />
+    <!-- <button (click)="downloadQRCode()" class="surface-100 px-3 py-2 border-round border-none outline-none cursor-pointer">Download QR Code</button> -->
+  </div>
+</p-dialog>
 
 

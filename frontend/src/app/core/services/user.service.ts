@@ -276,7 +276,8 @@ export class UserService {
   }
 
   getUserCount(): Observable<number> {
-    return this.getUsers().pipe(map((users) => users.length));
+    const url = `${this.apiURL}/count`;
+    return this.http.get<number>(url);
   }
 
   logout(): Observable<any> {
