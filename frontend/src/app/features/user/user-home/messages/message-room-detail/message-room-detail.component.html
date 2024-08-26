@@ -36,7 +36,7 @@
           <!-- username and is admin -->
           <div class="flex flex-column gap-2">
             <p [title]="member.username ? member.username : (member.userId || '' | userIdToName | async)" class="my-0 line-clamp" style="word-break: break-word;">{{member.username ? member.username : (member.userId || '' | userIdToName | async)}}</p>
-            <p *ngIf="member.admin" class="text-gray-500 my-0 text-sm">{{ 'message_room_detail.admin' | translate }}</p>
+            <p *ngIf="messageRoom.group && member.admin" class="text-gray-500 my-0 text-sm">{{ 'message_room_detail.admin' | translate }}</p>
           </div>
           <!-- 3 dots -->
           <i *ngIf="messageRoom.group && member.userId !== currentUser.id && member.userId !== messageRoom.createdBy && isAdmin" 
