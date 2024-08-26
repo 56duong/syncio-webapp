@@ -156,7 +156,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       const dates = [];
       const counts = [];
 
-      for (let i = this.selectedDays ; i >= 0; i--) {
+      for (let i = this.selectedDays; i > 0; i--) {
         const currentDate = new Date(startDate);
         currentDate.setDate(startDate.getDate() + i);
 

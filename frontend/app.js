@@ -14,6 +14,7 @@ const createWindow = () => {
       preload: preloadPath,
       contextIsolation: true, // Ensure remote module is not enabled
       nodeIntegration: false,
+      partition: 'nopersist' // Disable cache by using a non-persistent session
     },
     icon: path.join(app.getAppPath(), 'dist/frontend/assets/logo-256x256.ico'),
     autoHideMenuBar: true,
