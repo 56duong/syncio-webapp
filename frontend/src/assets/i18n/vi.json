@@ -104,7 +104,9 @@
     "date_create": "Ngày tạo",
     "status": "Trạng thái",
     "in_total_there_are": "Tổng cộng có",
-    "bills": "đơn hàng"
+    "bills": "đơn hàng",
+    "quantitySold": "Đã bán",
+    "decorate": "Trang trí"
   },
   "left_menu": {
     "login": "Đăng nhập",

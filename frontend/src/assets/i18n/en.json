@@ -104,7 +104,9 @@
     "date_create": "Date create",
     "status": "Status",
     "in_total_there_are": "In total there are",
-    "bills": "bills"
+    "bills": "bills",
+    "quantitySold": "Sold",
+    "decorate": "Decorate"
   },
   "left_menu": {
     "login": "Login",
