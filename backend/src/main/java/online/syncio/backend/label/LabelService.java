@@ -28,7 +28,7 @@ public class LabelService {
     private final UserLabelInfoRepository userLabelInfoRepository;
     private final AuthUtils authUtils;
     private final FileUtils fileUtils;
-
+    private final LabelRedisService labelRedisService;
 
     // MAP Label -> LabelDTO
     private LabelDTO mapToDTO(final Label label, final LabelDTO labelDTO) {
@@ -60,15 +60,26 @@ public class LabelService {
     }
 
     // CRUD
-    @Cacheable(value = "labels")
+
     public List<LabelDTO> findAll(){
-        final List<Label> labels = labelRepository.findAll(Sort.by("createdDate").descending());
-        return labels.stream()
-                .map(label -> mapToDTO(label, new LabelDTO()))
-                .toList();
+
+//        final List<Label> labels = labelRepository.findAll(Sort.by("createdDate").descending());
+////        return labels.stream()
+////                .map(label -> mapToDTO(label, new LabelDTO()))
+////                .toList();
+        List<LabelDTO> labelDTOS = labelRedisService.findALl();
+        if (labelDTOS == null) {
+            final List<Label> labels = labelRepository.findAll(Sort.by("createdDate").descending());
+            labelDTOS = labels.stream()
+                    .map(label -> mapToDTO(label, new LabelDTO()))
+                    .toList();
+            labelRedisService.cacheLabels(labelDTOS);
+        }
+        return labelDTOS;
     }
-   @Cacheable(value = "labelsWithPurchaseStatus", key = "#user_id", condition = "#user_id != null")
-    public List<LabelResponseDTO> getAllLabelWithPurcharseStatus (UUID user_id) {
+
+
+    public List<LabelResponseDTO> getAllLabelWithPurcharseStatus(UUID user_id) {
         // lay ra tat ca cac label tu db
         List<Label> labels = labelRepository.findAll();
 
@@ -161,6 +172,7 @@ public class LabelService {
             label.setCreatedBy(user);
             label.setStatus(labelUploadRequest.labelDTO().getStatus());
             labelRepository.save(label);
+            labelRedisService.clearByKey("labels");
         }
 
         return mapToDTO(label, new LabelDTO());
@@ -190,6 +202,9 @@ public class LabelService {
         label.setCreatedBy(user);
         label.setStatus(labelUploadRequest.labelDTO().getStatus());
         labelRepository.save(label);
+        labelRedisService.clearByKey("label::" + id);
+        labelRedisService.clearByKey("labels");
+        labelRedisService.clearByKey("labelsWithPurchaseStatus::" + user.getId());
         return mapToDTO(label, new LabelDTO());
     }
 

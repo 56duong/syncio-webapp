@@ -86,9 +86,6 @@ public class UserService {
     }
 
     public UserProfile getUserProfile (final UUID id)  {
-//        return userRepository.findByIdWithPosts(id)
-//                             .map(user -> userMapper.mapToUserProfile(user, new UserProfile()))
-//                             .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
 
         UserProfile cachedUserProfile = userRedisService.getCachedUserProfile(id);
         if (cachedUserProfile != null) {
