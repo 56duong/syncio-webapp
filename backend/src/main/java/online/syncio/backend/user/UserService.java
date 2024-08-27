@@ -204,8 +204,12 @@ public class UserService {
         final User user = userRepository.findById(id)
                                         .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
 
-        String encodePassword = passwordEncoder.encode(userDTO.getPassword());
-        userDTO.setPassword(encodePassword);
+        if (userDTO.getPassword().equals(user.getPassword())) {
+            userDTO.setPassword(userDTO.getPassword());
+        } else {
+            String encodePassword = passwordEncoder.encode(userDTO.getPassword());
+            userDTO.setPassword(encodePassword);
+        }
 
         userMapper.mapToEntity(userDTO, user);
         userRepository.save(user);
