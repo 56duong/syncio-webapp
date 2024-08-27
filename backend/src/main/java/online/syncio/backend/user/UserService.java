@@ -87,19 +87,19 @@ public class UserService {
 
     public UserProfile getUserProfile (final UUID id)  {
 
-        UserProfile cachedUserProfile = userRedisService.getCachedUserProfile(id);
+/*        UserProfile cachedUserProfile = userRedisService.getCachedUserProfile(id);
         if (cachedUserProfile != null) {
             if(checkUserStatusById(id).equals("ACTIVE")) {
                 return cachedUserProfile;
             }
-        }
+        }*/
 
         // If not in cache, fetch from the database
         UserProfile userProfile = userRepository.findByIdWithPosts(id)
                 .map(user -> userMapper.mapToUserProfile(user, new UserProfile()))
                 .orElseThrow(() -> new NotFoundException(User.class, "id", id.toString()));
 
-        userRedisService.cacheUserProfile(id, userProfile);
+//        userRedisService.cacheUserProfile(id, userProfile);
 
         return userProfile;
     }

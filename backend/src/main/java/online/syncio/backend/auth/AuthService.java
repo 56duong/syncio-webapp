@@ -63,18 +63,28 @@ public class AuthService {
         return user.getId();
     }
 
-    @Transactional
-    public User createUser(RegisterDTO userDTO) throws Exception {
+     @Transactional
+    public User registerUser (RegisterDTO userDTO) throws AppException, MessagingException, UnsupportedEncodingException {
+        User newUser = createUser(userDTO);
+//        if (newUser != null) {
+//            String userToken = createToken(newUser);
+//            String userEmail = newUser.getEmail();
+//            sendConfirmationEmail(userToken, userEmail);
+//        }
+        return newUser;
+    }
+
+    public User createUser (RegisterDTO userDTO) throws AppException {
         // Check if the email already exists
         String email = userDTO.getEmail();
-        if( userRepository.existsByEmail(email)) {
+        if (userRepository.existsByEmail(email)) {
             String message = messageSource.getMessage("user.register.email.exist", null, LocaleContextHolder.getLocale());
-            throw new AppException(HttpStatus.CONFLICT, message, null);
+            throw new AppException(HttpStatus.BAD_REQUEST, message, null);
         }
         String username = userDTO.getUsername();
-        if( userRepository.existsByUsername(username)) {
+        if (userRepository.existsByUsername(username)) {
             String message = messageSource.getMessage("user.register.username.exist", null, LocaleContextHolder.getLocale());
-            throw new AppException(HttpStatus.CONFLICT, message, null);
+            throw new AppException(HttpStatus.BAD_REQUEST, message, null);
         }
         if (!userDTO.getPassword().equals(userDTO.getRetypePassword())) {
             String message = messageSource.getMessage("user.register.password.not.match", null, LocaleContextHolder.getLocale());
@@ -83,27 +93,27 @@ public class AuthService {
 
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
         User newUser = User.builder()
-                .email(userDTO.getEmail())
-                .password(encodedPassword)
-                .username(userDTO.getUsername())
-                .status(StatusEnum.DISABLED)
-                .role(RoleEnum.USER)
-                .build();
+                           .email(userDTO.getEmail())
+                           .password(encodedPassword)
+                           .username(userDTO.getUsername())
+                           .status(StatusEnum.DISABLED)
+                           .role(RoleEnum.USER)
+                           .build();
 
-        newUser = userRepository.save(newUser);
+        return userRepository.save(newUser);
+    }
 
+    private String createToken (User user) {
         String token = UUID.randomUUID().toString();
         Token confirmationToken = Token.builder()
-                .token(token)
-                .user(newUser)
-                .expirationDate(LocalDateTime.now().plusMinutes(1)) //30 minutes
-                .revoked(false)
-                .build();
+                                       .token(token)
+                                       .user(user)
+                                       .expirationDate(LocalDateTime.now().plusMinutes(30)) //30 minutes
+                                       .revoked(false)
+                                       .build();
 
         tokenRepository.save(confirmationToken);
-        String link = urlFE + "confirm-user-register?token=" + token;
-        CustomerForgetPasswordUtil.sendEmailTokenRegister(link, email, settingService);
-        return newUser;
+        return token;
     }
 
 

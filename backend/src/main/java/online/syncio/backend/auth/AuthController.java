@@ -56,14 +56,15 @@ public class AuthController {
     public ResponseEntity<ResponseObject> createUser(
             @Valid @RequestBody RegisterDTO registerDTO
     ) throws Exception {
+        User user = authService.registerUser(registerDTO);
 
-        User user = authService.createUser(registerDTO);
+//        rabbitMQService.sendMessage("New user registered: " + user.getEmail());
         String message = messageSource.getMessage("user.register.verify.account", null, LocaleContextHolder.getLocale());
         return ResponseEntity.ok(ResponseObject.builder()
-                .status(HttpStatus.CREATED)
-                .data(RegisterResponse.fromUser(user))
-                .message(message)
-                .build());
+                                               .status(HttpStatus.CREATED)
+                                               .data(RegisterResponse.fromUser(user))
+                                               .message(message)
+                                               .build());
     }
 
 
@@ -81,7 +82,7 @@ public class AuthController {
 
         String userAgent = request.getHeader("User-Agent");
         User userDetail = authService.getUserDetailsFromToken(token);
-        Token jwtToken = tokenService.addToken(userDetail, token, isMobileDevice(userAgent));
+        Token jwtToken = tokenService.addToken(userDetail, token);
 
         String message = messageSource.getMessage("user.login.success", null, request.getLocale());
 
@@ -124,9 +125,6 @@ public class AuthController {
                         .status(HttpStatus.OK)
                         .build());
 
-    }
-    private boolean isMobileDevice(String userAgent) {
-        return userAgent.toLowerCase().contains("mobile");
     }
 
     @PostMapping("/details")

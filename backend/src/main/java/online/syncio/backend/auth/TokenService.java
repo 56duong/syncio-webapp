@@ -52,7 +52,7 @@ public class TokenService {
         return existingToken;
     }
     @Transactional
-    public Token addToken(User user, String token, boolean isMobileDevice) {
+    public Token addToken(User user, String token) {
         List<Token> userTokens = tokenRepository.findByUser(user);
         int tokenCount = userTokens.size();
         // Số lượng token vượt quá giới hạn, xóa một token cũ
