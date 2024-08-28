@@ -1,0 +1,9 @@
+Flask
+
+yake
+
+transformers
+
+Pillow
+
+gunicorn

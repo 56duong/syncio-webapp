@@ -72,14 +72,6 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UUID> createUser (@RequestBody @Valid final UserDTO userDTO) throws IOException, WriterException {
-        if (userRedisService.usernameExists(userDTO.getUsername())) {
-            throw new AppException(HttpStatus.BAD_REQUEST, "Username already exists!", null);
-        }
-        if (userRedisService.emailExists(userDTO.getEmail())) {
-
-            throw new AppException(HttpStatus.BAD_REQUEST, "Email already exists!", null);
-        }
-
         return ResponseEntity.ok(userService.create(userDTO));
     }
 

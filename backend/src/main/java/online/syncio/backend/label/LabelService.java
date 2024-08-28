@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,6 +68,7 @@ public class LabelService {
 ////        return labels.stream()
 ////                .map(label -> mapToDTO(label, new LabelDTO()))
 ////                .toList();
+        labelRedisService.clear();
         List<LabelDTO> labelDTOS = labelRedisService.findALl();
         if (labelDTOS == null) {
             final List<Label> labels = labelRepository.findAll(Sort.by("createdDate").descending());
@@ -80,6 +82,8 @@ public class LabelService {
 
 
     public List<LabelResponseDTO> getAllLabelWithPurcharseStatus(UUID user_id) {
+        labelRedisService.clear();
+
         // lay ra tat ca cac label tu db
         List<Label> labels = labelRepository.findAll();
 
@@ -170,6 +174,7 @@ public class LabelService {
             label.setDescription(labelUploadRequest.labelDTO().getDescription());
             label.setLabelURL(newFileName);
             label.setCreatedBy(user);
+            label.setCreatedDate(LocalDateTime.now());
             label.setStatus(labelUploadRequest.labelDTO().getStatus());
             labelRepository.save(label);
             labelRedisService.clearByKey("labels");

@@ -1,7 +1,10 @@
 package online.syncio.backend.user;
 
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.StorageClient;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -18,6 +21,7 @@ import online.syncio.backend.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,6 +35,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -50,6 +55,12 @@ public class UserService {
 
     @Value("${url.frontend}")
     private String frontendUrl;
+
+    @Value("${firebase.storage.bucket.url}")
+    private String bucketName;
+
+    @Value("${firebase.service.account.key.path}")
+    private String serviceAccount;
 
     public List<UserDTO> findAll (Optional<String> username) {
 //        final List<User> users = userRepository.findAll(Sort.by("createdDate").descending());
@@ -187,6 +198,15 @@ public class UserService {
 
     public UUID create(final UserDTO userDTO) throws IOException, WriterException {
 
+        // check if username exists
+        if (userRepository.existsByUsername(userDTO.getUsername())) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Username already exists", null);
+        }
+        // check if email exists
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Email already exists", null);
+        }
+
         // encode password
         String encodePassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(encodePassword);
@@ -280,6 +300,21 @@ public class UserService {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(image, "png", baos);
         byte[] imageData = baos.toByteArray();
+
+        try {
+            InputStream serviceAccountStream = new ClassPathResource(this.serviceAccount).getInputStream();
+
+            FirebaseOptions options = FirebaseOptions.builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccountStream))
+                    .setStorageBucket(this.bucketName)
+                    .build();
+
+            if (FirebaseApp.getApps().isEmpty()) {
+                FirebaseApp.initializeApp(options);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Upload to Firebase Storage
         Bucket bucket = StorageClient.getInstance().bucket();

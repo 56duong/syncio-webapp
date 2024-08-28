@@ -1,10 +1,10 @@
-<div class="main" class= "flex justify-content-center text-center">
+<div class="main" class= "flex justify-content-center text-center mt-8">
     <!-- Thanh toan thanh cong -->
     <div *ngIf="responseCode == '00'">
         <div class="card flex">
             <p-card header="Payment Successfull" [style]="{ width: '50rem' }">
                 <ng-template pTemplate="header">
-                    <i class="pi pi-check rounded-icon" style="background-color: rgb(41, 230, 41);"></i>
+                    <i class="pi pi-check rounded-icon mt-3" style="background-color: rgb(41, 230, 41);"></i>
                 </ng-template>
                 <p>
                     Thank you! You have successfully paid for order <b>{{orderInfo}}</b> with the amount of <b>{{formattedAmount}}</b> at <b>{{datePipe}}</b>
@@ -21,7 +21,7 @@
         <div class="card flex">
             <p-card header="Payment Failed" [style]="{ width: '50rem' }">
                 <ng-template pTemplate="header">
-                    <i class="pi pi-times rounded-icon" style="background-color: rgb(238, 17, 17);"></i>
+                    <i class="pi pi-times rounded-icon mt-3" style="background-color: rgb(238, 17, 17);"></i>
                 </ng-template>
                 <p>
                     Opps! You have failed to pay for order <b>{{orderInfo}}</b> with the amount of <b>{{formattedAmount}}</b> at <b>{{datePipe}}</b>

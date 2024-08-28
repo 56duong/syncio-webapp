@@ -150,6 +150,14 @@ These instructions will get you a copy of the project up and running on your loc
 ### Frontend
 - **Angular**: Navigate to the `frontend` directory and run `npm install` to install the required dependencies.
 
+#### Environment Configuration
+Please replace the `githubToken` value inside the `environment.android.ts`, `environment.developer.ts`, `environment.ts`, and `environment.windows.ts` files with the appropriate token from the repository section.
+
+```typescript
+githubToken: 'YOUR_ACTUAL_GITHUB_TOKEN'
+```
+
+
 ### Backend
 - **Spring Boot**: Navigate to the `backend` directory and run `mvn install` to install the required dependencies.
 
@@ -272,5 +280,4 @@ We are a group of students from the a College in Vietnam.creating Syncio – a s
 
 
 ## Contact
-For more information, feel free to contact any of our team members via their GitHub profiles.
-```
+For more information, feel free to contact any of our team members via their GitHub profiles. We are happy to answer any questions you may have. Thank you for your interest in our project!
