@@ -2,9 +2,9 @@
     "host": "localhost",
     "port": 8111,
     "domain": "example.com",
-    "rabbitmq_url": "amqps://rupzqjkv:3lURY4BnsU1PR_RvC67MIk92g0_iG1y9@armadillo.rmq.cloudamqp.com/rupzqjkv",
-    "exchange": "imageVerificationExchange",
-    "queu_image_verify": "imageVerificationQueue",
-    "TELEGRAM_TOKEN": "6478734755:AAHwesjyBmtIVaQsYafxvqGKeWldDbwPrg0",
-    "TELEGRAM_CHAT_ID": "6498678908"
+    "rabbitmq_url": "",
+    "exchange": "",
+    "queu_image_verify": "",
+    "TELEGRAM_TOKEN": "",
+    "TELEGRAM_CHAT_ID": ""
 }
